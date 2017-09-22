@@ -1,0 +1,67 @@
+<template name="Packs">
+	{{#momentum plugin="fade"}}
+		<div id="Packs" class="page">
+			{{#if popup}}
+				{{> Modal}}
+			{{/if}}
+			<div class="page-header packs-header">
+				<h1>Packs</h1>
+			</div>
+			<div class="packs-holder">
+				<div class="omni pack">
+					<div class="pack-header">
+						<h2 class="pack-title">Omnivore Pack</h2>
+					</div>
+					<div class="pack-options">
+						<!-- <select class="pack-amt">
+							<option></option>
+						</select> -->
+						<a id="OmnivorePack" class="buy" href="#">Buy Now</a>
+					</div>
+					<div class="pack-desc">
+						<p class="price"><!-- <span class="strikethrough">$94.99</span> --> $85.00</p>
+						<!-- <p class="dish-price">$14.17 per dish</p> -->
+						<p class="dishes">A mix of 6 delicious meat and vegetable dishes</p>
+					</div>
+					<div class="pack-items-wrapper">
+						<div class="pack-items">
+							{{#each omnivorePack}}
+								{{> Pack_item}}
+							{{/each}}
+						</div>
+					</div>
+				</div>
+				<div class="veggie pack">
+					<div class="pack-header">
+						<h2 class="pack-title">Vegetarian Pack</h2>
+					</div>
+					<div class="pack-options">
+						<!-- <select class="pack-amt">
+							<option value=""></option>
+						</select> -->
+						<a id="VegetarianPack" class="buy" href="#">Buy Now</a>
+					</div>
+					<div class="pack-desc">
+						<p class="price"><!-- <span class="strikethrough">$94.99</span> --> $85.00</p>
+						<!-- <p class="dish-price">$14.17 per dish</p> -->
+						<p class="dishes">A mix of 6 delicious vegetable and grain based dishes</p>
+					</div>
+					<div class="pack-items-wrapper">
+						<div class="pack-items">
+							{{#each vegetarianPack}}
+								{{> Pack_item}}
+							{{/each}}
+						</div>
+					</div>
+				</div>
+
+				<!-- <div class="pack {{inActive}}">
+					<a id="StarterPack" class="pack-title" href="#">Build Your Own Pack</a>
+					<p class="dish-price customize">as low as $10.67 per dish!</p>
+					<p class="dishes"><span class="text"><a id="Customize" href="#">Click here</a> to see<br/>our full menu,<br/>upgrade your pack size<br/>or<br/>customize your pack<br/><br/>Available before<br/>Wednesday at Midnight</span></p>
+					<button id="StarterPack" class="act">See the Menu</button>
+				</div> -->
+			</div>
+		</div>
+	{{/momentum}}
+</template>

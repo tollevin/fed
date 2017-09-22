@@ -1,0 +1,16 @@
+<template name="Side_Nav">
+	<div id="sideNav" class="{{sideNavOpen}}">
+    <span><img class="close-sideNav" src="/icons/x.png"/></span>
+    <ul>
+      <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
+      <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
+      {{#if notSubscribed}}
+        <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
+      {{/if}}
+      <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+     <!--  <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li> -->
+      <li><a href="/about-us" class="{{currentPage 'About.us'}}" alt="About">About Us</a></li>
+      <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+    </ul>
+  </div>
+</template>

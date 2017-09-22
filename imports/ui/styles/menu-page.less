@@ -1,0 +1,347 @@
+@import './utils.less';
+
+#closed {
+	.position(fixed, 0,0,0,0);
+
+	display: flex;
+	background-color: rgba(0,0,0,.4);
+	z-index: 5;
+
+	p {
+		padding: 5px;
+		font-weight: 500;
+		font-size: 20px;
+		color: #FFF;
+		margin: auto;
+		text-align: center;
+	}
+
+	a {
+		text-decoration: none;
+		color: #FFF;
+		font-weight: 600;
+	}
+}
+
+#menu-page {
+	background-color: #fff;
+	text-align: center;
+	bottom: auto !important;
+
+	#menu-toolbar {
+		.position(sticky, 60px, 0, auto, 0, auto, auto);
+		display: flex;
+    justify-content: space-between;
+    background-color: @fgray;
+    z-index: 2;
+		transition: height 200ms ease-in;
+		overflow-x: hidden;
+
+    @media screen and (min-width: 645px) {
+    	justify-content: initial;
+    	top: 135px;
+
+    	&.filterMenuOpen {
+	    	height: 160px;
+	    }
+    }
+
+    &.filterMenuOpen {
+    	min-height: 160px;
+    }
+
+    i {
+    	color: #034b2c;
+    	font-weight: 600;
+    }
+
+		#Filter-menu-toggle {
+			.position(absolute, 0, auto, auto, 0, 60px, 50px);
+			display: flex;
+			cursor: pointer;
+			z-index: 2;
+
+			@media screen and (min-width: 600px) {
+				width: 81px;
+			}
+
+			i {
+				margin: auto;
+
+				@media screen and (min-width: 646px) {
+					display: none;
+				}
+			}
+
+			p {
+				margin-top: auto;
+				margin-bottom: auto;
+				margin-left: 25px;
+				font-weight: 400;
+
+				@media screen and (max-width: 645px) {
+					display: none;
+				}
+			}
+
+			span {
+				.position(absolute, 30px, auto, auto, 26px);
+				font-size: 12px;
+
+				@media screen and (max-width: 645px) {
+					display: none;
+				}
+			}			
+		}
+
+		#filter-buttons {
+			display: flex;
+			width: auto;
+			height: 50px;
+			position: relative;
+			top: 5px;
+			left: 100px;
+			right: 0;
+			display: flex;
+	    align-items: flex-start;
+	    flex-direction: column;
+      justify-content: space-around;
+      -webkit-transition: height 200ms;
+		  transition: height 200ms;
+		  overflow: hidden;
+
+      &.filterMenuOpen {
+				max-height: 140px;
+				height: auto;
+				top: 10px;
+
+				@media screen and (max-width: 645px) {
+					width: 100%;
+					top: 15px;
+					left: 0;
+				}
+			}
+
+			.filter-button {
+				display: inline-block;
+				text-decoration: none;
+				font-size: 15px;
+				line-height: 15px;
+				height: 30px;
+				padding: 7px 5px 0 5px;
+				border-radius: 15px;
+				border: 1px solid #FFF;
+				background-color: #FFF;
+				margin-top: auto;
+				margin-bottom: auto;
+				margin-right: 10px;
+				color: @fgreene;
+		    white-space: nowrap;
+
+				&:hover {
+					color: #FFF;
+					background-color: @fgreene;
+					border: 1px solid @fgreene;
+				}
+
+				&.active {
+					color: #FFF;
+					background-color: @fgreene;
+					border: 1px solid @fgreene;
+				}
+			}
+
+			.Paleo, .Protein {
+				display: inline-block;
+
+		    @media screen and (max-width: 800px) {
+		    	display: none;
+
+		    	&.filterMenuOpen {
+						display: inline-block !important;
+		    	}
+	    	}
+			}
+
+			.byDiet, .toAvoid, .byGoal  {
+				width: 100%;
+				height: 60px;
+				flex-direction: column;
+				overflow: hidden;
+
+				&.filterMenuOpen {
+					overflow-x: scroll;
+				}
+			}
+
+			.byDiet {
+				display: flex;
+
+				@media screen and (max-width: 645px) {
+					display: none;
+
+					&.filterMenuOpen {
+						display: flex;
+					}
+				}
+			}
+
+			.toAvoid, .byGoal {
+				opacity: 0;
+			  visibility: hidden;
+			  -webkit-transition: opacity 200ms, visibility 200ms;
+			  transition: opacity 200ms, visibility 200ms;
+			  display: none;
+
+				&.filterMenuOpen {
+					display: flex;
+					opacity: 1;
+					visibility: visible;
+				}
+			}
+
+			h5 {
+				display: none;
+				text-transform: none;
+				color: @fgreene;
+				margin-top: auto;
+				margin-bottom: 4px;
+				margin-right: 25px;
+				line-height: 20px;
+				border-bottom: 1px solid @fgreene;
+
+				&.filterMenuOpen {
+					display: table;
+
+					@media screen and (max-width: 645px) {
+						position: relative;
+						left: 60px;
+					}
+				}
+			}
+
+			.buttons-holder {
+				margin-top: 4px;
+				overflow-x: scroll;
+				display: flex;
+			
+				@media screen and (max-width: 645px) {
+					padding-left: 60px;
+				}
+			}
+		}
+
+		#thisPack {
+			.position(absolute, 0, 0, auto, auto, 135px, 50px);
+			display: flex;
+			cursor: pointer;
+			padding-right: 25px;
+
+			p {
+				margin: auto;
+				margin-right: 3px;
+				font-size: 17px;
+				font-weight: 500;
+				padding-right: 20px;
+			}
+
+			select {
+				border: none;
+				background: none;
+				-webkit-appearance: none;
+		    -moz-appearance: none;
+		    text-indent: 1px;
+		    text-overflow: clip;
+		    min-width: 60px;
+		    font-size: 17px;
+		    padding-right: 13px;
+			}
+
+			i {
+				margin-top: auto;
+		    margin-bottom: auto;
+		    margin-left: -12px;
+			}
+		}
+
+		#checkout-button {
+			display: flex;
+			min-width: 60px;
+			justify-content: center;
+
+			@media screen and (min-width: 475px) {
+				position: absolute;
+				right: 0;
+			}
+
+			a {
+				height: 100%;
+				width: 100%;
+				text-decoration: none;
+				padding-top: 4px;
+		    padding-right: 8px;
+		    padding-left: 8px;
+
+				p {
+					margin-top: 0;
+					margin-bottom: 0;
+					font-size: 12px;
+					line-height: 10px;
+				}
+			}
+		}
+	}
+
+	.menu-header {
+		background-image: url("/images/get_fed_orange.jpg");
+		background-position-y: 45%;
+		background-position-x: 35%;
+	}
+
+	.reminder {
+    font-weight: 600;
+    font-size: 18px;
+    // font-family: "josefin Sans";
+    color: #FFF;
+    text-shadow: 2px 1px rgba(0,0,0,.5);
+	}
+
+	.item-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+
+		@media screen and (min-width: 475px) {
+			margin-top: 50px;
+		}
+	}
+
+	.hr-holder {
+		width: 100%;
+
+		hr {
+			width: 80%;
+			margin-top: 40px;
+			margin-bottom: 60px;
+		}
+	}
+
+	h2 {
+		width: 100%;
+	}
+}
+
+#cart {
+	opacity: 0;
+	visibility: hidden;
+
+	&.packEditorOpen {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+
+.showModal {
+	display: block !important;
+}

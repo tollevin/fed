@@ -1,0 +1,35 @@
+<template name="Item_admin">
+  <article class="item-admin">
+		<div class="item-admin-img">
+			<a href="/menu/{{_id}}"><img src="{{photo}}" alt="" /></a>
+		</div>
+		<div class="item-admin-name">
+			<a href="/menu/{{_id}}"><h3>{{name}}</h3></a>
+		</div>
+		<div class="item-admin-desc">
+			<p>{{description}}</p>
+		</div>
+		<div class="item-admin-icons">
+		</div>
+		<div class="item-ingredients">
+			<p>
+				{{#each ingredients}}
+					<span class="ingredient">{{name}} - {{amount}}</span>
+				{{/each}}
+			</p>
+		</div>
+		<label class="checkbox">Active
+  		<input type="checkbox" checked={{thisWeek}} name="thisWeek">
+  		<span class="checkbox-custom"></span>
+  	</label>
+		<label class="checkbox omnivorePack">OP
+  		<input class="pack" type="checkbox" checked={{omni}} name="omnivorePack">
+  		<span class="checkbox-custom"></span>
+  	</label>
+		<label class="checkbox vegetarianPack">VP
+  		<input type="checkbox" checked={{veggie}} name="vegetarianPack">
+  		<span class="checkbox-custom"></span>
+  	</label>
+  	<button id="Remove">REMOVE ITEM</button>
+	</article>
+</template>

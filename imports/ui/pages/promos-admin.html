@@ -1,0 +1,16 @@
+<template name="Promos_admin">
+	<div class="content-scrollable">
+		<div id="promos-admin" class="promos-page">
+			{{> NewPromo}}
+			<section class="all-items">
+				{{#if Template.subscriptionsReady}}
+					{{#each promos}}
+						{{> Promo_admin}}
+					{{/each}}
+				{{else}}
+					<p>Loading...</p>
+				{{/if}}
+			</section>
+		</div>
+	</div>
+</template>

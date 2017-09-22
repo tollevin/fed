@@ -1,0 +1,41 @@
+<template name="Customer_preview">
+	<tr class="customer-preview">
+		{{#if Template.subscriptionsReady}}
+		<td class="created-At">
+			{{createdAt}}
+		</td>
+		<td class="customer-id">
+			{{_id}}
+		</td>
+		<td class="customer-name">
+			{{first_name}} {{last_name}}
+		</td>
+		{{#each email in emails}}
+			<td class="customer-emails">
+				{{email.address}}
+			 	{{email.verified}}
+			</td>
+		{{/each}}
+		<td class="customer-phone">
+			{{phone}}
+		</td>
+		<td class="address">
+			{{address_line_1}}
+			{{address_line_2}}
+			{{address_city}}
+			{{address_zipcode}}
+		</td>
+		<td class="customer-amountSpent">
+			{{amountSpent}}
+		</td>
+		<td class="customer-stripeID">
+			{{stripe_id}}
+		</td>
+		<td class="customer-lastPurchase">
+		</td>
+		<td class="subscription">
+			
+		</td>
+		{{/if}}
+	</tr>
+</template>

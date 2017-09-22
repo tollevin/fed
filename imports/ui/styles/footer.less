@@ -1,0 +1,58 @@
+@import './utils.less';
+
+footer {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  min-height: 200px;
+  background-color: @fgreene;
+  padding: 30px 30px 30px 50px;
+  color: #FFF;
+
+  div {
+
+  }
+
+  h2 {
+    font-weight: 500;
+    color: #FFF;
+  }
+
+  ul {
+    list-style-type: none;
+    margin-bottom: 20px;
+    padding-left: 0;
+    text-align: left;
+  }
+
+  a {
+    color: #FFF;
+    text-decoration: none;
+    font-weight: 400;
+
+    &:hover {
+      color: @forange;
+    }
+  }
+
+  .social-icons {
+  }
+
+  .social {
+  	display: block;
+  	text-decoration: none;
+    color: #FFF;
+  	font-weight: 400;
+  }
+
+  p {
+    color: #FFF;
+
+    @media screen and (max-width: 425px) {
+      font-size: 19px;
+    }
+  }
+}

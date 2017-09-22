@@ -1,0 +1,65 @@
+@import './utils.less';
+
+#cart {
+  .position(fixed, 185px, 0, 0, auto, @cart-width);
+  background-color: #d2d8d3;
+  background-image: linear-gradient(#d2d8d3, #bedcc3 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  text-align: center;
+  overflow-y: scroll;
+  transition: all 200ms linear;
+
+  @media screen and (max-width: 645px) {
+    top: 110px;
+    width: 250px;
+  }
+
+  .pack-select {
+    margin: 40px auto;
+
+
+    label {
+      font-size: 18px;
+      color: #FFF;
+
+      select {
+        border-radius: 0;
+      }
+    }
+  }
+
+  #changePack {
+    background-color: #FFF;
+  }
+
+  form {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+
+    input {
+      display: block;
+      margin: 5px;
+    }
+  }
+
+  #checkout {
+    margin-top: 10px;
+    margin-bottom: 40px;
+  }
+}
+
+// Toggle cart on mobile
+.cart-open & {
+  transform: translate3d(@cart-width, 0, 0);
+  opacity: .85;
+  right: 0;
+
+  @media screen and (min-width: 40em) {
+    // Show cart on desktop, negate .cart-open
+    transform: translate3d(0, 0, 0); //reset transform and use position properties instead
+    opacity: 1;
+    right: @cart-width;
+  }
+}

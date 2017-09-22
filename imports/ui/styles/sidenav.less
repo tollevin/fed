@@ -1,0 +1,46 @@
+/* The side navigation menu */
+#sideNav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 3; /* Stay on top */
+  top: @nav-height-m;
+  left: 0;
+  background: #bef7cd;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #BDFFF3, #4AC29A);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(#ffffff, #bef7cd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: width 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+
+  &.sideNavOpen {
+    width: 250px;
+  }
+
+  .close-sideNav {
+    .position(absolute, 5px, 5px, auto, auto);
+    max-width: 30px;
+  }
+
+  ul {
+    padding-left: 15px;
+
+    li {
+      display: block;
+      margin: 10px;
+
+      a {
+        text-decoration: none;
+        font-weight: 400;
+        color: @fgreene;
+        font-size: 16px;
+        padding: 10px 5px;
+
+        &.active {
+          color: @forange;
+        }
+      }
+    }
+  }
+}
+

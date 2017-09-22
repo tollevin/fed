@@ -1,0 +1,86 @@
+<template name="Orders_admin">
+	<div id="orders-admin" class="admin-page">
+		<div id="orders-admin-bar">
+			<!-- print output for kitchen -->
+			<!-- print output for kitchen -->
+			{{> Orders_sidebar}}
+		</div>
+
+		<div class="content-scrollable">
+
+			<div class="all-orders">
+				{{#momentum plugin="fade"}}
+					<table class="orders-table"> 
+						{{#if Template.subscriptionsReady}}
+							<tr class="table-header">
+								<th class="order-paid-at">
+									Paid At
+								</th>
+								<th class="order-number">
+									Order #
+								</th>
+								<th class="order-stripe-id">
+									Stripe Charge ID
+								</th>
+								<th class="deliv-id">
+									Deliv Tracking Code
+								</th>
+								<th class="customer-name">
+									Customer Name
+								</th>
+								<th class="customer-address">
+									Customer Address
+								</th>
+								<th class="customer-borough">
+									City
+								</th>
+								<th class="customer-zipCode">
+									Zip Code
+								</th>
+								<th class="customer-phone">
+									Phone #
+								</th>
+								<th class="customer-email">
+									Email
+								</th>
+								<th class="status-light">
+									Order Status
+								</th>
+								<th class="order-items">
+									Dishes
+								</th>
+								<th class="order-snacks">
+									Snacks
+								</th>
+								<th class="delDay">
+									Delivery Day
+								</th>
+								<th class="sale-price">
+									Sale Price
+								</th>
+								<th class="order-price">
+									Pack Price
+								</th>
+								<th class="coupon">
+									Promo Code
+								</th>
+							</tr>
+							{{#if allOrders}}
+								{{#each orders}}
+									{{> Order_preview}}
+								{{/each}}
+							{{/if}}
+							{{#if thisWeeksOrders}}
+								{{#each currentOrders}}
+									{{> Order_preview}}
+								{{/each}}
+							{{/if}}
+						{{else}}
+							<p>Loading...</p>
+						{{/if}}
+					</table>
+				{{/momentum}}
+			</div>
+		</div>
+	</div>
+</template>

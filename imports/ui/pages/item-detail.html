@@ -1,0 +1,94 @@
+<template name="Item_detail">
+	{{#momentum plugin="fade"}}
+		<div id="Item" class="page">
+			<div class="back">
+				<a id="Back" href="#">&times;</a>
+			</div>
+			<div class="item-detail-img">
+				<img src="{{item.photo}}" alt="" />
+			</div>
+			<div class="item-details">
+				<div class="item-detail-name">
+					<h3>{{item.name}}</h3>
+				</div>
+				<div class="item-detail-desc">
+					<p>{{item.description}}</p>
+				</div>
+				<div class="item-detail-classes">
+					{{#with item.attributes}}
+						{{#if dairyFree }}
+							<p>Dairy Free</p>
+						{{/if}}
+						{{#if glutenFree }}
+							<p>Gluten Free</p>
+						{{/if}}
+						{{#if highProtein }}
+							<p>High Protein</p>
+						{{/if}}
+						{{#if paleo }}
+							<p>Paleo</p>
+						{{/if}}
+						{{#if vegetarian }}
+							<p>Vegetarian</p>
+						{{/if}}
+						{{#if vegan }}
+							<p>Vegan</p>
+						{{/if}}
+					{{/with}}
+				</div>
+				{{#if fromMenu}}
+					<div class="add-input">
+						<button class="btn-secondary add-to-cart">Add to cart</button>
+					</div>
+				{{/if}}
+				<div class="item-nutrition-facts">
+					<table>
+						<tr>
+							<h3>Nutrition Facts:</h3>
+						</tr>
+						{{#with item.nutritionFacts }}
+							<tr><td>Serving Size:</td><td class="value">{{ servingSize }}g</td></tr>
+							<tr><td>Servings per container:</td><td class="value">1</td></tr>
+							<tr><td>Calories:</td><td class="value">{{ calories }}</td></tr>
+							<tr><td>Total Fat:</td><td class="value">{{ totalFat }}g</td></tr>
+							<tr><td>Saturated Fat:</td><td class="value">{{ saturatedFat }}g</td></tr>
+							<tr><td>Trans Fat:</td><td class="value">{{ transFat }}g</td></tr>
+							<tr><td>Cholesterol:</td><td class="value">{{ cholesterol }}g</td></tr>
+							<tr><td>Sodium:</td><td class="value">{{ sodium }}mg</td></tr>
+							<tr><td>Total Carbs:</td><td class="value">{{ totalCarb }}g</td></tr>
+							<tr><td>Dietary Fiber:</td><td class="value">{{ dietaryFiber }}g</td></tr>
+							<tr><td>Sugars:</td><td class="value">{{ sugars }}g</td></tr>
+							<tr><td>Protein:</td><td class="value">{{ protein }}g</td></tr>
+							<tr><td>Vitamin A:</td><td class="value">{{ PDV.vitaminA }}%DV</td></tr>
+							<tr><td>Vitamin C:</td><td class="value">{{ PDV.vitaminC }}%DV</td></tr>
+							<tr><td>Calcium:</td><td class="value">{{ PDV.calcium }}%DV</td></tr>
+							<tr><td>Iron:</td><td class="value">{{ PDV.iron }}%DV</td></tr>
+						{{/with}}
+					</table>
+				</div>
+			</div>
+			<div class="item-detail-warnings">
+				{{#if contains}}
+					<p>Contains: 
+						{{#each contains }}
+							{{this}}
+						{{/each}}
+					</p>
+				{{/if}}
+				</div>
+			<div class="item-detail-ingredients">
+				<p>Ingredients: </p>
+				<p>
+					{{#each item.ingredients}}
+						{{this}}, 
+					{{/each}}
+				</p>
+			</div>
+			{{#if fromMenu}}
+				<div class="add-input">
+					 <button class="btn-secondary add-to-cart bottom">Add to cart</button>
+				</div>
+			{{/if}}
+		</div>
+	{{/momentum}}
+</template>

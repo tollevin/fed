@@ -1,0 +1,16 @@
+<template name="Menu_admin">
+	<div class="content-scrollable">
+		<div id="menu-admin" class="admin-page">
+			{{> NewItem}}
+			<section class="all-items">
+				{{#if Template.subscriptionsReady}}
+					{{#each items}}
+						{{> Item_admin}}
+					{{/each}}
+				{{else}}
+					<p>Loading...</p>
+				{{/if}}
+			</section>
+		</div>
+	</div>
+</template>

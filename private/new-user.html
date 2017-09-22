@@ -1,0 +1,354 @@
+{{{doctype}}}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8"> <!-- utf-8 works for most cases -->
+  <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
+    <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+  <title>Welcome to Fed</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+
+  <!-- Web Font / @font-face : BEGIN -->
+  <!-- NOTE: If web fonts are not required, lines 9 - 26 can be safely removed. -->
+  
+  <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->
+  <!--[if mso]>
+    <style>
+      * {
+        font-family: sans-serif !important;
+      }
+    </style>
+  <![endif]-->
+  
+  <!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->
+  <!--[if !mso]><!-->
+    <!-- insert web font reference, eg: <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'> -->
+  <!--<![endif]-->
+
+  <!-- Web Font / @font-face : END -->
+  
+  <!-- CSS Reset -->
+    <style>
+
+    /* What it does: Remove spaces around the email design added by some email clients. */
+    /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
+        html,
+        body {
+          margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+        }
+        
+        /* What it does: Stops email clients resizing small text. */
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        /* What is does: Centers email on Android 4.4 */
+        div[style*="margin: 16px 0"] {
+            margin:0 !important;
+        }
+        
+        /* What it does: Stops Outlook from adding extra spacing to tables. */
+        table,
+        td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
+        }
+                
+        /* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */
+        table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+        }
+        table table table {
+            table-layout: auto; 
+        }
+        
+        /* What it does: Uses a better rendering method when resizing images in IE. */
+        img {
+            -ms-interpolation-mode:bicubic;
+        }
+        
+        /* What it does: A work-around for iOS meddling in triggered links. */
+        .mobile-link--footer a,
+        a[x-apple-data-detectors] {
+            color:inherit !important;
+            text-decoration: underline !important;
+        }
+
+        /* What it does: Prevents underlining the button text in Windows 10 */
+        .button-link {
+            text-decoration: none !important;
+        }
+
+        .stack-column,
+        .stack-column-center {
+            display: inline-block !important;
+        }      
+    </style>
+    
+    <!-- Progressive Enhancements -->
+    <style>
+        
+        /* What it does: Hover styles for buttons */
+        .button-td,
+        .button-a {
+            transition: all 100ms ease-in;
+        }
+        .button-td:hover,
+        .button-a:hover {
+            background: #555555 !important;
+            border-color: #555555 !important;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 600px) {
+
+            .email-container {
+                width: 100% !important;
+                margin: auto !important;
+            }
+
+            /* What it does: Forces elements to resize to the full width of their container. Useful for resizing images beyond their max-width. */
+            .fluid {
+                max-width: 100% !important;
+                height: auto !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+            /* What it does: Forces table cells into full-width rows. */
+            .stack-column,
+            .stack-column-center {
+                width: 50% !important;
+                max-width: 100% !important;
+                direction: ltr !important;
+            }
+            /* And center justify these ones. */
+            .stack-column-center {
+                text-align: center !important;
+            }
+            .pack-column {
+                width: 100% !important;
+                max-width: 100% !important;
+                direction: ltr !important;
+            }
+            /* What it does: Generic utility class for centering. Useful for images, buttons, and nested tables. */
+            .center-on-narrow {
+                text-align: center !important;
+                display: block !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                float: none !important;
+            }
+            table.center-on-narrow {
+                display: inline-block !important;
+            }
+                
+        }
+
+    </style>
+
+</head>
+<body bgcolor="#eeeeee" width="100%" style="margin: 0;">
+  <center style="width: 100%; background: #e4ffe1;">
+
+    <!-- Visually Hidden Preheader Text : BEGIN -->
+    <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
+      Easy, delicious meals are just a few clicks away!
+    </div>
+    <!-- Visually Hidden Preheader Text : END -->
+
+    <!-- Email Body : BEGIN -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
+
+      <!-- Hero Image, Flush : BEGIN -->
+      <tr>
+        <td style="text-align: center; background-color: #ffffff;">
+          <img src="https://getfednyc.com/images/header.png" width="600" height="200" alt="alt_text" border="0" align="center" class="fluid" style="width: 97%; max-width: 590px; height: auto; margin: 5px 5px; background: #dddddd; font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555;">
+        </td>
+      </tr>
+      <!-- Hero Image, Flush : END -->
+
+      <!-- 1 Column Text : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff" style="padding: 40px; text-align: left; font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555;">
+          Hi {{first_name}},
+          <br><br>
+          Thank you for choosing Fed, New York’s best blend of convenience, sustainability, and quality.
+          <br><br>
+          Our mission is to create a sustainable way for you to eat well, serving the health of both your body and our planet. That's why we source the best local food to create nutrient-rich, delicious meals and snacks. And with our new subscription service, getting Fed is even easier and more personalized.
+          <br><br><br>
+          <!-- Button : Begin -->
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto">
+            <tr>
+              <td style="border-radius: 3px; background: #99cc99; text-align: center;" class="button-td">
+                <a href="https://getfednyc.com/Subscribe" style="background: #99cc99; border: 15px solid #99cc99; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ffffff;">Subscribe Today</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+              </td>
+            </tr>
+          </table>
+          <!-- Button : END --> 
+          <br>
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto">
+            <tr>
+              <td>
+              and get 15% off for life!
+              </td>
+            </tr>
+          </table>
+          <br><br>
+          Here's a peek at what's available next week. Create your own custom pack anytime before Wednesday at midnight!
+          <br>
+        </td>
+      </tr>
+      <!-- 1 Column Text: END -->
+      <!-- 4 Even Columns : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 10px; text-align: center;">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <tr>
+              {{#each thisWeeksMenuItems}}
+                <!-- Column : BEGIN -->
+                <td width="25%" class="stack-column-center">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td style="padding: 10px; text-align: center">
+                        <img src="https://getfednyc.com{{photo}}" width="125" height="125" alt="name" border="0" class="fluid" style="height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555;">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555; padding: 0 10px 10px; text-align: left;" class="center-on-narrow">
+                        {{name}} 
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <!-- Column : END -->
+              {{/each}}
+            </tr>
+          </table>
+          <br><br>
+          <!-- Button : Begin -->
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto">
+            <tr>
+              <td style="border-radius: 3px; background: #99cc99; text-align: center;" class="button-td">
+                <a href="https://getfednyc.com/menu" style="background: #99cc99; border: 15px solid #99cc99; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ffffff;">Order Now</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+              </td>
+            </tr>
+          </table>
+          <!-- Button : END -->
+        </td>
+      </tr>
+      <!-- 4 Even Columns : END -->
+      <!-- 1 Column Text : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff" style="padding: 40px; text-align: center; font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555;">
+          Or go with one of our pre-selected packs, available for order before<br>Sunday at 3pm.
+          <br><br>
+          <!-- Button : Begin -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto">
+              <tr>
+                <td style="border-radius: 3px; background: #99cc99; text-align: center;" class="button-td">
+                  <a href="https://getfednyc.com/packs" style="background: #99cc99; border: 15px solid #99cc99; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ffffff;">Get your Pack</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <!-- Button : END -->
+          </td>
+        </tr>
+        <!-- 1 Column Text: END -->
+
+        <!-- 1 Column Text : BEGIN -->
+        <tr>
+          <td bgcolor="#ffffff" style="padding: 40px; text-align: left; font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555;">
+            We look forward to delivering to your door soon!
+            <br><br>
+            Sincerely,
+            <br>
+            The Fed Team
+          </td>
+        </tr>
+        <!-- 1 Column Text: END -->
+      </table>
+      <!-- Email Body : END -->
+
+      <!-- Email Footer : BEGIN -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
+        <tr>
+          <td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: sans-serif; mso-height-rule: exactly; line-height:18px; text-align: center; color: #888888;">
+            <webversion style="color:#888888; text-decoration:underline; font-weight: bold;">View as a Web Page</webversion>
+            <br><br>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 650px; margin:0 auto" width="100%">
+              <tbody>
+                <tr>
+                  <td align="center" style="text-align: center; padding: 0px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 650px; margin:0 auto" width="100%">
+                      <tbody>
+                        <tr>
+                          <td align="center" style="text-align: center; padding-top: 20px; padding-bottom: 10px;"><!--[if gte mso 9]>
+                            <table cellspacing="0" cellpadding="0" align="center">
+                            <tr>
+                            <td>
+                          <![endif]-->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 43px; display: inline-block;" width="100%">
+                              <tbody>
+                                <tr>
+                                  <td align="center" style="text-align: center; padding: 0px; padding-left: 5px; padding-right: 5px; display: inline-block;"><a href="https://twitter.com/getfednyc"><img align="center" alt="Twitter" height="33" src="https://getfednyc.com/icons/social/twitter.png" style="display:block; border:0;" width="33" /> </a></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <!--[if gte mso 9]>
+                            </td>
+                            <td>
+                            <![endif]-->
+
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 43px; display: inline-block;" width="100%">
+                              <tbody>
+                                <tr>
+                                  <td align="center" style="text-align: center; padding: 0px; padding-left: 5px; padding-right: 5px; display: inline-block;"><a href="https://www.facebook.com/getfednyc"><img align="center" alt="Facebook" height="33" src="https://getfednyc.com/icons/social/fb.png" style="display:block; border:0;" width="33" /> </a></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <!--[if gte mso 9]>
+                              </td>
+                              <td>
+                            <![endif]-->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 43px; display: inline-block;" width="100%">
+                              <tbody>
+                                <tr>
+                                  <td align="center" style="text-align: center; padding: 0px; padding-left: 5px; padding-right: 5px; display: inline-block;"><a href="https://www.instagram.com/getfednyc"><img align="center" alt="Instagram" height="33" src="https://getfednyc.com/icons/social/insta.png" style="display:block; border:0;" width="33" /> </a></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <!--[if gte mso 9]>
+                              </td>
+                              <td>
+                            <![endif]-->
+                            <br>
+                            #getfednyc
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <!-- Email Footer : END -->
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html>

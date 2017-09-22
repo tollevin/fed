@@ -1,0 +1,81 @@
+#carousel {
+  width:    90%;
+  margin-right: auto;
+  margin-left: auto;
+
+  .slick-track {
+  	display: flex;
+  	flex-direction: row;
+  	flex-wrap: none;
+  	width: 100%;
+  	min-width: 600% !important;
+
+  	@media screen and (min-width: 600px) {
+      text-align: center;
+      padding-right: 0;
+    }
+  }
+	
+	div {
+		.slick-slide {
+			width: 600px;
+
+			@media screen and (max-width: 1000px) {
+	      min-width: 90vw !important;
+	    }
+
+			@media screen and (min-width: 1000px) {
+	      opacity: 1 !important;
+	      min-width: 30vw !important;
+	    }
+
+			i {
+				color: #f5c832;
+			}
+
+			a {
+				text-decoration: none;
+				
+				p {
+					color: #111;
+					width: 80%;
+					margin-left: auto;
+					margin-right: auto;
+					// font-family: "Josefin Sans";
+					line-height: 36px;
+				}
+
+				.author {
+					text-align: right;
+					padding-right: 7%;
+
+					@media screen and (max-width: 600px) {
+	          text-align: center;
+	          padding-right: 0;
+	        }
+				}
+			}
+		}
+	}
+}
+
+#img-carousel {
+	height: auto;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f1f0dc;
+	
+	img {
+		transition: display 500ms;
+	}
+}
+
+#testimonials {
+	padding-bottom: 25px;
+}
+
+.slick-prev:before, .slick-next:before {
+	color:    silver;
+}

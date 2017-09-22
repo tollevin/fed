@@ -1,0 +1,109 @@
+@import './utils.less';
+
+@column: 3%;
+
+body {
+  //.position(absolute, 0, 0, 0, 0);
+  // background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+}
+
+#container {
+  .position(absolute, 0, 0, 0, 0);
+
+  @media screen and (min-width: 60em) {
+    padding-left: @column;
+    padding-right: @column;
+  }
+
+  @media screen and (min-width: 80em) {
+    padding-left: 2*@column;
+    padding-right: 2*@column;
+  }
+
+  // Hide anything offscreen
+  // overflow-x: hidden;
+
+  #infoBanner {
+    .position(fixed, 100px, 0, auto, 0);
+    width: 100%;
+    background-color: #0b3f2e;
+    text-align: center;
+    padding: 1px 10px;
+    z-index: 1;
+
+    p {
+      color: #FFF;
+      margin: 0;
+      font-weight: 600;
+      font-size: 20px;
+
+      @media screen and (max-width: 700px) {
+        font-size: 17px;
+      }
+      
+      @media screen and (max-width: 460px) {
+        font-size: 15px;
+      }
+    }
+
+    a {
+      color: #FFF;
+      padding: 5px 0;
+      text-decoration: none !important;
+    
+
+      // @media screen and (max-width: 460px) {
+      // }
+    }
+  }
+}
+
+#content-container {
+  .position(absolute, 0, 0, 0, 0);
+  transition: all 200ms ease-out;
+  transform: translate3d(0, 0, 0);
+  background: none;
+  opacity: 1;
+  overflow-y: visible !important;
+
+  .page {
+    .position(absolute, @nav-height, 0, 0, 0);
+
+    @media screen and (max-width: 600px) { 
+      .position(absolute, @nav-height-m, 0, 0, 0);
+    }
+  }
+
+  //  @media screen and (max-width: 40em) {
+  //  }
+
+  .content-scrollable {
+    .position(absolute, 0, 0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+//.cartOpen {
+//  .position(absolute, 0px, @cart-width, 0, 0) !important;
+//
+//  @media screen and (max-width:500px) {
+//    .position(absolute, 0px, 160px, 0, 0) !important;
+//  }
+//}
+
+// Transparent screen to prevent interactions on content when menu is open
+.content-overlay {
+  .position(absolute, 0, 0, 0, 0);
+  cursor: pointer;
+  transition: 0.5s;
+
+  &.sideNavOpen{
+    background-color: rgba(0,0,0,.4);
+    z-index: 2;
+  }
+
+  // Hide overlay on desktop
+  @media screen and (min-width: 40em) { display: none; }
+}

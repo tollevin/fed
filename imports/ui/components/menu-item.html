@@ -1,0 +1,21 @@
+<template name="Menu_item">
+	<article class="menu-item {{attributes}}">
+		<a class="item-details" href="#">
+			<div class="menu-item-img">
+				<img src="{{photo}}" alt="" />
+			</div>
+			<div class="menu-item-name">
+				<h3>{{name}}</h3>
+			</div>
+		</a>
+		<div class="menu-item-desc">
+			<p>{{description}}</p>
+		</div>
+		<div class="menu-item-icons">
+		</div>
+		<div class="add-input">
+			 <button class="add-to-cart">Add to cart</button>
+		</div>
+		<hr class="separator" />
+	</article>
+</template>

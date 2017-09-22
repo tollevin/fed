@@ -1,0 +1,56 @@
+<template name="Subscriber_preview">
+	<tr class="customer-preview  {{processStatus subscriptions.status}}">
+		{{#if Template.subscriptionsReady}}
+			<td class="created-at">
+				{{createdAt}}
+			</td>
+			<td class="subscription-status {{processStatus subscriptions.status}}">
+				{{processStatus subscriptions.status}}
+			</td>
+			<td class="customer-name">
+				{{first_name}} {{last_name}}
+			</td>
+			{{#each email in emailss}}
+				<td class="customer-emails {{verified}}">
+					{{email.address}}
+				</td>
+			{{/each}}
+			<td class="customer-phone">
+				{{phone}}
+			</td>
+			<td class="address">
+				{{address_line_1}}
+				{{address_line_2}}
+				{{address_city}}
+				{{address_zipcode}}
+			</td>
+			<td class="customer-amountSpent">
+				{{preferredDelivDay}}
+			</td>
+			<td class="customer-stripeID">
+				{{diet}}
+				{{#if restrictions}}
+					No 
+					{{#each restriction in restrictions}}
+						{{restriction}}
+					{{/each}}
+				{{/if}}
+			</td>
+			<td class="pack">
+				{{subscriptions.plan.id}}
+			</td>
+			<td class="discount">
+				{{subscriptions.discount.coupon.id}}
+			</td>
+			<td class="subscription">
+				{{delivFee}}
+			</td>
+			<td class="plan-total">
+				{{saleAmount}}
+			</td>
+			<td class="customer-notes">
+				{{notes}}
+			</td>
+		{{/if}}
+	</tr>
+</template>

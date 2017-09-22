@@ -1,0 +1,78 @@
+@import './utils.less';
+
+[class^="btn-"],
+[class*=" btn-"] {
+  // Sizing
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 20px !important; //override line-height always so we can use em's to size
+  padding: .75em 1em; // 48px tall
+
+  // Style
+  .title-caps;
+  transition: all 200ms ease-in;
+  color: @color-empty;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  text-decoration: none !important; //prevents global <a> styles from applying
+  vertical-align: middle;
+  white-space: nowrap;
+
+  &[class*="primary"] {
+    background-color: @fgreene;
+    
+    border: 1px solid @fgreene;
+    color: @color-empty;
+
+    &:hover { 
+      background-color: #FFF;
+      color: @fgreene;
+    }
+
+    &:active { box-shadow: rgba(0,0,0,.3) 0 1px 3px 0 inset; }
+  }
+
+  &[class*="secondary"] {
+    transition: all 300ms ease-in;
+    // box-shadow: #FFF 0 0 0 1px inset;
+    background-color: rgba(245,199,51,.8);
+      border: 2px solid rgba(245,199,51,.8);
+
+    &:hover { 
+      color: rgba(245,199,51,1);
+      background: none;
+    }
+
+    &:active,
+    &.active {
+      box-shadow: lighten(#517096, 25%) 0 0 0 1px inset;
+    }
+  }
+
+  &[disabled] { opacity: .5; }
+}
+
+.btns-group-vertical {
+  float: right;
+  max-width: 180px;
+
+  a {
+    float: right;
+    height: 50px;
+    min-width: 100%;
+  }
+}
+
+.btns-group {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  [class*="btn-"] {
+    // .ellipsized;
+    flex: 1;
+
+    & + [class*="btn-"] { margin-left: -1px; }
+  }
+}

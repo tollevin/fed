@@ -1,0 +1,115 @@
+<head><meta name="fragment" content="!"></head>
+<template name="Landing_page">
+	<div class="landing page">
+		<section id="landing">
+      <div id="lander">
+        {{> Lander_carousel}}
+      </div>
+
+
+      <!-- <div class="contact">
+        <p>Questions? Call us at <a href="tel:347-699-6193" itemprop="telephone">(347) 699-6193</a></p>
+      </div> -->
+    </section>
+    
+    <div id="banner">
+      <p>Now taking orders for Sunday & Monday, Sept. 24-25!</p>
+    </div>
+    
+    <section id="menu_about">
+      <div class="menu-about-desc">
+        <p><span class="fed">Fed</span> delivers chef-prepared meal packs for New Yorkers who want to eat well.
+        <br/>Our menu is designed to stock your fridge each week with a variety of delicious & nutritious meals & snacks made from the best locally produced ingredients.</p>
+        <p style="color: #366833">Farm to fridge is finally here!</p>
+        <div class="CTA-button">
+          <a href="/packs" class="btn-primary">
+            <span class="CTA-text">Get Started</span>
+          </a>
+        </div>
+      </div>
+      <!-- <div class="menu-about-img">
+        {{> Menu_carousel}}
+      </div> -->
+    </section>
+
+    <section id="testimonials">
+      {{> Testimonials}}
+    </section> 
+
+    <section id="Info">
+      <div class="img-holder">
+        <img src="/images/Fed2.jpg" alt="Fed Pack">
+      </div>
+      <p class="msg">Customize Your Pack Between Sunday 12pm and Wednesday 11:59pm</p>
+      <p class="aside">Miss The Deadline? Click <a href="packs">HERE</a> To View Our Ready Made Packs!</p>
+    </section>
+    
+    <section id="how_to_fed">
+      <h2>How to get fed</h2>
+      <hr class="how-to-hr"/>
+      <div class="how-to-infographic">
+        <div class="how2">
+          <h3>Choose a pack</h3>
+          <img src="images/choose.png">
+          <p>Choose one of our pre-selected 6-packs based on your dietary preference, or customize your pack before Wednesday at Midnight.</p>
+          <a href="/packs">Go to Packs</a>
+        </div>
+        <div class="or">or</div>
+        <div class="how2">
+          <h3>Choose a plan</h3>
+          <img src="images/deliver.png">
+          <p>Subscribe to get a supplementary or complimentary meal plan delivered to you weekly. Skip or cancel easily anytime.<!-- <br>We offer <span class="aubergine">free delivery within Brooklyn & Queens</span> and <span class="aubergine">$13 delivery to Manhattan</span> --></p>
+          <a href="/subscribe">Subscribe</a>
+        </div>
+        <!-- <div class="how2">
+          <h3>And stock your fridge</h3>
+          <img src="images/pack.png">
+          <p>Our fresh, delicious, nutritious meals come premade and chilled, and reheat in minutes. Enjoy high quality nutrition without worrying about prep or cleanup.</p>
+          <a href="/menu">Check out the menu</a>
+        </div> -->
+      </div>
+    </section>
+
+    <section id="menu-more">
+      <div class="philosophy">
+        <p>At Fed, we focus on using nutrients for health, balancing all of the characteristics that we can find in our local agriculture to create a whole-food, plant-based nutrition.</p>
+        <p>That’s why we use only the best seasonal ingredients, sourced primarily from organic local farms. It’s also why we’re committed to creating dishes with a proper balance of protein and carbohydrates that are rich in nutrients and antioxidants.</p>
+      </div>
+      <div class="slogan2">
+        <p>No GMOs</p>
+        <p>No Processed Foods</p>
+        <p>No Additives</p>
+        <p>No Hydrogenated Oils</p>
+        <p>No Trans Fats</p>
+      </div>
+    </section>
+
+    <section id="delivery_zones">
+<!--       <div class="delivery-map-holder">
+        <div class="delivery-map">
+          <img id="maplink" src="images/fed-delivery-area.png" />
+        </div>
+      </div> -->
+      <div class="delivery-desc">
+        <p>Fed is currently serving select zip codes in Brooklyn, Manhattan & Queens.<br/>Enter yours here to see if you can get Fed!</p>
+        <input type="text" id="zip" name="zipCode" placeholder="Enter your zip code" required>
+        <input type="submit" id="zipSubmit" value="Submit">
+        {{#if zipOk }}
+          <div class="alert">
+            <p>Congrats! We're ready to serve you. Click below to sign up.</p>
+            <a href="/join" class="btn-primary">Sign Up</a>
+          </div>
+        {{/if}}
+        {{#if zipNotYet }}
+            <div class="alert">
+              <p>Sorry, you're not in our current delivery range. But you might be soon!</p>
+            </div>
+        {{/if}}
+      </div>
+      <!-- <div class="CTA-button">
+        <a href="{{ JoinMenu }}" class="btn-primary"><span class="CTA-text">Get Started</span></a>
+      </div> -->
+    </section>
+    {{> Footer}}
+  </div>
+</template>

@@ -1,0 +1,33 @@
+<template name="Cart">
+	<div id="cart" class="{{packEditorOpen}}">
+		<div class="cart-holder">
+		{{#unless processing}}
+			<div class="pack-select">
+				<form>
+					<label>Change your pack</label>
+					<select id="changePack">
+					  <option name="StarterPack" value="6-Pack" selected="{{selected}}">6 Pack</option>
+					  <option name="FedPack" value="8-Pack" selected="{{selected}}">8 Pack</option>
+					  <option name="FedPack" value="10-Pack" selected="{{selected}}">10 Pack</option>
+					  <option name="WellFedPack" value="12-Pack" selected="{{selected}}">12 Pack</option>
+					</select>
+				</form>
+			</div>
+			<!-- <input id="deliveryDays" /> -->
+			<div class="cart-form">
+				<h3>Dishes</h3>
+				{{#each dish in dishes}}
+						<input class="dish-input" name={{@index}} value={{dish}}>
+						<input class="reset-dish" name={{@index}} type="reset" value="X">
+				{{/each}}
+				<h3>Snacks</h3>
+				{{#each snack in snacks}}
+					<input class="snack-input" name="{{@index}}" value={{snack}}>
+					<input class="reset-snack" type="reset" name={{@index}} value="X">
+				{{/each}}
+			</div>
+			<a id="checkout" href="#" data-service="checkout" class="btn btn-success">Checkout</a>
+		{{/unless}}
+		</div>
+	</div>
+</template>

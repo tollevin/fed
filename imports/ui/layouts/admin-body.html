@@ -1,0 +1,48 @@
+<template name="Admin_body">
+  <!-- {{#HammerTouchArea gestureMap=templateGesturesAdmin}} -->
+    <div id="container" class="{{menuOpen}}">
+      {{#if isAdmin}}
+        <div id="admin-menu">
+          <a class="orders tab" href="{{pathFor 'Orders.admin'}}">
+            <span>Orders</span>
+          </a>
+          <a class="customers tab" href="{{pathFor 'Customers.admin'}}">
+            <span>Customers</span>
+          </a>
+          <a class="menu tab" href="{{pathFor 'Menu.admin'}}">
+            <span>Menu</span>
+          </a>
+          <a class="promos tab" href="{{pathFor 'Promos.admin'}}">
+            <span>Promos</span>
+          </a>
+        </div>
+
+        {{#unless connected}}
+          <div class="notifications">
+            <div class="notification">
+              <span class="icon-sync"></span>
+              <div class="meta">
+                <div class="title-notification">Trying to connect</div>
+                <div class="description">There seems to be a connection issue</div>
+              </div>
+            </div>
+          </div>
+        {{/unless}}
+
+        <div class="content-overlay"></div>
+
+        <div id="admin-content-container">
+          {{#momentum plugin="fade"}}
+            {{#if Template.subscriptionsReady}}
+              {{> Template.dynamic template=main}}
+            {{else}}
+              {{> App_loading}}
+            {{/if}}
+          {{/momentum}}
+        </div>
+      {{else}}
+        <p>Page Not Found</p>
+      {{/if}}
+    </div>
+  <!-- {{/HammerTouchArea}} -->
+</template>

@@ -1,0 +1,115 @@
+@import './utils.less';
+
+.page .auth {
+  text-align: center;
+
+  .content-scrollable { 
+    background: @color-tertiary; 
+    top: 0
+  }
+}
+
+.wrapper-auth {
+}
+
+.at-form {
+  text-align: center;
+  background-color: #fff;
+
+  @media screen and (min-width: 40em) {
+    margin: 0 auto;
+    max-width: 480px;
+    width: 80%;
+    padding-top: 4em;
+  }
+
+  .title-auth {
+    .font-l1;
+    .type-light;
+    color: @color-ancillary;
+    margin-bottom: .75rem;
+  }
+
+  .subtitle-auth {
+    color: @color-medium-well;
+    margin: 0 15% 2rem;
+  }
+
+  form {
+    .input {
+      margin-bottom: 1px;
+      width: 100%;
+      display: block;
+
+      input {
+        width: 100%;
+        padding: .5rem;
+      }
+    }
+
+    label {
+    }
+
+    .at-input {
+      padding-top: 7px;
+    }
+    
+    .btn-primary {
+      margin: 1em 5% 0;
+      width: 90%;
+
+      @media screen and (min-width: 40em) {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+    }
+
+    .at-pwd-link {
+      margin-top: 1em;
+    }
+  }
+
+  .list-errors {
+    margin-top: -2rem;
+    .list-item {
+      .title-caps;
+      background: @color-note;
+      color: @color-negative;
+      font-size: .625em; // 10px
+      margin-bottom: 1px;
+      padding: .7rem 0;
+    }
+  }
+
+  .at-message, .at-result {
+    margin-top: -2rem;
+    .title-caps;
+    background: @color-note;
+    color: @color-ancillary;
+    font-size: .625em; // 10px
+    margin-bottom: 1px;
+    padding: .7rem 0;
+  }
+
+  .agreeToTerms {
+    margin: 20px 10px 0px 10px;
+    font-size: 18px;
+    font-weight: 200px;
+  }
+}
+
+.at-signup-link, .at-signin-link {
+  .position(fixed, auto, 0, .5em, 0);
+  color: @color-medium;
+  display: inline-block;
+
+  p {
+    .font-m1;
+  }
+
+  @media screen and (min-width: 40em) {
+    margin-top: 1rem;
+    position: relative;
+  }
+}

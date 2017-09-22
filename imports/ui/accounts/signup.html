@@ -1,0 +1,26 @@
+<template name="SignUp">
+  <div id="signUpPage" class="page auth">
+    <div class="content-scrollable">
+      <div class="wrapper-auth">
+        <div class="at-form">
+          <h1 class="title-auth">Sign Up</h1>
+          <p class="subtitle-auth">Create an account to get started</p>
+          <div class="at-pwd-form">
+            <form id="signup">
+              <div class="input">
+                <input type="email" name="emailAddress" class="form-control" placeholder="Email Address" required>
+              </div>
+              <div class="input">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+              </div>
+              <div class="input">
+                <input type="tel" name="zipCode" class="form-control" placeholder="Zip Code" required>
+              </div>
+              <button form="signup" type="submit" value="submit" class="btn-primary">Next</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
