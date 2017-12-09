@@ -8,7 +8,6 @@
     "babel-runtime": "^6.23.0",
     "bcrypt": "^0.8.7",
     "body-parser": "^1.17.0",
-    "d3": "^4.12.0",
     "faker": "^4.1.0",
     "isotope-layout": "^3.0.4",
     "meteor-node-stubs": "^0.2.3",
