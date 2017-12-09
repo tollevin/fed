@@ -3,14 +3,26 @@
     <span><img class="close-sideNav" src="/icons/x.png"/></span>
     <ul>
       <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-      <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
+      <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
       {{#if notSubscribed}}
         <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
       {{/if}}
-      <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+      <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
+      <li><a href="/gifts" class="{{currentPage 'Gifts'}} new" alt="Gifts">Gifts</a></li>
      <!--  <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li> -->
       <li><a href="/about-us" class="{{currentPage 'About.us'}}" alt="About">About Us</a></li>
       <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+    </ul>
+    <hr>
+    <ul>
+      {{#if currentUser}}
+        {{#if subscribed}}
+          <li><a href="/my-account" class="{{currentPage 'My.account'}}" alt="Account Settings">My Account</a></li>
+        {{/if}}
+        <li><a class="js-logout" alt="Log out">Log Out</a></li>
+      {{else}}
+        <li><a href="/signin" class="{{currentPage 'signin'}}" alt="Sign In">Sign In</a></li>
+      {{/if}}
     </ul>
   </div>
 </template>

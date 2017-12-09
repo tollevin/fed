@@ -10,6 +10,9 @@ import './security.js';
 // as an API to the client.
 import './register-api.js';
 
+// Sitemap
+import './sitemaps.js';
+
 // Prerender.io Settings
 import './prerenderio.js';
 
@@ -17,8 +20,8 @@ import './prerenderio.js';
 import './stripe.js';
 // import './stripe-dev.js';
 
-import './deliv.js';
-// import './deliv-dev.js';
+// import './deliv.js';
+import './deliv-dev.js';
 
 import './accounts.js';
 

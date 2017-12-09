@@ -1,8 +1,592 @@
 @import './utils.less';
 
+#account-page,
+#subscribe {
+
+	h1,
+	h2,
+	h3 {
+		font-weight: 400;
+		color: @fgreene;
+    margin-left: 15px;
+    margin-right: 15px;
+	}
+
+	ul {
+		padding-left: 0;
+		text-align: center;
+		display: inline-block;
+		width: 90%;
+
+		li {
+			list-style-type: none;
+		}
+
+		input[type=radio] {
+			position: absolute;
+			visibility: hidden;
+		}
+	}
+
+	#Diets {
+		display: flex;
+		flex-direction: column;
+
+		ul {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 875px;
+			margin-top: 50px;
+		}
+
+		.diet {
+			width: 30%;
+			max-width: 400px;
+			min-width: 135px;
+			margin-left: auto;
+			margin-right: auto;
+
+			@media screen and (max-width: 450px) {
+				width: 48%;
+			}
+
+			label {
+				display: inline-block;
+		    position: relative;
+				width: 100%;
+				height: auto;
+				padding: 20px 0px;
+				margin-bottom: 10px;
+				text-align: center;
+				line-height: 30px;
+				cursor: pointer;
+				background-color: #50b74a;
+				color: #FFF;
+				border-radius: 10px;
+				font-weight: 400;
+				font-size: 1.2em;
+
+				&:hover {
+					background-color: #FFF;
+					color: #366833;
+					border-color: #FFF;
+					transition: background-color 300ms;
+				}
+			}
+
+			.clicked {
+				background-color: #FFF;
+				color: #366833;
+				border-color: #FFF;
+			}
+		}
+	}
+
+	#Restrictions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		margin-top: 50px;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 1000px;
+
+		.restriction {
+
+			.restriction-img {
+				position: relative;
+				height: 30vw;
+				max-height: 175px;
+				width: 30vw;
+				max-width: 175px;
+				cursor: pointer;
+
+				img{
+					position: absolute;
+					left: 0;
+					height: 100%;
+					width: 100%;
+				}
+
+				.no-line,
+				.no-circle {
+					opacity: 0;
+				}
+
+				.fadeOut {
+				  visibility: hidden;
+				  opacity: 0;
+				  transition: visibility 0s linear 300ms, opacity 600ms;
+				}
+
+				.fadeIn {
+				  visibility: visible;
+				  opacity: 1;
+				  transition: visibility 0s linear 0s, opacity 600ms;
+				}
+			}
+		}
+	}
+
+	#wdye {				
+		h1 {
+			font-weight: 400;
+		}
+
+		h2 {
+
+			@media screen and (min-width: 600px) {
+				margin-top: 50px;
+			}
+		}
+
+		div {
+		}
+	}
+
+	#Plan {
+
+		ul {
+			display: flex;
+			justify-content: space-between;
+			margin-left: auto;
+			margin-right: auto;
+			height: auto;
+			flex-wrap: wrap;
+
+			@media screen and (max-width: 450px) {
+				justify-content: space-around;
+			}
+
+			li {
+				width: 90%;
+				min-width: 0px;
+				padding: 10px;
+				border: 1px solid @fgreene;
+				border-radius: 10px;
+				cursor: pointer;
+				margin-bottom: 20px;
+				margin-left: auto;
+				margin-right: auto;
+
+				@media screen and (min-width: 750px) {
+					width: 48%;
+					margin-left: 0;
+					margin-right: 0;
+				}
+
+				@media screen and (min-width: 875px) {
+					width: 24%;
+					max-width: 300px;
+				}
+
+				label {
+					display: flex;
+			    flex-direction: row;
+			    justify-content: space-between;
+			    margin: 0;
+
+			    @media screen and (min-width: 875px) {
+						flex-direction: column;
+				    min-height: 65px;
+					}
+
+			    p {
+			    	font-weight: 300;
+			    	margin: 0;
+			    	color: @fgreene;
+			    }
+			    
+			    span {
+			    	font-weight: 200;
+			    }
+				}
+			}
+
+			.chosen {
+				background-color: #fff;
+				color: #366833;
+				border: 1px solid #FFF;
+			}
+		}
+	}
+
+	#DeliveryDay {
+		ul {
+			display: flex;
+			justify-content: center;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 50px;
+
+			li {
+				width: 30%;
+				min-width: 100px;
+				max-width: 200px;
+				border: 1px solid #366833;
+				border-radius: 10px;
+				cursor: pointer;
+				margin-left: 10px;
+				margin-right: 10px;
+
+				&:hover {
+					background-color: #fff;
+					color: #366833;
+					border: 1px solid #fff;
+				}
+
+				@media screen and (max-width: 375px) {
+					padding: 20px 10px;
+				}
+
+				label {
+					display: flex;
+					flex-direction: column;
+					flex-wrap: nowrap;
+			    align-items: center;
+			    margin: 20px;
+				}
+			}
+
+			.best {
+				background-color: #fff;
+				color: #366833;
+				border: none;
+			}
+		}
+	}
+
+	#DeliveryForm {
+		width: 90%;
+		max-width: 500px;
+		margin: auto;
+
+		div {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: nowrap;
+			justify-content: flex-end;
+			margin-top: 10px;
+
+			label {
+				display: inline-table;
+			}
+
+			input,
+			select,
+			textarea {
+				width: 100%;
+				padding: 7px 11px;
+				border: none;
+				font-size: 15px
+			}
+
+			select {
+				padding: 0 0 0 11px;
+		    height: 32px;
+		    background: #FFF;
+		    border-radius: 0;
+			}
+		}
+
+		.firstName,
+		.lastName,
+		.city {
+			width: 48%;
+			float: left;
+		}
+
+		.firstName,
+		.city,
+		.state {
+			margin-right: 4%;
+		}
+
+		.state {
+			width: 16%;
+			float: left;
+		}
+
+		.zip {
+			width: 28%;
+			float: left;
+		}
+
+		.comments {
+			display: inline-flex;
+		}
+
+		#sbmtOrder {
+			width: 80%;
+			max-width: 350px;
+			margin: auto;
+		}
+	}
+
+	#payment {
+		position: absolute;
+		left: 10%;
+	}
+
+	#createNewUser {
+    border: 1px solid #999;
+    border-radius: 11px;
+    padding: 0px 30px 20px;
+    width: 100%;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: flex-end;
+		margin-top: 10px;
+
+		label {
+			display: inline-table;
+			float: left;
+		}
+
+		input,
+		{
+			width: 100%;
+			padding: 7px 11px;
+			border: none;
+			font-size: 15px
+		}
+	}
+
+	#cc-form {
+		display: inline-block;
+		margin-top: 30px;
+		width: 90%;
+		max-width: 500px;
+    padding: 2px 12px;
+
+    div {
+	    margin-bottom: 15px;
+
+	    
+
+    	input {
+	    	height: 33px;
+    		padding: 5px;
+    		width: 100%;
+    		font-size: 15px;
+    	}
+
+    	input[type=text]:focus, 
+			input[type=date]:focus,
+			input[type=datetime]:focus,
+			input[type=number]:focus,
+			input[type=search]:focus,
+			input[type=time]:focus,
+			input[type=url]:focus,
+			input[type=email]:focus,
+			textarea:focus, 
+			select:focus{
+			    -moz-box-shadow: 0 0 8px #88D5E9;
+			    -webkit-box-shadow: 0 0 8px #88D5E9;
+			    box-shadow: 0 0 8px #88D5E9;
+			    border: 1px solid #88D5E9;
+			}
+
+    	select {
+	    	height: 33px;
+		    border: 1px solid #999;
+		    border-radius: 0;
+		    padding: 3px;
+    		font-size: 15px;
+    	}
+	  }
+
+	  #cc-number {
+	  	input {
+		  	letter-spacing: 2px;
+		  	text-align: center;
+		  	max-width: 400px;
+		  }
+	  }
+
+		#EXPm {
+			//float: left;
+	    display: inline-block;
+
+			span {
+				margin-right: 10px;
+			}
+		}
+
+		#EXPy {
+			//float: left;
+	    display: inline-block;
+	    //margin-left: 30px;
+
+			span {
+			}
+		}
+
+		#cvc {
+			//float: left;
+	    //margin-left: 30px;
+	    max-width: 100px;
+	    display: inline-block;
+		}
+
+		#userZip {
+			max-width: 100px;
+	    display: inline-block;
+		}
+
+		#zC {
+			margin-left: 30px;
+			display: inline-block;
+		}
+	}
+
+	.promo {
+		margin-bottom: 30px;
+
+		@media screen and (max-width: 600px) {
+			padding-left: 0;
+		}
+
+		.enterPromo {
+			border: 1px solid @forange;
+			color: @forange;
+			font-size: 18px;
+			background-color: transparent;
+			cursor: pointer;
+	    font-weight: 600;
+	    padding: 5px 10px;
+	    height: 39px;
+	    border-radius: 5px;
+		}
+	}
+
+	.submitPromo {
+		display: flex;
+		flex-direction: row;
+
+		@media screen and (max-width: 600px) {
+			padding-left: 0;
+			text-align: center;
+		}
+
+		#promo {
+			padding: 10px;
+			height: 40px;
+			font-size: 16px;
+			border: 2px solid #f5c832;
+			border-radius: 5px;
+			color: #666;
+		}
+
+		#promoSub {
+			border: 4px solid #f5c832;
+			background-color: #f5c832;
+			color: #FFF;
+			font-size: 16px;
+			font-weight: 600;
+			margin-left: 10px;
+			border-radius: 5px;
+		}
+	}
+
+	.info-errors {
+		margin-top: 100px;
+	}
+
+	.account-form {
+		.position(absolute,0,0,0,0);
+		min-height: 90%;
+
+		.input {
+	    margin-bottom: 1px;
+	    width: 100%;
+	    display: block;
+
+	    input {
+	      width: 90%;
+	      max-width: 400px;
+	      margin-bottom: 5px;
+	      padding: .5rem;
+	    }
+	  }
+
+	  label {
+	  }
+
+	  .at-input {
+	    padding-top: 7px;
+	  }
+
+	  .at-pwd-link {
+	    margin-top: 1em;
+	  }
+  }
+
+  .list-errors {
+    margin-top: -2rem;
+    .list-item {
+      .title-caps;
+      background: @color-note;
+      color: @color-negative;
+      font-size: .625em; // 10px
+      margin-bottom: 1px;
+      padding: .7rem 0;
+    }
+  }
+
+  .at-message, .at-result {
+    margin-top: -2rem;
+    .title-caps;
+    background: @color-note;
+    color: @color-ancillary;
+    font-size: .625em; // 10px
+    margin-bottom: 1px;
+    padding: .7rem 0;
+  }
+
+  .agreeToTerms {
+    margin: 40px auto;
+    width: 80%;
+	}
+
+	.skip-title {
+		margin-top: 50px;
+	}
+
+	.nextDelivery {
+		color: @fgreene;
+		margin-bottom: 60px;
+	}
+
+	.unsub {
+    text-align: center;
+    bottom: 20px;
+    position: absolute;
+    width: 100%;
+    right: 0;
+    left: 0;
+
+    @media screen and (max-width: 400px) {
+			position: relative;
+			margin-top: 70px;	
+		}
+
+		#Unsub {
+			color: #ccb53d;
+		}
+	}
+}
+
+
 #account-page {
   text-align: center;
-  background: #d9ffe6;  /* fallback for old browsers */
+  background: #fafffa;  /* fallback for old browsers */
 
   @media screen and (min-width: 40em) {
     margin: 0 auto;
@@ -21,6 +605,10 @@
     .type-light;
     color: @fgreene;
     margin-bottom: .75rem;
+
+    @media screen and (max-width: 600px) {
+    	.font-m2;
+    }
   }
 
   .subtitle-auth {
@@ -70,6 +658,7 @@
 		position: absolute;
 		top: 50px;
 		left: 63px;
+		z-index: 3;
 
 
 		@media screen and (max-width: 475px) {
@@ -177,39 +766,17 @@
 			-webkit-padding-start: 0px;
 			-webkit-margin-before: 0;
 	    -webkit-margin-after: 0;
-	    // height: 100px;
 
 			li {
 				list-style: none;
 			  display: block;
 			  position: relative;
-			  // width: 44%;
-			  // max-width: 395px;
 			  height: auto;
 			  float: left;
-				// border: 3px solid #eeeeee;
-			  // border-radius: 22px;
 			
 				input[type=radio] {
 					position: absolute;
 					visibility: hidden;
-				}
-
-				label {
-					display: block;
-			    position: relative;
-					width: 100%;
-					height: auto;
-					padding: 20px 0px;
-					text-align: center;
-					line-height: 30px;
-					cursor: pointer;
-
-					.value {
-						font-weight: 300;
-						// font-family: 'Avenir', sans-serif;
-						font-size: 18px;
-					}
 				}
 
 				&:hover {
@@ -230,7 +797,10 @@
 	#DeliveryForm {
 		div {
 			label {
-				color: #FFF;
+				@media screen and (min-width: 700px) {
+					flex-direction: row;
+					justify-content: space-between;
+				}
 			}
 		}
 	}
@@ -244,20 +814,15 @@
 		.sbmtOrder {
 			display: inline-block;
 			width: 85%;
-
 		}
 	}
 }
-
-
 
 #subscribe {
 	text-align: center;
   background: #A1FFCE;  /* fallback for old browsers */
 	background: -webkit-linear-gradient(to right, #FAFFD1, #A1FFCE);  /* Chrome 10-25, Safari 5.1-6 */
 	background: linear-gradient(to right, #FAFFD1, #A1FFCE); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-
 
   @media screen and (min-width: 40em) {
     margin: 0 auto;
@@ -276,7 +841,6 @@
 			}
 
 			.subtitle-auth {
-
 			}
 
 			#subscribeStatusBar {
@@ -310,6 +874,35 @@
 				color: #366833;
 			}
 		}
+
+		#Plan {
+			label {
+				@media screen and (max-width: 500px) {
+					flex-direction: column;
+				}
+
+				.number {
+					font-size: 2em;
+					font-weight: 500;
+					color: @fgreene;
+				}
+
+				.mpw {
+					font-weight: 400;
+					font-size: 27px;
+					display: block;
+					margin: 15px 2px;
+
+					@media screen and (max-width: 500px) {
+						margin-top: 0;
+					}
+				}
+
+				.value {
+					font-size: 18px;
+				}
+			}
+		}
 	}
 
 	.sbmt-button {
@@ -322,544 +915,6 @@
 			&:hover {
 				background-color: #FFF;
 			}
-		}
-	}
-}
-
-
-#account-page,
-#subscribe {
-
-	h1,
-	h2,
-	h3 {
-		font-weight: 400;
-		color: @fgreene;
-	}
-
-	ul {
-		padding-left: 0;
-		text-align: center;
-		display: inline-block;
-		width: 90%;
-
-		li {
-			list-style-type: none;
-		}
-
-		input[type=radio] {
-			position: absolute;
-			visibility: hidden;
-		}
-	}
-
-	#Diets {
-		display: flex;
-		flex-direction: column;
-
-		ul {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			align-content: center;
-			margin-left: auto;
-			margin-right: auto;
-			max-width: 875px;
-			margin-top: 50px;
-		}
-
-		.diet {
-			width: 30%;
-			max-width: 400px;
-			min-width: 135px;
-			margin-left: auto;
-			margin-right: auto;
-
-			label {
-				display: inline-block;
-		    position: relative;
-				width: 100%;
-				height: auto;
-				padding: 20px 0px;
-				margin-bottom: 10px;
-				text-align: center;
-				line-height: 30px;
-				cursor: pointer;
-				background-color: #50b74a;
-				color: #FFF;
-				border-radius: 5px;
-				font-weight: 600;
-				font-size: 1.2em;
-
-				&:hover {
-					background-color: #FFF;
-					color: #366833;
-					border-color: #FFF;
-					transition: background-color 300ms;
-				}
-			}
-
-			.clicked {
-				background-color: #FFF;
-				color: #366833;
-				border-color: #FFF;
-			}
-		}
-	}
-
-	#Restrictions {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-around;
-		margin-top: 50px;
-		margin-left: auto;
-		margin-right: auto;
-		max-width: 1000px;
-
-		.restriction {
-
-			.restriction-img {
-				position: relative;
-				height: 30vw;
-				max-height: 175px;
-				width: 30vw;
-				max-width: 175px;
-				cursor: pointer;
-
-				img{
-					position: absolute;
-					left: 0;
-					height: 100%;
-					width: 100%;
-				}
-
-				.no-line,
-				.no-circle {
-					opacity: 0;
-				}
-
-				.fadeOut {
-				  visibility: hidden;
-				  opacity: 0;
-				  transition: visibility 0s linear 300ms, opacity 600ms;
-				}
-
-				.fadeIn {
-				  visibility: visible;
-				  opacity: 1;
-				  transition: visibility 0s linear 0s, opacity 600ms;
-				}
-			}
-		}
-	}
-
-	#wdye {				
-		h1 {
-			font-weight: 600;
-		}
-
-		h2 {
-
-			@media screen and (min-width: 600px) {
-				margin-top: 50px;
-			}
-		}
-
-		div {
-		}
-	}
-
-	#Plan {
-		font-weight: 600;
-
-		ul {
-			display: flex;
-			justify-content: space-between;
-			margin-left: auto;
-			margin-right: auto;
-			height: auto;
-			flex-wrap: wrap;
-
-			@media screen and (max-width: 480px) {
-				justify-content: space-around;
-			}
-
-			li {
-				width: 22%;
-				min-width: 200px;
-				box-sizing: content-box;
-				padding: 10px 0 20px;
-				margin-bottom: 30px;
-				border: 3px solid @fgreene;
-				border-radius: 10px;
-				cursor: pointer;
-
-				&:hover {
-					background-color: #fff;
-					color: #366833;
-					border: 3px solid #fff;
-				}
-
-				@media screen and (max-width: 905px) {
-					width: 48%;
-			    margin-bottom: 20px;
-			    box-sizing: border-box;
-				}
-
-				@media screen and (max-width: 480px) {
-					width: 45%;
-					min-width: 0px;
-				}
-
-				.number {
-					font-size: 2em;
-					font-weight: 500;
-				}
-
-				.mpw {
-					font-weight: 400;
-					font-size: 27px;
-					display: block;
-					margin: 15px 2px;
-				}
-
-				.valid
-
-				.invalid {
-					font-weight: 400;
-					color: #999;
-					display: block;
-				}
-
-				.pw {
-					margin-left: 10px;
-				}
-			}
-
-			.chosen {
-				background-color: #fff;
-				color: #366833;
-				border: none;
-			}
-		}
-	}
-
-	#DeliveryDay {
-		ul {
-			display: flex;
-			justify-content: space-around;
-			margin-left: auto;
-			margin-right: auto;
-
-			li {
-				width: 30%;
-				border: 1px solid #366833;
-				border-radius: 10px;
-				padding: 20px 20px;
-				cursor: pointer;
-
-				&:hover {
-					background-color: #fff;
-					color: #366833;
-					border: none;
-				}
-
-				@media screen and (max-width: 375px) {
-					padding: 20px 10px;
-				}
-
-				label {
-				}
-			}
-
-			.best {
-				background-color: #fff;
-				color: #366833;
-				border: none;
-			}
-		}
-	}
-
-	#DeliveryForm {
-		width: 90%;
-		max-width: 500px;
-		margin: auto;
-
-		div {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			flex-wrap: nowrap;
-			justify-content: flex-end;
-			margin-top: 10px;
-
-			label {
-				display: inline-table;
-			}
-
-			input,
-			select,
-			textarea {
-				width: 100%;
-				padding: 7px 11px;
-				border: none;
-				font-size: 15px
-			}
-
-			select {
-				padding: 0 0 0 11px;
-		    height: 32px;
-		    background: #FFF;
-		    border-radius: 0;
-			}
-		}
-
-		.firstName,
-		.lastName,
-		.city {
-			width: 48%;
-			float: left;
-		}
-
-		.firstName,
-		.city,
-		.state {
-			margin-right: 4%;
-		}
-
-		.state {
-			width: 16%;
-			float: left;
-		}
-
-		.zip {
-			width: 28%;
-			float: left;
-		}
-
-		.comments {
-			display: inline-flex;
-		}
-
-		#sbmtOrder {
-			width: 80%;
-			max-width: 350px;
-			margin: auto;
-		}
-	}
-
-	#payment {
-		position: absolute;
-		left: 10%;
-	}
-
-	#cc-form {
-		display: inline-block;
-		margin-top: 30px;
-		width: 90%;
-		max-width: 500px;
-    padding: 2px 12px;
-
-    div {
-	    margin-bottom: 15px;
-
-	    
-
-    	input {
-	    	height: 33px;
-    		padding: 5px;
-    		width: 100%;
-    		font-size: 15px;
-    	}
-
-    	input[type=text]:focus, 
-			input[type=date]:focus,
-			input[type=datetime]:focus,
-			input[type=number]:focus,
-			input[type=search]:focus,
-			input[type=time]:focus,
-			input[type=url]:focus,
-			input[type=email]:focus,
-			textarea:focus, 
-			select:focus{
-			    -moz-box-shadow: 0 0 8px #88D5E9;
-			    -webkit-box-shadow: 0 0 8px #88D5E9;
-			    box-shadow: 0 0 8px #88D5E9;
-			    border: 1px solid #88D5E9;
-			}
-
-    	select {
-	    	height: 33px;
-		    border: 1px solid #999;
-		    border-radius: 0;
-		    padding: 3px;
-    		font-size: 15px;
-    	}
-	  }
-
-	  #cc-number {
-	  	input {
-		  	letter-spacing: 2px;
-		  	text-align: center;
-		  	max-width: 400px;
-		  }
-	  }
-
-		#EXPm {
-			//float: left;
-	    display: inline-block;
-
-			span {
-				margin-right: 10px;
-			}
-		}
-
-		#EXPy {
-			//float: left;
-	    display: inline-block;
-	    //margin-left: 30px;
-
-			span {
-			}
-		}
-
-		#cvc {
-			//float: left;
-	    //margin-left: 30px;
-	    max-width: 100px;
-	    display: inline-block;
-		}
-
-		#zC {
-			margin-left: 30px;
-			display: inline-block;
-		}
-	}
-
-	.promo {
-		margin-bottom: 30px;
-
-		@media screen and (max-width: 600px) {
-			padding-left: 0;
-		}
-
-		.enterPromo {
-			border: 1px solid @forange;
-			color: @forange;
-			font-size: 18px;
-			background-color: transparent;
-			cursor: pointer;
-	    font-weight: 600;
-	    padding: 5px 10px;
-		}
-	}
-
-	.submitPromo {
-
-		@media screen and (max-width: 600px) {
-			padding-left: 0;
-			text-align: center;
-		}
-
-		input {
-			padding: 5px 10px;
-			font-size: 17px;
-			border: 2px solid #f5c832;
-			color: #666;
-		}
-
-		#promoSub {
-			border: 4px solid #f5c832;
-			background-color: #f5c832;
-			color: #FFF;
-			font-size: 17px;
-		}
-	}
-
-	#stripe-png {
-		margin-top: 15px;
-		text-align: center;
-		display: inline-block;
-		width: 100%;
-	}
-
-	.info-errors {
-		margin-top: 100px;
-	}
-
-	.account-form,
-	#signup {
-		.input {
-	    margin-bottom: 1px;
-	    width: 100%;
-	    display: block;
-
-	    input {
-	      width: 90%;
-	      max-width: 400px;
-	      margin-bottom: 5px;
-	      padding: .5rem;
-	    }
-	  }
-
-	  label {
-	  }
-
-	  .at-input {
-	    padding-top: 7px;
-	  }
-
-	  .at-pwd-link {
-	    margin-top: 1em;
-	  }
-  }
-
-  .list-errors {
-    margin-top: -2rem;
-    .list-item {
-      .title-caps;
-      background: @color-note;
-      color: @color-negative;
-      font-size: .625em; // 10px
-      margin-bottom: 1px;
-      padding: .7rem 0;
-    }
-  }
-
-  .at-message, .at-result {
-    margin-top: -2rem;
-    .title-caps;
-    background: @color-note;
-    color: @color-ancillary;
-    font-size: .625em; // 10px
-    margin-bottom: 1px;
-    padding: .7rem 0;
-  }
-
-  .agreeToTerms {
-    margin: 40px auto;
-    width: 80%;
-	}
-
-	.nextDelivery {
-		margin-bottom: 60px;
-	}
-
-	.unsub {
-    text-align: center;
-    bottom: 20px;
-    position: absolute;
-    width: 100%;
-    right: 0;
-    left: 0;
-
-    @media screen and (max-width: 400px) {
-			position: relative;
-			margin-top: 70px;	
-		}
-
-		#Unsub {
-			color: #ccb53d;
 		}
 	}
 }

@@ -12,6 +12,9 @@ import {
 
 import './account-page.html';
 
+import '../components/payment-settings.js';
+import '../components/pack-settings.js';
+
 Template.Account_page.onCreated(function accountPageOnCreated() {
 	this.autorun(() => {
     var subs = this.subscribe('thisUserData');
@@ -21,12 +24,15 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
   	} else {
       if (subs.ready()) {
         const stripe_id = Meteor.user().stripe_id;
+        //If user has a stripe_id, retrieve their customer info from Stripe
         if (stripe_id) {
           Meteor.call( 'retrieveCustomer', stripe_id, (err, response) => {
             if ( err ) {
               console.log(err);
             } else {
+              //Set stripe_customer info to a Session var
               Session.setDefault("stripe_customer", response);
+              //Figure out if a user is currently skipping (REDUNDANT post cron)
               if (Meteor.user().skipping) {
                 var skippingTil = Meteor.user().skipping.slice(6,);
                 if (moment().unix() > moment(skippingTil, "MM-DD-YYYY").subtract(7, 'd').unix()) {
@@ -39,6 +45,7 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
                 var skipping = false;
               };
               Session.setDefault('skipping', skipping);
+              //If user's subscription start matches the start of their current billing period, set them as 'trialing' (new customer)
               if (response.subscriptions.data.created === response.subscriptions.data.current_period_start) {
                 Session.set('trial', true);
               };
@@ -54,8 +61,10 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
 });
 
 Template.Account_page.onRendered(function accountPageOnRendered() {
-  // Stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  Stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  // stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // const stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  // const stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
 });
 
 Template.Account_page.helpers({
@@ -104,7 +113,7 @@ Template.Account_page.helpers({
   },
 
   email() {
-    return Meteor.user().email;
+    return Meteor.user().emails[0].address;
   },
 
   address1() {
@@ -177,11 +186,6 @@ Template.Account_page.helpers({
       return false;
     };
   },
-
-  restrictions() {
-    const allRestrictions = ['beef','chicken','fish','shellfish','eggs','dairy','peanuts','soy','gluten'];
-    return allRestrictions;
-  },
 });
 
 Template.Account_page.events({
@@ -212,21 +216,21 @@ Template.Account_page.events({
 
     switch (event.target.closest("li").id) {
       case 'Omnivore':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
         break;
       case 'Vegetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -240,11 +244,11 @@ Template.Account_page.events({
         };
         break;
       case 'Vegan':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -258,11 +262,11 @@ Template.Account_page.events({
         };
         break;
       case 'Pescetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -276,19 +280,19 @@ Template.Account_page.events({
         };
         break;
       case 'Paleo':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
-        var noNos = template.findAll('#dairy');
+        var noNos = template.findAll('#dairy, #soy');
         for (var i = noNos.length - 1; i >= 0; i--) {
           noNos[i].classList.add('checked');
         };
-        var noSigns = template.findAll('.dairy');
+        var noSigns = template.findAll('.dairy, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.add('fadeIn');
         };
@@ -308,11 +312,14 @@ Template.Account_page.events({
     };
   },
 
-  'click #Delivery li label'(event, template) {
-    const delivery = template.findAll("#Delivery li");
-    delivery[0].style.borderColor = "#eee";
-    delivery[1].style.borderColor = "#eee";
-    event.target.parentElement.style.borderColor = "#007444";
+  'click #DeliveryDay li label'(event, template) {
+    const delivery = template.findAll("#DeliveryDay li");
+    delivery[0].style.borderColor = "#034b2c";
+    delivery[1].style.borderColor = "#034b2c";
+    delivery[0].style.backgroundColor = "transparent";
+    delivery[1].style.backgroundColor = "transparent";
+    event.target.closest( "li" ).style.borderColor = "#fff";
+    event.target.closest( "li" ).style.backgroundColor = "#fff";
   },
 
   'click #Sub' (event) {
@@ -356,7 +363,13 @@ Template.Account_page.events({
 
     var formdata = {};
     if (document.querySelector('input[name="plan"]:checked').value) formdata.plan = document.querySelector('input[name="plan"]:checked').value;
+    if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
     if (document.querySelector('input[name="delivery"]:checked').value) formdata.preferredDelivDay = document.querySelector('input[name="delivery"]:checked').value;
+    var restrictions = template.findAll('.checked');
+      formdata.restrictions = [];
+      for (var i = restrictions.length - 1; i >= 0; i--) {
+        formdata.restrictions.push(restrictions[i].id);
+      };
     const user = formdata;
 
     Meteor.call( 'updateUser', Meteor.userId(), user, ( error, response ) => {
@@ -372,7 +385,7 @@ Template.Account_page.events({
 
   },
 
-  'click .sbmtAddress'(event, template) {
+  'submit #DeliveryForm'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
 
@@ -394,80 +407,79 @@ Template.Account_page.events({
         console.log(error + "; error");
       } else {
         sAlert.success('Delivery settings updated!');
+        Session.set('stage', 0);
       };
     });
-    sAlert.success("Settings saved!");
-    Session.set('stage', 0);
     Session.set('loading', false);
   },
 
-  'click .sbmtSource'(event) {
-    event.preventDefault();
-    Session.set('loading', true);
+  // 'click .sbmtSource'(event) {
+  //   event.preventDefault();
+  //   Session.set('loading', true);
 
-    Stripe.card.createToken({
-      number: $('#cc').val(),
-      cvc: $('.cvc').val(),
-      exp_month: $('#expM').val(),
-      exp_year: $('#expY').val(),
-      address_zip: Meteor.user().address_zipcode,
-    }, ( status, response ) => {
-      if ( response.error ) {
-        $('#cc-form').find('.card-errors').text(response.error.message);
-        Session.set('loading', false);
-      } else {
-        const token = response.id;
+  //   stripe.card.createToken({
+  //     number: $('#cc').val(),
+  //     cvc: $('.cvc').val(),
+  //     exp_month: $('#expM').val(),
+  //     exp_year: $('#expY').val(),
+  //     address_zip: Meteor.user().address_zipcode,
+  //   }, ( status, response ) => {
+  //     if ( response.error ) {
+  //       $('#cc-form').find('.card-errors').text(response.error.message);
+  //       Session.set('loading', false);
+  //     } else {
+  //       const token = response.id;
 
-        if (Meteor.user().stripe_id) {
-          const _id = Meteor.user().stripe_id;
-          const args = {
-            default_source: token
-          };
+  //       if (Meteor.user().stripe_id) {
+  //         const _id = Meteor.user().stripe_id;
+  //         const args = {
+  //           default_source: token
+  //         };
 
-          Meteor.call( 'updateCustomer', _id, args, ( error, response ) => {
-            if ( error ) {
-              console.log(error + "; error");
-            } else {
-              console.log(response);
-            };
-          });
+  //         Meteor.call( 'updateCustomer', _id, args, ( error, response ) => {
+  //           if ( error ) {
+  //             console.log(error + "; error");
+  //           } else {
+  //             sAlert.success("Card added!");
+  //           };
+  //         });
 
-          Session.set('stage', 0);
-          Session.set('loading', false);
-        } else {
-          var userEmail = "";
-          if (Meteor.user().profile) {
-            userEmail = Meteor.user().emails[0].address;
-          } else {
-            userEmail = Meteor.user().email;
-          }
+  //         Session.set('stage', 0);
+  //         Session.set('loading', false);
+  //       } else {
+  //         var userEmail = "";
+  //         if (Meteor.user().profile) {
+  //           userEmail = Meteor.user().emails[0].address;
+  //         } else {
+  //           userEmail = Meteor.user().email;
+  //         }
 
-          const cust = {
-            description: "Customer for " + userEmail,
-            source: token,
-            account_balance: 0
-          };
+  //         const cust = {
+  //           description: "Customer for " + userEmail,
+  //           source: token,
+  //           account_balance: 0
+  //         };
 
-          Meteor.call( 'createCustomer', cust, ( error, response ) => {
-            if ( error ) {
-              console.log(error + "; error");
-            } else {
-              const user = {
-                "stripe_id": response.id,
-              };
+  //         Meteor.call( 'createCustomer', cust, ( error, response ) => {
+  //           if ( error ) {
+  //             console.log(error + "; error");
+  //           } else {
+  //             const user = {
+  //               "stripe_id": response.id,
+  //             };
 
-              Meteor.call( 'updateUser', Meteor.userId(), user );
-              sAlert.success('Payment settings updated!');
-            };
-          });
+  //             Meteor.call( 'updateUser', Meteor.userId(), user );
+  //             sAlert.success('Payment settings updated!');
+  //           };
+  //         });
 
-          sAlert.success("Card added!");
-          Session.set('stage', 0);
-          Session.set('loading', false);
-        };
-      };
-    });
-  },
+  //         sAlert.success("Card added!");
+  //         Session.set('stage', 0);
+  //         Session.set('loading', false);
+  //       };
+  //     };
+  //   });
+  // },
 
   'click #skipWeek'(event) {
     event.preventDefault();

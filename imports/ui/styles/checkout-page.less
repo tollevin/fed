@@ -20,6 +20,10 @@
 		}
 	}
 
+	h2 {
+		color: #fff;
+	}
+
 	.order-report {
 		float: left;
 
@@ -61,11 +65,13 @@
 			}
 
 			ul {
-				padding-left: 0;
+				padding: 0;
+				margin-top: 0;
 				text-align: left;
 				display: inline-block;
 
 				li {
+					font-size: 15px;
 					list-style: none;
 					margin-left: 0;
 				}
@@ -111,7 +117,7 @@
 
 				.num {
 					font-size: 22px;
-					font-weight: 400;
+					font-weight: 300;
 					width: 92px;
 					text-align: left;
 				}
@@ -128,7 +134,7 @@
 
 			.enterPromo {
 				border: none;
-				// font-family: 'Josefin Sans';
+				color: @forange;
 				font-size: 18px;
 				background-color: transparent;
 				cursor: pointer;
@@ -163,11 +169,12 @@
 			padding-left: 9%;
 			text-align: left;
 			margin-top: 20px;
-			margin-bottom: 30px;
+			margin-bottom: 5px;
 
 			@media screen and (max-width: 600px) {
 				padding-left: 0;
 				text-align: center;
+				margin-bottom: 30px;
 			}
 		}
 	}
@@ -175,11 +182,13 @@
 	.form-shell {
 		width: 50%;
 		max-width: 500px;
+		height: 100%;
 		float: right;
 		background-color: #bde8bd;
 		height: ~"-webkit-calc(100vh - 100px)";
     height:    ~"-moz-calc(100vh - 100px)";
     height:         ~"calc(100vh - 100px)";
+		padding: 12px 40px;
 
 		@media screen and (max-width: 600px) {
 			display: inline-block;
@@ -189,10 +198,11 @@
 			text-align: center;
 		}
 
-		#insertOrderForm, #insertSubscriberOrderForm {
-			height: 100%;
+		#insertOrderForm,
+		#insertSubscriberOrderForm {
 			max-width: 500px;
-			padding: 12px 40px;
+			display: flex;
+			flex-direction: column;
 
 			@media screen and (max-width: 600px) {
 				height: auto;
@@ -201,27 +211,26 @@
 
 	    h2 {
 	    	width: 100%;
-	    	float: left;
 	    	color: #FFF;
 	    	margin-bottom: 10px;
 	    }
 
 			.form-group {
-				margin-bottom: 12px;
-				vertical-align: top;
-				height: 33px;
-				width: 49%;
-				float: left;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				@media screen and (max-width: 530px) {
+					flex-wrap: wrap;
+				}
 
 				label {
 					font-size: 23px;
 				}
 
-				input, select {
-					padding: 5px;
-					height: 33px;
-					width: 100%;
-					font-size: 15px;
+				input {
+					width: 49%;
+					background-color: #FFF;
 				}
 
 				input.error {
@@ -244,93 +253,132 @@
 				float: right;
 			}
 
-			.phone {
-				width: 40%;
-				float: left;
+			
+
+			#email, #phone {
+				@media screen and (max-width: 530px) {
+					width: 100% !important;
+				}
 			}
 
-			.email {
-				width: 58%;
-				float: right;
-			}
-
-			.address1, .address2 {
+			#address-line-1, #address-line-2 {
 				width: 100%;
 			}
 
-			.city {
+			#address-city {
+				width: 58%;
+
+				@media screen and (max-width: 374px) {
+					width: 100% !important;
+				}
+
+				@media screen and (max-width: 414px) {
+					width: 50%;
+				}
 			}
 
-			.state {
-				float: right;
+			#address-state {
+				width: 18%;
+
+				@media screen and (max-width: 374px) {
+					width: 49% !important;
+				}
+
+				@media screen and (max-width: 414px) {
+					width: 22%;
+				}
 			}
 
-			.zip {
-				width: 30%;
+			#address-zip {
+				width: 20%;
+
+				@media screen and (max-width: 374px) {
+					width: 49% !important;
+				}
+
+				@media screen and (max-width: 414px) {
+					width: 25%;
+				}
 			}
 
 			.delivDate {
-				width: 68%;
-				float: right;
 			}
 
 			.comments {
 				width: 100%;
 
 				textarea {
-					padding: 5px;
-					height: 33px;
-					width: 100%;
-					font-size: 15px;
-					border: none;
+					height: 78px;
+			    font-weight: 500;
+			    font-size: 16px;
+			    border: 1px solid transparent;
+			    border-radius: 5px;
+			    padding: 10px;
+			    box-shadow: 0 1px 3px 0 #e6ebf1;
+			    color: #034b2c;
+			    width: 100%;
 				}
 			}
+		}
+	
+		#card-element {
+			width: 100%;
+	    margin-left: auto;
+	    margin-right: auto;
+	    margin-bottom: 25px;
+	    height: 37px;
+	    background-color: #fff;
+	    border-radius: 5px;
+	  }
 
-			.source {
-				min-width: 300px;
-			}
+	  #Source {
+			width: 100%;
+	  }
 
-			.card {
-				width: 100%;
-			}
+	  .source {
+			float: left;
+		}
 
-			.expMo {
-				width: 25%;
-				min-width: 78px;
-				margin-right: 10px;
-			}
+		.card {
+			width: 100%;
+		}
 
-			.expYear {
-				width: 40%;
-				min-width: 100px;
-				margin-right: 10px;
-			}
+		.expMo {
+			width: 25%;
+			min-width: 78px;
+			margin-right: 10px;
+		}
 
-			.cvcNo {
-				width: 25%;
-				min-width: 78px;
-			}
+		.expYear {
+			width: 40%;
+			min-width: 100px;
+			margin-right: 10px;
+		}
 
-			.sbmt-button {
-				text-align: center;
-				margin-bottom: 35px;
+		.cvc2 {
+			width: 23% !important;
+			min-width: 78px;
+		}
+
+	  .sbmt-button {
+			text-align: center;
+			margin-bottom: 35px;
+			display: inline-block;
+			width: 100%;
+
+			.sbmtOrder {
 				display: inline-block;
-				width: 100%;
+				width: 75%;
+				min-width: 200px;
 
-				.sbmtOrder {
-					display: inline-block;
-					width: 75%;
-					min-width: 200px;
-
-					&:hover {
-						color: #FFF;
-					}
+				&:hover {
+					color: #FFF;
 				}
+			}
 
-				#disabledButton {
-					background-color: rgba(123, 117, 95, 0.8) !important;
-					border: 2px solid rgba(123, 117, 95, 0.8);
-				}
+			#disabledButton {
+				background-color: rgba(123, 117, 95, 0.8) !important;
+				border: 2px solid rgba(123, 117, 95, 0.8);
 			}
 		}
 	}

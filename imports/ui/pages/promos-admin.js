@@ -16,7 +16,7 @@ import '../components/promo-admin.js';
 
 Template.Promos_admin.onCreated(function promosAdminOnCreated() {
   this.autorun(() => {
-    this.subscribe('all.promos');
+    this.subscribe('all.promos', 100);
   });
 });
 

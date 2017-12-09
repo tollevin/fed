@@ -9,74 +9,12 @@ import './cart.html';
 import { Orders } from '../../api/orders/orders.js';
 import { insertOrder } from '../../api/orders/methods.js';
 
-const cartSlots = function() {
-	var newOrder = {
-  	dishes: ['','','','','',''],
-		snacks: [''],
-		price: 8500,
-		description: "Fed 6-Pack",
-  };
-	switch (Session.get('PackSelected')) {
-    case "6-Pack":
-      newOrder = {
-      	dishes: ['','','','','',''],
-				snacks: [''],
-				price: 8500,
-				description: "Fed 6-Pack",
-      };
-      break;
-    case "8-Pack":
-      newOrder = {
-      	dishes: ['','','','','','','',''],
-				snacks: [''],
-				price: 11000,
-				description: "Fed 8-Pack",
-      };
-      break;
-    case "10-Pack":
-      newOrder = {
-      	dishes: ['','','','','','','','','',''],
-				snacks: ['',''],
-				price: 13500,
-				description: "Fed 10-Pack",
-      };
-      break;
-    case "12-Pack":
-      newOrder = {
-      	dishes: ['','','','','','','','','','','',''],
-				snacks: ['',''],
-				price: 15900,
-				description: "Fed 12-Pack",
-      };
-    	break;
-  };
-  // Set the template for order data. Could replace with orderId
-  Session.set('order', newOrder);
-};
+import { cartSlots, countInArray } from '../lib/helpers.js';
 
 Template.Cart.onCreated(function cartOnCreated() {
 	this.autorun(() => {
 		// Subscribe to the current User's data
-    this.subscribe('thisUserData');
-
-    //Set up the number of cart slots depending on pack size
-		if (!Session.get('order')) {
-			cartSlots();
-			Session.setDefault('PackSelected', '6-Pack');
-		};
-
-		var thisOrder = Session.get('order');
-		var pack = thisOrder.dishes;
-		var dishesInPack = [];
-		for (var i = pack.length - 1; i >= 0; i--) {
-			if (pack[i].length > 1) {
-				dishesInPack.push(pack[i]);
-			}
-		};
-		var dishesLength = dishesInPack.length;
-		if (dishesLength === pack.length) {
-			Session.set('packEditorOpen', true);
-		};
+    this.subscribe('items.thisWeek');
 	});
 });
 
@@ -91,16 +29,59 @@ Template.Cart.helpers({
 	},
 
 	dishes() {
-		return Session.get('order').dishes;
+		if (Session.get('pack')) {
+			var dishList = Session.get('pack').dishes;
+			var dishTally = {};
+			for (var i = dishList.length - 1; i >= 0; i--) {
+				if (dishList[i] != '' && !dishTally[dishList[i]]) {
+					dishTally[dishList[i]] = 1;
+				} else if (dishList[i] != '') {
+					dishTally[dishList[i]] += 1;
+				};
+			};
+			var result = [];
+	    for (var key in dishTally) result.push({name:key,value:dishTally[key]});
+	    return result;
+		};
 	},
 
 	snacks() {
-		return Session.get('order').snacks;
+		if (Session.get('pack')) {
+			var snackList = Session.get('pack').snacks;
+			var snackTally = {};
+			for (var i = snackList.length - 1; i >= 0; i--) {
+				if (snackList[i] != '' && !snackTally[snackList[i]]) {
+					snackTally[snackList[i]] = 1;
+				} else if (snackList[i] != '') {
+					snackTally[snackList[i]] += 1;
+				};
+			};
+			var result = [];
+	    for (var key in snackTally) result.push({name:key,value:snackTally[key]});
+	    return result;
+		};
 	},
 
-	label() {
-		// totalItems = Session.get('order').dishes.length;
-		return this.indexOf();
+	dishTally() {
+		var totalDishes = Session.get('pack').dishes;
+		var nullCount = 0;
+		for (var i = totalDishes.length - 1; i >= 0; i--) {
+			if (totalDishes[i].length === 0) {
+				nullCount += 1;
+			};
+		};
+		return "(" + (totalDishes.length - nullCount) + "/" + totalDishes.length + ")";
+	},
+
+	snackTally() {
+		var totalSnacks = Session.get('pack').snacks;
+		var nullCount = 0;
+		for (var i = totalSnacks.length - 1; i >= 0; i--) {
+			if (totalSnacks[i].length === 0) {
+				nullCount += 1;
+			};
+		};
+		return "(" + (totalSnacks.length - nullCount) + "/" + totalSnacks.length + ")";
 	},
 
 	// changedPack() {
@@ -116,6 +97,15 @@ Template.Cart.helpers({
 	packEditorOpen() {
 		return Session.get('packEditorOpen') && 'packEditorOpen';
 	},
+
+	ready() {
+		if (Session.get('pack')) {
+			const dishes = Session.get('pack').dishes;
+			const snacks = Session.get('pack').snacks;
+			const pack = dishes.concat(snacks);
+			return pack.indexOf('') < 0 && 'ready';
+		};
+	},
 });
 
 Template.Cart.events({
@@ -124,39 +114,41 @@ Template.Cart.events({
 		cartSlots();
 	},
 
-	'click .reset-dish'(event, template) {
-		oldOrder = Session.get('order');
-		dishs = oldOrder.dishes;
-		dishs[event.target.name] = "";
-		oldOrder.dishes = dishs; 
-		Session.set('order', oldOrder);
+	'click .remove-dish'(event, template) {
+		
+		const pack = Session.get('pack');
+    const dishes = pack.dishes;
+    const itemName = event.target.parentElement.closest(".dish-name").text;
+    dishes[dishes.indexOf(itemName)] = '';
+    pack.dishes = dishes;
+    Session.set('pack', pack);
 	},
 
-	'click .reset-snack'(event, template) {
-		oldOrder = Session.get('order');
-		sncks = oldOrder.snacks;
+	'click .remove-snack'(event, template) {
+		oldPack = Session.get('pack');
+		sncks = oldPack.snacks;
 		sncks[event.target.name] = "";
-		oldOrder.snacks = sncks; 
-		Session.set('order', oldOrder);
+		oldPack.snacks = sncks; 
+		Session.set('pack', oldPack);
 	},
 
-	'click [data-service]' (event, template) {
+	'click #checkout' (event, template) {
     Session.set('processing', true);
 
-    const orderReady = Session.get('order');
-    const orderDishes = orderReady.dishes;
-    const orderSnacks = orderReady.snacks;
+    const packReady = Session.get('pack');
+    const packDishes = packReady.dishes;
+    const packSnacks = packReady.snacks;
     var ready = true;
-    for (i = 0; i < orderSnacks.length; i++) { 
-    	if (!orderSnacks[i]) {
+    for (i = 0; i < packSnacks.length; i++) { 
+    	if (!packSnacks[i]) {
     		// console.log('alert!');
     		sAlert.error("You've still got some space in your pack!");
     		ready = false;
     		break;
     	};
     };
-    for (i = 0; i < orderDishes.length; i++) { 
-    	if (!orderDishes[i]) {
+    for (i = 0; i < packDishes.length; i++) { 
+    	if (!packDishes[i]) {
     		// console.log('alert!');
     		sAlert.error("You've still got some space in your pack!");
     		ready = false;
@@ -167,34 +159,16 @@ Template.Cart.events({
 		if (ready) {
 			const orderToCreate = {
 	    	userId: Meteor.userId(),
-	    	packName: orderReady.description,
-	    	packPrice: orderReady.price,
-	    	packDishes: orderReady.dishes,
-	    	packSnacks: orderReady.snacks
+	    	packName: packReady.description,
+	    	packPrice: packReady.price,
+	    	packDishes: packReady.dishes,
+	    	packSnacks: packReady.snacks
 	    };
 
 	    const orderId = insertOrder.call(orderToCreate);
 	    Session.set('orderId', orderId);
 
-	    var zip = Meteor.user().address_zipcode;
-	    
-	    if (!zip) {
-	    	zip = Meteor.user().profile.zipCode;
-	    };
-
-	    const data = {
-				customer_zipcode: zip,
-	    };
-
-	    Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-        if ( error ) {
-          sAlert.error( error.reason );
-          // console.log(error);
-        } else {
-        	Session.set('delivEstimate', response);
-			    FlowRouter.go('/checkout');
-        };
-      });
+	    FlowRouter.go('/checkout');
 	  };
 
   	Session.set('processing', false);

@@ -15,14 +15,54 @@ import '../components/menu-item.js';
 import '../components/menu-snack.js';
 import '../components/menu-toolbar.js';
 
+import { cartSlots } from '../lib/helpers.js';
+
 Template.Menu_page.onCreated(function menuPageOnCreated() {
 	Session.setDefault('PackSelected', false);
 	Session.set('processing', false);
-	var filters = {diet: false, avoid: []}
-	Session.set('filtered', filters);
+	var filters = {
+		diet: false,
+		avoid: []
+	};
+	Session.setDefault('filtered', filters);
 
 	this.autorun(() => {
+		// should be this week's menu only
 		this.subscribe('items.thisWeek');
+		var subs = this.subscribe('thisUserData');
+		if (subs.ready()) {
+			var subscribed = Meteor.user() && Meteor.user().subscriptions && ['active', 'trialing'].indexOf(Meteor.user().subscriptions.status) > -1;
+
+	    //Set up the number of cart slots depending on pack size
+			if (!Session.get('pack')) {
+		    
+		    if (subscribed) {
+		    	const subPack = Meteor.user().subscriptions.plan.id.split('PP')[0] + "-Pack";
+		    	Session.set('PackSelected', subPack);
+		    } else if (!Meteor.userId()) {
+		    	Session.setDefault('PackSelected', '6-Pack');
+		    } else {
+		    	Session.set('PackSelected', '8-Pack');
+		    };
+
+	    	cartSlots();
+			};
+
+			var thisOrder = Session.get('pack');
+			var pack = thisOrder.dishes;
+			var dishesInPack = [];
+			for (var i = pack.length - 1; i >= 0; i--) {
+				if (pack[i].length > 1) {
+					dishesInPack.push(pack[i]);
+				}
+			};
+			var dishesLength = dishesInPack.length;
+
+			// Open cart if cart is full
+			if (dishesLength === pack.length) {
+				Session.set('packEditorOpen', true);
+			};
+		};
 	});
 
 	const today = new moment();
@@ -36,23 +76,29 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	};
 });
 
+Template.Menu_page.onRendered(function menuPageOnRendered() {
+});
+
 Template.Menu_page.helpers({
 	pack: ()=> {
 		return Session.get('PackSelected');  
 	},
 
 	dishItems: ()=> {
-		// should be this week's menu only
-		const filters = Session.get('filtered');
+		var currentFilters = Session.get('filtered');
 		const mongoSelector = {"course": "Dish"};
-		if (filters.diet) {
-			// for (var i = filters.diet.length - 1; i >= 0; i--) {
-				mongoSelector["attributes." + filters.diet] = true;
+		if (currentFilters.diet) {
+			// for (var i = currentFilters.diet.length - 1; i >= 0; i--) {
+			if (currentFilters.diet === 'omnivore') {
+				currentFilters.diet = false;
+			} else {
+				mongoSelector["attributes." + currentFilters.diet] = true;
+			};
 			// }
 		};
-		if (filters.avoid.length > 0) {
-			for (var i = filters.avoid.length - 1; i >= 0; i--) {
-				mongoSelector["warnings." + filters.avoid[i]] = false;
+		if (currentFilters.avoid.length > 0) {
+			for (var i = currentFilters.avoid.length - 1; i >= 0; i--) {
+				mongoSelector["warnings." + currentFilters.avoid[i]] = false;
 			}
 		};
 		return Items.find(mongoSelector, { sort: { weight: -1 } });

@@ -189,6 +189,11 @@ Items.schema = new SimpleSchema({
     label: 'Vegetarian Pack',
     optional: true,
   },
+  "packs.veganPack": {
+    type: Boolean,
+    label: 'Vegan Pack',
+    optional: true,
+  },
   nutritionFacts: {
     type: Object,
     label: 'Nutrition Facts',

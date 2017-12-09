@@ -13,9 +13,15 @@
 		</div>
 		<div class="menu-item-icons">
 		</div>
-		<div class="add-input">
-			 <button class="add-to-cart">Add to cart</button>
+		<div class="inputs">
+			{{#if veganizable}}
+				<label><input type="checkbox" class="veganize">Replace chicken w/ Tofu</label>
+			{{/if}}
+			<div class="counter">
+				<button class="remove-from-pack">-</button>
+				<input type="number" value="{{tally}}" readonly>
+				<button class="add-to-pack">+</button>
+			</div>
 		</div>
-		<hr class="separator" />
 	</article>
 </template>

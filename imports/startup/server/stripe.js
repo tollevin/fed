@@ -125,26 +125,48 @@ Meteor.methods({
     }
   },
 
-  async updateSubscription( subscriptionId, args ) {
+  async updateDefaultSource( args ) {
+    check( args, {
+      id: String,
+      default_source: String,
+    });
 
     try {
+      let customer = await Stripe.customers.update( args.id, { default_source: args.default_source} );
+      return customer;
+    } catch(err) {
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  async addPaymentSource( args ) {
+    check( args, {
+      id: String,
+      source: String
+    });
+
+    try {
+      let newSource = await Stripe.customers.createSource(args.id, { source: args.source });
+      return newSource;
+    } catch(err) {
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  async updateSubscription( subscriptionId, args ) {
+    try {
       let subscriptionUpdate = await Stripe.subscriptions.update( subscriptionId, { trial_end: args.trial_end, prorate: false } );
-      
       return subscriptionUpdate;
     } catch(err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
   async cancelSubscription( subscriptionId ) {
-
     try {
       let cancelledSubscription = await Stripe.subscriptions.del( subscriptionId );
-      
       return cancelledSubscription;
     } catch(err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },

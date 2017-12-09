@@ -13,63 +13,74 @@ import '../../ui/pages/blog-page.js';
 import '../../ui/components/menu-item.js';
 import '../../ui/pages/item-detail.js';
 import '../../ui/pages/checkout3.js';
+import '../../ui/pages/success.js';
 import '../../ui/pages/account-page.js';
 import '../../ui/pages/subscribe.js';
 import '../../ui/pages/packs.js';
+import '../../ui/pages/gift-cards.js';
 import '../../ui/pages/sign-up.js';
 import '../../ui/pages/jobs.js';
 import '../../ui/pages/media.js';
 
 // Import admin templates
 import '../../ui/layouts/admin-body.js';
+import '../../ui/layouts/admin-layout.js';
+import '../../ui/pages/main-admin.js';
 import '../../ui/pages/menu-admin.js';
 import '../../ui/pages/orders-admin.js';
 import '../../ui/pages/customers-admin.js';
+import '../../ui/pages/subscribers-admin.js';
 import '../../ui/pages/promos-admin.js';
 
 // Import to override accounts templates
 import '../../ui/accounts/accounts-templates.js';
 import '../../ui/accounts/signup.js';
 
+// Import wiki templates
+import '../../ui/wiki/index.js';
+
+// Import test template
+import '../../ui/pages/test.js';
+
 // we only need to keep history for two paths at once
 // first path is what we need to check always
-var previousPaths = [null, null];
+// var previousPaths = [null, null];
 
-function saveScrollPosition(context) {
-  var pathInfo = {
-    path: context.path,
-    scrollPosition: $('body').scrollTop()
-  };
+// function saveScrollPosition(context) {
+//   var pathInfo = {
+//     path: context.path,
+//     scrollPosition: $('body').scrollTop()
+//   };
 
-  // add a new path and remove the first path
-  // using as a queue
-  previousPaths.push(pathInfo);
-  previousPaths.shift();
-}
+//   // add a new path and remove the first path
+//   // using as a queue
+//   previousPaths.push(pathInfo);
+//   previousPaths.shift();
+// };
 
-function jumpToPrevScrollPosition(context) {
-  var path = context.path;
-  var scrollPosition = 0;
-  var prevPathInfo = previousPaths[0];
-  if(prevPathInfo && prevPathInfo.path === context.path) {
-    scrollPosition = prevPathInfo.scrollPosition;
-  }
+// function jumpToPrevScrollPosition(context) {
+//   var path = context.path;
+//   var scrollPosition = 0;
+//   var prevPathInfo = previousPaths[0];
+//   if(prevPathInfo && prevPathInfo.path === context.path) {
+//     scrollPosition = prevPathInfo.scrollPosition;
+//   }
 
-  if(scrollPosition === 0) {
-    // we can scroll right away since we don't need to wait for rendering
-    $('body').animate({scrollTop: scrollPosition}, 0);
-  } else {
-    // Now we need to wait a bit for blaze/react does rendering.
-    // We assume, there's subs-manager and we've previous page's data.
-    // Here 10 millis deley is a arbitary value with some testing.
-    setTimeout(function () {
-      $('body').animate({scrollTop: scrollPosition}, 0);
-    }, 10);
-  }
-}
+//   if(scrollPosition === 0) {
+//     // we can scroll right away since we don't need to wait for rendering
+//     $('body').animate({scrollTop: scrollPosition}, 0);
+//   } else {
+//     // Now we need to wait a bit for blaze/react does rendering.
+//     // We assume, there's subs-manager and we've previous page's data.
+//     // Here 10 millis deley is a arbitary value with some testing.
+//     setTimeout(function () {
+//       $('body').animate({scrollTop: scrollPosition}, 0);
+//     }, 10);
+//   }
+// };
 
-FlowRouter.triggers.exit([saveScrollPosition]);
-FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
+// FlowRouter.triggers.exit([saveScrollPosition]);
+// FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
 
 
 FlowRouter.route('/', {
@@ -114,6 +125,13 @@ FlowRouter.route('/subscribe', {
   },
 });
 
+FlowRouter.route('/gifts', {
+  name: 'Gifts',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Gift_Cards' });
+  },
+});
+
 FlowRouter.route('/blog', {
   name: 'Blog.roll',
   action() {
@@ -142,6 +160,20 @@ FlowRouter.route('/checkout', {
   },
 });
 
+FlowRouter.route('/success', {
+  name: 'Success',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Success_page' });
+  },
+});
+
+FlowRouter.route('/redeem', {
+  name: 'redeem',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Success_page' });
+  },
+});
+
 FlowRouter.route('/jobs', {
   name: 'Jobs',
   action() {
@@ -153,6 +185,13 @@ FlowRouter.route('/media', {
   name: 'Media',
   action() {
     BlazeLayout.render('App_body', { main: 'Media' });
+  },
+});
+
+FlowRouter.route('/test', {
+  name: 'Test',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Test' });
   },
 });
 
@@ -171,31 +210,52 @@ var adminRoutes = FlowRouter.group({
   // }]
 });
 
+adminRoutes.route('/', {
+  name: 'Main.admin',
+  action() {
+    BlazeLayout.render('Admin_layout', { main: 'Main_admin' });
+  },
+});
+
 adminRoutes.route('/menu', {
   name: 'Menu.admin',
   action() {
-    BlazeLayout.render('Admin_body', { main: 'Menu_admin' });
+    BlazeLayout.render('Admin_layout', { main: 'Menu_admin' });
   },
 });
 
 adminRoutes.route('/orders', {
   name: 'Orders.admin',
   action() {
-    BlazeLayout.render('Admin_body', { main: 'Orders_admin' });
+    BlazeLayout.render('Admin_layout', { main: 'Orders_admin' });
   },
 });
 
 adminRoutes.route('/customers', {
   name: 'Customers.admin',
   action() {
-    BlazeLayout.render('Admin_body', { main: 'Customers_admin' });
+    BlazeLayout.render('Admin_layout', { main: 'Customers_admin' });
+  },
+});
+
+adminRoutes.route('/subscribers', {
+  name: 'Subscribers.admin',
+  action() {
+    BlazeLayout.render('Admin_layout', { main: 'Subscribers_admin' });
   },
 });
 
 adminRoutes.route('/promos', {
   name: 'Promos.admin',
   action() {
-    BlazeLayout.render('Admin_body', { main: 'Promos_admin' });
+    BlazeLayout.render('Admin_layout', { main: 'Promos_admin' });
+  },
+});
+
+adminRoutes.route('/specs', {
+  name: 'Wiki.Index',
+  action() {
+    BlazeLayout.render('Admin_layout', { main: 'Wiki_index' });
   },
 });
 
@@ -239,9 +299,9 @@ AccountsTemplates.configureRoute('resetPwd', {
 
 Accounts.onLogin(function(){
   const route = FlowRouter.current().route.name;
-
-  if(route != 'Subscribe'){
-    FlowRouter.go('Packs');
+  // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
+  if (route === 'signin') {
+    FlowRouter.go('Menu.show');
   };
 });
 

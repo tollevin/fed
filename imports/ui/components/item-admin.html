@@ -3,33 +3,43 @@
 		<div class="item-admin-img">
 			<a href="/menu/{{_id}}"><img src="{{photo}}" alt="" /></a>
 		</div>
-		<div class="item-admin-name">
-			<a href="/menu/{{_id}}"><h3>{{name}}</h3></a>
-		</div>
-		<div class="item-admin-desc">
-			<p>{{description}}</p>
+		<div class="item-admin-name-desc">
+			<div class="item-admin-name">
+				<a href="/menu/{{_id}}"><h3>{{name}}</h3></a>
+			</div>
+			<div class="item-admin-desc">
+				<p>{{description}}</p>
+			</div>
 		</div>
 		<div class="item-admin-icons">
 		</div>
-		<div class="item-ingredients">
+		<!-- <div class="item-ingredients">
 			<p>
 				{{#each ingredients}}
 					<span class="ingredient">{{name}} - {{amount}}</span>
 				{{/each}}
 			</p>
+		</div> -->
+		<div class="checkboxes">
+			<label class="checkbox">Active
+	  		<input type="checkbox" checked={{thisWeek}} name="thisWeek">
+	  		<span class="checkbox-custom"></span>
+	  	</label>
+	  	<div class="pack-checkboxes">
+				<label class="checkbox omnivorePack">OP
+		  		<input class="pack" type="checkbox" checked={{omni}} name="omnivorePack">
+		  		<span class="checkbox-custom"></span>
+		  	</label>
+				<label class="checkbox vegetarianPack">VP
+		  		<input type="checkbox" checked={{veggie}} name="vegetarianPack">
+		  		<span class="checkbox-custom"></span>
+		  	</label>
+		  	<label class="checkbox veganPack">VgP
+		  		<input type="checkbox" checked={{vegan}} name="veganPack">
+		  		<span class="checkbox-custom"></span>
+		  	</label>
+		  </div>
 		</div>
-		<label class="checkbox">Active
-  		<input type="checkbox" checked={{thisWeek}} name="thisWeek">
-  		<span class="checkbox-custom"></span>
-  	</label>
-		<label class="checkbox omnivorePack">OP
-  		<input class="pack" type="checkbox" checked={{omni}} name="omnivorePack">
-  		<span class="checkbox-custom"></span>
-  	</label>
-		<label class="checkbox vegetarianPack">VP
-  		<input type="checkbox" checked={{veggie}} name="vegetarianPack">
-  		<span class="checkbox-custom"></span>
-  	</label>
   	<button id="Remove">REMOVE ITEM</button>
 	</article>
 </template>

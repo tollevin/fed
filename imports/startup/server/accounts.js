@@ -2,22 +2,26 @@ import { Accounts } from 'meteor/accounts-base';
 import { Email } from 'meteor/email';
 import { SSR } from 'meteor/meteorhacks:ssr'; 
 
+import { makeGiftCardCode } from '../../utils/codify.js';
+
 // Menus collection
 import { Items } from '../../api/items/items.js';
+import { Promos } from '../../api/promos/promos.js';
+import { insertPromo } from '../../api/promos/methods.js';
 
 Meteor.methods({
 
-  updateUser (user, data) {
+  updateUser (user_id, data) {
 
-    const updated = Meteor.users.update({ _id: user }, {
+    const updated = Meteor.users.update({ _id: user_id }, {
       $set: data,
     });
 
-    return (Meteor.users.findOne({ _id: user }));
+    return (Meteor.users.findOne({ _id: user_id }));
   },
 
   createSubscriber (user) {
-    // Called only from the Trial_signup component when someone is subscribing but not yet a user
+    // Called only when someone is subscribing but not yet a user
 
     const customer = { 
       email: user.email, 
@@ -70,6 +74,98 @@ Meteor.methods({
     return(Meteor.user());
   },
 
+  sendGiftCard (giftCard) {
+    SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
+
+    Template.giftCardHtmlEmail.helpers({
+      doctype() {
+        return '<!DOCTYPE HTML>'
+      },
+
+      amountString(inCents) {
+        return (inCents/100).toFixed(2);
+      },
+    });
+
+    var emailData = giftCard;
+    emailData.code = makeGiftCardCode();
+
+    const promo = {
+      codes: [emailData.code],
+      desc: 'Fed Gift Card for ' + giftCard.recipient.first_name + ' ' + giftCard.recipient.last_name,
+      credit: giftCard.value / 100,
+      useLimitPerCustomer: 1,
+      useLimitTotal: 1,
+      timesUsed: 0,
+      active: true,
+    };
+
+    const newPromo = insertPromo.call( promo );
+
+    Email.send({
+      to: giftCard.recipient.email,
+      bcc: "info@getfednyc.com",
+      from: "no-reply@getfednyc.com",
+      subject: giftCard.customer.first_name + " sent you a Fed Gift Card!",
+      html: SSR.render('giftCardHtmlEmail', emailData),
+    });
+
+    return emailData.code;
+  },
+
+  // sendBackendGiftCard () {
+  //   SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
+
+  //   Template.giftCardHtmlEmail.helpers({
+  //     doctype() {
+  //       return '<!DOCTYPE HTML>'
+  //     },
+
+  //     amountString(inCents) {
+  //       return (inCents/100).toFixed(2);
+  //     },
+  //   });
+
+  //   var emailData = {
+  //     customer: {
+  //       first_name: ,
+  //       last_name: ,
+  //       email: ,
+  //     },
+  //     recipient: {
+  //       first_name: ,
+  //       last_name: ,
+  //       email: ,
+  //     },
+  //     value: , // in cents
+  //     message: ,
+  //   };
+
+  //   emailData.code = makeGiftCardCode();
+
+  //   const promo = {
+  //     codes: [emailData.code],
+  //     desc: 'Fed Gift Card for ' + giftCard.recipient.first_name + ' ' + giftCard.recipient.last_name,
+  //     credit: giftCard.value / 100,
+  //     useLimitPerCustomer: 1,
+  //     useLimitTotal: 1,
+  //     timesUsed: 0,
+  //     active: true,
+  //   };
+
+  //   const newPromo = insertPromo.call( promo );
+
+  //   Email.send({
+  //     to: giftCard.recipient.email,
+  //     bcc: "info@getfednyc.com",
+  //     from: "no-reply@getfednyc.com",
+  //     subject: giftCard.customer.first_name + " sent you a Fed Gift Card!",
+  //     html: SSR.render('giftCardHtmlEmail', emailData),
+  //   });
+
+  //   return emailData.code;
+  // },
+
   referSubscriber (user) {
     // Called only from the Trial_signup component when someone is subscribing but not yet a user
 
@@ -108,27 +204,232 @@ Meteor.methods({
     };
   },
 
-  updatePassword () {
-    Accounts.setPassword("nKRge2f39ddQhH4Dc", "joem123");
-  },
+  // updatePassword () {
+  //   Accounts.setPassword("nKRge2f39ddQhH4Dc", "joem123");
+  // },
 });
 
 Meteor.publish("limitedUserData", function() { 
-  return Meteor.users.find({ _id: this.userId }, { fields: {'_id':1,'first_name':1,'last_name':1,'emails':1,'address_zipcode':1,'diet':1,'restrictions':1,'subscriptions':1, 'last_purchase': 1}}); 
+  return Meteor.users.find({
+    _id: this.userId
+  }, {
+    fields: {
+      '_id':1,
+      'first_name':1,
+      'last_name':1,
+      'emails':1,
+      'address_zipcode':1,
+      'diet':1,
+      'restrictions':1,
+      'subscriptions':1,
+      'last_purchase': 1
+    }
+  }); 
 });
 
 Meteor.publish("someUserData", function() { 
-  return Meteor.users.find({ _id: this.userId }, { fields: {'_id':1,'first_name':1,'last_name':1,'emails':1,'email':1,'address_zipcode':1,'deliv_comments':1,'amount_spent':1,'credit':1,'last_purchase':1,'diet':1, 'plan':1, 'stripe_id':1,'preferredDelivDay':1,'subscriptions':1,'skipping':1,'profile':1}}); 
+  return Meteor.users.find({ 
+    _id: this.userId 
+  }, { 
+    fields: {
+      '_id':1,
+      'first_name':1,
+      'last_name':1,
+      'emails':1,
+      'email':1,
+      'address_zipcode':1,
+      'deliv_comments':1,
+      'amount_spent':1,
+      'credit':1,
+      'last_purchase':1,
+      'diet':1,
+       'plan':1,
+       'stripe_id':1,
+      'preferredDelivDay':1,
+      'subscriptions':1,
+      'skipping':1,
+      'profile':1
+    }
+  }); 
 });
 
 Meteor.publish("thisUserData", function(id) {
   if (id) {
-    return Meteor.users.find({ _id: id }, { fields: {'_id':1,'first_name':1,'last_name':1,'phone':1,'emails':1,'email':1,'address_line_1':1,'address_line_2':1,'address_city':1,'address_state':1,'address_zipcode':1,'deliv_window':1,'deliv_comments':1,'amount_spent':1,'credit':1,'last_purchase':1,'diet':1,'plan':1,'coupon':1,'restrictions':1, 'stripe_id':1,'preferredDelivDay':1,'subscriptions':1,'skipping':1,'referrer':1,'profile':1}}); 
+    return Meteor.users.find({
+     _id: id,
+    }, { 
+      fields: {
+        '_id':1,
+        'first_name':1,
+        'last_name':1,
+        'phone':1,
+        'emails':1,
+        'email':1,
+        'address_line_1':1,
+        'address_line_2':1,
+        'address_city':1,
+        'address_state':1,
+        'address_zipcode':1,
+        'deliv_window':1,
+        'deliv_comments':1,
+        'amount_spent':1,
+        'credit':1,
+        'last_purchase':1,
+        'diet':1,
+        'plan':1,
+        'coupon':1,
+        'restrictions':1,
+        'stripe_id':1,
+        'preferredDelivDay':1,
+        'subscriptions':1,
+        'skipping':1,
+        'referrer':1,
+        'profile':1,
+        'customized': 1
+      }
+    }); 
   } else {
-    return Meteor.users.find({ _id: this.userId }, { fields: {'_id':1,'first_name':1,'last_name':1,'phone':1,'emails':1,'email':1,'address_line_1':1,'address_line_2':1,'address_city':1,'address_state':1,'address_zipcode':1,'deliv_window':1,'deliv_comments':1,'amount_spent':1,'credit':1,'last_purchase':1,'diet':1,'plan':1,'coupon':1,'restrictions':1,'stripe_id':1,'preferredDelivDay':1,'subscriptions':1,'skipping':1,'referrer':1,'profile':1}}); 
+    return Meteor.users.find({ 
+      _id: this.userId 
+    }, { 
+      fields: {
+        '_id':1,
+        'first_name':1,
+        'last_name':1,
+        'phone':1,
+        'emails':1,
+        'email':1,
+        'address_line_1':1,
+        'address_line_2':1,
+        'address_city':1,
+        'address_state':1,
+        'address_zipcode':1,
+        'deliv_window':1,
+        'deliv_comments':1,
+        'amount_spent':1,
+        'credit':1,
+        'last_purchase':1,
+        'diet':1,
+        'plan':1,
+        'coupon':1,
+        'restrictions':1,
+        'stripe_id':1,
+        'preferredDelivDay':1,
+        'subscriptions':1,
+        'skipping':1,
+        'referrer':1,
+        'profile':1,
+        'customized': 1
+      }
+    }); 
   };
 });
 
-Meteor.publish("userData", function() { 
-  return Meteor.users.find({}, { fields: {'_id':1,'createdAt':1,'first_name':1,'last_name':1,'phone':1,'emails':1,'email':1,'address_line_1':1,'address_line_2':1,'address_city':1,'address_state':1,'address_zipcode':1,'deliv_window':1,'deliv_comments':1,'amount_spent':1,'credit':1,'last_purchase':1,'diet':1,'plan':1,'restrictions':1,'coupon':1,'stripe_id':1,'preferredDelivDay':1,'subscriptions':1,'skipping':1,'referrer':1,'profile':1}}); 
+Meteor.publish("userData", function(limit) { 
+  if (limit) {
+    return Meteor.users.find({}, {
+      fields: {
+        '_id':1,
+        'createdAt':1,
+        'first_name':1,
+        'last_name':1,
+        'phone':1,
+        'emails':1,
+        'email':1,
+        'address_line_1':1,
+        'address_line_2':1,
+        'address_city':1,
+        'address_state':1,
+        'address_zipcode':1,
+        'deliv_window':1,
+        'deliv_comments':1,
+        'amount_spent':1,
+        'credit':1,
+        'last_purchase':1,
+        'diet':1,
+        'plan':1,
+        'restrictions':1,
+        'coupon':1,
+        'stripe_id':1,
+        'preferredDelivDay':1,
+        'subscriptions':1,
+        'skipping':1,
+        'referrer':1,
+        'profile':1,
+        'customized': 1
+      },
+      limit: limit,
+    });
+  } else {
+    return Meteor.users.find({}, {
+      fields: {
+        '_id':1,
+        'createdAt':1,
+        'first_name':1,
+        'last_name':1,
+        'phone':1,
+        'emails':1,
+        'email':1,
+        'address_line_1':1,
+        'address_line_2':1,
+        'address_city':1,
+        'address_state':1,
+        'address_zipcode':1,
+        'deliv_window':1,
+        'deliv_comments':1,
+        'amount_spent':1,
+        'credit':1,
+        'last_purchase':1,
+        'diet':1,
+        'plan':1,
+        'restrictions':1,
+        'coupon':1,
+        'stripe_id':1,
+        'preferredDelivDay':1,
+        'subscriptions':1,
+        'skipping':1,
+        'referrer':1,
+        'profile':1,
+        'customized': 1
+      },
+    });
+  } ;
+});
+
+Meteor.publish("subscriberData", function() {
+  const options = {
+    fields: {
+      '_id':1,
+      'createdAt':1,
+      'first_name':1,
+      'last_name':1,
+      'phone':1,
+      'emails':1,
+      'email':1,
+      'address_line_1':1,
+      'address_line_2':1,
+      'address_city':1,
+      'address_state':1,
+      'address_zipcode':1,
+      'deliv_window':1,
+      'deliv_comments':1,
+      'amount_spent':1,
+      'credit':1,
+      'last_purchase':1,
+      'diet':1,
+      'plan':1,
+      'restrictions':1,
+      'coupon':1,
+      'stripe_id':1,
+      'preferredDelivDay':1,
+      'subscriptions':1,
+      'skipping':1,
+      'referrer':1,
+      'profile':1,
+      'notes':1,
+      'customized':1,
+    },
+  };
+
+  return Meteor.users.find({"subscriptions.quantity": { $gt: 0 }}, options);
 });

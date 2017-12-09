@@ -14,19 +14,25 @@
 				</form>
 			</div>
 			<!-- <input id="deliveryDays" /> -->
-			<div class="cart-form">
-				<h3>Dishes</h3>
+			<div class="cart-items-list">
+				<h3>Dishes <span class="tally">{{dishTally}}</span></h3>
 				{{#each dish in dishes}}
-						<input class="dish-input" name={{@index}} value={{dish}}>
-						<input class="reset-dish" name={{@index}} type="reset" value="X">
+					<p class="tallied-dish">
+						<span class="dish-tally" name={{@index}}>{{dish.value}}</span>
+						<span class="dish-name" name={{@index}}>{{dish.name}}</span>
+						<!-- <button class="remove-dish">REMOVE</button> -->
+					</p>
 				{{/each}}
-				<h3>Snacks</h3>
+				<h3>Snacks <span class="tally">{{snackTally}}</span></h3>
 				{{#each snack in snacks}}
-					<input class="snack-input" name="{{@index}}" value={{snack}}>
-					<input class="reset-snack" type="reset" name={{@index}} value="X">
+					<p class="tallied-snack">
+						<span class="snack-tally" name={{@index}}>{{snack.value}}</span>
+						<span class="snack-name" name={{@index}}>{{snack.name}}</span>
+						<!-- <button class="remove-snack">REMOVE</button> -->
+					</p>
 				{{/each}}
 			</div>
-			<a id="checkout" href="#" data-service="checkout" class="btn btn-success">Checkout</a>
+			<button id="checkout" class="btn-checkout {{ready}}">Checkout</button>
 		{{/unless}}
 		</div>
 	</div>

@@ -62,16 +62,22 @@ Meteor.startup(() => {
 
 Template.App_body.onCreated(function appBodyOnCreated() {
   Session.setDefault({
-    cartOpen: false,
+    packEditorOpen: false,
     userMenuOpen: false,
     processing: false,
     sideNavOpen: false,
     unsubscribed: true,
+    capped: true,
   });
 
   const handle = this.subscribe('limitedUserData');
 
   this.autorun(() => {
+    var current = FlowRouter.current();
+    Tracker.afterFlush(function () {
+      $(window).scrollTop(0);
+    });
+
     const isReady = handle.ready();
     if (isReady) {
       if (Meteor.user() && Meteor.user().last_purchase) {
@@ -81,9 +87,9 @@ Template.App_body.onCreated(function appBodyOnCreated() {
       };
 
       if (Meteor.user() && Meteor.user().subscriptions && Meteor.user().subscriptions.status != "canceled") {
-        Session.set('unsubscribed', false);
+        Session.set('subscribed', true);
       } else {
-        Session.set('unsubscribed', true);
+        Session.set('subscribed', false);
       };
     };
   });
@@ -103,16 +109,22 @@ Template.App_body.onRendered(function appBodyOnRendered() {
 
 Template.App_body.helpers({
   loading() {
-    return Session.get('loading');
+    return Session.get('loading') && 'loading';
+  },
+  closed() {
+    const route = FlowRouter.getRouteName();
+    return route === 'Menu.show' && !Session.get('customizable') && !Session.get('capped') && 'uncustomizable';
+  },
+  capped() {
+    const route = FlowRouter.getRouteName();
+    return route === 'Menu.show' && Session.get('capped') && !Session.get('subscribed') && 'capped';
   },
   firstName() {
     return Meteor.user().first_name && ("Welcome, " + Meteor.user().first_name);
   },
   emailLocalPart() {
     const email = Meteor.user().emails[0].address;
-    console.log(email);
     const username = email.slice(0, email.indexOf('@'));
-    console.log(username);
     return ("Welcome, " + username);
   },
   notSubscribed() {
@@ -121,8 +133,9 @@ Template.App_body.helpers({
   sideNavOpen() {
     return Session.get('sideNavOpen') && 'sideNavOpen';
   },
-  cartOpen() {
-    return Session.get('cartOpen') && 'cartOpen';
+  packEditorOpen() {
+    const route = FlowRouter.getRouteName();
+    return route === 'Menu.show' && Session.get('packEditorOpen') && 'packEditorOpen';
   },
   processing() {
     return Session.get('processing');
@@ -153,11 +166,25 @@ Template.App_body.helpers({
   },
 
   templateGestures: {
-    'swipeleft .cordova'(event, instance) {
+    'swipeleft .content-overlay, #sideNav'(event, instance) {
       Session.set('sideNavOpen', false);
     },
-    'swiperight .cordova'(event, instance) {
-      Session.set('sideNavOpen', true);
+    // 'swiperight .content-overlay'(event, instance) {
+    //   Session.set('packEditorOpen', false);
+    // },
+    'swiperight #content-container, #cart'(event, instance) {
+      const route = FlowRouter.getRouteName();
+      if (Session.get('packEditorOpen')) {
+        Session.set('packEditorOpen', false);
+      } else {
+        Session.set('sideNavOpen', true);
+      }
+    },
+    'swipeleft #content-container'(event, instance) {
+      const route = FlowRouter.getRouteName();
+      if (route === 'Menu.show') {
+        Session.set('packEditorOpen', true);
+      };
     },
   },
 });
@@ -197,7 +224,7 @@ Template.App_body.events({
   //   event.preventDefault();
   // },
 
-  'click #user-menu'(event, instance) {
+  'click #user-menu a'(event, instance) {
     instance.state.set('userMenuOpen', !instance.state.get('userMenuOpen'));
   },
 
@@ -229,6 +256,7 @@ Template.App_body.events({
   'click .js-logout'(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
+    Session.set('userMenuOpen', !Session.get('userMenuOpen'));
     Meteor.logout();
   },
 });

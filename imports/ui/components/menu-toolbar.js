@@ -33,20 +33,23 @@ Template.Menu_toolbar.helpers({
 	},
 
 	dishesInPack: ()=> {
-		var pack = Session.get('order').dishes;
-		var dishesInPack = [];
-		for (var i = pack.length - 1; i >= 0; i--) {
-			if (pack[i].length > 1) {
-				dishesInPack.push(pack[i]);
-			}
+		if (Session.get('pack')) {
+			var pack = Session.get('pack').dishes;
+			var dishesInPack = [];
+			for (var i = pack.length - 1; i >= 0; i--) {
+				if (pack[i].length > 1) {
+					dishesInPack.push(pack[i]);
+				}
+			};
+			return dishesInPack.length;
 		};
-		return dishesInPack.length;
 	},
 
 	packSize: ()=> {
-		const pack = Session.get('order').dishes;
-		return pack.length;
-	}
+		if (Session.get('pack')) {
+			return Session.get('pack').dishes.length;
+		};
+	},
 });
 
 Template.Menu_toolbar.events({

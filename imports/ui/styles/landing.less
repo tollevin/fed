@@ -63,6 +63,7 @@
           color: @forange;
           background-color: #FFF;
           padding: 20px 30px;
+          font-weight: 400;
 
           @media screen and (max-width: 600px) {
             margin-right: auto;
@@ -366,20 +367,19 @@
   }
 
   .menu-about-desc {
-    width: 100%;
-    float: left;
-    padding: 0 5%;
+    width: 90%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 
     p {
       max-width: 700px;
+      margin-top: 30px;
       margin-left: auto;
       margin-right: auto;
-    }
 
-    @media screen and (max-width: 775px) {
-      p {
-        margin-top: 30px;
-        line-height: 30px;
+      @media screen and (max-width: 775px) {
+        margin-top: 40px;
       }
     }
   }
@@ -428,7 +428,6 @@
     }
   
     p {
-      color: @fgreene;
       font-size: 23px;
       line-height: 30px;
 
@@ -436,6 +435,15 @@
         font-size: 18px;
         margin-bottom: 30px;
         padding-right: 3%;
+      }
+    }
+
+    h3 {
+      color: @fgreene;
+
+      @media screen and (max-width: 500px) {
+        margin-top: 0;
+        margin-bottom: 60px;
       }
     }
   }
@@ -470,19 +478,23 @@
 #Info {
   
   .img-holder {
-    max-height: 400px;
+    max-height: 500px;
     overflow: hidden;
     width: 100%;
   }
   img {
     width: 100%;
+    max-width: 1200px;
     height: auto;
     position: relative;
     bottom: 0;
+    left: 0;
   }
 
   .msg {
     color: @forange;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
   .aside {
@@ -497,12 +509,13 @@
 }
 
 #how_to_fed {
-  background-color: @fgreene;
+  @media screen and (max-width: 500px) {
+    padding-top: 0;
+  }
 
   h2 {
     margin-bottom: 30px;
-    color: #ffffff;
-    font-weight: 400;
+    color: @fgreene;
     font-size: 39px;
     // font-family: "Josefin Sans";
   }
@@ -511,72 +524,71 @@
     width: 50%;
     max-width: 200px;
     border-style: solid;
-    color: #fff;
+    color: @fgreene;
     margin-bottom: 40px;
   }
 
   .how-to-infographic {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 90%;
+    margin-right: auto;
+    margin-left: auto;
 
     @media screen and (max-width: 700px) {
       flex-direction: column;
       align-items: center;
     }
+
+    .how2 {
+      display: inline-block;
+      vertical-align: top;
+      width: 20%;
+      min-width: 250px;
+      margin: 0 15px 30px 15px;
+
+      img {
+        max-height: 150px;
+      }
+
+      a {
+        color: #FFF;
+        background-color: @forange;
+        padding: 8px 13px;
+        text-decoration: none;
+      }
+
+      @media screen and (max-width: 500px) {
+        min-width: 250px;
+
+        img {
+          max-height: 125px;
+        }
+      } 
+    }
   }
 
   h3 {
-    color: #ffffff;
-    font-weight: 400;
-    font-size: 39px;
+    color: @fgreene;
+    font-size: 30px;
     line-height: 42px;
+    height: 84px;
     // font-family: "Josefin Sans";
   }
 
-  .how2 {
-    display: inline-block;
-    vertical-align: top;
-    width: 25%;
-    min-width: 250px;
-    margin: 0 15px 30px 15px;
-
-    img {
-      max-height: 150px;
-    }
-
-    a {
-      color: #FFF;
-      background-color: @forange;
-      padding: 8px 13px;
-      text-decoration: none;
-    }
-
-    @media screen and (max-width: 500px) {
-      min-width: 250px;
-
-      img {
-        max-height: 125px;
-      }
-    } 
-  }
-
-  .or {
-    display: flex;
-    margin: 34px 30px;
-    color: #FFF;
-    font-size: 39px;
-    font-weight: 400;
-
-    @media screen and (max-width: 700px) {
-      margin: 30px auto;
-    }
-  }
-
   p {
-    color: #fff;
-    font-weight: 400;
-    font-size: 22px;
+    color: @fgreene;
+    font-size: 20px;
+  }
+}
+
+#lastCTA {
+  text-align: center;
+
+  .last-CTA {
+    margin-bottom: 51px;
   }
 }
 

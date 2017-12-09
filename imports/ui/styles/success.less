@@ -1,0 +1,112 @@
+@import './utils.less';
+
+#Success {
+	background: #2BC0E4;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #EAECC6, #2BC0E4);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #eeffed, #edfffc, #fffff0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+	.panel-wrapper {
+    width: 90%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+  	h1 {
+  		width: 100%;
+			font-size: 32px;
+			color: @fgreene;
+			margin-bottom: 60px;
+
+			@media screen and (max-width: 924px) {
+				max-width: 700px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
+
+		#Gift-Card {
+			position: relative;
+			border: 1px solid transparent;
+			border-radius: 15px;
+			background-color: #FFF;
+			box-shadow: 0 1px 3px 0 #e6ebf1;
+			width: 100%;
+			max-width: 400px;
+			text-align: center;
+			margin-bottom: 30px;
+			margin-right: 10px;
+
+			img {
+				margin-top: 20px;
+				max-width: 170px;
+				max-height: 170px;
+			}
+
+			p {
+				margin: 0;
+			}
+
+			.title {
+				margin-top: -50px;
+		    position: absolute;
+		    left: 44%;
+		    font-weight: 600;
+		    color: @fgreene;
+			}
+
+			.message {
+				font-size: 18px;
+				font-weight: 500;
+				margin: 40px 20px 20px;
+			}
+
+			hr {
+				width: 80%;
+				border-color: #3fffac;
+
+				@media screen and (min-width: 500px) {
+					display: none;
+				}
+			}
+
+			.value {
+				font-weight: 600;
+				font-size: 22px;
+				color: @fgreene;
+				margin-top: 30px;
+				margin-bottom: 20px;
+
+				@media screen and (min-width: 500px) {
+					position: absolute;
+			    top: 50px;
+			    left: 28px;
+			    margin: 0;
+			  }
+			}			
+		}
+
+		#Order-Summary {
+			border: 1px solid @fgreene;
+			border-radius: 15px;
+			height: fit-content;
+	    padding: 20px;
+
+	    p {
+	    	margin: 0;
+	    	font-size: 17px;
+  	    font-weight: 300;
+	    	display: flex;
+
+	    	img {
+	    		margin-left: 10px;
+	    		margin-right: 10px;
+	    	}
+	    }
+		}
+	}
+}

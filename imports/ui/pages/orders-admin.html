@@ -1,13 +1,6 @@
 <template name="Orders_admin">
-	<div id="orders-admin" class="admin-page">
-		<div id="orders-admin-bar">
-			<!-- print output for kitchen -->
-			<!-- print output for kitchen -->
-			{{> Orders_sidebar}}
-		</div>
-
+	<div id="orders-admin" class="admin-page {{adminMenuOpen}}">
 		<div class="content-scrollable">
-
 			<div class="all-orders">
 				{{#momentum plugin="fade"}}
 					<table class="orders-table"> 
@@ -21,9 +14,6 @@
 								</th>
 								<th class="order-stripe-id">
 									Stripe Charge ID
-								</th>
-								<th class="deliv-id">
-									Deliv Tracking Code
 								</th>
 								<th class="customer-name">
 									Customer Name
@@ -55,11 +45,17 @@
 								<th class="delDay">
 									Delivery Day
 								</th>
-								<th class="sale-price">
-									Sale Price
+								<th>
+									Delivery Fee
 								</th>
-								<th class="order-price">
-									Pack Price
+								<th>
+									Sale Amount
+								</th>
+								<th>
+									Tax Amount
+								</th>
+								<th>
+									Total
 								</th>
 								<th class="coupon">
 									Promo Code

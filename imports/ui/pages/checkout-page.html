@@ -1,24 +1,21 @@
-<head><script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-</head>
 <template name="Checkout_page">
 	<div id="checkout-page" class="page">
 	{{#momentum plugin="fade"}}
-		{{#if loading}}
-      {{> loader}}
-    {{/if}}
 		<div class="order-report">
 			<h1>Checkout</h1>
 			<p class="pack-desc">{{pack}}</p>
 			<div class="ul-wrapper">
 				<ul>
-				{{#each item in items}}
-					<li class="item">{{item}}</li>
+				{{#each item in packItems}}
+					<li>
+						<span class="item-tally" name={{@index}}>{{item.value}}</span>
+						<span class="item-name" name={{@index}}>{{item.name}}</span>
+					</li>
 				{{/each}}
 				</ul>
 			</div>
 
 			<div class="pricing-wrapper">
-	    {{#if Template.subscriptionsReady}}
 				<div class="subtotal">
 					<span>Subtotal</span>
 					<span class="num">{{price}}</span>
@@ -48,7 +45,6 @@
 					<span>Total</span>
 					<span class="num">{{total}}</span>
 				</div>
-			{{/if}}
 			</div>
 
 			{{#if havePromo}}
@@ -58,20 +54,10 @@
 			      <button type="submit" id="promoSub">Apply</button>
 			    </label>
 			  </div>
-				<!-- <div class="form-group">
-					<label>
-						<span>Click here to subscribe,<br/>and save 25% off your first 2 orders!</span>
-						<input type="checkbox" class="subscribe">
-					</label>
-				</div> -->
 			{{else}}
-				{{#if subscribing}}
-				{{else}}
-					<div class="CTAbuttons">
-						<button class="enterPromo">Have a promo code?</button>
-						<!-- <button class="btn-secondary">Subscribe<br>and save 5%!</button> -->
-					</div>
-				{{/if}}
+				<div class="CTAbuttons">
+					<button class="enterPromo">Have a promo code?</button>
+				</div>
 			{{/if}}
 			<div class="stripe-logo">
 				<img src="/icons/powered_by_stripe.png" alt="Powered by Stripe">
@@ -80,158 +66,66 @@
 
 		<div class="form-shell">
 			<form id="{{formType}}"> 
-				<div class="panel-body">
-					<h2>Delivery Info</h2>
-			    {{#if Template.subscriptionsReady}}
-					<div class="form-group firstName">
-						<!-- <label for="7TGxZsAyFk9zWn6rj" class="control-label">First name</label> --> 
-						<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" data-schema-key="customer.firstName" class="form-control" required placeholder="First Name" value="{{first_name}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group lastName">
-						<!-- <label for="zS5Mw3HxCAsACZCui" class="control-label">Last name</label> --> 
-						<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" data-schema-key="customer.lastName" class="form-control" required placeholder="Last Name" value="{{last_name}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group phone">
-						<!-- <label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label> --> 
-						<input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" data-schema-key="customer.phone" class="form-control" required placeholder="Phone Number" value="{{phone}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group email">
-						<!-- <label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label> --> 
-						<input type="text" name="customer.email" id="EsBbF9Ads8fEFFAut" data-schema-key="customer.email" class="form-control" required placeholder="Email Address" value="{{email}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group address1">
-						<!-- <label for="KcYJxhTp8QLnZEk2c" class="control-label">Address Line 1</label>  -->
-						<input type="text" name="customer.address.line1" id="KcYJxhTp8QLnZEk2c" data-schema-key="customer.address.line1" class="form-control" required placeholder="Address Line 1" value="{{address1}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group address2">
-						<!-- <label for="L2ukezE6Qb2SMWw2i" class="control-label">Address Line 2</label> --> 
-						<input type="text" name="customer.address.line2" id="L2ukezE6Qb2SMWw2i" data-schema-key="customer.address.line2" class="form-control" placeholder="Address Line 2" value="{{address2}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group city">
-						<!-- <label for="gPijubZcAW4ZYuDGA" class="control-label">City</label>  -->
-						<input type="text" name="customer.address.city" id="gPijubZcAW4ZYuDGA" data-schema-key="customer.address.city" class="form-control" required placeholder="City" value="{{city}}">
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group state">
-						<!-- <label for="D268gw6JgngaxcDMt" class="control-label">State</label> --> 
-						<select name="customer.address.state" id="D268gw6JgngaxcDMt" data-schema-key="customer.address.state" autocomplete="off" class="form-control " required> 
-							<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AS">AS</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FM">FM</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected>NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
-						</select>
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group zip"> 
-						<!-- <label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label> --> 
-						<input type="text" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" required>
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group delivDate"> 
-						<!-- <label for="9B4bKQHybDyHem8nh" class="control-label">Delivery Window</label>  -->
-						<select name="deliveryWindow" id="9B4bKQHybDyHem8nh" data-schema-key="deliveryWindow" class="form-control" required>
-							<option value="">Select your delivery date</option>
-							<option name="Sunday" value="Sunday">{{nextSunday}}, 6-9pm</option>
-							<option name="Monday" value="Monday">{{nextMonday}}, 6-9pm</option>
-						</select>
-						<span class="help-block"></span>
-					</div>
-
-					<div class="form-group comments"> 
-						<!-- <label for="9Lt5aG8uEGEL5KfnL" class="control-label">Comments for delivery</label> -->
-						<!-- <br/> -->
-						<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL" data-schema-key="destinationComments" class="form-control" placeholder="Notes for delivery?"></textarea>
-						<span class="help-block"></span>
-					</div>
-
-					<h2>Payment Info</h2>
-					<div class="card-errors"></div>
-					
-					{{#if subscribed}}
-						<div class="form-group source">
-					  	<select id="Source" required>
-					  		{{#with sources}}
-					  			<option value="">Select a payment source</option>
-					  			{{#each source in sources.data}}
-								    <option value="{{source.id}}">
-								    	<span class="card-brand">{{source.brand}}
-								    	</span> - 
-								    	<span>*{{source.last4}}</span>
-								    </option>
-								  {{/each}}
-						    {{/with}}
-						  </select>
-					  </div>
-
-					  <div class="form-group cvcNo">
-				      <input type="text" size="4" placeholder="CVC No." class="cvc2" required>
-					  </div>
-
-					  <div class="sbmt-button">
-							<button id="SaveOrder" type="submit" disabled="{{disabled}}" class="sbmtOrder btn-secondary">
-								Save
-							</button>
-						</div>
-					{{else}}
-					  <div class="form-group card">
-				      <input type="text" size="20" placeholder="Card Number" class="number" required>
-					  </div>
-
-					  <div class="form-group expMo">
-				      <select id="expM" class="exp_month" required>
-						    <option value="">Exp Mo</option>
-						    <option class="extraneous" value="01">01</option>
-						    <option class="extraneous" value="02">02</option>
-						    <option class="extraneous" value="03">03</option>
-						    <option class="extraneous" value="04">04</option>
-						    <option class="extraneous" value="05">05</option>
-						    <option class="extraneous" value="06">06</option>
-						    <option class="extraneous" value="07">07</option>
-						    <option class="extraneous" value="08">08</option>
-						    <option class="extraneous" value="09">09</option>
-						    <option class="extraneous" value="10">10</option>
-						    <option class="extraneous" value="11">11</option>
-						    <option class="extraneous" value="12">12</option>
-							</select>
-						</div>
-						<div class="form-group expYear">
-				    	<select id="expY" class="exp_year" required>
-						    <option value="">Exp Year</option>
-						    <option value="2017">2017</option>
-						    <option value="2018">2018</option>
-						    <option value="2019">2019</option>
-						    <option value="2020">2020</option>
-						    <option value="2021">2021</option>
-						    <option value="2022">2022</option>
-						    <option value="2023">2023</option>
-						    <option value="2024">2024</option>
-						  </select>
-					  </div>
-
-					  <div class="form-group cvcNo">
-				      <input type="text" size="4" placeholder="CVC No." class="cvc" required>
-					  </div>
-
-						<div class="sbmt-button">
-							<button id="SubmitOrder" type="submit" disabled="{{disabled}}" class="sbmtOrder btn-secondary">
-								Submit
-							</button>
-						</div>					  
-					{{/if}}
-					{{/if}}
+				<h2>Delivery Info</h2>
+				<div class="form-group">
+					<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" data-schema-key="customer.firstName" class="form-control" required placeholder="First Name" value="{{first_name}}">
+					<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" data-schema-key="customer.lastName" class="form-control" required placeholder="Last Name" value="{{last_name}}">
 				</div>
+
+				<div class="form-group">
+					<input type="text" name="customer.email" id="email" data-schema-key="customer.email" class="form-control" required placeholder="Email" value="{{email}}">
+					<input type="tel" name="customer.phone" id="phone" data-schema-key="customer.phone" class="form-control" required placeholder="Phone" value="{{phone}}">
+				</div>
+
+				<span class="address-errors"></span>
+
+				<input type="text" name="customer.address.line1" id="address-line-1" data-schema-key="customer.address.line1" class="form-control" required placeholder="Address Line 1" value="{{address1}}">
+
+				<input type="text" name="customer.address.line2" id="address-line-2" data-schema-key="customer.address.line2" class="form-control" placeholder="Address Line 2" value="{{address2}}">
+
+				<div id="zip-errors"></div>
+
+				<div class="form-group">
+					<input type="text" name="customer.address.city" id="address-city" data-schema-key="customer.address.city" class="form-control" required placeholder="City" value="{{city}}">
+
+					<select name="customer.address.state" id="address-state" data-schema-key="customer.address.state" autocomplete="off" class="form-control " value="NY" required> 
+						<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected>NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
+					</select>
+					<input type="text" name="customer.address.zipCode" id="address-zip" data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" required>
+				</div>
+
+				<select name="deliveryWindow" id="9B4bKQHybDyHem8nh" data-schema-key="deliveryWindow" class="form-control" required>
+					<option class="default-select-option" value="">Select your delivery date <i class="fa fa-caret-down"></i></option>
+					<option name="Sunday" value="Sunday">{{nextSunday}}, 6-9pm</option>
+					<option name="Monday" value="Monday">{{nextMonday}}, 6-9pm</option>
+				</select>
+
+				<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL" data-schema-key="destinationComments" class="form-control" placeholder="Notes for delivery?"></textarea>
+
+				<h2>Payment Info</h2>
+				<div id="payment-errors"></div>
+				{{#if stripeID}}
+			  	<select id="Source" required>
+			  		{{#with sources}}
+			  			<option value="">Select a payment source <i class="fa fa-caret-down"></i></option>
+			  			{{#each source in sources.data}}
+						    <option value="{{source.id}}">
+						    	<span class="card-brand">{{source.brand}}
+						    	</span> - 
+						    	<span>*{{source.last4}}</span>
+						    </option>
+						  {{/each}}
+				    {{/with}}
+				  </select>
+				{{else}}
+					<!-- <div id="card-element"></div> -->
+					{{> Card_element}}
+				{{/if}}
+					<div class="sbmt-button">
+						<button disabled="{{disabled}}" class="sbmtOrder btn-secondary">
+							{{formSubmitButtonText}}
+						</button>
+					</div>
 			</form>
 		</div>
 	{{/momentum}}

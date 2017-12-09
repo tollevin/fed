@@ -16,19 +16,13 @@
 		</div>
 		<div class="menu-item-icons">
 		</div>
-		<div class="menu-item-ingredients">
-			<p>
-				{{#each ingredients}}
-					<span class="ingredient">{{name}} - {{amount}}</span>
-				{{/each}}
-			</p>
-		</div>
-		<div class="add-input">
-			{{#if soldOut}}
-				<button disabled>Sold Out</button>
-			{{else}}
-				<button class="add-to-cart">Add to cart</button>
-			{{/if}}
+		<div class="inputs">
+			<div class="counter">
+				<button class="remove-from-pack">-</button>
+				<input type="number" value="{{tally}}" readonly>
+				<button class="add-to-pack">+</button>
+			</div>
 		</div>
 	</article>
 </template>
+		

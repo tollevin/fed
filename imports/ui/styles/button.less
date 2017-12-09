@@ -4,7 +4,7 @@
 [class*=" btn-"] {
   // Sizing
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 20px !important; //override line-height always so we can use em's to size
   padding: .75em 1em; // 48px tall
 
@@ -48,6 +48,32 @@
     &.active {
       box-shadow: lighten(#517096, 25%) 0 0 0 1px inset;
     }
+  }
+
+  &[class*="tertiary"] {
+    background-color: #FFF;
+    color: @fgreene;
+    border: 1px solid @fgreene;
+
+    &:hover { 
+      background-color: @fgreene;
+      color: @color-empty;
+    }
+
+    &:active { box-shadow: rgba(0,0,0,.3) 0 1px 3px 0 inset; }
+  }
+
+  &[class*="quaternary"] {
+    background-color: #FFF;
+    color: @forange;
+    border: 1px solid @forange;
+
+    &:hover { 
+      background-color: @forange;
+      color: @color-empty;
+    }
+
+    &:active { box-shadow: rgba(0,0,0,.3) 0 1px 3px 0 inset; }
   }
 
   &[disabled] { opacity: .5; }

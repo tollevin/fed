@@ -1,0 +1,209 @@
+@import './utils.less';
+
+#Gifts {
+	background: #2BC0E4;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #EAECC6, #2BC0E4);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #eeffed, #edfffc, #fffff0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+	a, button, input {
+		border-radius: 5px;
+		height: 39px;
+		font-weight: 500;
+	}
+
+	button {
+		cursor: pointer;
+	}
+
+	.panel-wrapper {
+    width: 90%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+
+  	h1 {
+  		width: 100%;
+			font-size: 32px;
+			color: @fgreene;
+			margin-bottom: 0px;
+
+			@media screen and (max-width: 924px) {
+				max-width: 525px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
+
+		p {
+			margin-top: 5px;
+			margin-bottom: 40px;
+		}
+	}
+
+	#Gift-Card-Form,
+	#Care-Package-Form {
+		width: 100%;
+		display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+
+    @media screen and (max-width: 924px) {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.info-panel {
+			width: 100%;
+			max-width: 525px;
+
+			@media screen and (max-width: 924px) {
+				margin-bottom: 30px;
+			}
+
+			a, button, input {
+				border: 1px solid @fgreene;
+				color: @fgreene;
+				font-size: 16px;
+				margin-bottom: 10px;
+			}
+
+			.gift-buttons {
+				display: flex;
+				flex-direction: row;
+		    align-items: center;
+		    flex-wrap: wrap;
+        margin-top: 40px;
+
+				a, button {
+					text-transform: uppercase;
+					transition: all 500ms;
+					margin-right: 10px;
+					background: transparent;
+					padding: 10px 7px 10px 6px;
+
+					
+
+					&:hover {
+						background: @fgreene;
+						color: #FFF;
+					}
+
+					&.active {
+						background: @fgreene;
+						color: #FFF;
+					}
+				}
+
+				p {
+					margin: 0 15px;
+				}
+
+				input {
+					padding: 10px;
+				}
+			}
+
+			.from, .to {
+				display: flex;
+				flex-direction: column;
+
+				.form-group {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					input {
+				    width: 49%;
+					}
+				}
+
+				input {
+					height: 39px;
+					font-size: 16px;
+					border: 1px solid transparent;
+					border-radius: 5px;
+					padding: 10px;
+					margin-bottom: 8px;
+			    box-shadow: 0 1px 3px 0 #e6ebf1;
+			    color: @fgreene;
+				}
+
+				.city {
+		    	width: 50%;
+		    }
+
+		    .state {
+		    	width: 20%;
+		    }
+
+		    .zip {
+		    	width: 25%;
+		    }
+
+		    .message {
+		    	height: 78px;
+		    	font-size: 16px;
+					border: 1px solid transparent;
+		    	border-radius: 5px;
+					padding: 10px;
+			    box-shadow: 0 1px 3px 0 #e6ebf1;
+		    }
+			}
+
+	    .btn-form {
+	    	margin: 30px auto;
+	    	background: @forange;
+	    	border: 2px solid @forange;
+	    	border-radius: 5px;
+	    	width: 200px;
+	    }
+		}
+
+		.cta-panel {
+			width: 100%;
+	    max-width: 300px;
+      height: fit-content;
+	    background: #d3ffdd;
+	    border-radius: 5px;
+	    text-align: center;
+	    padding: 15px;
+
+	    @media screen and (max-width: 924px) {
+				margin-bottom: 30px;
+				max-width: 525px;
+			}
+
+			.price-display {
+				text-align: left;
+				padding: 0px 24px;
+
+				.value {
+					float: right;
+				}
+			}
+
+			#card-element {
+				margin-top: 20px;
+			}
+
+	    button {
+	    	width: 80%;
+  	    max-width: 250px;
+				transition: all 500ms;
+				background: @forange;
+	    	border: 1px solid transparent;
+		    box-shadow: 0 1px 3px 0 #e6ebf1;
+	    	color: #FFF;
+	    	font-size: 18px;
+	    	margin-top: 20px;
+	    	margin-bottom: 20px;
+	    }
+
+	    p {
+	    	margin: 8px auto 20px;
+	    	color: @fgreene;
+	    }
+		}
+	}
+}

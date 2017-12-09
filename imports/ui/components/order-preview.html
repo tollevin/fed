@@ -1,5 +1,6 @@
 <template name="Order_preview">
 	<tr class="order-preview">
+		{{#if Template.subscriptionsReady}}
 		<td class="order-paid-at">
 			{{paidAt}}
 		</td>
@@ -9,45 +10,55 @@
 		<td class="order-stripe-id">
 			{{stripe_id}}
 		</td>
-		<td class="deliv-id">
+		<!-- <td class="deliv-id">
 			{{trackingCode}}
-		</td>
+		</td> -->
 		<td class="customer-name">
-			{{customer.first_name}} {{customer.last_name}}
+			{{user.first_name}} {{user.last_name}}
 		</td>
 		<td class="customer-address">
-			{{customer.address_line_1}}
-			{{customer.address_line_2}}
+			{{user.address_line_1}}
+			{{user.address_line_2}}
 		</td>
 		<td class="customer-borough">
-			{{customer.address_city}}
+			{{user.address_city}}
 		</td>
 		<td class="customer-zipCode">
-			{{customer.address_zipcode}}
+			{{user.address_zipcode}}
 		</td>
 		<td class="customer-phone">
-			{{customer.phone}}
+			{{user.phone}}
 		</td>
 		<td class="customer-email">
-			{{customer.email}}
+			{{user.email}}
 		</td>
 		<td class="status-light">
 			{{status}}
 		</td>
 		<td class="order-items">
-			{{packDishes}}
+			{{#each dish in dishList}}
+				{{dish.value}} {{dish.name}}<br>
+			{{/each}}
 		</td>
 		<td class="order-snacks">
-			{{packSnacks}}
+			{{#each snack in snackList}}
+				<span>{{snack.value}} {{snack.name}}</span>
+			{{/each}}
 		</td>
 		<td class="delDay">
 			{{deliv_day}}
 		</td>
-		<td class="sale-price">
-			{{salePrice}}
+		<td class="delivFee">
+			{{delivFee}}
 		</td>
-		<td class="order-price">
-			{{packPrice}}
+		<td class="saleAmount">
+			{{saleAmount}}
+		</td>
+		<td class="taxAmount">
+			{{taxAmount}}
+		</td>
+		<td class="total">
+			{{total}}
 		</td>
 		<td class="coupon">
 			{{coupon}}
@@ -57,11 +68,12 @@
 			
 			
 			<td class="delDay">
-				{{customer.preferredDelivDay}}
+				{{user.preferredDelivDay}}
 			</td>
 			<td class="readyBy">
 				{{readyBy}}
 			</td>
 		</td> -->
+		{{/if}}
 	</tr>
 </template>

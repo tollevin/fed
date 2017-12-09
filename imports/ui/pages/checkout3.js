@@ -20,133 +20,159 @@ import {
 } from '../../api/orders/methods.js';
 
 import {
-  updatePromo
+  usePromo
 } from '../../api/promos/methods.js';
 
 import './checkout-page.html';
 
 // components
 import '../components/loader.js';
-
+import '../components/stripe-card-element.js';
 
 Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
   // Create a handle for subscription to this 'single.order', 'thisUserData'
-  const handle = this.subscribe('single.order', Session.get('orderId')._id);
-  const userData = this.subscribe('thisUserData', Meteor.userId());
+  if (Session.get('orderId')) {
+    const handle = this.subscribe('single.order', Session.get('orderId')._id);
+    const thisUserData = this.subscribe('thisUserData', Meteor.userId());
 
-  // Set initial Session variables
-  Session.set('cartOpen', false);
-  Session.set('loading', false);
+    // Set initial Session variables
+    Session.set('cartOpen', false);
+    Session.set('loading', false);
 
-  // Set default variables for template
-  this.price = Session.get('order').price / 100;
+    // Set default variables for template
+    this.price = Session.get('pack').price / 100;
 
-  // Set reactive variables for template
-  this.discount = new ReactiveVar(0);
-  this.discountPercent = new ReactiveVar(0);
-  this.discountValue = new ReactiveVar(false);
-  this.userHasCredit = new ReactiveVar(0);
-  this.appliedCredit = new ReactiveVar(0);
-  this.zipField = new ReactiveVar(Session.get('delivEstimate').customer_zipcode);
-  this.userHasPromo = new ReactiveVar(false);
-  this.order = new ReactiveVar(Session.get('orderId'));
-  this.order.coupon = new ReactiveVar( false );
-  this.order.total = new ReactiveVar();  
-  this.order.subtotal = new ReactiveVar();
-  this.delivFee = new ReactiveVar(0);
-  this.sources = new ReactiveVar(false);
-  // for GUEST USERS and LOGGED IN USERS who haven't yet purchased, activate 2MEALSFREE initial deal
-  // if (Session.get('newUser')) {
-  //   this.order.coupon.set("2MEALSFREE");
-  //   var percentOff = ()=> {
-  //     switch (this.price) {
-  //       case 85:
-  //         return 34;
-  //         break;
-  //       case 110:
-  //         return 26;
-  //         break;
-  //       case 135:
-  //         return 20;
-  //         break;
-  //       case 159:
-  //         return 18;
-  //         break;
-  //     };
-  //   };
-  //   this.discountPercent.set( this.price * percentOff() / 100 );
-  //   this.discountValue.set( "2 Meals FREE!" );
-  // };
+    // Set reactive variables for template
+    this.discount = new ReactiveVar(0);
+    this.discountPercent = new ReactiveVar(0);
+    this.discountValue = new ReactiveVar(false);
+    this.userHasCredit = new ReactiveVar(0);
+    this.appliedCredit = new ReactiveVar(0);
+    this.zipField = new ReactiveVar(Meteor.user().address_zipcode);
+    this.userHasPromo = new ReactiveVar(false);
+    this.order = new ReactiveVar(Session.get('orderId'));
+    this.order.coupon = new ReactiveVar( false );
+    this.order.total = new ReactiveVar();  
+    this.order.subtotal = new ReactiveVar();
+    this.delivFee = new ReactiveVar(0);
+    this.sources = new ReactiveVar(false);
+    this.isNotSubscriber = true;
 
-  // All reactive data for autorun
-  this.autorun(() => {
-
-    const isReady = handle.ready();
-    if (isReady) {
-
-      // if USER is LOGGED IN
-      if (userData.ready()) {
-        if (Meteor.userId()) {
-
-          // If the customer has a Stripe ID, we attach it to the template and call a list of their payment sources
-          if (!this.stripe_id && Meteor.user().stripe_id) {
-            this.stripe_id = Meteor.user().stripe_id;
-            // Call stripe user info
-            Meteor.call( 'retrieveCustomer', this.stripe_id, (error, response) => {
-              if (error) {
-                console.log(error);
-              } else {
-                this.stripeCustomer = response;
-                this.sources.set(this.stripeCustomer.sources);
-              };
-            });
-          };
-
-          // Set Customer Discount
-          if (Meteor.user().subscriptions && (Meteor.user().subscriptions.status === "active" || "trialing")) {
-            var percentOff = Meteor.user().subscriptions.discount.coupon.id.split("b")[1];
-            // if (percentOff[0] === "-") {
-            //   this.discount.set( percentOff.split("-")[1] );
-            //   this.discountValue.set( "- $" + discount.toFixed(2) + " \u2665" );
-            // } else {
-              this.discountPercent.set( this.price * Number(percentOff) / 100 );
-              this.discountValue.set( percentOff + "% \u2665" );
-            // };
-          };
-
-          // Set if user has a credit on account
-          if (Meteor.user().credit > 0) {
-            const credit = Meteor.user().credit;
-            this.userHasCredit.set(credit);
-          };
-        };        
-      };
-    };
-
-    // Reactive vars to be autorun
-    this.order.subtotal.set( this.price - this.discountPercent.get() );
-
-    if (MH.indexOf(this.zipField.get()) > -1) {
-      this.delivFee.set(13);
-    };
-    if (MH_20.indexOf(this.zipField.get()) > -1) {
-      this.delivFee.set(20);
-    };
-
-    this.order.total.set(( this.order.subtotal.get() * 1.08875 ) + this.delivFee.get() - this.discount.get());
-    
-    // if (this.order.total.get() < 0) {
-    //   const credit = 0 - this.order.total.get();
-    //   this.order.total.set(0);
-    //   this.userHasCredit.set(credit + Meteor.user().credit);
+    // for GUEST USERS and LOGGED IN USERS who haven't yet purchased, activate 2MEALSFREE initial deal
+    // if (Session.get('newUser')) {
+    //   this.order.coupon.set("2MEALSFREE");
+    //   var percentOff = ()=> {
+    //     switch (this.price) {
+    //       case 85:
+    //         return 34;
+    //         break;
+    //       case 110:
+    //         return 26;
+    //         break;
+    //       case 135:
+    //         return 20;
+    //         break;
+    //       case 159:
+    //         return 18;
+    //         break;
+    //     };
+    //   };
+    //   this.discountPercent.set( this.price * percentOff() / 100 );
+    //   this.discountValue.set( "2 Meals FREE!" );
     // };
-  });
+
+    // All reactive data for autorun
+    this.autorun(() => {
+
+      const isReady = handle.ready();
+      if (isReady) {
+
+        // if USER is LOGGED IN
+        if (thisUserData.ready()) {
+          if (Meteor.userId()) {
+
+            // If the customer has a Stripe ID, we attach it to the template and call a list of their payment sources
+            if (!this.stripe_id && Meteor.user().stripe_id) {
+              this.stripe_id = Meteor.user().stripe_id;
+              // Call stripe user info
+              Meteor.call( 'retrieveCustomer', this.stripe_id, (error, response) => {
+                if (error) {
+                  console.log(error);
+                } else {
+                  this.stripeCustomer = response;
+                  this.sources.set(this.stripeCustomer.sources);
+                };
+              });
+            };
+
+            // Set Subscriber Discount
+            if (Meteor.user().subscriptions && ['active', 'trialing'].indexOf(Meteor.user().subscriptions.status) > -1) {
+              this.isNotSubscriber = false;
+              var percentOff = Meteor.user().subscriptions.discount.coupon.id.split("b")[1];
+              // if (percentOff[0] === "-") {
+              //   this.discount.set( percentOff.split("-")[1] );
+              //   this.discountValue.set( "- $" + discount.toFixed(2) + " \u2665" );
+              // } else {
+                this.discountPercent.set( this.price * Number(percentOff) / 100 );
+                this.discountValue.set( percentOff + "% \u2665" );
+              // };
+            };
+
+            // Set if user has a credit on account
+            if (Meteor.user().credit > 0) {
+              const credit = Meteor.user().credit;
+              this.userHasCredit.set(credit);
+            };
+          } else {
+            FlowRouter.go('/');
+          };        
+        };
+      };
+
+      // Reactive vars to be autorun
+      this.order.subtotal.set( this.price - this.discountPercent.get() );
+
+      if (MH.indexOf(this.zipField.get()) > -1) {
+        this.delivFee.set(13);
+      };
+      if (MH_20.indexOf(this.zipField.get()) > -1) {
+        this.delivFee.set(20);
+      };
+
+      this.order.total.set(( this.order.subtotal.get() * 1.08875 ) + this.delivFee.get() - this.discount.get());
+      
+      // if (this.order.total.get() < 0) {
+      //   const credit = 0 - this.order.total.get();
+      //   this.order.total.set(0);
+      //   this.userHasCredit.set(credit + Meteor.user().credit);
+      // };
+    });
+  } else {
+    sAlert.error("Sorry, your order got tossed! Redirecting you home...", { timeout: 3000, onClose: function() { FlowRouter.go('/'); }});
+  };
 });
 
 Template.Checkout_page.onRendered(function checkoutPageOnRendered() {
-  // Set Stripe Public Key
-  // Stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  Stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // // Set Stripe Public Key
+  // stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  // // stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // // Set Stripe Elements to element var
+  // elements = stripe.elements();
+  // // Create an instance of the card Element
+  // // Custom styling can be passed to options when creating an Element.
+  // const style = {
+  //   base: {
+  //     // Add your base input styles here. For example:
+  //     fontSize: '16px',
+  //   },
+  // };
+  // card = elements.create('card', {style});
+
+  // if (this.isNotSubscriber) {
+  //   Meteor.setTimeout(()=> {
+  //     card.mount('#card-element');
+  //   }, 1000);
+  // };
 });
 
 Template.Checkout_page.onDestroyed(function checkoutPageOnDestroyed() {
@@ -168,20 +194,20 @@ Template.Checkout_page.helpers({
     return !(Template.instance().stripe_id);
   },
 
+  stripeID() {
+    return Meteor.user().stripe_id;
+  },
+
   subscribed() {
-    return Meteor.userId() && Meteor.user().subscriptions;
+    return Meteor.userId() && Meteor.user().subscriptions && 'subscribed';
   },
 
   formType() {
-    if (Meteor.userId() && Meteor.user().subscriptions) {
+    if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status != 'canceled')) {
       return "insertSubscriberOrderForm";
     } else {
       return "insertOrderForm";
     };
-  },
-
-  orders() {
-    return Orders;
   },
 
   zipCode() {
@@ -249,13 +275,52 @@ Template.Checkout_page.helpers({
   },
 
   pack() {
-    return Session.get('order').description;
+    return Session.get('pack').description;
   },
 
-  items() {
-    var items = Session.get('order').dishes.concat(Session.get('order').snacks);
-    return items;
+  packItems() {
+    var dishList = Session.get('pack').dishes;
+    var dishTally = {};
+    for (var i = dishList.length - 1; i >= 0; i--) {
+      if (dishList[i] != '' && !dishTally[dishList[i]]) {
+        dishTally[dishList[i]] = 1;
+      } else if (dishList[i] != '') {
+        dishTally[dishList[i]] += 1;
+      };
+    };
+    var snackList = Session.get('pack').snacks;
+    var snackTally = {};
+    for (var i = snackList.length - 1; i >= 0; i--) {
+      if (snackList[i] != '' && !snackTally[snackList[i]]) {
+        snackTally[snackList[i]] = 1;
+      } else if (snackList[i] != '') {
+        snackTally[snackList[i]] += 1;
+      };
+    };
+    var result = [];
+    for (var key in dishTally) result.push({name:key,value:dishTally[key]});
+    for (var key in snackTally) result.push({name:key,value:snackTally[key]});
+    return result;
   },
+
+  dishes() {
+    if (Session.get('pack')) {
+      var dishList = Session.get('pack').dishes;
+      var dishTally = {};
+      for (var i = dishList.length - 1; i >= 0; i--) {
+        if (dishList[i] != '' && !dishTally[dishList[i]]) {
+          dishTally[dishList[i]] = 1;
+        } else if (dishList[i] != '') {
+          dishTally[dishList[i]] += 1;
+        };
+      };
+      console.log(dishTally);
+      var result = [];
+      for (var key in dishTally) result.push({name:key,value:dishTally[key]});
+      return result;
+    };
+  },
+
 
   deliveryFee() {
     return "$" + Template.instance().delivFee.get();
@@ -291,6 +356,14 @@ Template.Checkout_page.helpers({
 
   sources() {
     return Template.instance().sources.get();
+  },
+
+  formSubmitButtonText() {
+    if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status != 'canceled')) {
+      return "Save";
+    } else {
+      return "Buy";
+    };
   },
 
   disabled() {
@@ -338,6 +411,7 @@ Template.Checkout_page.events({
     Session.set('loading', true);
 
     const code = template.find('[id="promo"]').value.toUpperCase();
+    const user = Meteor.userId();
     template.subscribe('single.promo', code, {
       onReady: function () {
         Session.set('newUser', false);
@@ -353,6 +427,9 @@ Template.Checkout_page.events({
         
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
+          template.order.coupon.set( false );
+        } else if (promo.users[user] === promo.useLimitPerCustomer) {
+          sAlert.error('Sorry, that code has already been used.');
           template.order.coupon.set( false );
         } else if (promo && promo.credit) {
           var total = template.order.total.get();
@@ -375,9 +452,14 @@ Template.Checkout_page.events({
           };
         } else if (promo && promo.percentage) {
           template.order.coupon.set( code );
-          var percentOff = promo.percentage;
-          template.discountPercent.set( template.price * percentOff / 100 );
-          template.discountValue.set( "-" + percentOff + "%" );
+          if (code === "FED40") {
+            sAlert.error("Sorry, that code only applies toward subscriptions");
+            template.order.coupon.set( false );
+          } else {
+            var percentOff = promo.percentage;
+            template.discountPercent.set( template.price * percentOff / 100 );
+            template.discountValue.set( "-" + percentOff + "%" );
+          };
         } else if (promo && promo.function) {
           template.order.coupon.set( code );
           if (code === "MORE4LESS") {
@@ -447,7 +529,15 @@ Template.Checkout_page.events({
       template.newCredit = 0;
       template.discountValue.set("- $" + credit);
       template.discount.set( credit );
-      sAlert.success('$' + newCredit.toFixed(2) + " worth of FedCred applied!.");
+      sAlert.success('$' + credit.toFixed(2) + " worth of FedCred has been applied!");
+    };
+  },
+
+  'blur #address-zip'(event, template) {
+    const value = event.currentTarget.value;
+    if (yesZips.indexOf(value) < 0) {
+      const errorElement = document.getElementById('zip-errors');
+      errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
     };
   },
 
@@ -458,7 +548,7 @@ Template.Checkout_page.events({
     var orderToProcess = template.order.get();
     orderToProcess.userId = Meteor.userId();
     orderToProcess.total = template.order.total.get().toFixed(2);
-    orderToProcess.packName = Session.get('order').description;
+    orderToProcess.packName = Session.get('pack').description;
     orderToProcess.coupon = template.order.coupon.get();
     var customer = {};
     customer.first_name = template.find('[name="customer.firstName"]').value;
@@ -494,26 +584,66 @@ Template.Checkout_page.events({
 
     // async function createStripeToken() {
     //   try {
-    //     const token = await Stripe.card.createToken({
-    //       number: $('.number').val(),
-    //       cvc: $('.cvc').val(),
-    //       exp_month: $('.exp_month').val(),
-    //       exp_year: $('.exp_year').val(),
-    //       address_zip: customer.address_zipcode,
+    //     const token = await stripe.tokens.create({
+    //       card: {
+    //         number: $('.number').val(),
+    //         cvc: $('.cvc').val(),
+    //         exp_month: $('.exp_month').val(),
+    //         exp_year: $('.exp_year').val(),
+    //         address_zip: customer.address_zipcode,
+    //       }
     //     });
     //     return token;
     //   } catch(error) {
-    //     throw new Meteor.Error(err.status)
+    //     throw new Meteor.Error(error.status)
     //   };
     // };
+
+    async function processPromo() {
+      try {
+        const code = orderToProcess.coupon;
+        var codeCheck = false;
+        if (code) {
+          usePromo.call({
+            code: code
+          }, (err, res) => {
+            if (err) {
+              return(err);
+            } else {
+              return(res);
+            };
+          });
+        };
+      } catch(error) {
+        sAlert.error(error.reason);
+      };
+    };
+
+    async function createStripeTokenFromElement() {
+      try {
+        var childView = Blaze.getView(template.find('#card-element'));
+        var childTemplateInstance = childView._templateInstance;
+        var card = childTemplateInstance.card;
+        var stripe = childTemplateInstance.stripe;
+        const {token, error} = await stripe.createToken(card);
+        return token;
+      } catch(error) {
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
+      };
+    };
 
     async function createStripeCustomer(cust) {
       try {
         const newStripeCustomer = await callWithPromise('createCustomer', cust );
         return newStripeCustomer;
       } catch(error) {
-        sAlert.error(error.reason);
-        throw new Meteor.Error(411,'createStripeCustomer failed');
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
       }
     };
 
@@ -522,42 +652,37 @@ Template.Checkout_page.events({
         const newCharge = await callWithPromise( 'processPayment', charge );
         return newCharge;
       } catch(error) {
-        sAlert.error(error.reason);
-        throw new Meteor.Error(401, 'chargeStripe failed');
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
       };
     };
 
-    async function createNewDelivery(delivRequest) {
+    async function processSingleOrder () {
       try {
-        const newDelivery = await callWithPromise( 'createDelivery', delivRequest );
-        return newDelivery;
-      } catch(error) {
-        sAlert.error(error.reason);
-        throw new Meteor.Error(401, 'createNewDelivery failed');
-      };
-    };
-
-    async function processOrder (token) {
-      try {
-        const token_id = token.id;
+        const codeCheck = await processPromo();
 
         // Make finalPrice in cents as a number from total
         let charge;
 
         // If user already has a Stripe customer ID
         if (stripe_id) {
+          var source = template.find('[id="Source"]').value;
           charge  = {
             amount: finalPrice,
             currency: 'usd',
-            source: token_id,
+            customer: stripe_id,
+            source: source,
             description: orderToProcess.packName + " for " + customer.first_name + " " + customer.last_name,
             receipt_email: customer.email
           };
         // Else if new customer
         } else {
+          const token = await createStripeTokenFromElement();
           const cust = {
             description: "Customer for " + customer.first_name + " " + customer.last_name,
-            source: token_id,
+            source: token.id,
             account_balance: 0,
             email: customer.email
           };
@@ -595,20 +720,20 @@ Template.Checkout_page.events({
         }];
 
         var delDay = $('[name="deliveryWindow"]').val();
-        var windows = Session.get('delivEstimate');
-        if ( delDay === "Monday") {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-        } else {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-        };
+        // var windows = Session.get('delivEstimate');
+        // if ( delDay === "Monday") {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
+        // } else {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
+        // };
 
-        const delivRequest = {
-          "order_reference": Session.get('orderId')._id,
-          "customer": customer,
-          "packages": packages,
-          "delivery_window_id": delivery_window,
-          "destination_comments": comments,
-        };
+        // const delivRequest = {
+        //   "order_reference": Session.get('orderId')._id,
+        //   "customer": customer,
+        //   "packages": packages,
+        //   "delivery_window_id": delivery_window,
+        //   "destination_comments": comments,
+        // };
 
         // const newDelivery = await createNewDelivery( delivRequest );
 
@@ -622,7 +747,7 @@ Template.Checkout_page.events({
         
         Meteor.call( 'updateUser', orderToProcess.userId, customer );
 
-        orderToProcess.readyBy = delivery_window.starts_at;
+        // orderToProcess.readyBy = delivery_window.starts_at;
         orderToProcess.deliv_day = delDay;
         // if (!Meteor.userId()) orderToProcess.customer = {
         //   first_name: customer.first_name,
@@ -650,7 +775,7 @@ Template.Checkout_page.events({
               'quantity': 1                     // Product quantity (number).
             });
             ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-              'id': orderToProcess.trackingCode,// (Required) Transaction id (string).
+              'id': response._id,// (Required) Transaction id (string).
               'affiliation': 'Getfednyc.com', // Affiliation (string).
               'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
               'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
@@ -670,20 +795,20 @@ Template.Checkout_page.events({
       };
     };
 
-    Stripe.card.createToken({
-      number: $('.number').val(),
-      cvc: $('.cvc').val(),
-      exp_month: $('.exp_month').val(),
-      exp_year: $('.exp_year').val(),
-      address_zip: customer.address_zipcode,
-    }, ( status, response ) => {
-      if ( response.error ) {
-        Session.set('loading', false );
-        sAlert.error(response.error.message);
-      } else {
-        processOrder(response);
-      };
-    });
+    // Stripe.card.createToken({
+    //   number: $('.number').val(),
+    //   cvc: $('.cvc').val(),
+    //   exp_month: $('.exp_month').val(),
+    //   exp_year: $('.exp_year').val(),
+    //   address_zip: customer.address_zipcode,
+    // }, ( status, response ) => {
+    //   if ( response.error ) {
+    //     Session.set('loading', false );
+    //     sAlert.error(response.error.message);
+    //   } else {
+    processSingleOrder();
+    //   };
+    // });
   },
 
   'submit #insertSubscriberOrderForm'(event, template) {
@@ -693,7 +818,7 @@ Template.Checkout_page.events({
     var orderToProcess = template.order.get();
     orderToProcess.userId = Meteor.userId();
     orderToProcess.total = template.order.total.get().toFixed(2);
-    orderToProcess.packName = Session.get('order').description;
+    orderToProcess.packName = Session.get('pack').description;
     orderToProcess.coupon = template.order.coupon.get();
     var customer = {};
     customer.first_name = template.find('[name="customer.firstName"]').value;
@@ -724,28 +849,42 @@ Template.Checkout_page.events({
       });
     };
 
+    async function processPromo() {
+      try {
+        const code = orderToProcess.coupon;
+        var codeCheck = false;
+        if (code) {
+          usePromo.call({
+            code: code
+          }, (err, res) => {
+            if (err) {
+              return(err);
+            } else {
+              return(res);
+            };
+          });
+        };
+      } catch(error) {
+        sAlert.error(error.reason);
+      };
+    };
+
     async function chargeStripe(charge) {
       try {
         const newCharge = await callWithPromise( 'processPayment', charge );
         return newCharge;
       } catch(error) {
-        throw new Meteor.Error(401, 'chargeStripe failed');
-      };
-    };
-
-    async function createNewDelivery(delivRequest) {
-      try {
-        const newDelivery = await callWithPromise( 'createDelivery', delivRequest );
-        return newDelivery;
-      } catch(error) {
-        throw new Meteor.Error(401, 'chargeStripe failed');
-        console.log(error);
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
       };
     };
 
     async function processOrder () {
       try {
-
+        const codeCheck = await processPromo();
+        console.log(codeCheck);
         // Make finalPrice in cents as a number from total
         const finalPrice = Math.round(Number(orderToProcess.total) * 100);
 
@@ -762,6 +901,9 @@ Template.Checkout_page.events({
         if (finalPrice > 0) {
           // Charge Stripe
           const payment = await chargeStripe( charge );
+          // Set users to TRIALING in Stripe FIX
+
+          // Save the Stripe payment_id (FIX how we link the two)
           orderToProcess.stripe_id = payment.id;
           orderToProcess.salePrice = (finalPrice / 100).toFixed(2);
         } else {
@@ -780,20 +922,20 @@ Template.Checkout_page.events({
         }];
 
         var delDay = $('[name="deliveryWindow"]').val();
-        var windows = Session.get('delivEstimate');
-        if ( delDay === "Monday") {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-        } else {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-        };
+        // var windows = Session.get('delivEstimate');
+        // if ( delDay === "Monday") {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
+        // } else {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
+        // };
 
-        const delivRequest = {
-          "order_reference": Session.get('orderId')._id,
-          "customer": customer,
-          "packages": packages,
-          "delivery_window_id": delivery_window,
-          "destination_comments": comments,
-        };
+        // const delivRequest = {
+        //   "order_reference": Session.get('orderId')._id,
+        //   "customer": customer,
+        //   "packages": packages,
+        //   "delivery_window_id": delivery_window,
+        //   "destination_comments": comments,
+        // };
 
         // const newDelivery = await createNewDelivery( delivRequest );
 
@@ -804,6 +946,7 @@ Template.Checkout_page.events({
         customer.amount_spent = orderToProcess.total;
         customer.stripe_id = stripe_id;
         customer.credit = credit;
+        customer.customized = true;
         
         Meteor.call( 'updateUser', orderToProcess.userId, customer, (error,response) => {
           if (error) {
@@ -812,7 +955,7 @@ Template.Checkout_page.events({
           };
         });
 
-        orderToProcess.readyBy = delivery_window.starts_at;
+        // orderToProcess.readyBy = delivery_window.starts_at;
         orderToProcess.deliv_day = delDay;
 
         const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
@@ -828,7 +971,7 @@ Template.Checkout_page.events({
               'quantity': 1                     // Product quantity (number).
             });
             ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-              'id': customer.last_purchase.tracking_code,// (Required) Transaction id (string).
+              'id': response._id,// (Required) Transaction id (string).
               'affiliation': 'Getfednyc.com', // Affiliation (string).
               'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
               'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
@@ -842,6 +985,7 @@ Template.Checkout_page.events({
         Session.set('loading', false);
         sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});       
       } catch(error) {
+        Session.set('loading', false);
         throw new Meteor.Error(401, error);
       };
     };

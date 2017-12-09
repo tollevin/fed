@@ -1,0 +1,45 @@
+<template name="PaymentSettings">
+	<div class="payment-settings">
+		<h3 class="title-auth">Payment Settings</h3>
+		<div class="user-payment-methods">
+			<h4>Payment methods</h4>
+			<ul>
+				{{#if sources}}
+					{{#with sources}}
+		  			{{#each source in sources.data}}
+					    <li class="{{checkDefault source.id}} {{editDefaultMode}}" id="{{source.id}}">
+					    	<img class="card-brand" src="/icons/cards/32x32/{{sourceType source.brand}}.png">
+					    	<span>{{source.last4}}</span>
+					    	<span class="{{checkDefault source.id}}">Default</span>
+					    </li>
+					  {{/each}}
+			    {{/with}}
+			  {{else}}
+			   	<li class="inert">No payment methods</li>
+			  {{/if}}
+			  <li id="addCard">Add a new card +</li>
+			</ul>
+		</div>
+		<form id="addCCForm">
+			<div id="card-errors"></div>
+			<div id="card-element"></div>
+			{{#if showCardElement}}
+				<div class="button-group">
+					<button class="saveCardInput btn-form">Save</button>
+					<button class="cancelCardInput btn-form">Cancel</button>
+				</div>
+			{{/if}}
+		</form>
+		<div class="default-button">
+			{{#if editDefaultMode}}
+				<button class="save-edit-default btn-form">Save</button>
+				<button class="cancel-edit-default btn-form">Cancel</button>
+			{{else}}
+				<button class="change-default btn-primary">Change Default</button>
+			{{/if}}
+		</div>
+	</div>
+	<div id="stripe-png">
+  	<img src="/icons/powered_by_stripe.png" class="str">
+  </div>
+</template>

@@ -1,0 +1,63 @@
+<template name="Gift_Cards">
+	{{#if loading}}
+    {{> loader}}
+  {{/if}}
+	<div id="Gifts" class="page">
+		<div class="content-scrollable">
+      <div class="panel-wrapper">
+				<h1>Give the gift of good eating.</h1>
+				<form id="Gift-Card-Form">
+					<div class="info-panel">
+						<div class="gift-buttons">
+							<button class="amount-button" id="100" value="100">$100</button>
+							<button class="amount-button" id="150" value="150">$150</button>
+							<button class="amount-button" id="200" value="200">$200</button>
+							<button class="amount-button" id="250" value="250">$250</button>
+							<input type="number" id="custom-amount" placeholder="Custom Amount"/>
+						</div>
+						<div id="gift-button-errors"></div>
+						<div class="from">
+							<h2>From:</h2>
+							<div class="form-group">
+								<input type="text" name="customer.first_name" placeholder="First Name" required>
+								<input type="text" name="customer.last_name" placeholder="Last Name" required>
+							</div>
+							<input type="email" name="customer.email" placeholder="Email Address" required>
+						</div>
+						<div class="to">
+							<h2>To:</h2>
+							<div class="form-group">
+								<input type="text" name="recipient.first_name" placeholder="First Name" required>
+								<input type="text" name="recipient.last_name" placeholder="Last Name" required>
+							</div>
+							<input type="email" name="recipient.email" placeholder="Email Address" required>
+							<input type="number" id="zipcode" name="recipient.address_zipcode" placeholder="Zip Code" minlength="5" required>
+							<div id="zip-errors"></div>
+							<textarea class="message" type="text" name="message" placeholder="Send a message with your gift"></textarea>
+						</div>
+						<!-- <button class="submit btn-form" type="submit" name="submitGC">Send</button> -->
+					</div>
+					<div class="cta-panel">
+						{{#if price}}
+							<div class="price-display">
+								<p>Value: <span class="value">${{price}}</span></p>
+<!-- 								<p>Discount: <span class="value">{{discount}}</span></p>
+ -->								<hr>
+<!-- 								<p>Total: <span class="value">${{salePrice}}</span></p>
+ -->							</div>
+							<div id="card-errors"></div>
+							{{#if stripeId}}
+								<button id="User-Buy" type="submit" disabled="{{disabled}}">Buy Now</button>
+							{{else}}
+								{{> Card_element}}
+								<button id="Guest-Buy" type="submit" disabled="{{disabled}}">Buy Now</button>
+							{{/if}}
+						{{/if}}
+						<p>Your gift will be sent via email.</p>
+						<img src="/icons/powered_by_stripe.png">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</template>

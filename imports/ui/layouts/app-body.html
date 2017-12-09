@@ -1,4 +1,5 @@
 <template name="App_body">
+  {{#HammerTouchArea gestureMap=templateGestures}}
   <div id="container">
     <div class="navbar-fixed-top {{sideNavOpen}}">
       <div id="mobile-nav-holder">
@@ -7,19 +8,20 @@
         </a>
       </div>
       <div class="logo-holder">
-        <a href="/" class="logoLink"><!-- <img class="logoImg" src="/FEDlogo.png" alt="fed" /> --></a>
+        <a href="/" class="logoLink"></a>
       </div>
 
       <div class="main-nav-holder">
         <nav class="main-nav">
           <ul class="main-nav-ul">
             <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-            <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
+            <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
             {{#if notSubscribed}}
               <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
             {{/if}}
-            <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+            <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
             <!-- <li><a href="/market" class="{{currentPage 'Market'}}" alt="Market">Market</a></li> -->
+            <li><a href="/gifts" class="{{currentPage 'Gifts'}} new" alt="Gifts">Gifts</a></li>
             <li><a href="/about-us" class="{{currentPage 'About.us'}}" alt="About">About Us</a></li>
             <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
           </ul>
@@ -63,39 +65,38 @@
           <a class="js-logout btn-primary">Logout</a>
         </div>
       {{/if}}  
-      <!-- <div class="accounts-holder">
-        {{#if currentUser}}
-          <div class="btns-group-vertical">
-            <a href="#" class="js-user-menu btn-primary">
-              {{#if userMenuOpen}}
-                <span class="icon-arrow-up"></span>
-                {{else}}
-                <span class="icon-arrow-down"></span>
-              {{/if}}
-              {{#if firstName}}
-                Hi, {{firstName}}
-              {{else}}
-                Hi, {{emailLocalPart}}
-              {{/if}}
-            </a>
-            {{#if userMenuOpen}}
-              <a class="btn-primary" href="/my-account">Settings</a>
-              <a class="js-logout btn-primary">Logout</a>
-            {{/if}}
-          </div>
-        {{else}}
-          <div class="btns-group">
-            <a href="{{pathFor 'signin'}}" class="btn-primary">Sign In</a>
-          </div>
-        {{/if}}
-      </div> -->
     </div>
-    <!-- <div id="infoBanner">
-      <p>We'll be closed for Memorial Day Weekend! Next delivery on June 4th & 5th</p>
-    </div> -->
-    <div class="content-overlay {{sideNavOpen}}"></div>
 
-    <div id="content-container" class="{{cartOpen}}">
+    <div class="content-overlay {{sideNavOpen}} {{packEditorOpen}} {{loading}} {{closed}} {{capped}}">
+      {{#if closed}}
+        {{#momentum plugin="fade"}}
+          <div id="closed">
+            <p>Custom packs are available Sunday at Noon<br>until Wednesday at Midnight each week.<br>
+            <a href="/packs">Check out our premade packs!<br><br>CLICK HERE TO VIEW</a></p>
+          </div>
+        {{/momentum}}
+      {{/if}}
+
+      {{#if capped}}
+        {{#momentum plugin="fade"}}
+          <div id="capped">
+            <!-- <span>x</span> -->
+            <h2>Sorry, we're at our capacity for this week!</h2>
+            <p>To maintain the highest quality production, and to best serve our subscribers, we're capping our orders for next week's delivery.</p>
+            <br>
+            <a href="/subscribe">Subscribe today</a>
+            <p>to secure your order for the week of December 17th.</p>
+            <p>Or if you're a subscriber, <a href="/signin">Sign In</a></p>
+          </div>
+        {{/momentum}}
+      {{/if}}
+
+      {{#if loading}}
+        {{> loader}}
+      {{/if}}
+    </div>
+
+    <div id="content-container" class="{{closed}}">
       {{#momentum plugin="fade"}}
         {{#if Template.subscriptionsReady}}
           {{> Template.dynamic template=main}}
@@ -104,10 +105,13 @@
         {{/if}}
       {{/momentum}}
     </div>
-    <!-- {{#if packEditorOpen}}
-      {{> Cart}}
-    {{/if}} -->
+    {{#if packEditorOpen}}
+      {{#momentum plugin="fade"}}
+        {{> Cart}}
+      {{/momentum}}
+    {{/if}}
   </div>
   {{> Side_Nav}}
   {{> sAlert}}
+  {{/HammerTouchArea}}
 </template>

@@ -4,12 +4,19 @@
 	width: 30%;
 	max-width: 300px;
 	min-width: 200px;
+	height: 460px;
 	margin: 0px 1% 40px;
-	display: inline-block;
+	display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 	vertical-align: top;
+  box-shadow: 2px 3px #ddd;
+  background-color: #fff;
 
 	@media screen and (max-width: 645px) {
  		width: 47%;
+ 		height: auto;
+ 		box-shadow: none;
 	}
 
   @media screen and (max-width: 475px) {
@@ -80,13 +87,13 @@
 		h3 {
 			font-size: 20px;
 			// font-family: "CaslonN";
-			font-weight: 400;
+			font-weight: 300;
 			text-align: left;
-			margin: 5px;
+			margin: 5px 10px;
 			color: @fgreene;
 
 			@media screen and (min-width: 475px) {
-		  	margin: 6px 0 3px 0;
+		  	margin: 6px 10px0 3px 10px;
 	  	}
 		}
 	}
@@ -97,16 +104,78 @@
 			font-size: 14px;
 			line-height: 17px;
 			text-align: left;
-			margin: 0 5px 20px 5px;
+			margin: 0 10px 20px 10px;
 
 			@media screen and (min-width: 475px) {
-		  	margin: 0 0 20px 0;
+		  	margin: 0 10px 20px 10px;
 	  	}
 		}
 	}
 
 	.menu-item-icons {
 
+	}
+
+	.inputs {
+		margin: 0px 10px 10px 10px;
+
+		label {
+			float: left;
+			font-size: 14px;
+
+			input {
+				padding: 3px;
+			}
+		}
+
+		.counter {
+			position: relative;
+			float: right;
+			height: 25px;
+			width: 90px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: flex-end;
+
+			button {
+				background-color: #fff;
+				border: 1px solid @fgreene;
+				width: 25px;
+				height: 25px;
+				color: @fgreene;
+				font-size: 15px;
+				transition: all 300ms;
+
+				&:hover {
+					color: #FFF;
+					background-color: @fgreene;
+				}
+			}
+
+			input {
+				width: 30px;
+				height: 100%;
+				border: 1px solid @fgreene;
+				margin-top: -1px;
+				margin-bottom: 0;
+				text-align: center;
+		    font-size: 18px;
+		    padding: 0;
+		    color: @fgreene;
+		    font-weight: 400;
+		    font-family: Avenir;
+			}
+
+			input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+		    -webkit-appearance: none;
+		    margin: 0;
+			}
+			 
+			input[type="number"] {
+			    -moz-appearance: textfield;
+			}
+		}
 	}
 
 	.separator {

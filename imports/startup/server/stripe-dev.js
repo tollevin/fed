@@ -48,19 +48,23 @@ Meteor.methods({
     }
   },
 
-  createTrialCustomer( cust, email, password ) {
+  async createTrialCustomer( cust, email, password ) {
     check( cust, {
       description: String,
       source: String,
-      account_balance: Number,
+      account_balance: Number
     });
 
-    let handleCustomer = Meteor.wrapAsync( Stripe.customers.create, Stripe.customers ),
-        customer =  handleCustomer( cust );
+    try {
+      let customer = await Stripe.customers.create( cust );
 
-    const _id = Accounts.createUser({email: email, password: password});
+      const _id = Accounts.createUser({email: email, password: password});
 
-    return customer;
+      return customer;
+    } catch(err) {
+      console.log(err);
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
   },
 
   async subscribeCustomer( sub ) {
@@ -96,18 +100,6 @@ Meteor.methods({
     }
   },
 
-  //   // SyncedCron.add({
-  //   //   name: 'Subscription processer for ' + Meteor.userId(),
-  //   //   schedule: function(parser) {
-  //   //     // parser is a later.parse object
-  //   //     return parser.text('every Thursday');
-  //   //   },
-  //   //   job: function() {
-  //   //     var numbersCrunched = CrushSomeNumbers();
-  //   //     return numbersCrunched;
-  //   //   }
-  //   // });
-
   async retrieveCustomer( id ) {
     try {
       let customer = await Stripe.customers.retrieve( id );
@@ -115,6 +107,7 @@ Meteor.methods({
       return customer;
     } catch(err) {
       console.log(err);
+      throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
@@ -127,6 +120,34 @@ Meteor.methods({
       let source = await Stripe.customers.createSource(id, {source: args.default_source});
       let customer = await Stripe.customers.update( id, { default_source: source.id} );
       return customer;
+    } catch(err) {
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  async updateDefaultSource( args ) {
+    check( args, {
+      id: String,
+      default_source: String,
+    });
+
+    try {
+      let customer = await Stripe.customers.update( args.id, { default_source: args.default_source} );
+      return customer;
+    } catch(err) {
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  async addPaymentSource( args ) {
+    check( args, {
+      id: String,
+      source: String
+    });
+
+    try {
+      let newSource = await Stripe.customers.createSource(args.id, { source: args.source });
+      return newSource;
     } catch(err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
@@ -193,13 +214,9 @@ Meteor.methods({
             console.log("OK " + customerExists.emails[0].address + " " + pausedSubscription.id + " PAUSED");
             updatedTally += 1;
           };
-        } else {
-          const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
-          
-          console.log("NOT IN SYSTEM - " + allSubscriptionsList[i].customer + " PAUSED");
-          updatedTally += 1;
         };
       };
+      console.log(updatedTally + " subscriptions paused");
       return updatedTally;
     } catch(err) {
       console.log(err.statusCode, err.message);

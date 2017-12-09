@@ -20,7 +20,7 @@ Meteor.startup(function() {
 
 	addGoogleTagManager('GTM-WZ7TT6Z');
 
-	SyncedCron.start();
+	// SyncedCron.start();
 });
 
 

@@ -14,11 +14,11 @@ Template.Lander_carousel.onRendered(function landerCarouselOnRendered() {
 Template.Lander_carousel.events({
   // On before slide change
   'beforeChange #Lander-carousel' (event, slick, currentSlide, nextSlide) {
-    console.log(nextSlide);
+    // console.log(nextSlide);
   },
 
   'destroy #Lander-carousel' (event, slick) {
-    console.log(event);
+    // console.log(event);
   },
 });
 

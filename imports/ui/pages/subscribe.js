@@ -21,6 +21,10 @@ import './subscribe.html';
 import '../components/trial-signup.js';
 import '../components/loader.js';
 
+let stripe,
+    elements,
+    card;
+
 Template.Subscribe.onCreated(function freeTrialOnCreated() {
   this.userHasPromo = new ReactiveVar(false);
 
@@ -40,7 +44,22 @@ Template.Subscribe.onCreated(function freeTrialOnCreated() {
 
 Template.Subscribe.onRendered(function freeTrialOnRendered() {
   // Stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  Stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  // Set Stripe Elements to element var
+  elements = stripe.elements();
+  // Create an instance of the card Element
+  // Custom styling can be passed to options when creating an Element.
+  const style = {
+    base: {
+      // Add your base input styles here. For example:
+      fontSize: '16px',
+    },
+  };
+  card = elements.create('card', {style});
+  // Meteor.setTimeout(()=> {
+  //   card.mount('#card-element');
+  // }, 500);
 });
 
 Template.Subscribe.helpers({
@@ -49,7 +68,7 @@ Template.Subscribe.helpers({
   },
 
   trialable() {
-    return Meteor.userId();
+    return !Meteor.userId();
   },
 
   currentForm(thisForm) {
@@ -79,7 +98,7 @@ Template.Subscribe.helpers({
   },
 
   restrictions() {
-    const allRestrictions = ['beef','chicken','fish','shellfish','eggs','dairy','peanuts','soy','gluten'];
+    const allRestrictions = ['beef','chicken','fish','shellfish','eggs','dairy','nuts','peanuts','soy','gluten'];
     return allRestrictions;
   },
 
@@ -130,6 +149,15 @@ Template.Subscribe.events({
           formdata.account_balance = credit;
           Session.set('formData', formdata);
           sAlert.success('You now have a credit of $' + promo.credit.toFixed(2) + ".");
+        } else if (promo && promo.percentage && (promo.useLimitPerCustomer === 0)) {
+          formdata.percentOff = promo.percentage;
+          Session.set('formData', formdata);
+          sAlert.success("Lucky you! You get " + formdata.percentOff + "% off!");
+        } else if (code === 'FED40') {
+          formdata.percentOff = promo.percentage;
+          formdata.newTrialCustomer = true;
+          Session.set('formData', formdata);
+          sAlert.success("You get " + formdata.percentOff + "% off your first week!");
         } else {
           formdata.account_balance = 0;
           Session.set('formData', formdata);
@@ -159,21 +187,21 @@ Template.Subscribe.events({
 
     switch (event.target.closest("li").id) {
       case 'Omnivore':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
         break;
       case 'Vegetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -187,11 +215,11 @@ Template.Subscribe.events({
         };
         break;
       case 'Vegan':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -205,11 +233,11 @@ Template.Subscribe.events({
         };
         break;
       case 'Pescetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
@@ -223,31 +251,21 @@ Template.Subscribe.events({
         };
         break;
       case 'Paleo':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
+        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
         for (var i = allNos.length - 1; i >= 0; i--) {
           allNos[i].classList.remove('checked');
         };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
+        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.remove('fadeIn');
         };
-        var noNos = template.findAll('#dairy');
+        var noNos = template.findAll('#dairy, #gluten, #soy');
         for (var i = noNos.length - 1; i >= 0; i--) {
           noNos[i].classList.add('checked');
         };
-        var noSigns = template.findAll('.dairy');
+        var noSigns = template.findAll('.dairy, .gluten, .soy');
         for (var i = noSigns.length - 1; i >= 0; i--) {
           noSigns[i].classList.add('fadeIn');
-        };
-        break;
-      case 'High_Protein':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
         };
         break;
     };
@@ -332,21 +350,9 @@ Template.Subscribe.events({
       Session.set('formData', formdata);
       Session.set('loading', false);
       Session.set('stage', 2);
-
-      var zip = Meteor.user().address_zipcode;
-      if (!zip) {
-        zip = Meteor.user().profile.zipCode;
-      };
-
-      var data = { customer_zipcode: zip };
-            
-      Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-        if ( error ) {
-          sAlert.error(error);
-        } else {
-          Session.set('delivEstimate', response);
-        };
-      });
+      Meteor.setTimeout(()=> {
+        card.mount('#card-element');
+      }, 500);
     } else {
       Session.set('loading', false);
       if (plan) {
@@ -357,44 +363,118 @@ Template.Subscribe.events({
     }
   },
 
-  'click #next2'(event, template) {
+  'submit #cc-form'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
 
-    var formdata = Session.get('formData');
-    Stripe.card.createToken({
-      number: $('#cc').val(),
-      cvc: $('.cvc').val(),
-      exp_month: $('#expM').val(),
-      exp_year: $('#expY').val(),
-      address_zip: Meteor.user().address_zipcode,
-    }, ( status, response ) => {
-      if ( response.error ) {
-        $('#cc-form').find('.card-errors').text(response.error.message);
+    const callWithPromise = (method, myParameters) => {
+      return new Promise((resolve, reject) => {
+        Meteor.call(method, myParameters, (err, res) => {
+          if (err) {
+            reject(err);
+          };
+          resolve(res);
+        });
+      });
+    };
+
+    async function createStripeToken() {
+      try {
+        const {token, error} = await stripe.createToken(card);
+        return token;
+      } catch(error) {
+        // Inform the customer that there was an error
+        console.log(error);
+        const errorElement = document.getElementById('card-errors');
+        errorElement.textContent = error.message;
         Session.set('loading', false);
-      } else {
-        var token = response.id;
-        formdata.email = Meteor.user().emails[0].address;
+      };
+    };
+
+    // async function createStripeCustomer(cust) {
+    //   try {
+    //     const newStripeCustomer = await callWithPromise('createCustomer', cust );
+    //     return newStripeCustomer;
+    //   } catch(error) {
+    //     sAlert.error(error.reason);
+    //     throw new Meteor.Error(411,'createStripeCustomer failed');
+    //     Session.set('loading', false);
+    //   }
+    // };
+
+    async function chargeStripe(charge) {
+      try {
+        const newCharge = await callWithPromise( 'processPayment', charge );
+        return newCharge;
+      } catch(error) {
+        sAlert.error(error.reason);
+        throw new Meteor.Error(401, 'chargeStripe failed');
+        Session.set('loading', false);
+      };
+    };
+
+    async function createStripeCustomer() {
+      try {
+        const token = await createStripeToken();
+        var formdata = Session.get('formData');
+      
+        if (Meteor.userId()) {
+          formdata.email = Meteor.user().emails[0].address;
+        } else {
+          formdata.email = $('#EsBbF9Ads8fEFFAut').val();
+        };
 
         const cust = {
           description: "Customer for " + formdata.email,
-          source: token,
+          source: token.id,
           email: formdata.email,
           account_balance: formdata.account_balance || 0,
         };
 
-        const custId = Meteor.call( 'createCustomer', cust, ( error, response ) => {
-          if ( error ) {
-            console.log(error);
-          } else {
-            formdata.stripe_id = response.id;
-            Session.set('formData', formdata);
-            Session.set('loading', false);
-            Session.set('stage', 3);
-          };
-        });
+        const stripe_id = await callWithPromise( 'createCustomer', cust );
+            
+        formdata.stripe_id = stripe_id.id;
+        Session.set('formData', formdata);
+        Session.set('loading', false);
+        Session.set('stage', 3);
+      } catch(error) {
+        sAlert.error(error.reason);
+        throw new Meteor.Error(401, 'subscribeCustomer failed');
+        Session.set('loading', false);
       };
-    });
+    };
+
+    async function createUser(cust) {
+      try {
+        const newUser = await callWithPromise( 'createSubscriber', cust );
+        Meteor.loginWithPassword(user.email, user.password);
+        return newUser;
+      } catch(error) {
+        $('#createNewUser').find('.email-errors').text(error.reason);
+        throw new Meteor.Error(401, 'createUser failed');
+        Session.set('loading', false);
+      };
+    };
+
+    //if NEW USER, create new account
+    if (!Meteor.userId()) {
+      var user = {
+        email: $('#EsBbF9Ads8fEFFAut').val(),
+        emailCheck: $('#EsBbF9Ads8fEFFAut2').val(),
+        password: $('#EsBbF9Ads8fEFFAut3').val(),
+        zipCode: $('#accountzip').val(),
+      };
+      //if !PASSWORD-MATCH alert user
+      if (user.email != user.emailCheck) {
+        Session.set('loading', false);
+        $('#createNewUser').find('.email-errors').text("Passwords do not match. Please check and try again.");
+      } else {
+        const newUser = createUser(user);
+        const newStripeCustomer = createStripeCustomer();
+      };
+    } else {
+      createStripeCustomer();
+    };
   },
 
   'submit #DeliveryForm'(event,template) {
@@ -407,7 +487,6 @@ Template.Subscribe.events({
     formdata.first_name = template.find('[name="customer.firstName"]').value;
     formdata.last_name = template.find('[name="customer.lastName"]').value;
     formdata.phone = template.find('[name="customer.phone"]').value;
-    formdata.email = template.find('[name="customer.email"]').value;
     formdata.address_line_1 = template.find('[name="customer.address.line1"]').value;
     formdata.address_line_2 = template.find('[name="customer.address.line2"]').value;
     formdata.address_city = template.find('[name="customer.address.city"]').value;
@@ -435,13 +514,26 @@ Template.Subscribe.events({
       nextThursday = 11 - today.day();
     };
 
-    const sub = {
-      customer: formdata.stripe_id,
-      plan: formdata.planCode,
-      trial_period_days: nextThursday,
-      tax_percent: 8.875,
-      coupon: "Sub5"
-    };
+    let sub;
+
+    if (formdata.newTrialCustomer) {
+      sub = {
+        customer: formdata.stripe_id,
+        plan: formdata.planCode,
+        trial_period_days: nextThursday,
+        tax_percent: 8.875,
+        coupon: "Sub40",
+      };
+    } else {
+      sub = {
+        customer: formdata.stripe_id,
+        plan: formdata.planCode,
+        trial_period_days: nextThursday,
+        tax_percent: 8.875,
+        coupon: formdata.percentOff || "Sub5"
+      };
+    }
+    
 
     Meteor.call( 'subscribeCustomer', sub, (err, response) => {
       if ( err ) {
@@ -450,50 +542,50 @@ Template.Subscribe.events({
       } else {
         formdata.subscriptions = response;
 
-        const delivCustomer = {
-          first_name: formdata.first_name,
-          last_name: formdata.last_name,
-          email: formdata.email,
-          phone: formdata.phone,
-          address_line_1: formdata.address_line_1,
-          address_line_2: formdata.address_line_2,
-          address_city: formdata.address_city,
-          address_state: formdata.address_state,
-          address_zipcode: formdata.address_zipcode,
-        };
+        // const delivCustomer = {
+        //   first_name: formdata.first_name,
+        //   last_name: formdata.last_name,
+        //   email: formdata.email,
+        //   phone: formdata.phone,
+        //   address_line_1: formdata.address_line_1,
+        //   address_line_2: formdata.address_line_2,
+        //   address_city: formdata.address_city,
+        //   address_state: formdata.address_state,
+        //   address_zipcode: formdata.address_zipcode,
+        // };
         
-        const packages = [{
-          name: "Fed " + formdata.diet + " " + packPrefix + "-Pack",
-          price: 85,
-          height: 12,
-          width: 14,
-          depth: 10,
-        }];
+        // const packages = [{
+        //   name: "Fed " + formdata.diet + " " + packPrefix + "-Pack",
+        //   price: 85,
+        //   height: 12,
+        //   width: 14,
+        //   depth: 10,
+        // }];
 
-        if (formdata.preferredDelivDay === "monday") {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-        } else {
-          var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-        };
+        // if (formdata.preferredDelivDay === "monday") {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
+        // } else {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
+        // };
 
-        const orderNo = new Date().toISOString().slice(5,10);
+        // const orderNo = new Date().toISOString().slice(5,10);
 
-        const delivRequest = {
-          "order_reference": orderNo,
-          "customer": delivCustomer,
-          "packages": packages,
-          "delivery_window_id": delivery_window,
-          "destination_comments": formdata.comments,
-        };
+        // const delivRequest = {
+        //   "order_reference": orderNo,
+        //   "customer": delivCustomer,
+        //   "packages": packages,
+        //   "delivery_window_id": delivery_window,
+        //   "destination_comments": formdata.comments,
+        // };
 
-        Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-          if ( error ) {
-            $('[class="info-errors"]').text(error.reason);
-            sAlert.error(error);
-            console.log(error);
-            Session.set('loading', false);
-          } else {
-            const last_purchase = response;
+        // Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
+        //   if ( error ) {
+        //     $('[class="info-errors"]').text(error.reason);
+        //     sAlert.error(error);
+        //     console.log(error);
+        //     Session.set('loading', false);
+        //   } else {
+        //     const last_purchase = response;
             const amount_spent = 0;
 
             const user = {
@@ -508,13 +600,12 @@ Template.Subscribe.events({
               "address_zipcode": formdata.address_zipcode,
               "deliv_comments": formdata.comments,
               "amount_spent": amount_spent,
-              "last_purchase": last_purchase,
               "diet": formdata.diet,
               "restrictions": formdata.restrictions,
               "stripe_id": formdata.stripe_id,
               "preferredDelivDay": formdata.preferredDelivDay,
               "subscriptions": formdata.subscriptions,
-              "coupon": "Sub10",
+              "coupon": formdata.percentOff || "Sub5",
               "pack": packPrefix
             };
 
@@ -580,9 +671,9 @@ Template.Subscribe.events({
               };
             });
             Session.set('loading', false);
-            sAlert.success("All done! We'll email you soon with details about your subscription.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
-          };
-        });
+            sAlert.success("You’re subscribed! Please check your email to confirm your settings and preferences.", { timeout: 'none', onClose: function() { FlowRouter.go('/menu'); }});
+          // };
+        // });
       };
     });
   return false;

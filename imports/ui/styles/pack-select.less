@@ -29,19 +29,18 @@
 			}
 
 			.pack-header {
-				display: inline-block;
+				display: flex;
+		    align-items: center;
 
 				h2 {
 					border-bottom: 1px solid #000;
 					// font-family: "CaslonN";
+					margin-right: 30px;
 				}
-			}
-
-			.pack-options {
-				display: inline-block;
 
 				.buy,
 				.soldOut {
+					height: 35px;
 					text-decoration: none;
 					color: #FFF;
 					padding: 5px 10px;
@@ -56,9 +55,9 @@
 					background-color: #6a7b6a;
 			    cursor: not-allowed;
 				}
-
-
 			}
+
+
 
 			.pack-desc {
 				@media screen and (max-width: 362px) {
@@ -72,7 +71,7 @@
 
 				.price {
 					display: inline-block;
-					font-weight: 600;
+					font-weight: 400;
 				}
 
 				.dish-price {
@@ -107,7 +106,7 @@
 						width: 150px;
 						height: 250px;
 						float: left;
-						overflow-x: hidden;
+						overflow: hidden;
 
 						.item-img {
 							height: 150px;
@@ -131,6 +130,7 @@
 						white-space: normal;
 						font-size: 21px;
 						line-height: 25px;
+						color: @fgreene;
 					}
 				}
 			}

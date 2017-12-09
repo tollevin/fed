@@ -9,16 +9,19 @@ import './orders-admin.html';
 import '../components/orders-sidebar.js';
 import '../components/order-preview.js';
 
-var ORDERS_LIMIT = 283;
-
 Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
 
 	// Set reactive variables for template
   Session.setDefault('state', 'thisWeeksOrders');
 
   this.autorun(() => {
-  	this.subscribe('some.orders', ORDERS_LIMIT);
-  	this.subscribe('userData');
+    if (Session.get('state') === 'thisWeek') {
+      this.subscribe('thisWeeks.orders');
+    } else {
+      this.subscribe('some.orders', 100);
+    };
+
+    this.subscribe('userData');
   });
 });
 

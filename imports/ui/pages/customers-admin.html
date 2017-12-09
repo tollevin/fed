@@ -3,7 +3,6 @@
 		<div id="customers-admin" class="page">
 			<!-- print output for kitchen -->
 			<!-- print output for kitchen -->
-			{{> Customers_toolbar}}
 			<!-- <div id="CustomersCount">
 				{{#if AllCustomers}}
 					<p>{{numberOfCustomers}} results</p>
@@ -12,142 +11,51 @@
 					<p>{{numberOfSubscribers}} results</p>
 				{{/if}}
 			</div> -->
-
+			<div class="customers-toolbar">
+				{{> inputAutocomplete settings=settings id="Customers-Searach" class="input-xlarge" placeholder="Search..."}}
+			</div>
 			<div class="customers-view">
 				{{#momentum plugin="fade"}}
 					<table class="customers-table"> 
 						{{#if Template.subscriptionsReady}}
-							{{#if AllCustomers}}
-								<tr class="table-header">
-									<th>
-										Created At
-									</th>
-									<th>
-										Customer ID
-									</th>
-									<th>
-										Name
-									</th>
-									<th>
-										Email
-									</th>
-									<th>
-										Phone
-									</th>
-									<th>
-										Address
-									</th>
-									<th>
-										Amount Spent
-									</th>
-									<th>
-										Stripe ID
-									</th>
-									<th>
-										Last Purchase
-									</th>
-									<th>
-										Subscription
-									</th>
-									<th>
-										Notes
-									</th>
-								</tr>
-								{{#each users}}
-									{{> Customer_preview}}
-								{{/each}}
-							{{/if}}
-
-							{{#if AllSubs}}
-								<tr class="table-header">
-									<th>
-										Created At
-									</th>
-									<th>
-										Status
-									</th>
-									<th>
-										Name
-									</th>
-									<th>
-										Email
-									</th>
-									<th>
-										Phone
-									</th>
-									<th>
-										Address
-									</th>
-									<th>
-										Delivery Day
-									</th>
-									<th>
-										Diet
-									</th>
-									<th>
-										Pack
-									</th>
-									<th>
-										Discount
-									</th>
-									<th>
-										Delivery Fee
-									</th>
-									<th>
-										Sale Amount
-									</th>
-									<th>
-										Notes
-									</th>
-								</tr>
-								{{#each subscribers}}
-									{{> Subscriber_preview}}
-								{{/each}}
-							{{/if}}
-
-							{{#if ThisWeeksSubs}}
-								<tr class="table-header">
-									<th>
-										Status
-									</th>
-									<th>
-										Name
-									</th>
-									<th>
-										Email
-									</th>
-									<th>
-										Phone
-									</th>
-									<th>
-										Address
-									</th>
-									<th>
-										Delivery Day
-									</th>
-									<th>
-										Diet
-									</th>
-									<th>
-										Pack
-									</th>
-									<th>
-										Discount
-									</th>
-									<th>
-										Delivery Fee
-									</th>
-									<th>
-										Sale Amount
-									</th>
-									<th>
-										Notes
-									</th>
-								</tr>
-								{{#each thisWeeksSubscribers}}
-									{{> Subscriber_preview}}
-								{{/each}}
-							{{/if}}
+							<tr class="table-header">
+								<th>
+									Created At
+								</th>
+								<th>
+									Customer ID
+								</th>
+								<th>
+									Name
+								</th>
+								<th>
+									Email
+								</th>
+								<th>
+									Phone
+								</th>
+								<th>
+									Address
+								</th>
+								<th>
+									Amount Spent
+								</th>
+								<th>
+									Stripe ID
+								</th>
+								<th>
+									Last Purchase
+								</th>
+								<th>
+									Subscription
+								</th>
+								<th>
+									Notes
+								</th>
+							</tr>
+							{{#each users}}
+								{{> Customer_preview}}
+							{{/each}}
 						{{else}}
 							<p>Loading...</p>
 						{{/if}}
@@ -156,4 +64,16 @@
 			</div>
 		</div>
 	</div>
+</template>
+
+<template name="serverCollectionPill">
+  {{name}} <small class="muted">({{_id}})</small>
+</template>
+
+<template name="clientCollectionPill">
+  {{type}} <small class="muted">({{_id}})</small>
+</template>
+
+<template name="serverNoMatch">
+  <span class="text-danger">Nothing found on the server for <b>{{getFilter}}</b>!</span>
 </template>

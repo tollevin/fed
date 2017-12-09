@@ -1,55 +1,20 @@
 <head><meta name="fragment" content="!"></head>
 <template name="Menu_page">
 	{{#momentum plugin="fade"}}
-	  {{#if notCustomizable}}
-		  <div id="closed">
-				<p>Custom packs are available Sunday at Noon<br>until Wednesday at Midnight each week.<br>
-				<a href="/packs">Check out our premade packs!<br><br>CLICK HERE TO VIEW</a></p>
-			</div>
-		{{/if}}
 	  <div id="menu-page" class="page {{cartOpen}}">
 			{{> Menu_toolbar}}
 			<!-- {{#if currentUser}} -->
-				<div id="content-scrollable">
-					<!-- <div class="page-header menu-header">
-						<h1>Menu</h1>
-						{{#if cartOpen}}
-						{{else}}
-							<p class="reminder">Customize your order Sunday thru Wednesday</p>
-						{{/if}}							
-					</div> -->
-					<div id="menu-view">
-						<div class="menu-items">
-							{{#if Template.subscriptionsReady}}
-								<div class="item-list"> 
-									{{#each dishItems}}
-										{{> Menu_item}}
-									{{/each}}
-									<div class="hr-holder">
-										<hr/>
-									</div>
-									<h2>Snacks</h2>
-									{{#each snackItems}}
-										{{> Menu_snack}}
-									{{/each}}
-								</div>
-							{{else}}
-								<p>Loading...</p>
-							{{/if}}
-						</div>
-					</div>
-				</div>
-			<!-- {{else}}
+			<div id="content-scrollable">
 				<div id="menu-view">
-					<section class="menu-items inactive">
+					<div class="menu-items">
 						{{#if Template.subscriptionsReady}}
-							<h1>Menu</h1>
-							<p class="reminder">Customize your order Sunday thru Wednesday</p>
 							<div class="item-list"> 
 								{{#each dishItems}}
 									{{> Menu_item}}
 								{{/each}}
-								<hr/>
+								<div class="hr-holder">
+									<hr/>
+								</div>
 								<h2>Snacks</h2>
 								{{#each snackItems}}
 									{{> Menu_snack}}
@@ -58,13 +23,10 @@
 						{{else}}
 							<p>Loading...</p>
 						{{/if}}
-					</section>
-					<div class="modal {{showModal}}">
-		    		{{> atForm state='signUp'}}
-		      </div>
+					</div>
 				</div>
-			{{/if}} -->
-			{{> Cart}}
+			</div>
+			<!-- {{> Cart}} -->
 		</div>
 	{{/momentum}}
 </template>

@@ -1,28 +1,42 @@
-sitemaps.add('/sitemap.xml', function() {
+sitemaps.add('/sitemap.xml', function(req) {
+  let host = Meteor.absoluteUrl();
+  if (req && req.headers && req.headers.host) {
+    host = `https://${req.headers.host}/`;
+  }
   // required: page
   // optional: lastmod, changefreq, priority, xhtmlLinks, images, videos
   return [
-    { page: '/', lastmod: "Thu Oct 06 2016 16:04:32 GMT-0400 (EDT)" },
-    { page: '/menu', lastmod: "Thu Oct 06 2016 16:04:32 GMT-0400 (EDT)", changefreq: 'weekly' },
-    { page: '/z', lastmod: new Date().getTime(), changefreq: 'monthly', priority: 0.8 },
-    // https://support.google.com/webmasters/answer/178636?hl=en
-    { page: '/pageWithVideoAndImages',
+    { page: `${host}`, 
+      lastmod: "Mon Oct 23 2017 16:04:32 GMT-0400 (EDT)",
       images: [
-        { loc: '/myImg.jpg', },        // Only loc is required
-        { loc: '/myOtherImg.jpg',      // Below properties are optional
-          caption: "..", geo_location: "..", title: "..", license: ".."}
+        { loc: `${host}images/Fed2.jpg`, },        // Only loc is required
+        { loc: `${host}images/home/1.jpg`,      // Below properties are optional
+          caption: "Melon Gazpacho"
+        },
+        { loc: `${host}images/home/3.jpg`,      // Below properties are optional
+          caption: "Chicken w/ Chipotle Pea Puree"
+        },
+        { loc: `${host}images/soupAndHerbs.jpg`, },
       ],
-      videos: [
-        { loc: '/myVideo.jpg', },      // Only loc is required
-        { loc: '/myOtherVideo.jpg',    // Below properties are optional
-          thumbnail_loc: "..", title: "..", description: ".." etc }
-      ]
+    },
+    { page: `${host}menu`, 
+      lastmod: moment().day(0).hour(12).toString(), 
+      changefreq: 'weekly' 
+    },
+    { page: `${host}packs`,
+      lastmod: moment().day(0).hour(12).toString(), 
+      changefreq: 'weekly',
+    },
+    // https://support.google.com/webmasters/answer/178636?hl=en
+    { page: `${host}support`,
+      lastmod: "Mon Oct 23 2017 16:04:32 GMT-0400 (EDT)",
+    },
+    { page: `${host}subscribe`,
+      lastmod: "Mon Oct 23 2017 16:04:32 GMT-0400 (EDT)",
     },
     // https://support.google.com/webmasters/answer/2620865?hl=en
-    { page: 'lang/english', xhtmlLinks: [
-      { rel: 'alternate', hreflang: 'de', href: '/lang/deutsch' },
-      { rel: 'alternate', hreflang: 'de-ch', href: '/lang/schweiz-deutsch' },
-      { rel: 'alternate', hreflang: 'en', href: '/lang/english' }
-    ]}
+    { page: `${host}about-us`,
+      lastmod: "Mon Oct 23 2017 16:04:32 GMT-0400 (EDT)",
+    }
   ];
 });

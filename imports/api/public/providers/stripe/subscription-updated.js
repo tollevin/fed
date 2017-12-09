@@ -12,7 +12,7 @@ const handler = (data, promise) => {
     console.log(data.id + " subscription updated for " + user._id);
     return updatedSubscription;
   } catch (exception) {
-    throw new Meteor.Error(400, `[subscriptionUpdated.handler] ${exception} ID: data.customer`);
+    throw new Meteor.Error(400, `[subscriptionUpdated.handler] ${exception} ID: ${data.customer}`);
   }
 };
 

@@ -1,5 +1,3 @@
-<head><script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-</head>
 <template name="Subscribe">
 	<div id="subscribe" class="page auth">
 	{{#momentum plugin="fade"}}
@@ -10,229 +8,197 @@
       <div class="wrapper-auth">
 				<div class="subscribe-form">
 					<div class="panel-body">
-		      	<!-- {{#if trialable}} -->
-		      		<div id="subscribeStatusBar">
-		      			<ul>
-		      				<li class="{{currentForm 'diet'}}">diet</li>
-		      				<hr>
-		      				<li class="{{currentForm 'plan'}}">plan</li>
-		      				<hr>
-		      				<li class="{{currentForm 'payment'}}">payment</li>
-		      				<hr>
-		      				<li class="{{currentForm 'delivery'}}">delivery</li>
-		      			</ul>
-		      		</div>
+	      		<div id="subscribeStatusBar">
+	      			<ul>
+	      				<li class="{{currentForm 'diet'}}">diet</li>
+	      				<hr>
+	      				<li class="{{currentForm 'plan'}}">plan</li>
+	      				<hr>
+	      				<li class="{{currentForm 'payment'}}">payment</li>
+	      				<hr>
+	      				<li class="{{currentForm 'delivery'}}">delivery</li>
+	      			</ul>
+	      		</div>
 
-							{{#if diet}}
-								<div id="wdye">
-									<h1>Subscribe Today</h1>
-									<p>and get 5% off all orders for life!</p>
-									<div>
-										<h2>What do you eat?</h2>
-										<div id="Diets">
-											<ul>
-												<li class="diet" id="Omnivore">
-													<input type="radio" name="diet" id="omnivore" value="Omnivore">
-													<label for="omnivore">
-														Omnivore
-													</label>
-												</li>
-												<li class="diet" id="Vegetarian">
-													<input type="radio" name="diet" id="vegetarian" value="Vegetarian">
-													<label for="vegetarian">
-														Vegetarian
-													</label>
-												</li>
-												<li class="diet" id="Vegan">
-													<input type="radio" name="diet" id="vegan" value="Vegan">
-													<label for="vegan">
-														Vegan
-													</label>
-												</li>
-												<li class="diet" id="Pescetarian">
-													<input type="radio" name="diet" id="pescetarian" value="Pescetarian">
-													<label for="pescetarian">
-														Pescetarian
-													</label>
-												</li>
-												<li class="diet" id="Paleo">
-													<input type="radio" name="diet" id="paleo" value="Paleo">
-													<label for="paleo">
-														Paleo
-													</label>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div>
-										<h2>What do you avoid?</h2>
-										<ul id="Restrictions">
-											{{#each restriction in restrictions}}
-											<li id="{{restriction}}" class="restriction">
-												<div class="restriction-img">
-													<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
-													<img src="icons/food/{{restriction}}.gif">
-													<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
-												</div>
-												<p>{{restriction}}</p>
+						{{#if diet}}
+							<div id="wdye">
+								<h1>Subscribe Today</h1>
+								<p>and get 5% off all orders for life!</p>
+								<div>
+									<h2>What do you eat?</h2>
+									<div id="Diets">
+										<ul>
+											<li class="diet" id="Omnivore">
+												<input type="radio" name="diet" id="omnivore" value="Omnivore">
+												<label for="omnivore">
+													Omnivore
+												</label>
 											</li>
-											{{/each}}
+											<li class="diet" id="Vegetarian">
+												<input type="radio" name="diet" id="vegetarian" value="Vegetarian">
+												<label for="vegetarian">
+													Vegetarian
+												</label>
+											</li>
+											<li class="diet" id="Vegan">
+												<input type="radio" name="diet" id="vegan" value="Vegan">
+												<label for="vegan">
+													Vegan
+												</label>
+											</li>
+											<li class="diet" id="Pescetarian">
+												<input type="radio" name="diet" id="pescetarian" value="Pescetarian">
+												<label for="pescetarian">
+													Pescetarian
+												</label>
+											</li>
+											<li class="diet" id="Paleo">
+												<input type="radio" name="diet" id="paleo" value="Paleo">
+												<label for="paleo">
+													Paleo
+												</label>
+											</li>
 										</ul>
 									</div>
 								</div>
-								<div class="sbmt-button">
-									<a href="choose-plan" id="next0" class="btn-secondary">
-										Next
-									</a>
-								</div>
-							{{/if}}
-
-		      		{{#if plan}}
-								<div id="Plan" class="form-group" data-required="true">
-									<h2>Choose your plan:</h2> 
-									<br>
-									<ul>
-										<li id="6-Pack">
-											<input type="radio" name="plan" id="6" value="6-Pack">
-											<label for="6">
-												<span class="number">6</span><br>
-												<span class="mpw">meals per week</span><br>
-												<span class="invalid">
-													<span class="pw">
-														<span class="value strikethrough">$85 / per week</span>
-													</span>
-												</span>
-												<br>
-												<span class="pw">
-													<span class="value">$80.75</span> / per week
-												</span>
-											</label>
+								<div>
+									<h2>What do you avoid?</h2>
+									<ul id="Restrictions">
+										{{#each restriction in restrictions}}
+										<li id="{{restriction}}" class="restriction">
+											<div class="restriction-img">
+												<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
+												<img src="icons/food/{{restriction}}.gif">
+												<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
+											</div>
+											<p>{{restriction}}</p>
 										</li>
-										<li id="8-Pack">
-											<input type="radio" name="plan" id="8" value="8-Pack">
-											<label for="8">
-												<span class="number">8</span><br>
-												<span class="mpw">meals per week</span><br>
-												<span class="invalid">
-													<span class="pw">
-														<span class="value strikethrough">$110 / per week</span>
-													</span>
-												</span>
-												<br>
-												<span class="pw">
-													<span class="value">$104.50</span> / per week
-												</span>
-											</label>
-										</li>
-										<li id="10-Pack">
-											<input type="radio" name="plan" id="10" value="10-Pack">
-											<label for="10">
-												<span class="number">10</span><br>
-												<span class="mpw">meals per week</span><br>
-												<span class="invalid">
-													<span class="pw">
-														<span class="value strikethrough">$135 / per week</span>
-													</span>
-												</span>
-												<br>
-												<span class="pw">
-													<span class="value">$128.25</span> / per week
-												</span>
-											</label>
-										</li>
-										<li id="12-Pack">
-											<input type="radio" name="plan" id="12" value="12-Pack">
-											<label for="12">
-												<span class="number">12</span><br>
-												<span class="mpw">meals per week</span><br>
-												<span class="invalid">
-													<span class="pw">
-														<span class="value strikethrough">$159 / per week</span>
-													</span>
-												</span>
-												<br>
-												<span class="pw">
-													<span class="value">$151.05</span> / per week
-												</span>
-											</label>
-										</li>
+										{{/each}}
 									</ul>
 								</div>
+							</div>
+							<div class="sbmt-button">
+								<a href="choose-plan" id="next0" class="btn-secondary">
+									Next
+								</a>
+							</div>
+						{{/if}}
 
-								<div id="DeliveryDay" class="form-group" data-required="true">
-									<h2>Choose your preferred delivery date:</h2>
-									<br>
-									<ul>
-										<li id="sunday">
-											<input type="radio" id="Sunday" name="delivery" value="sunday">
-											<label for="Sunday">Sundays 6-9pm</label>
-										</li>
-										<li id="monday">
-											<input type="radio" id="Monday" name="delivery" value="monday">
-											<label for="Monday">Mondays 6-9pm</label>
-										</li>
-									</ul>
-								</div>
-								<div class="sbmt-button">
-								  <!-- <a href="#diet" id="backtodiet">Back to Diet</a>  -->
-									<a href="#payment-details" id="next1" class="btn-secondary">
-										Next
-									</a>
-								</div>
-							{{/if}}
+	      		{{#if plan}}
+							<div id="Plan" class="form-group" data-required="true">
+								<h2>Choose your plan:</h2> 
+								<ul>
+									<li id="6-Pack">
+										<input type="radio" name="plan" id="6" value="6-Pack">
+										<label for="6">
+											<div>
+												<span class="number">6</span>
+												<span class="mpw">meals per week</span>
+											</div>
+											<div class="discountedPrice">
+												<span class="value strikethrough">$85</span>
+												<span class="value">$80.75 / per week</span>
+											</div>
+										</label>
+									</li>
+									<li id="8-Pack">
+										<input type="radio" name="plan" id="8" value="8-Pack">
+										<label for="8">
+											<div>
+												<span class="number">8</span>
+												<span class="mpw">meals per week</span>
+											</div>
+											<div class="discountedPrice">
+												<span class="value strikethrough">$110</span>
+												<span class="value">$104.50 / per week</span>
+											</div>
+										</label>
+									</li>
+									<li id="10-Pack">
+										<input type="radio" name="plan" id="10" value="10-Pack">
+										<label for="10">
+											<div>
+												<span class="number">10</span>
+												<span class="mpw">meals per week</span>
+											</div>
+											<div class="discountedPrice">
+												<span class="value strikethrough">$135</span>
+												<span class="value">$128.25 / per week</span>
+											</div>
+										</label>
+									</li>
+									<li id="12-Pack">
+										<input type="radio" name="plan" id="12" value="12-Pack">
+										<label for="12">
+											<div>
+												<span class="number">12</span>
+												<span class="mpw">meals per week</span>
+											</div>
+											<div class="discountedPrice">
+												<span class="value strikethrough">$159</span>
+												<span class="value">$151.05 / per week</span>
+											</div>
+										</label>
+									</li>
+								</ul>
+							</div>
 
-							{{#if payment}}
-								<div id="cc-form">
-									<h2>Payment Details</h2>
-									<div class="card-errors"></div>
+							<div id="DeliveryDay" class="form-group" data-required="true">
+								<h2>Choose your preferred delivery date:</h2>
+								<ul>
+									<li id="sunday">
+										<input type="radio" id="Sunday" name="delivery" value="sunday">
+										<label for="Sunday">Sundays 6-9pm</label>
+									</li>
+									<li id="monday">
+										<input type="radio" id="Monday" name="delivery" value="monday">
+										<label for="Monday">Mondays 6-9pm</label>
+									</li>
+								</ul>
+							</div>
+							<div class="sbmt-button">
+							  <!-- <a href="#diet" id="backtodiet">Back to Diet</a>  -->
+								<a href="#payment-details" id="next1" class="btn-secondary">
+									Next
+								</a>
+							</div>
+						{{/if}}
 
-								  <div id="cc-number">
-							      <input type="text" size="20" placeholder="Card Number" id="cc" required>
-								  </div>
+						{{#if payment}}
+							<form id="cc-form">
+								{{#if trialable}}
+									<div id="createNewUser">
+										<h2>Create Your Account</h2>
+										<div class="form-group" data-required="true">
+											<label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label> 
+											<input type="email" name="customer.email" id="EsBbF9Ads8fEFFAut" required data-schema-key="customer.email" class="form-control">
+											<span class="help-block"></span>
+										</div>
 
-								  <div id="EXPm">
-								    <select id="expM" class="exp_month" required>
-									    <option value="">Exp Mo</option>
-									    <option class="extraneous" value="01">01</option>
-									    <option class="extraneous" value="02">02</option>
-									    <option class="extraneous" value="03">03</option>
-									    <option class="extraneous" value="04">04</option>
-									    <option class="extraneous" value="05">05</option>
-									    <option class="extraneous" value="06">06</option>
-									    <option class="extraneous" value="07">07</option>
-									    <option class="extraneous" value="08">08</option>
-									    <option class="extraneous" value="09">09</option>
-									    <option class="extraneous" value="10">10</option>
-									    <option class="extraneous" value="11">11</option>
-									    <option class="extraneous" value="12">12</option>
-										</select>
+										<div class="form-group" data-required="true">
+											<label for="EsBbF9Ads8fEFFAut2" class="control-label">Confirm Email address</label> 
+											<input type="email" name="customer.emailCheck" id="EsBbF9Ads8fEFFAut2" required data-schema-key="customer.emailCheck" class="form-control">
+											<span class="help-block"></span>
+										</div>
+
+										<div class="email-errors"></div>
+
+										<div class="form-group" data-required="true">
+											<label for="EsBbF9Ads8fEFFAut3" class="control-label">Password</label> 
+											<input type="password" name="customer.password" id="EsBbF9Ads8fEFFAut3" required data-schema-key="customer.password" class="form-control">
+											<span class="help-block"></span>
+										</div>
 									</div>
-									<div id="EXPy">
-										<select id="expY" class="exp_year" required>
-									    <option value="">Exp Year</option>
-									    <option value="2017">2017</option>
-									    <option value="2018">2018</option>
-									    <option value="2019">2019</option>
-									    <option value="2020">2020</option>
-									    <option value="2021">2021</option>
-									    <option value="2022">2022</option>
-									    <option value="2023">2023</option>
-									    <option value="2024">2024</option>
-									    <option value="2025">2025</option>
-									  </select>
-								  </div>
+								{{/if}}
 
-								  <div id="cvc">
-	    				      <input type="text" size="4" placeholder="CVC" class="cvc" required>
-								  </div>
-								</div>
+								<h2>Payment Details</h2>
+								<div id="card-errors"></div>
+								<div id="card-element"></div>
 
 								{{#if havePromo}}
 									<div class="submitPromo">
-								    <label>
-								      <input type="text" placeholder="Enter your promo code" id="promo">
-								      <button type="submit" id="promoSub">Apply</button>
-								    </label>
+							      <input type="text" placeholder="Enter your promo code" id="promo">
+							      <button type="submit" id="promoSub">APPLY</button>
 								  </div>
 								{{else}}
 									<div class="promo">
@@ -244,91 +210,83 @@
 							  	<img src="/icons/powered_by_stripe.png" class="str">
 							  </div>
 
-								<p class="disclaimer">Skip or cancel anytime!<br>Customers cancelling their subscription before 4 additional orders will be charged a cancellation fee of $20.</p><br>
 								<div class="sbmt-button">
-									<a href="#delivery-details" id="next2" class="btn-secondary">
+									<button type="submit" id="next2" class="btn-secondary">
 										Next
-									</a>
+									</button>
 								</div>
-							{{/if}}
+							</form>
+						{{/if}}
 
-							{{#if delivery}}
-								<form id="DeliveryForm">
-									<h2>Delivery Details</h2>
-									<div class="form-group firstName" data-required="true">
-										<label for="7TGxZsAyFk9zWn6rj" class="control-label">First Name</label> 
-										<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" required data-schema-key="customer.firstName" class="form-control">
-										<span class="help-block"></span>
-									</div>
+						{{#if delivery}}
+							<form id="DeliveryForm">
+								<h2>Delivery Details</h2>
 
-									<div class="form-group lastName" data-required="true">
-										<label for="zS5Mw3HxCAsACZCui" class="control-label">Last Name</label> 
-										<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" required data-schema-key="customer.lastName" class="form-control">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group firstName" data-required="true">
+									<label for="7TGxZsAyFk9zWn6rj" class="control-label">First Name</label> 
+									<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" required data-schema-key="customer.firstName" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group" data-required="true">
-										<label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label> 
-										<input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" required data-schema-key="customer.phone" class="form-control">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group lastName" data-required="true">
+									<label for="zS5Mw3HxCAsACZCui" class="control-label">Last Name</label> 
+									<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" required data-schema-key="customer.lastName" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group" data-required="true">
-										<label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label> 
-										<input type="email" name="customer.email" id="EsBbF9Ads8fEFFAut" required data-schema-key="customer.email" class="form-control" value="{{email}}">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group" data-required="true">
+									<label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label> 
+									<input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" required data-schema-key="customer.phone" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group" data-required="true">
-										<label for="KcYJxhTp8QLnZEk2c" class="control-label">Address Line 1</label> 
-										<input type="text" name="customer.address.line1" id="KcYJxhTp8QLnZEk2c" required data-schema-key="customer.address.line1" class="form-control">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group" data-required="true">
+									<label for="KcYJxhTp8QLnZEk2c" class="control-label">Address Line 1</label> 
+									<input type="text" name="customer.address.line1" id="KcYJxhTp8QLnZEk2c" required data-schema-key="customer.address.line1" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group">
-										<label for="L2ukezE6Qb2SMWw2i" class="control-label">Address Line 2</label> 
-										<input type="text" name="customer.address.line2" id="L2ukezE6Qb2SMWw2i" data-schema-key="customer.address.line2" class="form-control">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group">
+									<label for="L2ukezE6Qb2SMWw2i" class="control-label">Address Line 2</label> 
+									<input type="text" name="customer.address.line2" id="L2ukezE6Qb2SMWw2i" data-schema-key="customer.address.line2" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group city" data-required="true">
-										<label for="gPijubZcAW4ZYuDGA" class="control-label">City</label> 
-										<input type="text" name="customer.address.city" id="gPijubZcAW4ZYuDGA" required data-schema-key="customer.address.city" class="form-control">
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group city" data-required="true">
+									<label for="gPijubZcAW4ZYuDGA" class="control-label">City</label> 
+									<input type="text" name="customer.address.city" id="gPijubZcAW4ZYuDGA" required data-schema-key="customer.address.city" class="form-control">
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group state" data-required="true">
-										<label for="D268gw6JgngaxcDMt" class="control-label">State</label> 
-										<select name="customer.address.state" id="D268gw6JgngaxcDMt" required data-schema-key="customer.address.state" autocomplete="off" class="form-control"> 
-											<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AS">AS</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FM">FM</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected="selected">NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
-										</select>
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group state" data-required="true">
+									<label for="D268gw6JgngaxcDMt" class="control-label">State</label> 
+									<select name="customer.address.state" id="D268gw6JgngaxcDMt" required data-schema-key="customer.address.state" autocomplete="off" class="form-control"> 
+										<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AS">AS</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FM">FM</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected="selected">NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
+									</select>
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group zip" data-required="true"> 
-										<label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label> 
-										<input type="text" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" required data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" />
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group zip" data-required="true"> 
+									<label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label> 
+									<input type="text" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" required data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" />
+									<span class="help-block"></span>
+								</div>
 
-									<div class="form-group comments"> 
-										<label for="9Lt5aG8uEGEL5KfnL" class="control-label">Comments for delivery</label>
-										<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL"  data-schema-key="destinationComments" rows="8" cols="20" class="form-control"></textarea>
-										<span class="help-block"></span>
-									</div>
+								<div class="form-group comments"> 
+									<label for="9Lt5aG8uEGEL5KfnL" class="control-label">Comments for delivery</label>
+									<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL"  data-schema-key="destinationComments" rows="8" cols="20" class="form-control"></textarea>
+									<span class="help-block"></span>
+								</div>
 
-									<div class="info-errors"></div>
+								<div class="info-errors"></div>
 
-									<div class="sbmt-button">
-										<button type="submit" id="sbmtOrder" class="btn-secondary">
-											Submit
-										</button>
-									</div>
-								</form>
-							{{/if}}
-<!-- 						{{else}}
-							{{> Trial_signup }}
-						{{/if}} -->
+								<div class="sbmt-button">
+									<button type="submit" id="sbmtOrder" class="btn-secondary">
+										Submit
+									</button>
+								</div>
+							</form>
+						{{/if}}
 					</div>
 				</div>
 			</div>

@@ -19,15 +19,15 @@ export const insertPromo = new ValidatedMethod({
     expires: { type: String, optional: true },
     useLimitPerCustomer: { type: Number },
     useLimitTotal: { type: Number, optional: true },
-    timesUsed: { type: Number },
-    users: { type: Object },
-    active: { type: Boolean },
+    timesUsed: { type: Number, optional: true },
+    users: { type: Object, optional: true },
+    active: { type: Boolean, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
   },
   run({ codes, desc, credit, percentage, expires, useLimitPerCustomer, useLimitTotal, timesUsed, users, active }) {
-    var promos = []
+    var promos = [];
     for (var i = 0; i < codes.length; i++) {
       const code = codes[i];
 
@@ -40,9 +40,9 @@ export const insertPromo = new ValidatedMethod({
         expires,
         useLimitPerCustomer,
         useLimitTotal,
-        timesUsed,
-        users,
-        active
+        timesUsed: 0,
+        users: {},
+        active: true,
       };
     
       const promoId = Promos.insert(promo);
@@ -94,21 +94,28 @@ export const usePromo = new ValidatedMethod({
   run({ code }) {
     var promo = Promos.findOne({code: code});
     const user = Meteor.userId();
-    promo.timesUsed = promo.timesUsed + 1;
 
-    if (promo.users[user]) {
-      promo.users[user] = promo.users[user] + 1;
-    } else {
+    //In the case where a promo can be used by many users, more than once,
+    //if a user has reached useLimitPerCustomer, return an Error
+    if (!promo.users[user]) {
       promo.users[user] = 1;
+    } else {
+      promo.users[user] += 1;
     };
 
-    // if (promo.users[user] === useLimitPerCustomer) {
-    //   promo.active = false;
-    // };
+    promo.timesUsed += 1; //Add a new time used
 
-    if (promo.timesUsed === useLimitTotal) {
+    //If the promo has now reached useLimitTotal, deactivate
+    if (promo.timesUsed === promo.useLimitTotal) {
       promo.active = false;
     };
+
+    //Update promo
+    const updatedPromo = Promos.update(promo._id, {
+      $set: promo
+    });
+
+    return updatedPromo;
   },
 });
 

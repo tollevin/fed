@@ -61,9 +61,31 @@ Template.Subscriber_preview.helpers({
 	},
 
 	saleAmount() {
-		const basePrice = Template.currentData().subscriptions.plan.amount / 100;
-		const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
-		return saleAmount;
+		// Price - Discount
+		if (Template.currentData().subscriptions) {
+			const basePrice = Template.currentData().subscriptions.plan.amount / 100;
+			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
+			return saleAmount;
+		};
+	},
+
+	taxAmount() {
+		if (Template.currentData().subscriptions) {
+			const basePrice = Template.currentData().subscriptions.plan.amount / 100; // Cost of plan
+			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
+			const taxAmount = (saleAmount * .08875);
+			return taxAmount.toFixed(2);
+		};
+	},
+
+	total() {
+		if (Template.currentData().subscriptions) {
+			const basePrice = Template.currentData().subscriptions.plan.amount / 100;
+			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
+			const taxAmount = saleAmount * .08875;
+	    const totalAmount = saleAmount + taxAmount;
+	    return totalAmount.toFixed(2);
+	  };
 	},
 
 	processStatus(status) {
@@ -86,7 +108,7 @@ Template.Subscriber_preview.helpers({
 		};
 
 		let paused;
-		if (Template.currentData().subscriptions.trial_end > nextThurs) {
+		if (Template.currentData().subscriptions && (Template.currentData().subscriptions.trial_end > nextThurs)) {
 			paused = true;
 		} else {
 			paused = false;
@@ -115,4 +137,10 @@ Template.Subscriber_preview.helpers({
 			return false;
 		};
 	},
+});
+
+Template.Subscriber_preview.events({
+	'click .customer-notes' (event, template) {
+
+	}
 });

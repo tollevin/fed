@@ -1,0 +1,26 @@
+<template name="signUp_Modal">
+	<div class="modal-background"></div>
+	<div id="signUpModal" class="modal">
+	  <span class="close">×</span>
+	  <div class="modal-content">
+	  	<form id="SignUpModalForm">
+		  	<p class="title">We’re excited to get you Fed!</p>
+	  		
+	  		<p class="subtitle">But first, please create an account</p>
+	  		
+	  		<div class="inputs">
+			  	<input type="text" class="userEmail" name="userEmail" placeholder="Email Address" required>
+			  	<input type="text" class="checkUserEmail" name="checkEmail" placeholder="Retype Email Address" required="">
+			  	<input type="password" class="pw" name="pw" placeholder="Create a password" required="">
+			  	<input type="number" class="zip number" name="zip" placeholder="Zip Code" required>
+			  </div>
+		  	
+		  	<div class="signUp-errors"></div>
+
+		  	<p class="btw">Please note, creating an account does not automatically enroll you in our subscription program</p>
+		  	
+		  	<button id="modal-button" type="submit" form="SignUpModalForm" class="btn-primary">Submit</button>
+		  </form>
+	  </div>
+	</div>
+</template>

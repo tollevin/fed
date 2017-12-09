@@ -1,0 +1,23 @@
+<template name="Success_page">
+	<div id="Success" class="page">
+		<div class="content-scrollable">
+      <div class="panel-wrapper">
+				<h1>Your gift has been sent!</h1>
+				<div id="Gift-Card">
+					<img src="/fed_logo_366732_trans.png">
+					<p class="title">Gift Card</p>
+					<p class="message">{{message}}</p>
+					<hr>
+					<p class="value">${{amountString charge.amount}}</p>
+				</div>
+				<div id="Order-Summary">
+					{{#with charge}}
+						<p>Amount: ${{amountString amount}}</p>
+						<p>Paid with: <img class="card-brand" src="/icons/cards/32x32/{{sourceType source.brand}}.png"> *{{source.last4}}</p>
+						<p>Delivery: via email to<br>{{recipient.email}}</p>
+					{{/with}}
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

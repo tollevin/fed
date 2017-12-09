@@ -34,7 +34,6 @@ Template.Item_detail.helpers({
         allergens = true;
       };
     };
-    console.log(allergens);
     return allergens;
     // if (thisItem && thisItem.warnings[0]) {
     //   var warnings = "";

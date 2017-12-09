@@ -10,7 +10,7 @@ import { Items } from '../../api/items/items.js';
 import './packs.html';
 import '../components/footer.js';
 import '../components/pack-item.js';
-import '../components/modal.js';
+import '../components/signUpModal.js';
 
 import { insertOrder } from '../../api/orders/methods.js';
 
@@ -44,6 +44,10 @@ Template.Packs.helpers({
 
 	vegetarianPack() {
 		return Items.find({ 'packs.vegetarianPack': true }, { sort: { weight: -1 } })
+	},
+
+	veganPack() {
+		return Items.find({ 'packs.veganPack': true }, { sort: { weight: -1 } })
 	},
 
 	popup() {
@@ -86,16 +90,28 @@ Template.Packs.events({
 						newOrder.dishes.push(item.name)
 					});
 					break;
+				case "VeganPack":
+					var newOrder = {
+						dishes: [],
+						snacks: ["Antioxidant Energy Bar"],
+						price: 8500,
+						description: "Fed Vegan Pack",
+					};
+					const vPackItems = Items.find({ 'packs.veganPack': true }).fetch();
+					vPackItems.forEach((item)=> {
+						newOrder.dishes.push(item.name)
+					});
+					break;
 		  };
 		};
 
-	  Session.set('order', newOrder);
+	  Session.set('pack', newOrder); // Will change when packs become items (FIX)
 
 		if (!Meteor.userId()) {
       Session.set('needsZip', true);
     } else {
     	Session.set('processing', true);
-	    const orderReady = Session.get('order');
+	    const orderReady = Session.get('pack'); // Will change when packs become items (FIX)
 
 			const orderToCreate = {
 	    	userId: Meteor.userId(),
@@ -107,23 +123,23 @@ Template.Packs.events({
 
 	    const orderId = insertOrder.call(orderToCreate);
 	    Session.set('orderId', orderId);
+	    FlowRouter.go('/checkout');
+	  //   var zip = Meteor.user().address_zipcode;
 
-	    var zip = Meteor.user().address_zipcode;
+			// if (!zip) {
+		 //    zip = Meteor.user().profile.zipCode;
+	  //   };
 
-			if (!zip) {
-		    zip = Meteor.user().profile.zipCode;
-	    };
+	    // var data = {
+	    // 	customer_zipcode: zip,
+	    // };
 
-	    var data = {
-	    	customer_zipcode: zip,
-	    };
-
-	    Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-	      if ( !error ) {
-	      	Session.set('delivEstimate', response);
-	      	FlowRouter.go('/checkout');
-	      };
-	    });
+	    // Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
+	    //   if ( !error ) {
+	    //   	Session.set('delivEstimate', response);
+	    //   	FlowRouter.go('/checkout');
+	    //   };
+	    // });
 
 			Session.set('processing', false);
 		};

@@ -36,6 +36,10 @@ Template.Item_admin.helpers({
   veggie() {
     return Template.currentData().packs.vegetarianPack && 'checked';
   },
+
+  vegan() {
+    return Template.currentData().packs.veganPack && 'checked';
+  },
 });
 
 Template.Item_admin.events({
@@ -57,6 +61,15 @@ Template.Item_admin.events({
   },
 
   'change [name="vegetarianPack"]'(event) {
+    const checked = $(event.target).is(':checked');
+
+    toggleInPack.call({
+      itemId: Template.currentData()._id,
+      pack: event.target.name,
+    });
+  },
+
+  'change [name="veganPack"]'(event) {
     const checked = $(event.target).is(':checked');
 
     toggleInPack.call({

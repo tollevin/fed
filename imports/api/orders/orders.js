@@ -97,6 +97,11 @@ Orders.schema = new SimpleSchema({
     type: Customer,
     optional: true
   },
+  items: {
+    type: [ String ],
+    label: "Order Items",
+    optional: true,
+  },
   packName: {
     type: String,
     label: "Pack Name",

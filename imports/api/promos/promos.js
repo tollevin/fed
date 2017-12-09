@@ -84,6 +84,7 @@ Promos.schema = new SimpleSchema({
   useLimitTotal: {
     type: Number,
     label: 'Number of allowed uses in total',
+    defaultValue: 1,
     optional: true,  
   },
   timesUsed: {

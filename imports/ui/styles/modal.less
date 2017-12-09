@@ -3,7 +3,7 @@
   display: block; /* Shown by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  padding-top: @nav-height;
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -12,25 +12,112 @@
   /* background-color: rgb(0,0,0);  Fallback color */
   background-color: rgba(0,0,0,0.2); /* Black w/ opacity */
 
+  @media screen and (max-width: 600px) {
+    padding-top: @nav-height-m;
+  }
+
+  .modal-background {
+    .position(absolute, 0,0,0,0);
+    background-color: rgba(0,0,0,.3);
+  }
+
+  /* The Close Button */
+  .close {
+    position: absolute;
+    top: 150px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+
+    @media screen and (max-width: 600px) {
+      top: 68px;
+      right: 20px;
+    }
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
 
   /* Modal Content */
   .modal-content {
-    margin-top: 15%;
-    margin-bottom: 20%;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 10%;
-    height: 60%;
+    margin-top: 8%;
+    padding-top: 5%;
+    padding-bottom: 6%;
     display: block;
     width: 80%;
     max-width: 700px;
     background-color: #FFF;
 
+    @media screen and (max-width: 600px) {
+      margin-top: 18%;
+      padding-bottom: 10%;
+    }
+
     p {
       margin-left: 15px;
       margin-right: 15px;
+      text-align: center;
+    }
+
+    .title {
+      color: @fgreene;
+      font-size: 27px;
+      font-weight: 600;
+      margin-bottom: 5px;
+
+      @media screen and (max-width: 600px) {
+        font-size: 19px;
+      }
+    }
+
+    .subtitle {
+      margin-top: 0;
+      font-size: 15px;
+      margin-bottom: 0;
+    }
+
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      width: 250px;
+      margin: 40px auto;
+
+      @media screen and (max-width: 600px) {
+        width: 215px;
+      }
+
+      input {
+        margin-bottom: 10px;
+        line-height: 25px;
+        background-color: #eee;
+        border: none;
+        padding-left: 9px;
+      }
+    }
+
+    .signUp-errors {
+      text-align: center;
+    }
+
+    .btw {
+      font-size: 14px;
+      line-height: 20px;
+
+      @media screen and (max-width: 600px) {
+        font-size: 13px;
+      }
     }
   }
+
+  
 
   .alright,
   .sorry {
@@ -45,6 +132,12 @@
     font-size: 19px;
     padding: 5px;
     text-align: center;
+  }
+
+ .number::-webkit-inner-spin-button, .number::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+    -moz-appearance:textfield !important;
   }
 
   #modal-button {
@@ -83,24 +176,6 @@
     from {transform: scale(0.1)}
     to {transform: scale(1)}
   }
-
-  /* The Close Button */
-  .close {
-    position: absolute;
-    top: 115px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-  }
 }
 
 /* 90% Image Width on Smaller Screens */
@@ -110,6 +185,6 @@
   }
 
   .modal-content {
-    margin-top: 25%;
+    margin-top: 0;
   }
 }

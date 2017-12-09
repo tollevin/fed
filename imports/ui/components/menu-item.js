@@ -6,10 +6,12 @@ import { $ } from 'meteor/jquery';
 import './menu-item.html';
 import { Items } from '../../api/items/items.js';
 
+const countInArray = function(array, what) {
+  return array.filter(item => item == what).length;
+};
+
 Template.Menu_item.onCreated(function menuItemOnCreated() {
-  // this.autorun(() => {
-  //   this.subscribe('singleItem');
-  // });
+  this.veganized = new ReactiveVar(false);
 });
 
 Template.Menu_item.helpers({
@@ -27,6 +29,19 @@ Template.Menu_item.helpers({
   		return classes;
     }
 	},
+
+  veganizable() {
+    return Template.currentData().veganizable;
+  },
+
+  tally: ()=> {
+    if (Session.get('pack')) {
+      var pack = Session.get('pack').dishes;
+      var itemName = Template.currentData().name;
+      var veganItemName = Template.currentData().name + " (V)";
+      return countInArray(pack, itemName) + countInArray(pack, veganItemName);
+    };
+  },
 });
 
 Template.Menu_item.events({
@@ -40,25 +55,29 @@ Template.Menu_item.events({
     FlowRouter.go(newRoute);
   },
 
-	'click .add-to-cart'(event) {
+	'click .add-to-pack'(event, template) {
 		event.preventDefault();
 
-    if (Meteor.user()) {
-  		const context = Template.currentData();
+    const context = Template.currentData();
 
-  		order = Session.get('order');
-  		dishes = order.dishes;
+    if (Meteor.user()) {
+  		const pack = Session.get('pack');
+  		const dishes = pack.dishes;
   		for (i = 0; i < dishes.length; i++) { 
       	if (!dishes[i]) {
-      		dishes[i] = context.name;
-      		order.dishes = dishes;
-      		Session.set('order', order);
+          if (template.veganized.get()) {
+        		dishes[i] = context.name + " (V)";
+          } else {
+            dishes[i] = context.name;
+          };
+      		pack.dishes = dishes;
+      		Session.set('pack', pack);
       		i = 0;
       		break;
       	} else {
       		continue;
       		if (i === dishes.length - 1){
-      		alert('Your pack is full!');
+      		sAlert.error('Your pack is full!');
       		};
       	};
   		};
@@ -66,4 +85,26 @@ Template.Menu_item.events({
       FlowRouter.go('join');
     }
 	},
+
+  'click .remove-from-pack'(event, template) {
+    event.preventDefault();
+
+    const pack = Session.get('pack');
+    const dishes = pack.dishes;
+    let itemName;
+    if (template.veganized.get()) {
+      itemName = Template.currentData().name + " (V)";
+    } else {
+      itemName = Template.currentData().name;
+    };
+    if (dishes.indexOf(itemName) > -1) {
+      dishes[dishes.indexOf(itemName)] = '';
+      pack.dishes = dishes;
+      Session.set('pack', pack);
+    };
+  },
+
+  'click .veganize'(event, template) {
+    template.veganized.set(!template.veganized.get());
+  },
 });

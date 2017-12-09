@@ -1,5 +1,5 @@
 <template name="Subscriber_preview">
-	<tr class="customer-preview  {{processStatus subscriptions.status}}">
+	<tr class="subscriber-preview  {{processStatus subscriptions.status}}">
 		{{#if Template.subscriptionsReady}}
 			<td class="created-at">
 				{{createdAt}}
@@ -21,16 +21,21 @@
 			<td class="address">
 				{{address_line_1}}
 				{{address_line_2}}
+			</td>
+			<td class="address_city">
 				{{address_city}}
+			</td>
+			<td class="address_zipcode">
 				{{address_zipcode}}
 			</td>
-			<td class="customer-amountSpent">
+			<td class="customer-delivDay">
 				{{preferredDelivDay}}
 			</td>
-			<td class="customer-stripeID">
+			<td class="customer-diet">
 				{{diet}}
+			</td>
+			<td class="customer-restrictions">
 				{{#if restrictions}}
-					No 
 					{{#each restriction in restrictions}}
 						{{restriction}}
 					{{/each}}
@@ -42,14 +47,27 @@
 			<td class="discount">
 				{{subscriptions.discount.coupon.id}}
 			</td>
-			<td class="subscription">
+			<td class="delivFee">
 				{{delivFee}}
 			</td>
-			<td class="plan-total">
+			<td class="saleAmount">
 				{{saleAmount}}
 			</td>
+			<td class="taxAmount">
+				{{taxAmount}}
+			</td>
+			<td class="total">
+				{{total}}
+			</td>
+			<td class="customer-delivComments">
+				{{deliv_comments}}
+			</td>
 			<td class="customer-notes">
-				{{notes}}
+				{{#if editingNotes}}
+					<input type="text" class="customer-notes" name="notes" placeholder="{{notes}}">
+				{{else}}
+					<a class="edit-customer-notes">{{notes}}</a>
+				{{/if}}
 			</td>
 		{{/if}}
 	</tr>

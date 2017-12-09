@@ -9,7 +9,11 @@ Template.Side_Nav.helpers({
   },
 
   notSubscribed() {
-    return Session.get('unsubscribed');
+    return !Session.get('subscribed');
+  },
+
+  subscribed() {
+    return Session.get('subscribed');
   },
 
   currentPage(page) {
@@ -22,5 +26,11 @@ Template.Side_Nav.helpers({
 Template.Side_Nav.events({
 	'click a'() {
 		Session.set('sideNavOpen', false);
-	}
+	},
+
+  'click .js-logout'(event) {
+    // event.preventDefault();
+    // event.stopImmediatePropagation();
+    Meteor.logout();
+  },
 });

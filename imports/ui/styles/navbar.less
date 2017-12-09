@@ -5,7 +5,7 @@
   background-color: #FFF;
   display: inline;
   transition: all 200ms ease-in;
-  z-index: 4;
+  z-index: 10;
 
   @media screen and (max-width: 600px) {
     height: @nav-height-m;
@@ -154,7 +154,8 @@
     display: flex;
     justify-content: space-between;
     width: 50%;
-    max-width: 375px;
+    min-width: 450px;
+    max-width: 560px;
 
     li {
       display: inline;
@@ -163,7 +164,7 @@
         text-decoration: none;
         text-transform: UPPERCASE;
         // font-family: "Josefin Sans";
-        font-weight: 500;
+        font-weight: 400;
         color: @fgreene;
         font-size: 13px;
 
