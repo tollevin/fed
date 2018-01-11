@@ -21,6 +21,7 @@ import '../../ui/pages/gift-cards.js';
 import '../../ui/pages/sign-up.js';
 import '../../ui/pages/jobs.js';
 import '../../ui/pages/media.js';
+import '../../ui/pages/style-guide.js';
 
 // Import admin templates
 import '../../ui/layouts/admin-body.js';
@@ -266,6 +267,13 @@ FlowRouter.route('/signup', {
   },
 });
 
+FlowRouter.route('/style-guide', {
+  name: 'Style.Guide',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Style_guide' });
+  },
+});
+
 FlowRouter.route( '/verify-email/:token', {
   name: 'verify-email',
   action( params ) {
@@ -312,4 +320,3 @@ Accounts.onLogout(function(){
 // Accounts.onResetPasswordLink(function(token, done) {
 //   Accounts.resetPassword(token, newPassword);
 // })
-

@@ -1,0 +1,186 @@
+<template name="Style_guide">
+  {{#momentum plugin="fade"}}
+    <div id="style-guide" class="page">
+      <div id="content-scrollable">
+        <div class="page-header">
+          <h1>Style Guide</h1>
+        </div>
+        <section id="Colors">
+          <h2>COLORS</h2>
+          <div class="card">
+            <div class="card-color" style="background-color:#034b2c"></div>
+            <div class="container">
+              <h4><b>Primary</b></h4>
+              <p>#034b2c</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-color" style="background-color:#ffb53d"></div>
+            <div class="container">
+              <h4><b>Secondary</b></h4>
+              <p>#ffb53d</p>
+            </div>
+          </div>
+        </section>
+        <section id="Buttons">
+          {{#with buttonHelpers}}
+          <h2>BUTTONS</h2>
+          <div class="element-section" style="">
+            <h3>Call To Action Button</h3>
+            <div class="CTA-button">
+              <a href="/subscribe" class="btn-tertiary">
+                <span class="CTA-text">Get Started</span>
+              </a>
+            </div>
+            <div id="cta" class="code-reveal">See Code</div>
+            <p class="collapse">{{cta}}</p>
+          </div>
+          <div class="element-section" style="">
+            <h3>Form Submit Button</h3>
+              <div class="sbmt-button">
+                <button type="submit" class="btn-secondary">
+                  Submit
+                </button>
+              </div>
+              <div id="sbmt-button" class="code-reveal">See Code</div>
+              <p class="collapse">{{sbmtButton}}</p>
+          </div>
+          {{/with}}
+          </section>
+          <section id="Radio-select">
+            {{#with radioHelpers}}
+            <h2>Radio Select</h2>
+            <div id="subscribe" class="">
+            <div id="wdye">
+            <div id="Diets">
+              <ul>
+                <li class="diet" id="Omnivore">
+                  <input type="radio" name="diet" id="omnivore" value="Omnivore">
+                  <label for="omnivore">
+                    Omnivore
+                  </label>
+                </li>
+                <li class="diet" id="Vegetarian">
+                  <input type="radio" name="diet" id="vegetarian" value="Vegetarian">
+                  <label for="vegetarian">
+                    Vegetarian
+                  </label>
+                </li>
+                <li class="diet" id="Vegan">
+                  <input type="radio" name="diet" id="vegan" value="Vegan">
+                  <label for="vegan">
+                    Vegan
+                  </label>
+                </li>
+                <li class="diet" id="Pescetarian">
+                  <input type="radio" name="diet" id="pescetarian" value="Pescetarian">
+                  <label for="pescetarian">
+                    Pescetarian
+                  </label>
+                </li>
+                <li class="diet" id="Paleo">
+                  <input type="radio" name="diet" id="paleo" value="Paleo">
+                  <label for="paleo">
+                    Paleo
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="radio" class="code-reveal">See Code</div>
+        <p class="collapse">{{radio}}</p>
+        {{/with}}
+          </section>
+        <section id="Menu_page">
+          {{#with menuPageHelpers}}
+          <h2>MENU PAGE</h2>
+          <article class="menu-item">
+          <a class="item-details" href="#">
+      			<div class="menu-item-img">
+      				<img src="/images/menu/2.jpg" alt="image goes here" />
+      			</div>
+      			<div class="menu-item-name">
+      				<h3>Menu Item Name</h3>
+      			</div>
+      		</a>
+      		<div class="menu-item-desc">
+      			<p>Description goes here</p>
+      		</div>
+      		<div class="menu-item-icons">
+      		</div>
+      		<div class="inputs">
+      			<div class="counter">
+      				<button class="remove-from-pack">-</button>
+      				<input type="number" value="0" readonly>
+      				<button class="add-to-pack">+</button>
+      			</div>
+      		</div>
+        </article>
+
+        <div id="menuCard" class="code-reveal">See Code</div>
+        <p class="collapse">{{menuCard}}</p>
+        {{/with}}
+        </section>
+        <section id="Typography">
+          <div class="typography">
+             {{#with typographyHelpers}}
+
+            <h2 style="padding-left: 40px">TYPOGRAPHY</h2>
+            <div class="element-section">
+            <h1>Heading 1</h1>
+            <div id="h1" class="code-reveal">See Code</div>
+            <p class="collapse">{{h1}}</p>
+          </div>
+          <div class="element-section">
+            <h2>Heading 2</h2>
+            <div id="h2" class="code-reveal">See Code</div>
+            <p class="collapse">{{h2}}</p>
+          </div>
+          <div class="element-section">
+            <h3>Heading 3</h3>
+            <div id="h3" class="code-reveal">See Code</div>
+            <p class="collapse">{{h3}}</p>
+          </div>
+          <div class="element-section">
+            <h4>Heading 4</h4>
+            <div id="h4" class="code-reveal">See Code</div>
+            <p class="collapse">{{h4}}</p>
+          </div>
+          <div class="element-section">
+            <p> Paragraph </p>
+            <div id="p" class="code-reveal">See Code</div>
+            <p class="collapse">{{p}}</p>
+          </div>
+            {{/with}}
+          </div>
+        </section>
+             {{#with carouselHelpers}}
+          <section id="landing" style="text-align:left">
+            <h2 style=" padding-left: 40px">Carousel</h2>
+            <div id="carousel-code" style="padding-left: 40px " class="code-reveal">See Code</div>
+            <p class="collapse" style="border: none">{{carousel}}</p>
+            <div id="lander">
+              {{> Lander_carousel}}
+            </div>
+
+          </section>
+          {{/with}}
+          <section id="Forms">
+            {{#with formHelpers}}
+            <h2>Forms</h2>
+            <div class="form-group">
+              <input type="text" name="customer.first_name" placeholder="First Name" required>
+              <input type="text" name="customer.last_name" placeholder="Last Name" required>
+            </div>
+            <div id="form" class="code-reveal">See Code</div>
+            <p class="collapse">{{form}}</p>
+            {{/with}}
+          </section>
+
+      </div>
+      {{> Footer }}
+    </div>
+  {{/momentum}}
+
+</template>
