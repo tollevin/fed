@@ -153,11 +153,13 @@ Meteor.methods({
     }
   },
 
-  async updateSubscription( subscriptionId, args ) {
+  async updateSubscription( args ) {
     try {
-      let subscriptionUpdate = await Stripe.subscriptions.update( subscriptionId, { trial_end: args.trial_end, prorate: false } );
+      console.log(args);
+      let subscriptionUpdate = await Stripe.subscriptions.update( args.subscription_id, { trial_end: args.trial_end, prorate: false } );
       return subscriptionUpdate;
-    } catch(err) {
+    } catch(error) {
+      console.log(error);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },

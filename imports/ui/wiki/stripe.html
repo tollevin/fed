@@ -1,0 +1,49 @@
+<template name="Wiki_index">
+<div class="wiki">
+{{#markdown}}
+# Payments
+  * autopayments should all be processed by Thursday at Noon
+  * successful subscriber orders should reset their trialing date to the next thursday
+
+## Stripe Glossary
+  * Payment states:
+    - uncaptured - 
+    - released - 
+
+  * Subscription States:
+    - trialing
+      - If a subscription is on a trial period, we’ll let you know the trial is ending via the customer.subscription.trial_will_end event. This event notification goes out 3 days before the trial period concludes (unless that’s not possible, such as when a trial is only 1 day long).
+    - active
+    - past_due
+    - unpaid
+      - To set a subscription status back to active from an unpaid or past_due state, open the most recent invoice and attempt to pay it. Note that paying any other invoice—that is not the most recent—does not change the subscription’s status.
+    - canceled -> EVENT: customer.subscription.deleted
+      - event's request property is null if auto-canceled
+
+  * Events:
+    - account.updated
+    - charge.pending
+    - charge.captured
+    - charge.succeeded
+    - charge.refunded
+    - charge.updated
+    - charge.dispute.created
+    - charge.dispute.closed
+    - coupon.created
+    - coupon.updated
+    - coupon.deleted
+    - customer.created
+    - customer.updated
+    - customer.deleted
+    - customer.discount.updated
+    - customer.discount.deleted
+    - customer.subscription.created
+    - customer.subscription.deleted
+    - customer.subscription.trial_will_end
+    - customer.subscription.updated
+    - invoice.payment_failed
+    - invoice.payment_succeeded
+    - invoice.upcoming
+{{/markdown}}
+</div>
+</template>

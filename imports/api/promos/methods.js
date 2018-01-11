@@ -96,7 +96,7 @@ export const usePromo = new ValidatedMethod({
     const user = Meteor.userId();
 
     //In the case where a promo can be used by many users, more than once,
-    //if a user has reached useLimitPerCustomer, return an Error
+    //if a user has reached useLimitPerCustomer, return an Error (FIX!)
     if (!promo.users[user]) {
       promo.users[user] = 1;
     } else {
@@ -118,6 +118,40 @@ export const usePromo = new ValidatedMethod({
     return updatedPromo;
   },
 });
+
+// export const realUsePromo = new ValidatedMethod({
+//   name: 'Meteor.usePromo',
+//   validate: new SimpleSchema({
+//     code: { type: String },
+//     type: { type: String },
+//   }).validator(),
+//   run({ code, type }) {
+//     var promo = Promos.findOne({code: code});
+//     const user = Meteor.userId();
+
+//     //In the case where a promo can be used by many users, more than once,
+//     //if a user has reached useLimitPerCustomer, return an Error (FIX!)
+//     if (!promo.users[user]) {
+//       promo.users[user] = 1;
+//     } else {
+//       promo.users[user] += 1;
+//     };
+
+//     promo.timesUsed += 1; //Add a new time used
+
+//     //If the promo has now reached useLimitTotal, deactivate
+//     if (promo.timesUsed === promo.useLimitTotal) {
+//       promo.active = false;
+//     };
+
+//     //Update promo
+//     const updatedPromo = Promos.update(promo._id, {
+//       $set: promo
+//     });
+
+//     return updatedPromo;
+//   },
+// });
 
 export const removePromo = new ValidatedMethod({
   name: 'Promos.methods.remove',

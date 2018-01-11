@@ -66,7 +66,6 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	});
 
 	const today = new moment();
-	// if (today.getDay() > 3 || today.getDay() === 0) {
 	if (today.day() > 3) {
 		Session.set('customizable', false);
 	} else if (today.day() === 0 && today.hour() < 12) {

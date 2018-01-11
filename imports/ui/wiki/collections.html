@@ -1,0 +1,116 @@
+<template name="Wiki_collections">
+<div class="wiki">
+{{#markdown}}
+# Data Collections
+
+### Users
+  * attribution !!  
+
+### Ingredients
+  * _id:
+  * name:
+  * description:
+  * sub_ingredients:
+  * brand:
+  * amount_unit:
+  * supplier:
+  * allergen:
+  * nutritionFacts:
+  * notes:
+
+### Dish
+  * _id:
+  * id:
+  * name:
+  * course:
+  * photo:
+  * description:
+  * ingredients:
+  * warnings:
+  * packs:
+  * nutritionFacts:
+  * goodFor_Days:
+  * active:
+  * attributes:
+  * comments:
+  * ratings:
+  * weight:
+
+### Menu
+  * _id:
+  * id:
+  * name:
+  * items: { Dishes }
+  * start_date:
+  * end_date:
+
+### Item
+  * _id:
+  * id:
+  * sku:
+  * name:
+  * description:
+  * type:
+  * photo:
+  * price:
+  * discount:
+  * sale_price:
+  * ingredients:
+  * warnings:
+  * nutrition_facts:
+  * attributes:
+  * ratings:
+  * sub_items:
+
+### Order
+  * _id:
+  * id:
+  * status:
+  * user_id:
+  * recipient:
+  * items:
+  * subtotal:
+  * coupon:
+  * discount:
+  * delivery_fee:
+  * total:
+  * payment_id:
+  * created_at:
+  * paid_at:
+  * ready_by:
+  * delivery_window:
+  * delivery_comments:
+  * tracking_code:
+  * delivered_at:
+  * courier:
+  * notes:
+
+### Delivery Windows
+  * _id:
+  * start_time:
+  * end_time:
+
+### Promos
+  * _id:
+  * created_at:
+  * code:
+  * desc:
+  * discount:
+  * percentage:
+  * expires:
+  * use_limit_per_customer:
+  * use_limit_total:
+  * times_used:
+  * users:
+  * active:
+
+### Logs
+  * _id:
+  * created_at:
+  * user_id:
+  * action:
+  * detail:
+
+{{/markdown}}
+</div>
+</template>

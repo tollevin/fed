@@ -93,19 +93,21 @@ Template.Subscriber_preview.helpers({
 		const now = moment().unix();
 		const nextThurs = moment().day(11).unix();
 
-		let lastOrderReadyBy;
-		if (Template.currentData().last_purchase) {
-			lastOrderReadyBy = moment(Template.currentData().last_purchase.ready_by).unix();
-		} else {
-			lastOrderReadyBy = false;
-		};
+		// let lastOrderReadyBy;
+		// if (Template.currentData().last_purchase) {
+		// 	lastOrderReadyBy = moment(Template.currentData().last_purchase.ready_by).unix();
+		// } else {
+		// 	lastOrderReadyBy = false;
+		// };
 
-		let lastOrderInFuture;
-		if (lastOrderReadyBy) {
-			lastOrderInFuture = now < lastOrderReadyBy;
-		} else {
-			lastOrderInFuture = false;
-		};
+		// let lastOrderInFuture;
+		// if (lastOrderReadyBy) {
+		// 	lastOrderInFuture = now < lastOrderReadyBy;
+		// } else {
+		// 	lastOrderInFuture = false;
+		// };
+
+		const customized = Template.currentData().customized;
 
 		let paused;
 		if (Template.currentData().subscriptions && (Template.currentData().subscriptions.trial_end > nextThurs)) {
@@ -115,9 +117,9 @@ Template.Subscriber_preview.helpers({
 		};
 		
 
-		if (status === "trialing" && skipping) {
+		if (skipping) {
 			return "skipping";
-		} else if (status === "trialing" && lastOrderInFuture) {
+		} else if (customized) {
 			return "customized";
 		} else if (paused) {
 			return "paused";

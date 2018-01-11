@@ -1,9 +1,6 @@
 <template name="Subscribe">
 	<div id="subscribe" class="page auth">
 	{{#momentum plugin="fade"}}
-		{{#if loading}}
-			{{> spinner}}
-		{{/if}}
 		<div class="content-scrollable">
       <div class="wrapper-auth">
 				<div class="subscribe-form">
@@ -78,7 +75,7 @@
 								</div>
 							</div>
 							<div class="sbmt-button">
-								<a href="choose-plan" id="next0" class="btn-secondary">
+								<a href="choose-plan" id="next0" class="btn-secondary next">
 									Next
 								</a>
 							</div>
@@ -91,7 +88,7 @@
 									<li id="6-Pack">
 										<input type="radio" name="plan" id="6" value="6-Pack">
 										<label for="6">
-											<div>
+											<div class="pack-size">
 												<span class="number">6</span>
 												<span class="mpw">meals per week</span>
 											</div>
@@ -104,7 +101,7 @@
 									<li id="8-Pack">
 										<input type="radio" name="plan" id="8" value="8-Pack">
 										<label for="8">
-											<div>
+											<div class="pack-size">
 												<span class="number">8</span>
 												<span class="mpw">meals per week</span>
 											</div>
@@ -117,7 +114,7 @@
 									<li id="10-Pack">
 										<input type="radio" name="plan" id="10" value="10-Pack">
 										<label for="10">
-											<div>
+											<div class="pack-size">
 												<span class="number">10</span>
 												<span class="mpw">meals per week</span>
 											</div>
@@ -130,7 +127,7 @@
 									<li id="12-Pack">
 										<input type="radio" name="plan" id="12" value="12-Pack">
 										<label for="12">
-											<div>
+											<div class="pack-size">
 												<span class="number">12</span>
 												<span class="mpw">meals per week</span>
 											</div>
@@ -158,7 +155,7 @@
 							</div>
 							<div class="sbmt-button">
 							  <!-- <a href="#diet" id="backtodiet">Back to Diet</a>  -->
-								<a href="#payment-details" id="next1" class="btn-secondary">
+								<a href="#payment-details" id="next1" class="btn-secondary next">
 									Next
 								</a>
 							</div>
@@ -192,8 +189,8 @@
 								{{/if}}
 
 								<h2>Payment Details</h2>
-								<div id="card-errors"></div>
-								<div id="card-element"></div>
+								<div id="payment-errors"></div>
+								{{> Card_element}}
 
 								{{#if havePromo}}
 									<div class="submitPromo">
@@ -211,7 +208,7 @@
 							  </div>
 
 								<div class="sbmt-button">
-									<button type="submit" id="next2" class="btn-secondary">
+									<button type="submit" id="next2" class="btn-secondary next">
 										Next
 									</button>
 								</div>

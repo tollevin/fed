@@ -67,7 +67,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
     processing: false,
     sideNavOpen: false,
     unsubscribed: true,
-    capped: true,
+    capped: false,
   });
 
   const handle = this.subscribe('limitedUserData');
@@ -128,7 +128,7 @@ Template.App_body.helpers({
     return ("Welcome, " + username);
   },
   notSubscribed() {
-    return Session.get('unsubscribed');
+    return !Session.get('subscribed');
   },
   sideNavOpen() {
     return Session.get('sideNavOpen') && 'sideNavOpen';

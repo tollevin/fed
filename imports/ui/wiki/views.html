@@ -1,30 +1,11 @@
-<template name="Wiki_index">
+<template name="Wiki_views">
 <div class="wiki">
 {{#markdown}}
-# Fed Functional Spec
+# Views
 
-## Disclaimer
-This spec is horribly incomplete.
-
-## Author
-CTOllevin
-
-## Scenarios
-  * #### Nate
-
-  * #### Richard
-
-  * #### Nina
-
-## Non Goals
-
-## Overview
-
-## Screen by screen spec
-Fed has many different templates displayed across a handful of screens (pages). Each template is listed here under its screen, and is divided into smaller sections when necessary.
+## User
 
 ### Layout
-  * Animated Loader
   * Main Nav
   * Side Nav
   * Notifications
@@ -33,30 +14,29 @@ Fed has many different templates displayed across a handful of screens (pages). 
     * Loader
   * Footer
 
-### Landing_Page
+### Landing
   * Landing
-  * Hero Slider / Video
+  * Hero Slider
   * Testimonial Slider
-  * Menu Slider?
   * (Welcome Modal)
   * Nutrition Tool - Calories Per Day?
 
-### Blog_Pages
+### Blog
   * Article Preview
   * Article Detail
 
-### About_Page
+### About
   * About
 
-### Jobs_Page
+### Jobs
   * Jobs
     * Job Preview
     * Job Detail
 
-### Media_Page
+### Media
   * Media
 
-### Accounts_Pages
+### Accounts
   * Register
   * Sign In
   * (Sign In Modal)
@@ -75,18 +55,16 @@ Fed has many different templates displayed across a handful of screens (pages). 
   * My Orders
     * Current Order
     * Upcoming Orders
-      * Suggestion Preview
     * Past Orders
       * Invoices
   * My Subscriptions
-    * Subscription Preview
     * Subscription Detail
       * Rate & Comment
       * (Cancel Dialog)
   * Fed Cred
   * Referal Form
 
-### Menu_Page
+### Menu
   * Packs
     * Pack Preview
     * Pack Detail
@@ -104,34 +82,32 @@ Fed has many different templates displayed across a handful of screens (pages). 
   * (Filters Modal)
   * Cart
   * (Suggestion Modal)
-  * (Uncustomizable Modal)
 
-### Subscribe_Page
+### Subscribe
   * Diet Selection
   * Nutrition Tool - Calories Per Day?
   * Delivery Selection
   * Menu Selection
   * (Suggestion Modal)
 
-### Gifts_Page
+### Gifts
   * Gift Cards Form
   * * Gift Card Confirmation
   * Gift Packs?
 
-### Checkout_Pages
+### Checkout
   * Checkout Form
     * Payment Element
     * Sources Element (modal?)
-    * Add Source Element?
   * Order Confirmation
   * Error
 
-### Support_Pages
+### Support
   * Support
   * FAQ
   * Contact / Report
 
-### Email_Templates
+### Emails
   * Welcome / Verify
   * Order Confirmation
   * You're Subscribed
@@ -140,23 +116,6 @@ Fed has many different templates displayed across a handful of screens (pages). 
 ## Admin
 
 ...
-
-  1. **Home Page** - /
-  2. **Menu Page** - /menu
-    - Main
-  3. **Subscribe Page** - /subscribe  
-    All subscribe page templates are headed by a tracker that shows your status in the subscribe process. As of now, this tracker does not link to those parts, but is only for display.
-    * Diet Selection
-  4. **About Us Page** - /about-us
-  5. **Support Page** - /support
-
-
-
-
-### Open Issues
-*what to do if someone subscribes, orders a pack at a discounted rate, and then cancels before billing
-
-### Side Notes
 
 {{/markdown}}
 </div>

@@ -10,30 +10,24 @@ import { Orders } from '../../api/orders/orders.js';
 import { Promos } from '../../api/promos/promos.js';
 
 import { updateOrder } from '../../api/orders/methods.js';
+import { usePromo } from '../../api/promos/methods.js';
 import { 
   yesZips,
   MH,
   MH_20
 } from '../../api/delivery/zipcodes.js';
 
-
 import './subscribe.html';
 import '../components/trial-signup.js';
 import '../components/loader.js';
+import '../components/stripe-card-element.js';
+import '../components/scheduling-toggle.js';
 
-let stripe,
-    elements,
-    card;
-
-Template.Subscribe.onCreated(function freeTrialOnCreated() {
+Template.Subscribe.onCreated(function subscribeOnCreated() {
   this.userHasPromo = new ReactiveVar(false);
 
   this.autorun(() => {
     this.subscribe('thisUserData');
-
-    // if (Meteor.user() && Meteor.user().plan) {
-    //   FlowRouter.go('/my-account');
-    // };
   });
 
 	Session.set('cartOpen', false);
@@ -43,30 +37,9 @@ Template.Subscribe.onCreated(function freeTrialOnCreated() {
 });
 
 Template.Subscribe.onRendered(function freeTrialOnRendered() {
-  // Stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  // stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
-  // Set Stripe Elements to element var
-  elements = stripe.elements();
-  // Create an instance of the card Element
-  // Custom styling can be passed to options when creating an Element.
-  const style = {
-    base: {
-      // Add your base input styles here. For example:
-      fontSize: '16px',
-    },
-  };
-  card = elements.create('card', {style});
-  // Meteor.setTimeout(()=> {
-  //   card.mount('#card-element');
-  // }, 500);
 });
 
 Template.Subscribe.helpers({
-  loading() {
-    return Session.get('loading');
-  },
-
   trialable() {
     return !Meteor.userId();
   },
@@ -133,6 +106,28 @@ Template.Subscribe.events({
     var formdata = Session.get('formData');
     formdata.account_balance = 0;
 
+
+    async function processPromo() {
+      try {
+        const code = orderToProcess.coupon;
+        var codeCheck = false;
+        if (code) {
+          usePromo.call({
+            code: code
+          }, (err, res) => {
+            if (err) {
+              return(err);
+            } else {
+              return(res);
+            };
+          });
+        };
+      } catch(error) {
+        sAlert.error(error.reason);
+      };
+    };
+
+
     const code = template.find('[id="promo"]').value.toUpperCase();
     template.subscribe('single.promo', code, {
       onReady: function () {
@@ -149,15 +144,18 @@ Template.Subscribe.events({
           formdata.account_balance = credit;
           Session.set('formData', formdata);
           sAlert.success('You now have a credit of $' + promo.credit.toFixed(2) + ".");
+          usePromo.call({code: code});
         } else if (promo && promo.percentage && (promo.useLimitPerCustomer === 0)) {
           formdata.percentOff = promo.percentage;
           Session.set('formData', formdata);
           sAlert.success("Lucky you! You get " + formdata.percentOff + "% off!");
-        } else if (code === 'FED40') {
+          usePromo.call({code: code});
+        } else if ( promo && code === 'FED40') {
           formdata.percentOff = promo.percentage;
           formdata.newTrialCustomer = true;
           Session.set('formData', formdata);
           sAlert.success("You get " + formdata.percentOff + "% off your first week!");
+          usePromo.call({code: code});
         } else {
           formdata.account_balance = 0;
           Session.set('formData', formdata);
@@ -302,6 +300,7 @@ Template.Subscribe.events({
       };
 
       Session.set('formData', formdata);
+      $('.content-scrollable').scrollTop(0, 2000);
       Session.set('loading', false);
       Session.set('stage', 1);
     };
@@ -348,11 +347,9 @@ Template.Subscribe.events({
       formdata.plan = plan;
       formdata.preferredDelivDay = preferredDelivDay;
       Session.set('formData', formdata);
+      $('.content-scrollable').scrollTop(0, 2000);
       Session.set('loading', false);
       Session.set('stage', 2);
-      Meteor.setTimeout(()=> {
-        card.mount('#card-element');
-      }, 500);
     } else {
       Session.set('loading', false);
       if (plan) {
@@ -378,18 +375,34 @@ Template.Subscribe.events({
       });
     };
 
-    async function createStripeToken() {
+    async function createStripeTokenFromElement() {
       try {
+        var childView = Blaze.getView(template.find('#card-element'));
+        var childTemplateInstance = childView._templateInstance;
+        var card = childTemplateInstance.card;
+        var stripe = childTemplateInstance.stripe;
         const {token, error} = await stripe.createToken(card);
         return token;
       } catch(error) {
         // Inform the customer that there was an error
-        console.log(error);
         const errorElement = document.getElementById('card-errors');
         errorElement.textContent = error.message;
         Session.set('loading', false);
       };
     };
+
+    // async function createStripeToken() {
+    //   try {
+    //     const {token, error} = await stripe.createToken(card);
+    //     return token;
+    //   } catch(error) {
+    //     // Inform the customer that there was an error
+    //     console.log(error);
+    //     const errorElement = document.getElementById('card-errors');
+    //     errorElement.textContent = error.message;
+    //     Session.set('loading', false);
+    //   };
+    // };
 
     // async function createStripeCustomer(cust) {
     //   try {
@@ -407,15 +420,29 @@ Template.Subscribe.events({
         const newCharge = await callWithPromise( 'processPayment', charge );
         return newCharge;
       } catch(error) {
-        sAlert.error(error.reason);
-        throw new Meteor.Error(401, 'chargeStripe failed');
+        // sAlert.error(error.reason);
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
         Session.set('loading', false);
       };
     };
 
+    // async function createStripeCustomer(cust) {
+    //   try {
+    //     const newStripeCustomer = await callWithPromise('createCustomer', cust );
+    //     return newStripeCustomer;
+    //   } catch(error) {
+    //     // Inform the customer that there was an error
+    //     const errorElement = document.getElementById('payment-errors');
+    //     errorElement.textContent = error.message;
+    //     Session.set('loading', false);
+    //   }
+    // };
+
     async function createStripeCustomer() {
       try {
-        const token = await createStripeToken();
+        const token = await createStripeTokenFromElement();
         var formdata = Session.get('formData');
       
         if (Meteor.userId()) {
@@ -435,11 +462,13 @@ Template.Subscribe.events({
             
         formdata.stripe_id = stripe_id.id;
         Session.set('formData', formdata);
+        $('.content-scrollable').scrollTop(0, 2000);
         Session.set('loading', false);
         Session.set('stage', 3);
       } catch(error) {
-        sAlert.error(error.reason);
-        throw new Meteor.Error(401, 'subscribeCustomer failed');
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
         Session.set('loading', false);
       };
     };
@@ -542,136 +571,92 @@ Template.Subscribe.events({
       } else {
         formdata.subscriptions = response;
 
-        // const delivCustomer = {
-        //   first_name: formdata.first_name,
-        //   last_name: formdata.last_name,
-        //   email: formdata.email,
-        //   phone: formdata.phone,
-        //   address_line_1: formdata.address_line_1,
-        //   address_line_2: formdata.address_line_2,
-        //   address_city: formdata.address_city,
-        //   address_state: formdata.address_state,
-        //   address_zipcode: formdata.address_zipcode,
-        // };
-        
-        // const packages = [{
-        //   name: "Fed " + formdata.diet + " " + packPrefix + "-Pack",
-        //   price: 85,
-        //   height: 12,
-        //   width: 14,
-        //   depth: 10,
-        // }];
+        const amount_spent = 0;
 
-        // if (formdata.preferredDelivDay === "monday") {
-        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-        // } else {
-        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-        // };
+        const user = {
+          "first_name": formdata.first_name,
+          "last_name": formdata.last_name,
+          "email": formdata.email,
+          "phone": formdata.phone,
+          "address_line_1": formdata.address_line_1,
+          "address_line_2": formdata.address_line_2,
+          "address_city": formdata.address_city,
+          "address_state": formdata.address_state,
+          "address_zipcode": formdata.address_zipcode,
+          "deliv_comments": formdata.comments,
+          "amount_spent": amount_spent,
+          "diet": formdata.diet,
+          "restrictions": formdata.restrictions,
+          "stripe_id": formdata.stripe_id,
+          "preferredDelivDay": formdata.preferredDelivDay,
+          "subscriptions": formdata.subscriptions,
+          "coupon": formdata.percentOff || "Sub5",
+          "pack": packPrefix
+        };
 
-        // const orderNo = new Date().toISOString().slice(5,10);
-
-        // const delivRequest = {
-        //   "order_reference": orderNo,
-        //   "customer": delivCustomer,
-        //   "packages": packages,
-        //   "delivery_window_id": delivery_window,
-        //   "destination_comments": formdata.comments,
-        // };
-
-        // Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-        //   if ( error ) {
-        //     $('[class="info-errors"]').text(error.reason);
-        //     sAlert.error(error);
-        //     console.log(error);
-        //     Session.set('loading', false);
-        //   } else {
-        //     const last_purchase = response;
-            const amount_spent = 0;
-
-            const user = {
-              "first_name": formdata.first_name,
-              "last_name": formdata.last_name,
-              "email": formdata.email,
-              "phone": formdata.phone,
-              "address_line_1": formdata.address_line_1,
-              "address_line_2": formdata.address_line_2,
-              "address_city": formdata.address_city,
-              "address_state": formdata.address_state,
-              "address_zipcode": formdata.address_zipcode,
-              "deliv_comments": formdata.comments,
-              "amount_spent": amount_spent,
-              "diet": formdata.diet,
-              "restrictions": formdata.restrictions,
-              "stripe_id": formdata.stripe_id,
-              "preferredDelivDay": formdata.preferredDelivDay,
-              "subscriptions": formdata.subscriptions,
-              "coupon": formdata.percentOff || "Sub5",
-              "pack": packPrefix
-            };
-
-            Meteor.call( 'updateSubscriber', Meteor.userId(), user, ( error, response ) => {
-              if ( error ) {
-                sAlert.error(error);
-                console.log(error);
-                Session.set('loading', false);
-              // } else {
-                // var orderToProcess = Session.get('orderId');
-                // orderToProcess.readyBy = delivery_window.starts_at;
-                // orderToProcess.deliv_day = delDay;
-                // orderToProcess.coupon = Session.get('promo');
-                // orderToProcess.deliv_id = last_purchase.id;
-                // orderToProcess.trackingCode = last_purchase.tracking_code;
-
-                // const orderToProcess = {
-                //   _id: Se,
-                //   packName: { type: String, optional: true },
-                //   packPrice: { type: Number, optional: true },
-                //   packDishes: { type: [ String ] },
-                //   'packDishes.$': { type: String },
-                //   packSnacks: { type: [ String ] },
-                //   'packSnacks.$': { type: String },
-                //   status: { type: String },
-                //   coupon: { type: String, optional: true },
-                //   deliveryWindow: { type: String, optional: true },
-                //   destinationComments: { type: String, optional: true },
-                //   deliveredAt: { type: String, optional: true },
-                //   trackingCode: { type: String, optional: true },
-                //   paidAt: { type: String, optional: true },
-                //   readyBy: { type: String, optional: true },
-                //   deliv_id: { type: String, optional: true },
-                //   deliv_day: { type: String, optional: true },
-                //   stripe_id: { type: String, optional: true },
-                // };
-
-                // const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
-                //   if ( error ) {
-                //     console.log(error);
-                //   } else {
-                //     analytics.track('Order Completed', {
-                //       checkoutId: last_purchase.tracking_code,
-                //       orderId: response.id,
-                //       affiliation: 'Getfednyc.com',
-                //       total: finalPrice,
-                //       revenue: parseFloat(Session.get('salePrice').toFixed(2)),
-                //       shipping: parseFloat(Session.get('delivFee').toFixed(2)),
-                //       tax: parseFloat((Session.get('salePrice') * .08875).toFixed(2)),
-                //       discount: Session.get('price') - Session.get('salePrice'),
-                //       coupon: promo,
-                //       currency: 'USD',
-                //       products: [
-                //         {
-                //           name: orderToProcess.description,
-                //           price: parseFloat(Session.get('price').toFixed(2)),
-                //           quantity: 1,
-                //         },
-                //       ]
-                //     });
-                //   };
-              //   });
-              };
-            });
+        Meteor.call( 'updateSubscriber', Meteor.userId(), user, ( error, response ) => {
+          if ( error ) {
+            sAlert.error(error);
+            console.log(error);
             Session.set('loading', false);
-            sAlert.success("You’re subscribed! Please check your email to confirm your settings and preferences.", { timeout: 'none', onClose: function() { FlowRouter.go('/menu'); }});
+          // } else {
+            // var orderToProcess = Session.get('orderId');
+            // orderToProcess.readyBy = delivery_window.starts_at;
+            // orderToProcess.deliv_day = delDay;
+            // orderToProcess.coupon = Session.get('promo');
+            // orderToProcess.deliv_id = last_purchase.id;
+            // orderToProcess.trackingCode = last_purchase.tracking_code;
+
+            // const orderToProcess = {
+            //   _id: Se,
+            //   packName: { type: String, optional: true },
+            //   packPrice: { type: Number, optional: true },
+            //   packDishes: { type: [ String ] },
+            //   'packDishes.$': { type: String },
+            //   packSnacks: { type: [ String ] },
+            //   'packSnacks.$': { type: String },
+            //   status: { type: String },
+            //   coupon: { type: String, optional: true },
+            //   deliveryWindow: { type: String, optional: true },
+            //   destinationComments: { type: String, optional: true },
+            //   deliveredAt: { type: String, optional: true },
+            //   trackingCode: { type: String, optional: true },
+            //   paidAt: { type: String, optional: true },
+            //   readyBy: { type: String, optional: true },
+            //   deliv_id: { type: String, optional: true },
+            //   deliv_day: { type: String, optional: true },
+            //   stripe_id: { type: String, optional: true },
+            // };
+
+            // const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
+            //   if ( error ) {
+            //     console.log(error);
+            //   } else {
+            //     analytics.track('Order Completed', {
+            //       checkoutId: last_purchase.tracking_code,
+            //       orderId: response.id,
+            //       affiliation: 'Getfednyc.com',
+            //       total: finalPrice,
+            //       revenue: parseFloat(Session.get('salePrice').toFixed(2)),
+            //       shipping: parseFloat(Session.get('delivFee').toFixed(2)),
+            //       tax: parseFloat((Session.get('salePrice') * .08875).toFixed(2)),
+            //       discount: Session.get('price') - Session.get('salePrice'),
+            //       coupon: promo,
+            //       currency: 'USD',
+            //       products: [
+            //         {
+            //           name: orderToProcess.description,
+            //           price: parseFloat(Session.get('price').toFixed(2)),
+            //           quantity: 1,
+            //         },
+            //       ]
+            //     });
+            //   };
+          //   });
+          };
+        });
+        Session.set('loading', false);
+        sAlert.success("You’re subscribed! Please check your email to confirm your settings and preferences.", { timeout: 'none', onClose: function() { FlowRouter.go('/menu'); }});
           // };
         // });
       };

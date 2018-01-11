@@ -249,21 +249,21 @@ Template.Checkout_page.helpers({
   },
 
   nextSunday() {
-    if (moment().day() === 0 && moment().hour() < 12) {
-      return moment().day(0).format("dddd, MMMM Do"); // today (Sunday)
-    // } else if (moment().day() === 0 && moment().hour() < 24) {
-    //   return false; //show no option on sundays after noon
-    } else {
+    // if (moment().day() === 0 && moment().hour() < 12) {
+    //   return moment().day(0).format("dddd, MMMM Do"); // today (Sunday)
+    // // } else if (moment().day() === 0 && moment().hour() < 24) {
+    // //   return false; //show no option on sundays after noon
+    // } else {
       return moment().day(7).format("dddd, MMMM Do"); // next Sunday
-    }; 
+    // }; 
   },
 
   nextMonday() {
-    if (moment().day() === 0 && moment().hour() < 12) {
-      return moment().day(1).format("dddd, MMMM Do"); // this Monday (tomorrow)
-    } else {
+    // if (moment().day() === 0 && moment().hour() < 12) {
+    //   return moment().day(1).format("dddd, MMMM Do"); // this Monday (tomorrow)
+    // } else {
       return moment().day(8).format("dddd, MMMM Do"); // next Monday
-    };
+    // };
   },
 
   isSunOrMon() {
@@ -761,6 +761,8 @@ Template.Checkout_page.events({
         //   customer.address_zipcode
         // }
 
+        console.log(orderToProcess);
+
         const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
           if(error) {
             console.log(error);
@@ -783,6 +785,11 @@ Template.Checkout_page.events({
               'coupon': orderToProcess.coupon, // Transaction coupon (string).
             });
             ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
+            Meteor.call( 'sendOrderConfirmationEmail', Meteor.userId(), orderToProcess, ( error, response ) => {
+              if ( error ) {
+                console.log(error);
+              };
+            }); 
           };
         });
 
@@ -881,10 +888,27 @@ Template.Checkout_page.events({
       };
     };
 
+    async function updateSubscriber() {
+      try {
+        const subscriptionId = Meteor.user().subscriptions.id;
+
+        var nextThursdayTime = moment().day(11).hours(0).minutes(0).seconds(0).unix();
+        
+        const args = {
+          subscription_id: subscriptionId,
+          trial_end: nextThursdayTime,
+          prorate: false,
+        };
+
+        const updatedSub = await callWithPromise( 'updateSubscription', args );
+      } catch(error) {
+        throw new Meteor.Error(407, error);
+      };
+    }
+
     async function processOrder () {
       try {
         const codeCheck = await processPromo();
-        console.log(codeCheck);
         // Make finalPrice in cents as a number from total
         const finalPrice = Math.round(Number(orderToProcess.total) * 100);
 
@@ -893,7 +917,6 @@ Template.Checkout_page.events({
           currency: 'usd',
           customer: stripe_id,
           source: source,
-          capture: false,
           description: orderToProcess.packName + " for " + customer.first_name + " " + customer.last_name,
           receipt_email: customer.email
         };
@@ -922,31 +945,12 @@ Template.Checkout_page.events({
         }];
 
         var delDay = $('[name="deliveryWindow"]').val();
-        // var windows = Session.get('delivEstimate');
-        // if ( delDay === "Monday") {
-        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-        // } else {
-        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-        // };
-
-        // const delivRequest = {
-        //   "order_reference": Session.get('orderId')._id,
-        //   "customer": customer,
-        //   "packages": packages,
-        //   "delivery_window_id": delivery_window,
-        //   "destination_comments": comments,
-        // };
-
-        // const newDelivery = await createNewDelivery( delivRequest );
-
-        // customer.last_purchase = newDelivery;
-        // orderToProcess.deliv_id = newDelivery.id;
-        // orderToProcess.trackingCode = newDelivery.tracking_code;
 
         customer.amount_spent = orderToProcess.total;
         customer.stripe_id = stripe_id;
         customer.credit = credit;
         customer.customized = true;
+        updateSubscriber();
         
         Meteor.call( 'updateUser', orderToProcess.userId, customer, (error,response) => {
           if (error) {
@@ -955,7 +959,6 @@ Template.Checkout_page.events({
           };
         });
 
-        // orderToProcess.readyBy = delivery_window.starts_at;
         orderToProcess.deliv_day = delDay;
 
         const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
@@ -979,6 +982,11 @@ Template.Checkout_page.events({
               'coupon': orderToProcess.coupon, // Transaction coupon (string).
             });
             ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
+            Meteor.call( 'sendOrderConfirmationEmail', Meteor.userId(), orderToProcess, ( error, response ) => {
+              if ( error ) {
+                console.log(error);
+              };
+            }); 
           };
         });
 

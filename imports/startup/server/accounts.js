@@ -74,6 +74,47 @@ Meteor.methods({
     return(Meteor.user());
   },
 
+  sendOrderConfirmationEmail(user_id,data) {
+    const user = Meteor.users.findOne({ _id: user_id });
+    SSR.compileTemplate('htmlEmail', Assets.getText('order-confirmation-email.html'));
+
+    Template.htmlEmail.helpers({
+      doctype() {
+        return '<!DOCTYPE HTML>'
+      },
+
+      userFirstName() {
+        const username = user.first_name;
+        return username;
+      },
+    });
+
+    var emailData = data;
+    emailData.email = user.emails[0].address;
+    emailData.packItems = [];
+    for (var i = emailData.packDishes.length - 1; i >= 0; i--) {
+      emailData.packItems[i] = Items.findOne({name: emailData.packDishes[i]});
+    };
+
+    const now = new moment();
+
+    if (emailData.deliv_day[0].toLowerCase() === "s") {
+      emailData.deliveryInfo = now.day(7).format("ddd DD MMM");
+    } else {
+      emailData.deliveryInfo = now.day(8).format("ddd DD MMM"); 
+    };
+
+    Email.send({
+      to: emailData.email,
+      bcc: "info@getfednyc.com",
+      from: "no-reply@getfednyc.com",
+      subject: "Your custom order with Fed",
+      html: SSR.render('htmlEmail', emailData),
+    });
+
+    return true;
+  },
+
   sendGiftCard (giftCard) {
     SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
 

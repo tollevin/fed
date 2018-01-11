@@ -160,17 +160,17 @@ Template.Account_page.helpers({
         var dy = 1;
       };
       const now = new moment();
-      if (now.day() === 0) {
-        if (dy === 0) {
-          return "Tonight,";
-        } else {
-          return "Tomorrow,";
-        };
-      } else if (now.day() === 1 && dy === 1) {
-        return "Tonight,";
-      } else {
+      // if (now.day() === 0) {
+      //   if (dy === 0) {
+      //     return "Tonight,";
+      //   } else {
+      //     return "Tomorrow,";
+      //   };
+      // } else if (now.day() === 1 && dy === 1) {
+      //   return "Tonight,";
+      // } else {
         return now.day(dy + 7).format("dddd, M/D/YY")
-      };
+      // };
     };
   },
 
@@ -498,11 +498,12 @@ Template.Account_page.events({
     };
 
     const args = {
+      subscription_id: subscriptionId,
       trial_end: nextThursdayTime,
       prorate: false,
     };
 
-    Meteor.call( 'updateSubscription', subscriptionId, args, ( error, response ) => {
+    Meteor.call( 'updateSubscription', args, ( error, response ) => {
       if ( error ) {
         console.log(error + "; error");
       } else {
@@ -529,11 +530,12 @@ Template.Account_page.events({
     // };
 
     const args = {
+      subscription_id: subscriptionId,
       trial_end: comingThursdayTime,
       prorate: false,
     };
 
-    Meteor.call( 'updateSubscription', subscriptionId, args, ( error, response ) => {
+    Meteor.call( 'updateSubscription', args, ( error, response ) => {
       if ( error ) {
         console.log(error + "; error");
       } else {
