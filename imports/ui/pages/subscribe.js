@@ -11,6 +11,8 @@ import { Promos } from '../../api/promos/promos.js';
 
 import { updateOrder } from '../../api/orders/methods.js';
 import { usePromo } from '../../api/promos/methods.js';
+// import { updateUser } from '../../startup/server/accounts.js';
+
 import { 
   yesZips,
   MH,
@@ -107,25 +109,25 @@ Template.Subscribe.events({
     formdata.account_balance = 0;
 
 
-    async function processPromo() {
-      try {
-        const code = orderToProcess.coupon;
-        var codeCheck = false;
-        if (code) {
-          usePromo.call({
-            code: code
-          }, (err, res) => {
-            if (err) {
-              return(err);
-            } else {
-              return(res);
-            };
-          });
-        };
-      } catch(error) {
-        sAlert.error(error.reason);
-      };
-    };
+    // async function processPromo() {
+    //   try {
+    //     const code = orderToProcess.coupon;
+    //     var codeCheck = false;
+    //     if (code) {
+    //       usePromo.call({
+    //         code: code
+    //       }, (err, res) => {
+    //         if (err) {
+    //           return(err);
+    //         } else {
+    //           return(res);
+    //         };
+    //       });
+    //     };
+    //   } catch(error) {
+    //     sAlert.error(error.reason);
+    //   };
+    // };
 
 
     const code = template.find('[id="promo"]').value.toUpperCase();
@@ -363,6 +365,7 @@ Template.Subscribe.events({
   'submit #cc-form'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
+    var formdata = Session.get('formData');
 
     const callWithPromise = (method, myParameters) => {
       return new Promise((resolve, reject) => {
@@ -443,7 +446,6 @@ Template.Subscribe.events({
     async function createStripeCustomer() {
       try {
         const token = await createStripeTokenFromElement();
-        var formdata = Session.get('formData');
       
         if (Meteor.userId()) {
           formdata.email = Meteor.user().emails[0].address;
@@ -573,6 +575,8 @@ Template.Subscribe.events({
 
         const amount_spent = 0;
 
+        const user_credit = 0 - formdata.account_balance / 100;
+
         const user = {
           "first_name": formdata.first_name,
           "last_name": formdata.last_name,
@@ -591,7 +595,8 @@ Template.Subscribe.events({
           "preferredDelivDay": formdata.preferredDelivDay,
           "subscriptions": formdata.subscriptions,
           "coupon": formdata.percentOff || "Sub5",
-          "pack": packPrefix
+          "pack": packPrefix,
+          "credit": user_credit,
         };
 
         Meteor.call( 'updateSubscriber', Meteor.userId(), user, ( error, response ) => {

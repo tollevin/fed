@@ -4,7 +4,32 @@
 # Data Collections
 
 ### Users
-  * attribution !!  
+  * attribution !!
+  * _id: "Bvtx7TxxpDmmhWFhW"
+  * createdAt: 2016-09-21 12:54:27.384
+  * services: Object
+  * emails: Array
+  * profile: Object
+  * stripe_id: "cus_A2bo3TTzSnyHYa"
+  * first_name: "Maria"
+  * last_name: "Bertero"
+  * phone: "718-564-4184"
+  * email: "maria.bertero@gmail.com"
+  * address_line_1: "496 4th street"
+  * address_line_2: ""
+  * address_city: "Brooklyn"
+  * address_state: "NY"
+  * address_zipcode: "11215"
+  * deliv_window: null
+  * deliv_comments: null
+  * amount_spent: "69.41"
+  * credit: 0
+  * last_purchase: Date
+  * diet: "Omnivore"
+  * preferredDelivDay: "sunday"
+  * subscriptions: Object
+  * skipping: "Until 01/04/18"
+  * avg_plate_weight: Number
 
 ### Ingredients
   * _id:
@@ -38,52 +63,74 @@
 
 ### Menu
   * _id:
+  * user_id:
+  * created_at:
   * id:
   * name:
-  * items: { Dishes }
+  * items: 
+  * dishes:
+  * online_at:
   * start_date:
+  * custom_until:
   * end_date:
+  * delivery_windows:
 
 ### Item
   * _id:
+  * created_at:
+  * user_id:
   * id:
   * sku:
   * name:
   * description:
   * type:
+  * supplier:
   * photo:
   * price:
   * discount:
-  * sale_price:
   * ingredients:
+  * pack_size:
+  * sub_items:
+  * dishes:
   * warnings:
   * nutrition_facts:
   * attributes:
+  * good_for_days:
   * ratings:
-  * sub_items:
 
 ### Order
   * _id:
+  * created_at:
   * id:
   * status:
   * user_id:
+  * menu_id:
   * recipient:
   * items:
   * subtotal:
-  * coupon:
   * discount:
+    * 'discount.subscriber_discount':
+      * 'discount.subscriber_discount.code':
+      * 'discount.subscriber_discount.value':
+    * 'discount.promo':
+      * 'discount.promo.code':
+      * 'discount.promo.description':
+      * 'discount.promo.value':
+    * 'discount.credit'
+    * 'discount.value':
   * delivery_fee:
   * total:
   * payment_id:
-  * created_at:
   * paid_at:
   * ready_by:
-  * delivery_window:
+  * delivery_window_id:
   * delivery_comments:
   * tracking_code:
   * delivered_at:
   * courier:
   * notes:
+  * changes:
+  * auto_correct:
 
 ### Delivery Windows
   * _id:
@@ -95,7 +142,7 @@
   * created_at:
   * code:
   * desc:
-  * discount:
+  * credit:
   * percentage:
   * expires:
   * use_limit_per_customer:

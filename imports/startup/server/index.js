@@ -21,7 +21,9 @@ import './stripe.js';
 // import './stripe-dev.js';
 
 // import './deliv.js';
-import './deliv-dev.js';
+// import './deliv-dev.js';
+import './optimap.js';
+import './google-maps.js'
 
 import './accounts.js';
 

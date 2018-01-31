@@ -11,6 +11,10 @@ import {
   MH_20
 } from '../../api/delivery/zipcodes.js';
 
+import {
+	getZipZone
+} from '../../api/delivery/methods.js';
+
 Template.Order_preview.onCreated(function orderPreviewOnCreated() {
   this.autorun(() => {
     var orderSub = this.subscribe('single.order', this._id);
@@ -55,6 +59,21 @@ Template.Order_preview.helpers({
 		var result = [];
     for (var key in snackTally) result.push({name:key,value:snackTally[key]});
     return result;
+	},
+
+	deliveryZone() {
+		var customer = Template.currentData().customer;
+		if (!customer) {
+  		customer = Meteor.users.findOne({_id: Template.currentData().userId});
+  	}; // This should be an attribute of orders themselves (FIX)
+  	if (customer) {
+			var args = {
+				zip_code: customer.address_zipcode
+			};
+
+			var zipZone = getZipZone.call(args);
+			return zipZone;
+	  };
 	},
 
 	delivFee() {

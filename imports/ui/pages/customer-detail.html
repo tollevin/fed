@@ -1,0 +1,59 @@
+<template name="Customer_detail">
+	{{#momentum plugin="fade"}}
+		<div class="customer-detail page">
+			<div class="back">
+				<a id="Back" href="#">&times;</a>
+			</div>
+			{{#with customer}}
+				<div class="customer-details">
+					<div class="customer-contact-info">
+						<div class="customer-name">
+							<h1>{{first_name}} {{last_name}}</h1>
+						</div>
+						<div class="customer-email">
+							<p>{{emails.[0].address}}</p>
+						</div>
+						<div class="customer-phone">
+							<p>{{phone}}</p>
+						</div>
+						<div class="customer-stripe_id">
+							<p>{{stripe_id}}</p>
+						</div>
+						<div class="customer-address">
+							<div class="address">
+								<p>{{address_line_1}}</p>
+								<p>{{address_line_2}}</p>
+							</div>
+							<div class="city-state-zip">
+								<p>{{address_city}}, {{address_state}}</p>
+								<p>{{address_zipcode}}</p>
+							</div>
+						</div>
+					</div>
+					<form class="customer-credit">
+						<p>CREDIT</p>
+						<input type="number" name="currentCredit" placeholder="{{customer.credit}}">
+						<input id="CrEdit" name="creditInput" type="submit" value="Save">
+					</form>
+					<div class="customer-subscriptions">
+						<div class="current-subscriptions">
+							
+						</div>
+						<div class="past-subscriptions">
+							
+						</div>
+					</div>
+					<div class="customer-orders">
+						
+					</div>
+					<div class="customer-payments">
+						
+					</div>
+					<div class="customer-coupons">
+						
+					</div>
+				</div>
+			{{/with}}
+		</div>
+	{{/momentum}}
+</template>

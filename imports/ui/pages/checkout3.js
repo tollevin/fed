@@ -121,6 +121,7 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
             // Set if user has a credit on account
             if (Meteor.user().credit > 0) {
               const credit = Meteor.user().credit;
+              Math.round(credit * 100) / 100;
               this.userHasCredit.set(credit);
             };
           } else {
@@ -437,9 +438,9 @@ Template.Checkout_page.events({
           template.order.coupon.set( code );
           var newTotal = total - discount;
           if (newTotal < 0) {
-            const newCredit = 0 - newTotal;
+            var newCredit = 0 - newTotal;
             // FIX if (!Meteor.userId()) {
-            template.newCredit = newCredit;
+            template.newCredit = Math.round(newCredit * 100) / 100;
             template.discountValue.set("- $" + total.toFixed(2));
             template.discount.set( total );
             template.appliedCredit.set( total );
@@ -719,7 +720,7 @@ Template.Checkout_page.events({
           depth: 10,
         }];
 
-        var delDay = $('[name="deliveryWindow"]').val();
+        const delDay = $('[name="deliveryWindow"]').val();
         // var windows = Session.get('delivEstimate');
         // if ( delDay === "Monday") {
         //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
@@ -743,7 +744,7 @@ Template.Checkout_page.events({
 
         customer.amount_spent = orderToProcess.total;
         customer.stripe_id = stripe_id;
-        customer.credit = credit;
+        customer.credit = Math.round(credit * 100) / 100;
         
         Meteor.call( 'updateUser', orderToProcess.userId, customer );
 
@@ -760,8 +761,6 @@ Template.Checkout_page.events({
         //   customer.address_state 
         //   customer.address_zipcode
         // }
-
-        console.log(orderToProcess);
 
         const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
           if(error) {
@@ -948,7 +947,7 @@ Template.Checkout_page.events({
 
         customer.amount_spent = orderToProcess.total;
         customer.stripe_id = stripe_id;
-        customer.credit = credit;
+        customer.credit = Math.round(credit * 100) / 100;
         customer.customized = true;
         updateSubscriber();
         

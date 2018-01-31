@@ -29,6 +29,7 @@ import '../../ui/pages/main-admin.js';
 import '../../ui/pages/menu-admin.js';
 import '../../ui/pages/orders-admin.js';
 import '../../ui/pages/customers-admin.js';
+import '../../ui/pages/customer-detail.js';
 import '../../ui/pages/subscribers-admin.js';
 import '../../ui/pages/promos-admin.js';
 
@@ -235,6 +236,13 @@ adminRoutes.route('/customers', {
   name: 'Customers.admin',
   action() {
     BlazeLayout.render('Admin_layout', { main: 'Customers_admin' });
+  },
+});
+
+adminRoutes.route('/customers/:_id', {
+  name: 'Customer.detail',
+  action() {
+    BlazeLayout.render('Admin_layout', { main: 'Customer_detail' });
   },
 });
 

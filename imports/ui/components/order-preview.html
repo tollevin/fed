@@ -29,6 +29,9 @@
 		<td class="customer-phone">
 			{{user.phone}}
 		</td>
+		<td class="delivery-zone">
+			{{deliveryZone}}
+		</td>
 		<td class="customer-email">
 			{{user.email}}
 		</td>
@@ -60,20 +63,12 @@
 		<td class="total">
 			{{total}}
 		</td>
+		<td class="customer-delivComments">
+			{{user.deliv_comments}}
+		</td>
 		<td class="coupon">
 			{{coupon}}
 		</td>
-		<!-- <td class="more-info">
-			
-			
-			
-			<td class="delDay">
-				{{user.preferredDelivDay}}
-			</td>
-			<td class="readyBy">
-				{{readyBy}}
-			</td>
-		</td> -->
 		{{/if}}
 	</tr>
 </template>

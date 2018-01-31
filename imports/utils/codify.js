@@ -1,3 +1,4 @@
+// import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 export const makeGiftCardCode = () => {
   var text = "";
@@ -13,4 +14,12 @@ export const makeGiftCardCode = () => {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   
   return text;
+};
+
+export const useCredit = (user_id, credit)=> {
+  
+};
+
+export const addCredit = (user_id, credit)=> {
+
 };

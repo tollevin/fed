@@ -9,6 +9,10 @@ import {
   MH_20
 } from '../../api/delivery/zipcodes.js';
 
+import { 
+  getZipZone
+} from '../../api/delivery/methods.js';
+
 Template.Subscriber_preview.onCreated(function subscriberPreviewOnCreated() {
 	// this.autorun(() => {
 	// 	if (Template.currentData().coupon) {
@@ -44,6 +48,11 @@ Template.Subscriber_preview.onCreated(function subscriberPreviewOnCreated() {
 });
 
 Template.Subscriber_preview.helpers({
+	subscribedAt() {
+		const subDate = new moment(Template.currentData().subscriptions.created * 1000);
+		return subDate.toDate();
+	},
+
 	emailss() {
 		const emails = Template.currentData().emails;
 		return emails;
@@ -90,8 +99,8 @@ Template.Subscriber_preview.helpers({
 
 	processStatus(status) {
 		const skipping = Template.currentData().skipping;
-		const now = moment().unix();
-		const nextThurs = moment().day(11).unix();
+		// const now = moment().unix();
+		const nextFri = moment().day(12).unix();
 
 		// let lastOrderReadyBy;
 		// if (Template.currentData().last_purchase) {
@@ -110,13 +119,12 @@ Template.Subscriber_preview.helpers({
 		const customized = Template.currentData().customized;
 
 		let paused;
-		if (Template.currentData().subscriptions && (Template.currentData().subscriptions.trial_end > nextThurs)) {
+		if (Template.currentData().subscriptions && (Template.currentData().subscriptions.trial_end > nextFri)) {
 			paused = true;
 		} else {
 			paused = false;
 		};
 		
-
 		if (skipping) {
 			return "skipping";
 		} else if (customized) {
@@ -138,6 +146,15 @@ Template.Subscriber_preview.helpers({
 		} else {
 			return false;
 		};
+	},
+
+	deliveryZone() {
+		var args = {
+			zip_code: Template.currentData().address_zipcode
+		};
+
+		var zipZone = getZipZone.call(args);
+		return zipZone;
 	},
 });
 

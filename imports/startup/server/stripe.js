@@ -111,17 +111,20 @@ Meteor.methods({
     }
   },
 
-  async updateCustomer( id, args ) {
+  async updateStripeCredit( args ) {
     check( args, {
-      default_source: String
+      id: String,
+      account_balance: Number,
     });
 
+    var credit = 0 - (args.account_balance * 100);
+
     try {
-      let source = await Stripe.customers.createSource(id, {source: args.default_source});
-      let customer = await Stripe.customers.update( id, { default_source: source.id} );
+      let customer = await Stripe.customers.update( args.id, { account_balance: credit } );
       return customer;
     } catch(err) {
       throw new Meteor.Error(err.statusCode, err.message);
+      console.log('error: updateStripeCredit');
     }
   },
 

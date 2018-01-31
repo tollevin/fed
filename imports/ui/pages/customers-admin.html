@@ -11,69 +11,8 @@
 					<p>{{numberOfSubscribers}} results</p>
 				{{/if}}
 			</div> -->
-			<div class="customers-toolbar">
-				{{> inputAutocomplete settings=settings id="Customers-Searach" class="input-xlarge" placeholder="Search..."}}
-			</div>
-			<div class="customers-view">
-				{{#momentum plugin="fade"}}
-					<table class="customers-table"> 
-						{{#if Template.subscriptionsReady}}
-							<tr class="table-header">
-								<th>
-									Created At
-								</th>
-								<th>
-									Customer ID
-								</th>
-								<th>
-									Name
-								</th>
-								<th>
-									Email
-								</th>
-								<th>
-									Phone
-								</th>
-								<th>
-									Address
-								</th>
-								<th>
-									Amount Spent
-								</th>
-								<th>
-									Stripe ID
-								</th>
-								<th>
-									Last Purchase
-								</th>
-								<th>
-									Subscription
-								</th>
-								<th>
-									Notes
-								</th>
-							</tr>
-							{{#each users}}
-								{{> Customer_preview}}
-							{{/each}}
-						{{else}}
-							<p>Loading...</p>
-						{{/if}}
-					</table>
-				{{/momentum}}
-			</div>
+			{{> Customers_toolbar}}
+			{{> Customers_view}}
 		</div>
 	</div>
-</template>
-
-<template name="serverCollectionPill">
-  {{name}} <small class="muted">({{_id}})</small>
-</template>
-
-<template name="clientCollectionPill">
-  {{type}} <small class="muted">({{_id}})</small>
-</template>
-
-<template name="serverNoMatch">
-  <span class="text-danger">Nothing found on the server for <b>{{getFilter}}</b>!</span>
 </template>

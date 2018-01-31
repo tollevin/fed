@@ -25,12 +25,14 @@
 							<tr><td>Total</td><td class="value">{{totalSubs}}</td></tr>
 							<tr><hr></tr>
 							<tr><h4>This Week</h4></tr>
-							<tr><td>Active</td><td class="value">{{activeSubs}}</td></tr>
+							<!-- <tr><td>Active</td><td class="value">{{activeSubs}}</td></tr> -->
 							<tr><td>Customized</td><td class="value">{{customizedSubs}}</td></tr>
 							<tr><td>Skipping</td><td class="value">{{skippingSubs}}</td></tr>
 							<tr><td>New</td><td class="value">{{newSubs}}</td></tr>
 							<tr><td>Canceled</td><td class="value">{{canceledSubs}}</td></tr>
-							<tr><td>Estimated Plates</td><td class="value">{{estimatedPlates}}</td></tr>
+							<tr><td>{{#if beforeThurs}}Estimated {{/if}}Sub Plates</td><td class="value">{{estimatedSubPlates}}</td></tr>
+							<tr><td>Custom Plates</td><td class="value">{{customPlates}}</td></tr>
+							<tr><td>{{#if beforeThurs}}Estimated {{/if}}Total Plates</td><td class="value">{{estimatedTotalPlates}}</td></tr>
 						</table>
 					</div>
 

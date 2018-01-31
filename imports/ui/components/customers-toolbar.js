@@ -1,40 +1,37 @@
 import './customers-toolbar.html';
 
-// Template.Customers_toolbar.onCreated(function customersToolbarOnCreated() {
-// });
+Template.Customers_toolbar.onCreated(function customersToolbarOnCreated() {
+	this.subscribe('userSearchData');
+});
+
+Template.Customers_toolbar.helpers({
+	settings: ()=> {
+    return {
+      position: "bottom",
+      limit: 5,
+      rules: [
+        {
+          token: '@',
+          collection: Meteor.users,
+          field: "emails.address",
+          matchAll: true,
+          template: Template.userPill,
+        },
+        {
+        	token: ':',
+          collection: Meteor.users,
+          field: "first_name",
+          matchAll: true,
+          template: Template.userPill,
+          noMatchTemplate: Template.serverNoMatch,
+        }
+      ]
+    };
+  },
+ });
 
 Template.Customers_toolbar.events({
-	'click #Refresh' (event) {
-		event.preventDefault()
-
-		Meteor.call('updateAllSubscriptions', ( error, response ) => {
-			if (error) {
-				console.log(error);
-			};
-		});
-	},
-
-	'click #PauseAll' (event) {
-		event.preventDefault();
-
-		Meteor.call('pauseAllSubscriptions', ( error, response ) => {
-			if (error) {
-				console.log(error);
-			} else {
-				sAlert.success(response + " subscriptions PAUSED")
-			};
-		});
-	},
-
-	'click #DeleteMe' (event) {
-		event.preventDefault();
-
-		Meteor.call('updatePassword', (error, response) => {
-			if (error) {
-				console.log(error);
-			} else {
-				sAlert.success(response + " PWC")
-			};
-		});
-	},
+	'autocompleteselect input'(event, template, doc) {
+    FlowRouter.go('Customer.detail', { _id: doc._id });
+  },
 });

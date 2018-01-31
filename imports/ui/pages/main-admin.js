@@ -22,8 +22,8 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
 		const isReady = handle.ready();
     if (isReady) {
 			var itemTallies = [];
-			const menuThisWeek = Items.find({"active": true}, { fields: { name: 1 }}).fetch();
-			menuThisWeek.forEach((item) => {;
+			const menuThisWeek = Items.find({"active": true}, { fields: { name: 1, course: 1 }}).fetch();
+			menuThisWeek.forEach((item) => {
 				item.count = 0
 				itemTallies.push(item);
 			});
@@ -55,6 +55,11 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
 Template.Main_admin.helpers({
   itemsThisWeek: ()=> {
   	return Template.instance().itemInfo.get();
+  },
+
+  beforeThurs: ()=> {
+    var now = new moment();
+    return (now.day() < 4);
   },
 
   ordersToday: ()=> {
@@ -90,9 +95,9 @@ Template.Main_admin.helpers({
   	return Meteor.users.find({'subscriptions.status': {$ne : 'canceled'}}).count();
   },
 
-  activeSubs: ()=> {
-  	return Meteor.users.find({'subscriptions.status': 'active'}).count();
-  },
+  // activeSubs: ()=> {
+  // 	return Meteor.users.find({'subscriptions.status': 'active'}).count();
+  // },
 
   customizedSubs: ()=> {
   	return Meteor.users.find({customized: true}).count();
@@ -112,10 +117,12 @@ Template.Main_admin.helpers({
   	return Meteor.users.find({'subscriptions.canceled_at': {$gte : thisWeekStartInUnixSeconds}}).count();
   },
 
-  estimatedPlates: ()=> {
+  estimatedSubPlates: ()=> {
   	var estimatedPlates = 0;
+    // Get all uncanceled subs
   	const activeSubs = Meteor.users.find({'subscriptions.status': { $in: ['active','trialing']}}).fetch();
-  	for (var i = activeSubs.length - 1; i >= 0; i--) {
+  	// Add the default number of dishes for each to total
+    for (var i = activeSubs.length - 1; i >= 0; i--) {
   		var subPlateCount = Number(activeSubs[i].subscriptions.plan.id.split('PP')[0]);
   		estimatedPlates += subPlateCount;
   	};
@@ -124,7 +131,53 @@ Template.Main_admin.helpers({
   		var customizedSubPlateCount = Number(customizedSubs[i].subscriptions.plan.id.split('PP')[0]);
   		estimatedPlates -= customizedSubPlateCount;
   	};
+    const skippingSubs = Meteor.users.find({skipping: { $ne : undefined }}).fetch();
+    for (var i = skippingSubs.length - 1; i >= 0; i--) {
+      var skippingSubPlateCount = Number(skippingSubs[i].subscriptions.plan.id.split('PP')[0]);
+      estimatedPlates -= skippingSubPlateCount;
+    };
   	return estimatedPlates;
+  },
+
+  customPlates: ()=> {
+    var items = Template.instance().itemInfo.get();
+    var customDishCount = 0; 
+    for (var i = items.length - 1; i >= 0; i--) {
+      if (items[i].course === 'Dish') {
+        customDishCount += items[i].count;
+      }
+    };
+    return customDishCount;
+  },
+
+  estimatedTotalPlates: ()=> {
+    var estimatedPlates = 0;
+    // Get all uncanceled subs
+    const activeSubs = Meteor.users.find({'subscriptions.status': { $in: ['active','trialing']}}).fetch();
+    // Add the default number of dishes for each to total
+    for (var i = activeSubs.length - 1; i >= 0; i--) {
+      var subPlateCount = Number(activeSubs[i].subscriptions.plan.id.split('PP')[0]);
+      estimatedPlates += subPlateCount;
+    };
+    const customizedSubs = Meteor.users.find({customized: true}).fetch();
+    for (var i = customizedSubs.length - 1; i >= 0; i--) {
+      var customizedSubPlateCount = Number(customizedSubs[i].subscriptions.plan.id.split('PP')[0]);
+      estimatedPlates -= customizedSubPlateCount;
+    };
+    const skippingSubs = Meteor.users.find({skipping: { $ne : undefined }}).fetch();
+    for (var i = skippingSubs.length - 1; i >= 0; i--) {
+      var skippingSubPlateCount = Number(skippingSubs[i].subscriptions.plan.id.split('PP')[0]);
+      estimatedPlates -= skippingSubPlateCount;
+    };
+    var items = Template.instance().itemInfo.get();
+    var customDishCount = 0; 
+    for (var i = items.length - 1; i >= 0; i--) {
+      if (items[i].course === 'Dish') {
+        customDishCount += items[i].count;
+      }
+    };
+    const estimatedTotalPlates = customDishCount + estimatedPlates;
+    return estimatedTotalPlates;
   },
 });
 

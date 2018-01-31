@@ -1,23 +1,19 @@
 <template name="Customers_toolbar">
-	<div id="CustomersToolbar">
-		<div class="refresh">
-			<!-- <button id="Refresh">
-				Refresh
-			</button>
-			<button id="PauseAll">
-				Pause All Subscriptions
-			</button>
-			<button id="DeleteMe">
-				PWC4JM
-			</button> -->
-		</div>
-		<div class="subscriber-buttons">
-			<button id="AllCus">
-				All Customers
-			</button>
-			<button id="AllSubs">
-				Subscribers
-			</button>
-		</div>
+	<div id="customers-toolbar">
+		{{> inputAutocomplete settings=settings id="Customers-Searach" class="input-xlarge" placeholder="Search..."}}
 	</div>
+</template>
+
+<template name="userPill">
+	<div class="user-pill">
+	  {{first_name}} {{last_name}} <small class="muted">({{emails.[0].address}})</small>
+	</div>
+</template>
+
+<template name="clientCollectionPill">
+  {{type}} <small class="muted">({{_id}})</small>
+</template>
+
+<template name="serverNoMatch">
+  <span class="text-danger">Nothing found on the server</span>
 </template>
