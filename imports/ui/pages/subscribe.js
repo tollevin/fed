@@ -5,6 +5,8 @@ import { $ } from 'meteor/jquery';
 import { Accounts } from 'meteor/accounts-base';
 import moment from 'moment';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { lodash } from 'meteor/erasaur:meteor-lodash';
+// import { HTTP } from 'meteor/http';
 
 import { Items } from '../../api/items/items.js';
 import { Menus } from '../../api/menus/menus.js';
@@ -27,6 +29,17 @@ import '../components/trial-signup.js';
 import '../components/pack-schemas.js';
 import '../components/stripe-card-element.js';
 import '../components/delivery-day-toggle.js';
+
+const ALL_FOODS =
+  ['beef', 'chicken', 'fish', 'shellfish', 'dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
+const VEGETARIAN_FOODS =
+  ['dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
+const VEGAN_FOODS =
+  ['gluten', 'nuts', 'peanuts', 'soy'];
+const PESCATARIAN_FOODS =
+  ['fish', 'shellfish', 'dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
+const PALEO_FOODS =
+  ['beef', 'chicken', 'fish', 'shellfish', 'eggs', 'nuts'];
 
 Template.Subscribe.onCreated(function subscribeOnCreated() {
   this.userHasPromo = new ReactiveVar(false);
@@ -84,8 +97,7 @@ Template.Subscribe.helpers({
   },
 
   restrictions() {
-    const allRestrictions = ['beef','chicken','fish','shellfish','eggs','dairy','nuts','peanuts','soy','gluten'];
-    return allRestrictions;
+    return ALL_FOODS;
   },
 
   plan() {
@@ -223,90 +235,45 @@ Template.Subscribe.events({
 
     event.currentTarget.classList.add('clicked');
 
+    const foodNamesToClasses = (foodList) => foodList.map((foodStr) => `.${foodStr}`).join(", ");
+    const foodNamesToIds = (foodList) => foodList.map((foodStr) => `#${foodStr}`).join(", ");
+    const notEatenFoods = (foodList) => lodash.difference(ALL_FOODS, foodList);
+
+    const selectRelevantFoods = (foodList) => {
+      template
+        .findAll(foodNamesToIds(ALL_FOODS))
+        .forEach((element) => element.classList.remove('checked'));
+
+      template
+        .findAll(foodNamesToClasses(ALL_FOODS))
+        .forEach((element) => element.classList.remove('fadeIn'));
+
+      template
+        .findAll(foodNamesToIds(notEatenFoods(foodList)))
+        .forEach((element) => element.classList.add('checked'));
+
+      template
+        .findAll(foodNamesToClasses(notEatenFoods(foodList)))
+        .forEach((element) => element.classList.add('fadeIn'));
+    }
+
     switch (event.target.closest("li").id) {
       case 'Omnivore':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
+        selectRelevantFoods(ALL_FOODS);
         break;
       case 'Vegetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken, #fish, #shellfish');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
+        selectRelevantFoods(VEGETARIAN_FOODS);
         break;
       case 'Vegan':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
+        selectRelevantFoods(VEGAN_FOODS);
         break;
       case 'Pescetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
+        selectRelevantFoods(PESCATARIAN_FOODS);
         break;
       case 'Paleo':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#dairy, #gluten, #soy');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.dairy, .gluten, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
+        selectRelevantFoods(PALEO_FOODS);
         break;
-    };
+      }
   },
 
   'click .restriction'(event, template) {
