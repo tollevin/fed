@@ -8,9 +8,20 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 // import { HTTP } from 'meteor/http';
 
-import { Items } from '../../api/items/items.js';
-import { Menus } from '../../api/menus/menus.js';
 import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
+import { Promos } from '../../api/promos/promos.js';
+import { Items } from '../../api/items/items.js';
+
+import { updateOrder } from '../../api/orders/methods.js';
+import { usePromo } from '../../api/promos/methods.js';
+
+import { ALL_PACKS } from './pack_picker/all_packs.js';
+import { ALL_ITEMS } from './pack_picker/all_items.js';
+import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
+  from './pack_picker/diet_food_restrictions.js';
+import { generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
+
+// import { updateUser } from '../../startup/server/accounts.js';
 
 import { 
   checkForPlan,
@@ -30,16 +41,8 @@ import '../components/pack-schemas.js';
 import '../components/stripe-card-element.js';
 import '../components/delivery-day-toggle.js';
 
-const ALL_FOODS =
-  ['beef', 'chicken', 'fish', 'shellfish', 'dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
-const VEGETARIAN_FOODS =
-  ['dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
-const VEGAN_FOODS =
-  ['gluten', 'nuts', 'peanuts', 'soy'];
-const PESCATARIAN_FOODS =
-  ['fish', 'shellfish', 'dairy', 'eggs', 'gluten', 'nuts', 'peanuts', 'soy'];
-const PALEO_FOODS =
-  ['beef', 'chicken', 'fish', 'shellfish', 'eggs', 'nuts'];
+
+
 
 Template.Subscribe.onCreated(function subscribeOnCreated() {
   this.userHasPromo = new ReactiveVar(false);
@@ -257,23 +260,34 @@ Template.Subscribe.events({
         .forEach((element) => element.classList.add('fadeIn'));
     }
 
-    switch (event.target.closest("li").id) {
-      case 'Omnivore':
-        selectRelevantFoods(ALL_FOODS);
-        break;
-      case 'Vegetarian':
-        selectRelevantFoods(VEGETARIAN_FOODS);
-        break;
-      case 'Vegan':
-        selectRelevantFoods(VEGAN_FOODS);
-        break;
-      case 'Pescetarian':
-        selectRelevantFoods(PESCATARIAN_FOODS);
-        break;
-      case 'Paleo':
-        selectRelevantFoods(PALEO_FOODS);
-        break;
+    const dietNameToFoodTypeArray = (dietName) => {
+      switch (dietName) {
+        case 'Omnivore':
+          return ALL_FOODS;
+        case 'Vegetarian':
+          return VEGETARIAN_FOODS;
+        case 'Vegan':
+          return VEGAN_FOODS;
+        case 'Pescetarian':
+          return PESCATARIAN_FOODS;
+        case 'Paleo':
+          return PALEO_FOODS;
+        default:
+          return ALL_FOODS;
       }
+    }
+
+    const dietName = event.target.closest("li").id;
+    const foodTypeArray = dietNameToFoodTypeArray(dietName);
+
+    //////////// Experiment Pack Genration Code Start /////////////
+    const packType = {name: "paleo", number: 12};
+    const pack = getPack(packType);
+    const res = generateDefaultPack(pack, foodTypeArray, ALL_ITEMS);
+    console.log("res = %j", res);
+    //////////// Experiment Pack Genration Code End /////////////
+
+    selectRelevantFoods(foodTypeArray);
   },
 
   'click .restriction'(event, template) {
