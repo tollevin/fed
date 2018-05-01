@@ -3,48 +3,62 @@
 	{{#momentum plugin="fade"}}
 		<div class="order-report">
 			<h1>Checkout</h1>
-			<p class="pack-desc">{{pack}}</p>
-			<div class="ul-wrapper">
-				<ul>
-				{{#each item in packItems}}
-					<li>
-						<span class="item-tally" name={{@index}}>{{item.value}}</span>
-						<span class="item-name" name={{@index}}>{{item.name}}</span>
-					</li>
-				{{/each}}
-				</ul>
-			</div>
+			<div class="order-report-main">
+				<p class="pack-desc">Your Order</p>
+				<div class="ul-wrapper">
+					<ul>
+					{{#each item in packItems}}
+						<li>
+							<span class="item-tally" name={{@index}}>{{item.value}}</span>
+							<span class="item-name" name={{@index}}>{{item.name}}</span>
+						</li>
+					{{/each}}
+					</ul>
+				</div>
 
-			<div class="pricing-wrapper">
-				<div class="subtotal">
-					<span>Subtotal</span>
-					<span class="num">{{price}}</span>
-				</div>
-				<div class="tax">
-					<span>Sales Tax</span>
-					<span class="num">{{tax}}</span>
-				</div>
-				<div class="deliv">
-					<span>Delivery</span>
-					<span class="num">{{deliveryFee}}</span>
-				</div>
-				{{#if userHasCredit}}
-					<div class="credit">
-			    	<span>Account Credit</span>
-			    	<span class="num">{{userHasCredit}}</span>
-						<button type="submit" id="applyCredit">Apply</button>
-				  </div>
-				{{/if}}
-				{{#if discount}}
-					<div class="coupon">
-						<span>Discount</span>
-						<span class="num">{{discount}}</span>
+				{{#if recommend}}
+					<div class="recommender">
+					
 					</div>
 				{{/if}}
-				<div class="total">
-					<span>Total</span>
-					<span class="num">{{total}}</span>
+
+				<div class="pricing-wrapper">
+					<div class="subtotal">
+						<p class="label">Subtotal</p>
+						<p class="num">{{price}}</p>
+					</div>
+					<div class="tax">
+						<p class="label">Sales Tax</p>
+						<p class="num">{{tax}}</p>
+					</div>
+					<div class="deliv">
+						<p class="label">Delivery</p>
+						<p class="num">{{deliveryFee}}</p>
+					</div>
+					{{#if userHasCredit}}
+						<div class="credit">
+				    	<p class="label">Account Credit</p>
+				    	<p class="num">{{userHasCredit}}</p>
+							<button type="submit" id="applyCredit">Apply</button>
+					  </div>
+					{{/if}}
+					{{#if discount}}
+						<div class="coupon">
+							<p class="label">Discount</p>
+							<p class="num">{{discount}}</p>
+						</div>
+					{{/if}}
+					<div class="total">
+						<p class="label">Total</p>
+						<p class="num">{{total}}</p>
+					</div>
 				</div>
+
+				{{#if deliverytiermessage}}
+					<div class="delivery-tier-message">
+
+					</div>
+				{{/if}}
 			</div>
 
 			{{#if havePromo}}
@@ -96,8 +110,11 @@
 
 				<select name="deliveryWindow" id="9B4bKQHybDyHem8nh" data-schema-key="deliveryWindow" class="form-control" required>
 					<option class="default-select-option" value="">Select your delivery date <i class="fa fa-caret-down"></i></option>
-					<option name="Sunday" value="Sunday">{{nextSunday}}, 6-9pm</option>
-					<option name="Monday" value="Monday">{{nextMonday}}, 6-9pm</option>
+					{{#each option in deliveryWindows}}
+						{{#with option}}
+							<option name="{{option.delivery_day}}" value="{{option._id}}">{{toDateStr option.delivery_start_time}}</option>
+						{{/with}}
+					{{/each}}
 				</select>
 
 				<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL" data-schema-key="destinationComments" class="form-control" placeholder="Notes for delivery?"></textarea>

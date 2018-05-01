@@ -4,12 +4,14 @@ import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { Plans } from '../plans/plans.js';
+
 // SimpleSchema.debug = true;
 
 class ItemsCollection extends Mongo.Collection {
   insert(item, callback) {
     const ourItem = item;
-    ourItem.createdAt = ourItem.createdAt || new Date();
+    ourItem.created_at = ourItem.created_at || new Date();
     const result = super.insert(ourItem, callback);
     return result;
   }
@@ -53,15 +55,31 @@ Items.schema = new SimpleSchema({
       type: "hidden"
     }
   },
+  created_at: {
+    type: Date,
+    label: 'Created At',
+    // autoValue: function () {
+    //   return new Date()
+    // },
+    denyUpdate: true,
+    autoform: {
+      type: "hidden"
+    }
+  },
   name: {
     type: String,
     label: "Name"
   },
-  course: {
+  category: {
     type: String,
-    label: "Course",
-    allowedValues: ['Dish','Snack'],
-    optional: true
+    label: "Category",
+    allowedValues: ['Meal','Plate','Breakfast','Snack','Drink','Grocery','Condiment','Pack','Miscellaneous'],
+  },
+  subcategory: {
+    type: String,
+    label: "Subcategory",
+    allowedValues: ['Beef','Chicken','Fish','Soy','Vegetable','Grain','Salad','Soup'],
+    optional: true,
   },
   photo: {
     type: String,
@@ -73,7 +91,7 @@ Items.schema = new SimpleSchema({
       }
     } 
   },
-  userId: {
+  user_id: {
     type: String,
     label: 'User ID',
     regEx: SimpleSchema.RegEx.Id,
@@ -81,6 +99,22 @@ Items.schema = new SimpleSchema({
     autoform: {
       type: "hidden"
     }
+  },
+  sku: {
+    type: String,
+    label: 'SKU',
+    optional: true,
+  },
+  plans: {
+    type: Object,
+    label: 'Plans',
+    optional: true,
+    blackbox: true,
+    autoform: {
+      autoform: {
+        type: "hidden"
+      }
+    },
   },
   description: {
     type: String,
@@ -153,128 +187,97 @@ Items.schema = new SimpleSchema({
     label: 'Wheat',
     optional: true,
   },
-  goodFor_Days: {
+  good_for_days: {
     type: Number,
     label: 'Good for X days',
     optional: true
-  },
-  createdAt: {
-    type: Date,
-    label: 'Created At',
-    // autoValue: function () {
-    //   return new Date()
-    // },
-    denyUpdate: true,
-    autoform: {
-      type: "hidden"
-    }
   },
   active: {
     type: Boolean,
     label: 'This week?',
     optional: true,
   },
-  packs: {
-    type: Object,
-    label: 'Packs',
-    optional: true,
-  },
-  "packs.omnivorePack": {
-    type: Boolean,
-    label: 'Omnivore Pack',
-    optional: true,
-  },
-  "packs.vegetarianPack": {
-    type: Boolean,
-    label: 'Vegetarian Pack',
-    optional: true,
-  },
-  "packs.veganPack": {
-    type: Boolean,
-    label: 'Vegan Pack',
-    optional: true,
-  },
-  nutritionFacts: {
+  nutrition_facts: {
     type: Object,
     label: 'Nutrition Facts',
     optional: true,
   },
-  "nutritionFacts.servingSize": {
+  "nutrition_facts.servingSize": {
     type: String,
     label: 'Serving Size (g)',
     optional: true,
   },
-  "nutritionFacts.calories": {
+  "nutrition_facts.calories": {
     type: String,
     label: 'Calories',
     optional: true,
   },
-  "nutritionFacts.totalFat": {
+  "nutrition_facts.totalFat": {
     type: String,
     label: 'Total Fat (g)',
     optional: true,
   },
-  "nutritionFacts.saturatedFat": {
+  "nutrition_facts.saturatedFat": {
     type: String,
     label: 'Saturated Fat (g)',
     optional: true,
   },
-  "nutritionFacts.transFat": {
+  "nutrition_facts.transFat": {
     type: String,
     label: 'Trans Fat (g)',
     optional: true,
   },
-  "nutritionFacts.cholesterol": {
+  "nutrition_facts.cholesterol": {
     type: String,
     label: 'Cholesterol (mg)',
     optional: true,
   },
-  "nutritionFacts.sodium": {
+  "nutrition_facts.sodium": {
     type: String,
     label: 'Sodium (mg)',
     optional: true,
   },
-  "nutritionFacts.protein": {
+  "nutrition_facts.protein": {
     type: String,
     label: 'Protein (g)',
     optional: true,
   },
-  "nutritionFacts.totalCarb": {
+  "nutrition_facts.totalCarb": {
     type: String,
     label: 'Total Carbs (g)',
     optional: true,
   },
-  "nutritionFacts.dietaryFiber": {
+  "nutrition_facts.dietaryFiber": {
     type: String,
     label: 'Dietary Fiber (g)',
     optional: true,
   },
-  "nutritionFacts.sugars": {
+  "nutrition_facts.sugars": {
     type: String,
     label: 'Sugars (g)',
     optional: true,
   },
-  "nutritionFacts.PDV": {
+  "nutrition_facts.PDV": {
     type: Object,
     label: 'PDVs',
     optional: true,
   },
-  "nutritionFacts.PDV.vitaminA": {
+  "nutrition_facts.PDV.vitaminA": {
     type: String,
     label: 'Vitamin A (%DV)',
     optional: true,
   },
-  "nutritionFacts.PDV.vitaminC": {
+  "nutrition_facts.PDV.vitaminC": {
     type: String,
     label: 'Vitamin C (%DV)',
     optional: true,
   },
-  "nutritionFacts.PDV.calcium": {
+  "nutrition_facts.PDV.calcium": {
     type: String,
     label: 'Calcium (%DV)',
     optional: true,
   },
-  "nutritionFacts.PDV.iron": {
+  "nutrition_facts.PDV.iron": {
     type: String,
     label: 'Iron (%DV)',
     optional: true,
@@ -294,11 +297,11 @@ Items.schema = new SimpleSchema({
     label: 'Gluten Free',
     optional: true,
   },
-  "attributes.highProtein": {
-    type: Boolean,
-    label: 'High Protein',
-    optional: true,
-  },
+  // "attributes.highProtein": {
+  //   type: Boolean,
+  //   label: 'High Protein',
+  //   optional: true,
+  // },
   "attributes.paleo": {
     type: Boolean,
     label: 'Paleo',
@@ -332,25 +335,66 @@ Items.schema = new SimpleSchema({
   },
   weight: {
     type: Number,
-    label: "Weight",
+    decimal: true,
+    label: "Weight in Lbs",
     optional: true,
   },
-  ordersThisWeek: {
-    type: Number,
-    label: "Orders This Week",
+  dimensions: {
+    type: String,
+    label: "Dimensions",
     optional: true,
-    autoform: {
-      type: "hidden"
-    }
   },
-  ordersTotal: {
-    type: Number,
-    label: "Total Orders",
+  producer: {
+    type: String,
+    label: "Producer",
     optional: true,
+  },
+  cost_per_unit: {
+    type: Number,
+    decimal: true,
+    label: "Cost per unit",
+    optional: true,
+  },
+  price_per_unit: {
+    type: Number,
+    decimal: true,
+    label: "Price per unit",
+    optional: true,
+  },
+  unit: {
+    type: String,
+    label: "Unit",
+    optional: true,
+  },
+  sub_items: {
+    type: Object,
+    label: "Sub-Items",
+    optional: true,
+  },
+  "sub_items.schema": {
+    type: Object,
+    label: "Sub-Items Schema",
+    optional: true,
+    blackbox: true,
     autoform: {
       type: "hidden"
-    }
-  }
+    },
+  },
+  "sub_items.items": {
+    type: [ String ],
+    label: "Sub-Items Items",
+    optional: true,
+  },
+  inventory: {
+    type: Number,
+    label: "Inventory",
+    optional: true,
+  },
+  rank: {
+    type: Number,
+    label: "Menu Rank",
+    optional: true,
+  },
 });
 
 Items.attachSchema(Items.schema);
@@ -360,22 +404,32 @@ Items.attachSchema(Items.schema);
 // them here to keep them private to the server.
 Items.publicFields = {
   _id: 1,
+  user_id: 1,
+  created_at: 1,
   name: 1,
-  course: 1,
+  category: 1,
+  subcategory: 1,
   photo: 1,
+  stripe_product_id: 1,
+  stripe_plans: 1,
   description: 1,
   ingredients: 1,
   warnings: 1,
-  packs: 1,
-  nutritionFacts: 1,
-  goodFor_Days: 1,
+  nutrition_facts: 1,
+  good_for_days: 1,
   active: 1,
   attributes: 1,
   comments: 1,
   ratings: 1,
   weight: 1,
-  ordersThisWeek: 1,
-  ordersTotal:1,
+  dimensions: 1,
+  producer: 1,
+  cost_per_unit: 1,
+  price_per_unit: 1,
+  unit: 1,
+  sub_items: 1,
+  inventory: 1,
+  rank: 1,
 };
 
 Factory.define('item', Items, {
@@ -385,7 +439,9 @@ Factory.define('item', Items, {
 });
 
 Items.helpers({
-
+  plans(data) {
+    return Plans.findOne({item_id: data.item_id, frequency: data.frequency, quantity: data.quantity});
+  },
 });
 
 // for testing

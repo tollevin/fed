@@ -1,28 +1,75 @@
 <template name="Side_Nav">
 	<div id="sideNav" class="{{sideNavOpen}}">
     <span><img class="close-sideNav" src="/icons/x.png"/></span>
-    <ul>
-      <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-      <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
-      {{#if notSubscribed}}
-        <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
-      {{/if}}
-      <li><a href="/packs" class="{{currentPage 'Packs'}}" alt="Packs">Packs</a></li>
-      <li><a href="/gifts" class="{{currentPage 'Gifts'}} new" alt="Gifts">Gifts</a></li>
-     <!--  <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li> -->
-      <li><a href="/about-us" class="{{currentPage 'About.us'}}" alt="About">About Us</a></li>
-      <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
-    </ul>
-    <hr>
-    <ul>
-      {{#if currentUser}}
-        {{#if subscribed}}
-          <li><a href="/my-account" class="{{currentPage 'My.account'}}" alt="Account Settings">My Account</a></li>
-        {{/if}}
-        <li><a class="js-logout" alt="Log out">Log Out</a></li>
-      {{else}}
-        <li><a href="/signin" class="{{currentPage 'signin'}}" alt="Sign In">Sign In</a></li>
-      {{/if}}
-    </ul>
+    
+    <div class="logo-holder">
+      <a href="/" class="logoLink"></a>
+    </div>
+
+    {{#if currentUser}}
+      <nav id="User-Nav">
+        <ul>
+          <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+          <!-- {{#if showMenuLinks}}
+            <ul>
+              <li><a href="/menu#meals" class="{{currentPage 'Menu.meals'}}" alt="Meals">Meals</a></li>
+              <li><a href="/menu#Snacks" class="{{currentPage 'Menu.snacks'}}" alt="Snacks">Snacks</a></li>
+              <li><a href="/menu#Drinks" class="{{currentPage 'Menu.drinks'}}" alt="Drinks">Drinks</a></li>
+              <li><a href="/menu#Packs" class="{{currentPage 'Menu.packs'}}" alt="Packs">Packs</a></li>
+            </ul>
+          {{/if}} -->
+          <!-- <li><a href="/orders" class="{{currentPage 'MyOrders'}}" alt="My Orders">My Orders</a></li> -->
+          {{#if notSubscribed}}
+            <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
+          {{else}}
+            <li><a href="/subscriptions" class="{{currentPage 'MySubscriptions'}}" alt="My Subscriptions">My Subscriptions</a></li>
+          {{/if}}
+          <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
+          <!-- <li><a href="/credit" class="{{currentPage 'FedCred'}}" alt="My Fed Cred">Fed Cred<span>${{fedCred}}</span></a></li> -->
+          <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+        </ul>
+        <ul class="login-buttons">
+          <li><a href="/settings" class="{{currentPage 'Settings'}}" alt="Settings">Settings</a></li>
+          <li><a id="logout" href="/" alt="Sign Out">Sign Out</a></li>
+        </ul>
+      </nav>
+    {{else}}
+      <nav id="Main-Nav">
+        <ul>
+          <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
+          <li><a href="/menu" class="shop-menu-link {{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+            <!-- {{#transition in="fadeIn" out="fadeOut"}}
+              {{#if showMenuLinks}}
+                <ul class="menu-link-ul">
+                  <li><a href="/menu#Meals" class="{{currentPage 'menu#Meals'}}" alt="Meals">Meals</a></li>
+                  <li><a href="/menu#Snacks" class="{{currentPage 'menu#Snacks'}}" alt="Packs">Snacks</a></li>
+                  <li><a href="/menu#Drinks" class="{{currentPage 'menu#Drinks'}}" alt="Packs">Drinks</a></li>
+                  <li><a href="/menu#Packs" class="{{currentPage 'menu#Packs'}}" alt="Packs">Packs</a></li>
+                </ul>
+              {{/if}}
+            {{/transition}} -->
+          <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
+          <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
+         <!--  <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li> -->
+          <li><a href="/about-us" class="about-link {{currentPage 'About.us'}}" alt="About">About Us</a></li>
+          <!-- {{#transition in="fadeIn" out="fadeOut"}}
+            {{#if showAboutLinks}}
+              <ul class="about-link-ul">
+                <li><a href="/our-story" class="{{currentPage 'About.us'}}" alt="Our Story">Our Story</a></li>
+                <li><a href="/our-philosophy" class="{{currentPage 'About.Philosophy'}}" alt="Our Philosophy">Our Philosophy</a></li>
+                <li><a href="/our-menu" class="{{currentPage 'About.Menu'}}" alt="Our Menu">Our Menu</a></li>
+                <li><a href="/our-partners" class="{{currentPage 'About.Partners'}}" alt="Our Partners">Our Partners</a></li>
+              </ul>
+            {{/if}}
+          {{/transition}} -->
+          <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+        </ul>
+        <ul class="login-buttons">
+          <li><a href="{{pathFor 'signin'}}" class="{{currentPage 'signin'}}" alt="Sign In">Sign In</a></li>
+          <li><a href="{{pathFor 'join'}}" class="{{currentPage 'join'}}" alt="Join">Join</a></li>
+        </ul>
+        <!-- {{> Accounts_Holder}} -->
+      </nav>
+    {{/if}}
   </div>
 </template>

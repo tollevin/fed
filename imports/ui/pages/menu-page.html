@@ -1,32 +1,53 @@
 <head><meta name="fragment" content="!"></head>
 <template name="Menu_page">
-	{{#momentum plugin="fade"}}
-	  <div id="menu-page" class="page {{cartOpen}}">
-			{{> Menu_toolbar}}
-			<!-- {{#if currentUser}} -->
-			<div id="content-scrollable">
-				<div id="menu-view">
+  <div id="menu-page" class="page {{cartOpen}}">
+		{{> Menu_toolbar}}
+		<!-- {{> Mobile_Menu_overlay}} -->
+
+		<div id="content-scrollable">
+			<div id="menu-view">
+				<!-- <div class="header"></div> -->
+				{{#if Template.subscriptionsReady}}
 					<div class="menu-items">
-						{{#if Template.subscriptionsReady}}
-							<div class="item-list"> 
-								{{#each dishItems}}
-									{{> Menu_item}}
-								{{/each}}
-								<div class="hr-holder">
-									<hr/>
-								</div>
-								<h2>Snacks</h2>
-								{{#each snackItems}}
-									{{> Menu_snack}}
-								{{/each}}
-							</div>
-						{{else}}
-							<p>Loading...</p>
-						{{/if}}
+						{{> Menu_meals}}
+						{{> Menu_snacks}}
+						{{> Menu_drinks}}
+						<!-- {{> Menu_packs}} -->
 					</div>
-				</div>
+				{{else}}
+					<p>Loading...</p>
+				{{/if}}
 			</div>
-			<!-- {{> Cart}} -->
 		</div>
-	{{/momentum}}
+	</div>
+</template>
+
+<template name="Menu_meals">
+	{{#transition in="zoomIn" out="zoomOut"}}
+		<h2>Meals</h2>
+		{{#each meals}}
+			{{> Menu_item}}
+		{{/each}}
+	{{/transition}}
+</template>
+
+<template name="Menu_snacks">
+	<h2>Snacks</h2>
+	{{#each snacks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Menu_drinks">
+	<h2>Drinks</h2>
+	{{#each drinks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Menu_packs">
+	<h2>Packs</h2>
+	{{#each packs}}
+		{{> Menu_item}}
+	{{/each}}
 </template>

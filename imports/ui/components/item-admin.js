@@ -16,30 +16,16 @@ import {
 
 Template.Item_admin.onCreated(function itemAdminOnCreated() {
   this.autorun(() => {
-    new SimpleSchema({
-      item: { type: Items._helpers },
-      // editing: { type: Boolean, optional: true },
-      // onEditingChange: { type: Function },
-    }).validate(Template.currentData());
+    // new SimpleSchema({
+    //   item: { type: Items._helpers },
+    //   // editing: { type: Boolean, optional: true },
+    //   // onEditingChange: { type: Function },
+    // }).validate(Template.currentData());
   });
 });
 
 Template.Item_admin.helpers({
-  thisWeek() {
-    return Template.currentData().active && 'checked';
-  },
-
-  omni() {
-    return Template.currentData().packs.omnivorePack && 'checked';
-  },
-
-  veggie() {
-    return Template.currentData().packs.vegetarianPack && 'checked';
-  },
-
-  vegan() {
-    return Template.currentData().packs.veganPack && 'checked';
-  },
+  
 });
 
 Template.Item_admin.events({

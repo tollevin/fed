@@ -1,0 +1,32 @@
+<template name="CartItem">
+	<li>
+		<div class="cart-item">
+			<!-- <div class="cart-item-image">
+				<img src="{{item.photo}}">
+			</div> -->
+			<div class="cart-item-name">
+				<p>{{tally}}</p>
+				<p>{{item.name}}</p>
+			</div>
+			{{# if isPack}}
+				<span>Expand</span>
+				<div class="cart-subItems">
+					<ul>
+						{{#each subItem in subItems}}
+							<li>
+								<div class="cart-subItem">
+									<div class="cart-subItem-image">
+										<img src="{{photo}}">
+									</div>
+									<div class="cart-subItem-name">
+										<p>{{name}}</p>
+									</div>
+								</div>
+							</li>
+						{{/each}}
+					</ul>
+				</div>
+			{{/if}}
+		</div>
+	</li>
+</template>

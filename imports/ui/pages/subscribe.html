@@ -1,11 +1,10 @@
 <template name="Subscribe">
-	<div id="subscribe" class="page auth">
-	{{#momentum plugin="fade"}}
+	<div id="Subscribe" class="page">
 		<div class="content-scrollable">
       <div class="wrapper-auth">
-				<div class="subscribe-form">
+				<form class="subscribe-form">
 					<div class="panel-body">
-	      		<div id="subscribeStatusBar">
+	      		<div id="Subscribe-status-bar">
 	      			<ul>
 	      				<li class="{{currentForm 'diet'}}">diet</li>
 	      				<hr>
@@ -18,10 +17,10 @@
 	      		</div>
 
 						{{#if diet}}
-							<div id="wdye">
+							<div id="Diet">
 								<h1>Subscribe Today</h1>
 								<p>and get 5% off all orders for life!</p>
-								<div>
+								<div class="question">
 									<h2>What do you eat?</h2>
 									<div id="Diets">
 										<ul>
@@ -58,7 +57,7 @@
 										</ul>
 									</div>
 								</div>
-								<div>
+								<div class="question">
 									<h2>What do you avoid?</h2>
 									<ul id="Restrictions">
 										{{#each restriction in restrictions}}
@@ -83,211 +82,42 @@
 
 	      		{{#if plan}}
 							<div id="Plan" class="form-group" data-required="true">
-								<h2>Choose your plan:</h2> 
-								<ul>
-									<li id="6-Pack">
-										<input type="radio" name="plan" id="6" value="6-Pack">
-										<label for="6">
-											<div class="pack-size">
-												<span class="number">6</span>
-												<span class="mpw">meals per week</span>
-											</div>
-											<div class="discountedPrice">
-												<span class="value strikethrough">$85</span>
-												<span class="value">$80.75 / per week</span>
-											</div>
-										</label>
-									</li>
-									<li id="8-Pack">
-										<input type="radio" name="plan" id="8" value="8-Pack">
-										<label for="8">
-											<div class="pack-size">
-												<span class="number">8</span>
-												<span class="mpw">meals per week</span>
-											</div>
-											<div class="discountedPrice">
-												<span class="value strikethrough">$110</span>
-												<span class="value">$104.50 / per week</span>
-											</div>
-										</label>
-									</li>
-									<li id="10-Pack">
-										<input type="radio" name="plan" id="10" value="10-Pack">
-										<label for="10">
-											<div class="pack-size">
-												<span class="number">10</span>
-												<span class="mpw">meals per week</span>
-											</div>
-											<div class="discountedPrice">
-												<span class="value strikethrough">$135</span>
-												<span class="value">$128.25 / per week</span>
-											</div>
-										</label>
-									</li>
-									<li id="12-Pack">
-										<input type="radio" name="plan" id="12" value="12-Pack">
-										<label for="12">
-											<div class="pack-size">
-												<span class="number">12</span>
-												<span class="mpw">meals per week</span>
-											</div>
-											<div class="discountedPrice">
-												<span class="value strikethrough">$159</span>
-												<span class="value">$151.05 / per week</span>
-											</div>
-										</label>
-									</li>
-								</ul>
+								<h2>Choose your plan:</h2>
+								{{> Pack_schemas diet=userDiet}}
 							</div>
 
-							<div id="DeliveryDay" class="form-group" data-required="true">
+							<div id="Delivery" class="form-group" data-required="true">
 								<h2>Choose your preferred delivery date:</h2>
-								<ul>
-									<li id="sunday">
-										<input type="radio" id="Sunday" name="delivery" value="sunday">
-										<label for="Sunday">Sundays 6-9pm</label>
-									</li>
-									<li id="monday">
-										<input type="radio" id="Monday" name="delivery" value="monday">
-										<label for="Monday">Mondays 6-9pm</label>
-									</li>
-								</ul>
+								{{> Delivery_day_toggle}}
+								<h2>And your first delivery:</h2>
+								<div class="delivery-window-holder">
+									{{#transition in="fadeIn" out="fadeOut"}}
+										{{#if thisWeek}}
+											<div class="delivery-window">
+												<p>{{thisWeek}}</p>
+												<div class="subscription-errors"></div>
+												<div class="buttons-group">
+													<a id="skip-first-delivery" href="skip">Skip</a>
+													<a href="#payment-details" id="next1" class="btn-secondary next">Ok</a>
+												</div>
+											</div>
+										{{else}}
+											<div class="delivery-window">
+												{{nextWeek}}
+												<div class="subscription-errors"></div>
+												<div class="buttons-group">
+													<a id="unskip-first-delivery" href="unskip">Unskip</a>
+													<a href="#payment-details" id="next1" class="btn-secondary next">Ok</a>
+												</div>
+											</div>
+										{{/if}}
+									{{/transition}}
+								</div>
 							</div>
-							<div class="sbmt-button">
-							  <!-- <a href="#diet" id="backtodiet">Back to Diet</a>  -->
-								<a href="#payment-details" id="next1" class="btn-secondary next">
-									Next
-								</a>
-							</div>
-						{{/if}}
-
-						{{#if payment}}
-							<form id="cc-form">
-								{{#if trialable}}
-									<div id="createNewUser">
-										<h2>Create Your Account</h2>
-										<div class="form-group" data-required="true">
-											<label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label> 
-											<input type="email" name="customer.email" id="EsBbF9Ads8fEFFAut" required data-schema-key="customer.email" class="form-control">
-											<span class="help-block"></span>
-										</div>
-
-										<div class="form-group" data-required="true">
-											<label for="EsBbF9Ads8fEFFAut2" class="control-label">Confirm Email address</label> 
-											<input type="email" name="customer.emailCheck" id="EsBbF9Ads8fEFFAut2" required data-schema-key="customer.emailCheck" class="form-control">
-											<span class="help-block"></span>
-										</div>
-
-										<div class="email-errors"></div>
-
-										<div class="form-group" data-required="true">
-											<label for="EsBbF9Ads8fEFFAut3" class="control-label">Password</label> 
-											<input type="password" name="customer.password" id="EsBbF9Ads8fEFFAut3" required data-schema-key="customer.password" class="form-control">
-											<span class="help-block"></span>
-										</div>
-									</div>
-								{{/if}}
-
-								<h2>Payment Details</h2>
-								<div id="payment-errors"></div>
-								{{> Card_element}}
-
-								{{#if havePromo}}
-									<div class="submitPromo">
-							      <input type="text" placeholder="Enter your promo code" id="promo">
-							      <button type="submit" id="promoSub">APPLY</button>
-								  </div>
-								{{else}}
-									<div class="promo">
-										<button class="enterPromo">Have a promo code?</button>
-									</div>
-								{{/if}}
-
-							  <div id="stripe-png">
-							  	<img src="/icons/powered_by_stripe.png" class="str">
-							  </div>
-
-								<div class="sbmt-button">
-									<button type="submit" id="next2" class="btn-secondary next">
-										Next
-									</button>
-								</div>
-							</form>
-						{{/if}}
-
-						{{#if delivery}}
-							<form id="DeliveryForm">
-								<h2>Delivery Details</h2>
-
-								<div class="form-group firstName" data-required="true">
-									<label for="7TGxZsAyFk9zWn6rj" class="control-label">First Name</label> 
-									<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" required data-schema-key="customer.firstName" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group lastName" data-required="true">
-									<label for="zS5Mw3HxCAsACZCui" class="control-label">Last Name</label> 
-									<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" required data-schema-key="customer.lastName" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group" data-required="true">
-									<label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label> 
-									<input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" required data-schema-key="customer.phone" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group" data-required="true">
-									<label for="KcYJxhTp8QLnZEk2c" class="control-label">Address Line 1</label> 
-									<input type="text" name="customer.address.line1" id="KcYJxhTp8QLnZEk2c" required data-schema-key="customer.address.line1" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group">
-									<label for="L2ukezE6Qb2SMWw2i" class="control-label">Address Line 2</label> 
-									<input type="text" name="customer.address.line2" id="L2ukezE6Qb2SMWw2i" data-schema-key="customer.address.line2" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group city" data-required="true">
-									<label for="gPijubZcAW4ZYuDGA" class="control-label">City</label> 
-									<input type="text" name="customer.address.city" id="gPijubZcAW4ZYuDGA" required data-schema-key="customer.address.city" class="form-control">
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group state" data-required="true">
-									<label for="D268gw6JgngaxcDMt" class="control-label">State</label> 
-									<select name="customer.address.state" id="D268gw6JgngaxcDMt" required data-schema-key="customer.address.state" autocomplete="off" class="form-control"> 
-										<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AS">AS</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FM">FM</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected="selected">NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
-									</select>
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group zip" data-required="true"> 
-									<label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label> 
-									<input type="text" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" required data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" />
-									<span class="help-block"></span>
-								</div>
-
-								<div class="form-group comments"> 
-									<label for="9Lt5aG8uEGEL5KfnL" class="control-label">Comments for delivery</label>
-									<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL"  data-schema-key="destinationComments" rows="8" cols="20" class="form-control"></textarea>
-									<span class="help-block"></span>
-								</div>
-
-								<div class="info-errors"></div>
-
-								<div class="sbmt-button">
-									<button type="submit" id="sbmtOrder" class="btn-secondary">
-										Submit
-									</button>
-								</div>
-							</form>
 						{{/if}}
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
-	{{/momentum}}
 	</div>
 </template>

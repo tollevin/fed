@@ -1,0 +1,61 @@
+<template name="Menu">
+	<div id="Menu-items">
+		{{#if Template.subscriptionsReady}}
+				{{> Menu_meals}}
+				{{> Menu_snacks}}
+				{{> Menu_drinks}}
+				{{> Menu_packs}}
+		{{else}}
+			<p>Loading...</p>
+		{{/if}}
+	</div>
+</template>
+
+<template name="Menu_meals">
+	<h2>Meals</h2>
+	{{#each beef}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each chicken}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each fish}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each soy}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each vegetable}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each grain}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each soup}}
+		{{> Menu_item}}
+	{{/each}}
+	{{#each salad}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Menu_snacks">
+	<h2>Snacks</h2>
+	{{#each snacks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Menu_drinks">
+	<h2>Drinks</h2>
+	{{#each drinks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Menu_packs">
+	<h2>Packs</h2>
+	{{#each packs}}
+		{{> Menu_item}}
+	{{/each}}
+</template>

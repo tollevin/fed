@@ -1,0 +1,33 @@
+<template name="Pack_select">
+	<div id="Pack-select">
+		<h2>Choose a pack</h2>
+		<div class="pack-selects">
+			<select autofocus="autofocus" name="diet">
+				<option value="omnivore" selected="selected">Omnivore</option>
+				<option value="paleo">Paleo</option>
+				<option value="pescetarian">Pescetarian</option>
+				<option value="vegetarian">Vegetarian</option>
+				<option value="vegan">Vegan</option>
+			</select>
+			<select name="number">
+				<option value="4">4</option>
+				<option value="6" selected="selected">6</option>
+				<option value="8">8</option>
+				<option value="10">10</option>
+				<option value="12">12</option>
+			</select>
+			<span>- Pack</span>
+		</div>
+		<span>Click to edit</span>
+		<div class="pack-preview">
+			{{#with packSchema}}
+				{{#if (greaterThanZero protein)}}<p>{{protein}} Protein{{greaterThanOne protein}}</p>{{/if}}
+				{{#if (greaterThanZero vegetable)}}<p>{{vegetable}} Vegetable{{greaterThanOne vegetable}}</p>{{/if}}
+				{{#if (greaterThanZero grain)}}<p>{{grain}} Grain{{greaterThanOne grain}}</p>{{/if}}
+				{{#if (greaterThanZero soup)}}<p>{{soup}} Soup{{greaterThanOne soup}}</p>{{/if}}
+				{{#if (greaterThanZero salad)}}<p>{{salad}} Salad{{greaterThanOne salad}}</p>{{/if}}
+			{{/with}}
+		</div>
+		<button>Choose your meals</button>
+	</div>
+</template>

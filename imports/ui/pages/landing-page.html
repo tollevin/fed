@@ -1,6 +1,6 @@
 <head><meta name="fragment" content="!"></head>
 <template name="Landing_page">
-	<div class="landing page">
+	<div class="landing">
     <!-- <hr id="sub-logo-hr"> -->
 		<!-- <div id="banner">
       <p>Special Holiday Schedule! Our Next Delivery is on Thurs & Fri, Dec 28-29th.</p>
@@ -15,7 +15,8 @@
         <p>Questions? Call us at <a href="tel:347-699-6193" itemprop="telephone">(347) 699-6193</a></p>
       </div> -->
     </section>
-    
+  </div>
+  <div id="post-hero">
     <section id="menu_about">
       <div class="menu-about-desc">
         <h3>Subscribe to get perfectly balanced, ready-to-eat meals — customized to your dietary preferences — delivered to your door every week.</h3>
@@ -98,7 +99,7 @@
         </div>
       </div> -->
       <div class="delivery-desc">
-        <p>Fed is currently serving select zip codes in Brooklyn, Manhattan & Queens.<br/>Enter yours here to see if you can get Fed!</p>
+        <p>Fed is currently serving select zip codes in Brooklyn, Manhattan & Queens.<br/>Don't miss out on Free Delivery on orders over $150!</p>
         <input type="text" id="zip" name="zipCode" placeholder="Enter your zip code" required>
         <input type="submit" id="zipSubmit" value="Submit">
         {{#if zipOk }}

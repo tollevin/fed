@@ -11,7 +11,7 @@ const countInArray = function(array, what) {
 };
 
 Template.Menu_item.onCreated(function menuItemOnCreated() {
-  this.veganized = new ReactiveVar(false);
+  // this.veganized = new ReactiveVar(false);
 });
 
 Template.Menu_item.helpers({
@@ -30,16 +30,61 @@ Template.Menu_item.helpers({
     }
 	},
 
-  veganizable() {
-    return Template.currentData().veganizable;
+  restrictions: ()=> {
+    var restrictions = Template.currentData().warnings;
+    if (restrictions) {
+      var keys = Object.keys(restrictions);
+      var filtered = keys.filter(function(key) {
+          return restrictions[key];
+      });
+      var classes = '';
+      for (var i = filtered.length - 1; i >= 0; i--) {
+        classes+= filtered[i] + ' ';
+      }
+      return classes;
+    }
+  },
+
+  showFullPrice: ()=> {
+    const order = Session.get('Order');
+    if (order) return order.style === 'alacarte';
+  },
+
+  showAddOnPrice: ()=> {
+    const order = Session.get('Order');
+    if (order && order.style === 'pack') {
+      const subcategory = Template.currentData().subcategory;
+      // ...
+    }
+  },
+
+  addOnPrice: ()=> {
+
   },
 
   tally: ()=> {
-    if (Session.get('pack')) {
-      var pack = Session.get('pack').dishes;
+    if (Session.get('Order') && Session.get('Order').items) {
+      var itemList = Session.get('Order').items;
       var itemName = Template.currentData().name;
-      var veganItemName = Template.currentData().name + " (V)";
-      return countInArray(pack, itemName) + countInArray(pack, veganItemName);
+      var packItems = [];
+      var packItemNames = [];
+      var cartItemNames = [];
+      for (var i = itemList.length - 1; i >= 0; i--) {
+        if (itemList[i].category === 'Pack') {
+          for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+            packItems.push(itemList[i].sub_items.items[j]);
+          };
+        } else {
+          cartItemNames.push(itemList[i].name)
+        };
+      };
+      for (var i = packItems.length - 1; i >= 0; i--) {
+        packItemNames.push(packItems[i].name)
+      };
+
+      const countInPacks = countInArray(packItemNames, itemName);
+      const countInCart = countInArray(cartItemNames, itemName);
+      return countInPacks + countInCart;
     };
   },
 });
@@ -55,56 +100,97 @@ Template.Menu_item.events({
     FlowRouter.go(newRoute);
   },
 
-	'click .add-to-pack'(event, template) {
+	'click .add-to-cart'(event, template) {
 		event.preventDefault();
 
-    const context = Template.currentData();
-
     if (Meteor.user()) {
-  		const pack = Session.get('pack');
-  		const dishes = pack.dishes;
-  		for (i = 0; i < dishes.length; i++) { 
-      	if (!dishes[i]) {
-          if (template.veganized.get()) {
-        		dishes[i] = context.name + " (V)";
-          } else {
-            dishes[i] = context.name;
+      const options = {
+        fields: {
+          _id: 1,
+          name: 1,
+          category: 1,
+          description: 1,
+          price_per_unit: 1,
+          photo: 1,
+        }
+      };
+
+      const item = Items.findOne({name: Template.currentData().name}, options);
+  		const order = Session.get('Order');
+
+      // Ping here (GA)
+      // Possibly Ping here if adding to an empty cart (GA)
+
+      let packWithSpace;
+      for (var i = order.items.length - 1; i >= 0; i--) {
+        if (order.items[i].category.toLowerCase() === 'pack' && item.category === 'Meal' && order.items[i].sub_items.schema.total > order.items[i].sub_items.items.length) {
+          packWithSpace = {
+            index: i, 
+            pack: order.items[i],
           };
-      		pack.dishes = dishes;
-      		Session.set('pack', pack);
-      		i = 0;
-      		break;
-      	} else {
-      		continue;
-      		if (i === dishes.length - 1){
-      		sAlert.error('Your pack is full!');
-      		};
-      	};
-  		};
+        };
+      };
+
+      if (packWithSpace) {
+        packWithSpace.pack.sub_items.items.push(item);
+        order.items[packWithSpace.index] = packWithSpace.pack;
+        Session.set('Order', order);
+      } else {
+        order.items.push(item);
+        Session.set('Order', order);
+      };
     } else {
       FlowRouter.go('join');
     }
 	},
 
-  'click .remove-from-pack'(event, template) {
+  'click .remove-from-cart'(event, template) {
     event.preventDefault();
 
-    const pack = Session.get('pack');
-    const dishes = pack.dishes;
-    let itemName;
-    if (template.veganized.get()) {
-      itemName = Template.currentData().name + " (V)";
-    } else {
-      itemName = Template.currentData().name;
-    };
-    if (dishes.indexOf(itemName) > -1) {
-      dishes[dishes.indexOf(itemName)] = '';
-      pack.dishes = dishes;
-      Session.set('pack', pack);
-    };
-  },
+    if (Meteor.user()) {
+      const options = {
+        fields: {
+          _id: 1,
+          name: 1,
+          category: 1,
+        }
+      };
 
-  'click .veganize'(event, template) {
-    template.veganized.set(!template.veganized.get());
+      const item = Items.findOne({name: Template.currentData().name}, options);
+      const order = Session.get('Order');
+
+      // Ping here (GA)
+      // Possibly Ping here if adding to an empty cart (GA)
+      let itemInCart;
+      let packWithItem;
+      for (var i = order.items.length - 1; i >= 0; i--) {
+        if (order.items[i]._id === item._id) {
+          itemInCart = {
+            index: i,
+          };
+        } else if (order.items[i].category.toLowerCase() === 'pack') {
+          for (var j = order.items[i].sub_items.items.length - 1; j >= 0; j--) {
+            if (!packWithItem && order.items[i].sub_items.items[j]._id === item._id) {
+              packWithItem = {
+                index: i,
+                itemIndex: j,
+                pack: order.items[i],
+              };
+            };
+          }
+        };
+      };
+
+      if (itemInCart) {
+        order.items.splice(itemInCart.index, 1);
+        Session.set('Order', order);
+      } else if (packWithItem) {
+        packWithItem.pack.sub_items.items.splice(packWithItem.itemIndex, 1);
+        order.items[packWithItem.index] = packWithItem.pack;
+        Session.set('Order', order);
+      };
+    } else {
+      FlowRouter.go('join');
+    }
   },
 });

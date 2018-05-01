@@ -6,57 +6,68 @@
 	bottom: auto !important;
 
 	#menu-toolbar {
-		.position(sticky, 60px, 0, auto, 0, auto, auto);
+		.position(sticky, 0, 0, auto, 0, auto, auto);
+		padding: 10px 2%;
 		display: flex;
     justify-content: space-between;
     background-color: @fgray;
-    z-index: 2;
+    z-index: 5;
 		transition: height 200ms ease-in;
 		overflow-x: hidden;
 
-    @media screen and (min-width: 645px) {
-    	justify-content: initial;
-    	top: 135px;
-
-    	&.filterMenuOpen {
-	    	height: 160px;
-	    }
+    @media screen and (max-width: 600px) {
+    	top: 60px;
     }
 
-    &.filterMenuOpen {
+    /*&.filterMenuOpen {
     	min-height: 160px;
+    }*/
+
+    div {
+    	display: flex;
+    	flex-direction: row;
+    	padding: 5px 10px;
+    	cursor: pointer;
+
+    	div {
+    		padding: 0;
+    	}
+
+    	p {
+    		color: @fgreene;
+    		margin: 0 10px;
+		    padding: 0 3px;
+		    font-size: 14px;
+		    height: 24px;
+		    text-transform: uppercase;
+		    letter-spacing: .1em;
+    	}
+
+    	.active-filters {
+    		p {
+    			margin: 0 10px 0 0;
+			    border: 1px solid transparent;
+			    border-radius: 5px;
+			    padding: 0px 4px;
+			    box-shadow: 2px 2px 2px #949494;
+			    background-color: #034b2c;
+			    color: #fff;
+			    font-weight: 400;
+			    letter-spacing: 0;
+			    line-height: 24px;
+    		}
+    	}
     }
 
     i {
     	color: #034b2c;
     	font-weight: 500;
+    	margin: auto;
     }
 
 		#Filter-menu-toggle {
-			.position(absolute, 0, auto, auto, 0, 60px, 50px);
-			display: flex;
-			cursor: pointer;
-			z-index: 2;
-
-			@media screen and (min-width: 600px) {
-				width: 81px;
-			}
-
-			i {
-				margin: auto;
-
+			.fa-filter {
 				@media screen and (min-width: 646px) {
-					display: none;
-				}
-			}
-
-			p {
-				margin-top: auto;
-				margin-bottom: auto;
-				margin-left: 25px;
-				font-weight: 300;
-
-				@media screen and (max-width: 645px) {
 					display: none;
 				}
 			}
@@ -69,143 +80,6 @@
 					display: none;
 				}
 			}			
-		}
-
-		#filter-buttons {
-			display: flex;
-			width: auto;
-			height: 50px;
-			position: relative;
-			top: 5px;
-			left: 100px;
-			right: 0;
-			display: flex;
-	    align-items: flex-start;
-	    flex-direction: column;
-      justify-content: space-around;
-      -webkit-transition: height 200ms;
-		  transition: height 200ms;
-		  overflow: hidden;
-
-      &.filterMenuOpen {
-				max-height: 140px;
-				height: auto;
-				top: 10px;
-
-				@media screen and (max-width: 645px) {
-					width: 100%;
-					top: 15px;
-					left: 0;
-				}
-			}
-
-			.filter-button {
-				display: inline-block;
-				text-decoration: none;
-				font-size: 15px;
-				line-height: 15px;
-				height: 30px;
-				padding: 7px 5px 0 5px;
-				border-radius: 15px;
-				border: 1px solid #FFF;
-				background-color: #FFF;
-				margin-top: auto;
-				margin-bottom: auto;
-				margin-right: 10px;
-				color: @fgreene;
-		    white-space: nowrap;
-
-				&:hover {
-					color: #FFF;
-					background-color: @fgreene;
-					border: 1px solid @fgreene;
-				}
-
-				&.active {
-					color: #FFF;
-					background-color: @fgreene;
-					border: 1px solid @fgreene;
-				}
-			}
-
-			.Paleo, .Protein {
-				display: inline-block;
-
-		    @media screen and (max-width: 800px) {
-		    	display: none;
-
-		    	&.filterMenuOpen {
-						display: inline-block !important;
-		    	}
-	    	}
-			}
-
-			.byDiet, .toAvoid, .byGoal  {
-				width: 100%;
-				height: 60px;
-				flex-direction: column;
-				overflow: hidden;
-
-				&.filterMenuOpen {
-					overflow-x: scroll;
-				}
-			}
-
-			.byDiet {
-				display: flex;
-
-				@media screen and (max-width: 645px) {
-					display: none;
-
-					&.filterMenuOpen {
-						display: flex;
-					}
-				}
-			}
-
-			.toAvoid, .byGoal {
-				opacity: 0;
-			  visibility: hidden;
-			  -webkit-transition: opacity 200ms, visibility 200ms;
-			  transition: opacity 200ms, visibility 200ms;
-			  display: none;
-
-				&.filterMenuOpen {
-					display: flex;
-					opacity: 1;
-					visibility: visible;
-				}
-			}
-
-			h5 {
-				display: none;
-				text-transform: none;
-				color: @fgreene;
-				margin-top: auto;
-				margin-bottom: 4px;
-				margin-right: 25px;
-				line-height: 20px;
-				border-bottom: 1px solid @fgreene;
-
-				&.filterMenuOpen {
-					display: table;
-
-					@media screen and (max-width: 645px) {
-						position: relative;
-						left: 60px;
-					}
-				}
-			}
-
-			.buttons-holder {
-				margin-top: 4px;
-				overflow-x: scroll;
-				display: flex;
-			
-				@media screen and (max-width: 645px) {
-					padding-left: 60px;
-				}
-			}
 		}
 
 		#thisPack {
@@ -242,29 +116,8 @@
 		}
 
 		#checkout-button {
-			display: flex;
-			min-width: 60px;
-			justify-content: center;
-
+			
 			@media screen and (min-width: 475px) {
-				position: absolute;
-				right: 0;
-			}
-
-			a {
-				height: 100%;
-				width: 100%;
-				text-decoration: none;
-				padding-top: 4px;
-		    padding-right: 8px;
-		    padding-left: 8px;
-
-				p {
-					margin-top: 0;
-					margin-bottom: 0;
-					font-size: 12px;
-					line-height: 10px;
-				}
 			}
 		}
 	}
@@ -275,13 +128,28 @@
 		background-position-x: 35%;
 	}
 
-	.item-list {
+	.menu-items {
 		display: flex;
+		flex-direction: row;
 		flex-wrap: wrap;
-		justify-content: center;
+    justify-content: space-between;
+    width: auto;
+    margin-left: 3%;
+    margin-right: 3%;
 
-		@media screen and (min-width: 475px) {
-			margin-top: 50px;
+		h2 {
+			text-align: left;
+			margin-left: 6px; 
+		}
+
+		#Meals,
+		#Snacks,
+		#Drinks,
+		#Packs {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: left;
 		}
 	}
 
@@ -297,16 +165,6 @@
 
 	h2 {
 		width: 100%;
-	}
-}
-
-#cart {
-	opacity: 0;
-	visibility: hidden;
-
-	&.packEditorOpen {
-		opacity: 1;
-		visibility: visible;
 	}
 }
 

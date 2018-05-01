@@ -12,7 +12,7 @@ import '../../ui/pages/support.js';
 import '../../ui/pages/blog-page.js';
 import '../../ui/components/menu-item.js';
 import '../../ui/pages/item-detail.js';
-import '../../ui/pages/checkout3.js';
+import '../../ui/pages/checkout.js';
 import '../../ui/pages/success.js';
 import '../../ui/pages/account-page.js';
 import '../../ui/pages/subscribe.js';
@@ -114,6 +114,13 @@ FlowRouter.route('/about-us', {
 
 FlowRouter.route('/my-account', {
   name: 'My.account',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Account_page' });
+  },
+});
+
+FlowRouter.route('/settings', {
+  name: 'Account.settings',
   action() {
     BlazeLayout.render('App_body', { main: 'Account_page' });
   },

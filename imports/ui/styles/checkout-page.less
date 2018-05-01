@@ -26,21 +26,20 @@
 
 	.order-report {
 		float: left;
-
-		@media screen and (min-width: 1000px) {
-	    width: ~"-webkit-calc(100% - 500px)";
-	    width:    ~"-moz-calc(100% - 500px)";
-	    width:         ~"calc(100% - 500px)";
-	  }
-
-		@media screen and (max-width: 1000px) {	  
-			width: 50%;
-		}
+		width: 50%;
+		height: auto;
+		min-height: 100vh;
 
 		@media screen and (max-width: 600px) {
       position: relative;
       width: 100%;
       text-align: center;
+      min-height: 80vh;
+    }
+
+    .order-report-main {
+    	height: auto;
+    	min-height: 60vh;
     }
 
     p {
@@ -95,32 +94,37 @@
 			width: 100%;
 
 			@media screen and (max-width: 600px) {
-				padding: 0;
 				text-align: center;
 			}
 
 			div {
-				display: inline-block;
-				width: 80px;
-				vertical-align: top;
+				display: flex;
+				width: 100%;
+				justify-content: space-between;
 
-				&:after {
+				p {
+					padding-left: 0;
+					margin: 0;
+					font-weight: 200;
+				}
+
+				/*&:after {
 			    display: inline-block;
 			    width: 100%;
 			    content: '';
-				}
+				}*/
 
-				span {
+				/*span {
 					display: block;
 					font-size: 18px;
-				}
+				}*/
 
-				.num {
+				/*.num {
 					font-size: 22px;
 					font-weight: 300;
 					width: 92px;
 					text-align: left;
-				}
+				}*/
 			}
 		}
 
@@ -185,9 +189,8 @@
 		height: 100%;
 		float: right;
 		background-color: #bde8bd;
-		height: ~"-webkit-calc(100vh - 100px)";
-    height:    ~"-moz-calc(100vh - 100px)";
-    height:         ~"calc(100vh - 100px)";
+		height: 100%;
+    min-height: 100vh;
 		padding: 12px 40px;
 
 		@media screen and (max-width: 600px) {

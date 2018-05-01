@@ -4,166 +4,251 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
-
 // import { HTTP } from 'meteor/http';
+
+// Collections
+import { Items } from '../../api/items/items.js';
 import { Orders } from '../../api/orders/orders.js';
 import { Promos } from '../../api/promos/promos.js';
+import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
+
 // Zip Codes
 import { 
-  yesZips,
-  MH,
-  MH_20
+  zipZones
 } from '../../api/delivery/zipcodes.js';
 
-import {
-  updateOrder
-} from '../../api/orders/methods.js';
+// Methods
+import { processOrder } from '../../api/orders/methods.js';
+import { usePromo } from '../../api/promos/methods.js';
+import { subscribeToPlan } from '../../api/plans/methods.js';
 
-// import {
-//   updatePromo
-// } from '../../api/promos/methods.js';
-
+// Template
 import './checkout-page.html';
 
-// components
+// Components
 import '../components/loader.js';
-
+import '../components/stripe-card-element.js';
 
 Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
   // Create a handle for subscription to this 'single.order', 'thisUserData'
-  const handle = this.subscribe('single.order', Session.get('orderId')._id);
-  const userData = this.subscribe('thisUserData', Meteor.userId());
+  if (Session.get('orderId')) {
+    const handle = this.subscribe('single.order', Session.get('orderId')._id);
+    const thisUserData = this.subscribe('thisUserData', Meteor.userId());
+    this.subscribe('DeliveryWindows.forMenu', Session.get('menu')._id);
+    
+    const order = Session.get('Order');
+    // const discount = {
+    //   subscriber_discount: {},
+    // };
 
-  // Set initial Session variables
-  Session.set('cartOpen', false);
-  Session.set('loading', false);
+    // Set initial Session variables
+    // Session.set('processing', false);
+    Session.set('loading', false);
 
-  // Set default variables for template
-  this.price = Session.get('order').price / 100;
+    // Set reactive variables for template
+    this.userHasCredit = new ReactiveVar(0);  // Unused credit on user account
+    this.zipField = new ReactiveVar(Meteor.user().address_zipcode);  // zip field value
+    this.userHasPromo = new ReactiveVar(false);  // toggle promo input
+    this.order = new ReactiveVar(order); // base order
+    this.order.coupon = new ReactiveVar( false ); // discount.promo.code
+    this.order.total = new ReactiveVar(Session.get('orderId').total);  // order.total
+    this.order.subtotal = new ReactiveVar(Session.get('orderId').subtotal);  // order.subtotal
+    this.delivFee = new ReactiveVar(0);  // order.delivery_fee
+    this.sources = new ReactiveVar(false); // stored card IDs
 
-  // Set reactive variables for template
-  this.discount = new ReactiveVar(0);
-  this.discountPercent = new ReactiveVar(0);
-  this.discountValue = new ReactiveVar(false);
-  this.userHasCredit = new ReactiveVar(false);
-  this.zipField = new ReactiveVar(Session.get('delivEstimate').customer_zipcode);
-  this.userHasPromo = new ReactiveVar(false);
-  this.order = new ReactiveVar(Session.get('orderId'));
-  this.order.coupon = new ReactiveVar( false );
-  this.order.total = new ReactiveVar();  
-  this.order.subtotal = new ReactiveVar();
-  this.delivFee = new ReactiveVar(0);
-  this.sources = new ReactiveVar(false);
-  // for GUEST USERS and LOGGED IN USERS who haven't yet purchased, activate 2MEALSFREE initial deal
-  if (Session.get('newUser')) {
-    this.order.coupon.set("2MEALSFREE");
-    var percentOff = ()=> {
-      switch (this.price) {
-        case 85:
-          return 34;
-          break;
-        case 110:
-          return 26;
-          break;
-        case 135:
-          return 20;
-          break;
-        case 159:
-          return 18;
-          break;
-      };
-    };
-    this.discountPercent.set( this.price * percentOff() / 100 );
-    this.discountValue.set( "2 Meals FREE!" );
-  };
+    // Discount Vars
+    this.discount = new ReactiveVar(Session.get('orderId').discount);  // discount Object
+    this.appliedCredit = new ReactiveVar(0);  // discount.credit
+    this.subscriber_discount = new ReactiveVar(Session.get('orderId').discount.subscriber_discount);  // discount.subscriber_discount
+    this.promo = new ReactiveVar(null);  // discount.promo
+    this.discountValue = new ReactiveVar(Session.get('orderId').discount.value); // discount.value    
 
-  // All reactive data for autorun
-  this.autorun(() => {
+    // All reactive data for autorun
+    this.autorun(() => {
 
-    const isReady = handle.ready();
-    if (isReady) {
-
-      // if USER is LOGGED IN
-      if (userData.ready()) {
+      const isReady = handle.ready();
+      if (isReady && thisUserData.ready()) {
         if (Meteor.userId()) {
 
-          if (Meteor.user().stripe_id) {
-            // If the customer has a Stripe ID, we set it here
-            const stripe_id = Meteor.user().stripe_id;
-            this.stripe_id = stripe_id;
+          // If the customer has a Stripe ID, we attach it to the template and call a list of their payment sources
+          if (!this.stripe_id && Meteor.user().stripe_id) {
+            this.stripe_id = Meteor.user().stripe_id;
             // Call stripe user info
-            Meteor.call( 'retrieveCustomer', stripe_id, (error, response) => {
+            Meteor.call( 'retrieveCustomer', this.stripe_id, (error, response) => {
               if (error) {
                 console.log(error);
               } else {
                 this.stripeCustomer = response;
                 this.sources.set(this.stripeCustomer.sources);
-                // console.log(this.stripeCustomer);
-                // console.log(this.sources.get());
               };
             });
           };
 
-          if (Meteor.user().subscriptions.status === "active" || "trialing") {
-            var percentOff = Meteor.user().subscriptions.discount.coupon.id.split("b")[1];
-            // if (percentOff[0] === "-") {
-            //   template.discount.set( percentOff.split("-")[1] );
-            //   template.discountValue.set( "- $" + discount.toFixed(2) );
-            // }
-            this.discountPercent.set( this.price * Number(percentOff) / 100 );
-            this.discountValue.set( percentOff + "% \u2665" );
-          };
+          // // Set Subscription Discounts
+          // if (Meteor.user().subscriptions && Meteor.user().subscriptions.length > 0) {  // FIX to fix old user.subscriptions
+          //   const subs = Meteor.user().subscriptions;
 
+          //   var discount = {
+          //     subscriber_discount: {},
+          //     value : 0
+          //   };
+
+          //   // for each subscription
+          //   for (var i = subs.length - 1; i >= 0; i--) {
+          //     const subItemId = subs[i].item_id;
+            
+          //     // find the subscription item in the items list
+          //     const orderItems = order.items;
+          //     var subItem = orderItems.find((element)=> {
+          //       return element._id === subItemId;
+          //     });
+          //     // add discount property to item
+          //     // subItem.discount.subscriber_discount = subs[i].discount;
+          //     // add discount object to order.discount
+          //     discount.subscriber_discount[subItemId] = subs[i].discount;
+          //     discount.value += (subs[i].discount / 100 * subItem.price_per_unit);
+          //   };
+
+          //   // Update template vars
+          //   this.discount.set(discount);
+          //   this.discountValue.set(discount.value);
+          //   //   this.subscriber_discount.set(subscriber_discount);
+          // };
+
+          // // Set Pending Subscription Discounts
+          // if (order.subscriptions && order.subscriptions.length > 0) {
+          //   const subs = order.subscriptions;
+
+          //   var discount = this.discount.get();
+
+          //   if (!discount) {
+          //     discount = {
+          //       subscriber_discount: {},
+          //       value : 0,
+          //     };
+          //   };
+
+          //   // for each subscription
+          //   for (var i = subs.length - 1; i >= 0; i--) {
+          //     const subItemId = subs[i].item_id;
+            
+          //     // find the subscription item in the items list
+          //     const orderItems = order.items;
+          //     var subItem = orderItems.find((element)=> {
+          //       return element._id === subItemId;
+          //     });
+          //     // add discount property to item
+          //     // subItem.discount.subscriber_discount = subs[i].discount;
+          //     // add discount object to order.discount
+          //     discount.subscriber_discount[subItemId] = subs[i].discount;
+          //     discount.value += (subs[i].discount / 100 * subItem.price_per_unit)
+          //   };
+
+          //   // Update Session Order var
+          //   this.discount.set(discount);
+          //   this.discountValue.set(discount.value);
+          //   // console.log(this.discount.get());
+          // };
 
           // Set if user has a credit on account
-          if (Meteor.user().credit) {
-            this.userHasCredit.set(Meteor.user().credit);
+          if (Meteor.user().credit > 0) {
+            const credit = Meteor.user().credit;
+            Math.round(credit * 100) / 100;
+            this.userHasCredit.set(credit);
           };
-        };        
+        } else {
+          FlowRouter.go('/');
+        };
       };
-    };
 
-    // Reactive vars to be autorun
-    this.order.subtotal.set( this.price - this.discountPercent.get() );
+      // Reactive vars to be autorun
+      if (!this.zipField.get()) this.zipField.set(Meteor.user().profile.zipCode);
+      const zip = this.zipField.get();
+      const deliveryFees = zipZones[zip].delivery_fees; // FIX BIX
+      
+      if (deliveryFees) {
+        if (this.order.subtotal.get() > 150) {
+          this.delivFee.set(deliveryFees.tier3);
+        } else {
+          this.delivFee.set(deliveryFees.tier1);
+        };
+      };
 
-    if (MH.indexOf(this.zipField.get()) > -1) {
-      this.delivFee.set(13);
-    };
-    if (MH_20.indexOf(this.zipField.get()) > -1) {
-      this.delivFee.set(20);
-    };
-
-    this.order.total.set(( this.order.subtotal.get() * 1.08875 ) + this.delivFee.get() - this.discount.get());
-  });
+      this.order.total.set( (this.order.subtotal.get() * 1.08875) + this.delivFee.get() - this.discountValue.get());
+    });
+  } else {
+    sAlert.error("Sorry, your order got tossed! Redirecting you home...", { timeout: 3000, onClose: function() { FlowRouter.go('/'); }});
+  };
 });
 
 Template.Checkout_page.onRendered(function checkoutPageOnRendered() {
-  // Set Stripe Public Key
-  // Stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  Stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  
 });
 
 Template.Checkout_page.onDestroyed(function checkoutPageOnDestroyed() {
-  // if (!Meteor.user().last_purchase) {
-  //   Session.set('newUser', true);
-  // };
+  
 });
 
 Template.Checkout_page.helpers({
-  loading() {
-    return Session.get('loading');
+  packItems() {
+    var itemList = Session.get('Order').items;
+    var itemTally = {};
+
+    for (var i = itemList.length - 1; i >= 0; i--) {
+      if (!itemTally[itemList[i].name]) {
+        itemTally[itemList[i].name] = 1;
+      } else {
+        itemTally[itemList[i].name] += 1;
+      };
+    };
+    
+    var result = [];
+    for (var key in itemTally) result.push({name:key,value:itemTally[key]});
+    return result;
+  },
+
+  price() {
+    return "$" + Template.instance().order.subtotal.get().toFixed(2);
+  },
+
+  tax() {
+    return "$" + (Template.instance().order.subtotal.get() * .08875).toFixed(2);
+  },
+
+  deliveryFee() {
+    return "$" + Template.instance().delivFee.get().toFixed(2);
+  },
+
+  userHasCredit() {
+    if(Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
+      return "$" + Template.instance().userHasCredit.get().toFixed(2);
+    } else {
+      return false;
+    }
+  },
+
+  discount() {
+    return "- $" + Template.instance().discountValue.get();
+  },
+
+  total() {
+    return "$" + Template.instance().order.total.get().toFixed(2);
   },
 
   havePromo() {
     return Template.instance().userHasPromo.get();
   },
 
-  noCustomer() {
-    return !(Template.instance().stripe_id);
+  stripeID() {
+    return Meteor.user().stripe_id;
   },
 
-  orders() {
-    return Orders;
+  formType() {
+    // if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status != 'canceled')) {
+    //   return "insertSubscriberOrderForm";
+    // } else {
+      return "insertOrderForm";
+    // };
   },
 
   zipCode() {
@@ -204,20 +289,14 @@ Template.Checkout_page.helpers({
     };
   },
 
-  nextSunday() {
-    if (moment().day() === 0 && moment().hour() < 12) {
-      return moment().day(0).format("dddd, MMMM Do"); // today (Sunday)
-    } else {
-      return moment().day(7).format("dddd, MMMM Do"); // next Sunday
-    }; 
+  deliveryWindows() {
+    return DeliveryWindows.find({},{sort: { delivery_start_time: 1 }});
   },
 
-  nextMonday() {
-    if (moment().day() === 0 && moment().hour() < 12) {
-      return moment().day(1).format("dddd, MMMM Do"); // this Monday (tomorrow)
-    } else {
-      return moment().day(8).format("dddd, MMMM Do"); // next Monday
-    };
+  toDateStr(date) {
+    const endDate = moment(date).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
+    const dateToString = moment(date).format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
+    return dateToString;
   },
 
   isSunOrMon() {
@@ -228,49 +307,16 @@ Template.Checkout_page.helpers({
     return Meteor.userId() && Meteor.user().emails[0].address;
   },
 
-  pack() {
-    return Session.get('order').description;
-  },
-
-  items() {
-    var items = Session.get('order').dishes.concat(Session.get('order').snacks);
-    return items;
-  },
-
-  deliveryFee() {
-    return "$" + Template.instance().delivFee.get();
-  },
-
-  price() {
-    return "$" + Template.instance().order.subtotal.get().toFixed(2);
-  },
-
-  tax() {
-    return "$" + (Template.instance().order.subtotal.get() * .08875).toFixed(2);
-  },
-
-  discount() {
-    return Template.instance().discountValue.get();
-  },
-
-  userHasCredit() {
-    if(Template.instance().userHasCredit.get() && (Template.instance().order.total > 0)) {
-      return "$" + Template.instance().userHasCredit.get().toFixed(2);
-    } else {
-      return false;
-    }
-  },
-
-  total() {
-    return "$" + Template.instance().order.total.get().toFixed(2);
-  },
-
-  notSubscribed() {
-    return true;
-  },
-
   sources() {
     return Template.instance().sources.get();
+  },
+
+  formSubmitButtonText() {
+    if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status != 'canceled')) {
+      return "Save";
+    } else {
+      return "Buy";
+    };
   },
 
   disabled() {
@@ -292,103 +338,135 @@ Template.Checkout_page.events({
     template.zipField.set(newZip);
   },
 
-  'change #EsBbF9Ads8fEFFAut'(event, template) {
-    event.preventDefault();
+  // 'change #EsBbF9Ads8fEFFAut'(event, template) {
+  //   event.preventDefault();
 
-    if (!Meteor.user()) {
-      const email = event.target.value;
+  //   if (!Meteor.user()) {
+  //     const email = event.target.value;
       
-      Meteor.call('checkUserHasPurchased', email, ( error, response ) => {
-        if ( error ) {
-          console.log(error);
-        } else {
-          if (response) {
-            template.order.coupon.set( undefined );
-            template.discount.set(0);
-            template.discountValue.set( false );
-            sAlert.error("Your email address already exists in our system.");
-          };
-        }; 
-      });
-    };
-  },
+  //     Meteor.call('checkUserHasPurchased', email, ( error, response ) => {
+  //       if ( error ) {
+  //         console.log(error);
+  //       } else {
+  //         if (response) {
+  //           template.order.coupon.set( false );
+  //           template.discount.set(0);
+  //           template.discountValue.set( false );
+  //           sAlert.error("Your email address already exists in our system.");
+  //         };
+  //       }; 
+  //     });
+  //   };
+  // },
 
   'click #promoSub'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
 
-    const user = Meteor.userId();
     const code = template.find('[id="promo"]').value.toUpperCase();
+    const user = Meteor.userId();
     template.subscribe('single.promo', code, {
       onReady: function () {
         Session.set('newUser', false);
-        template.order.coupon.set( undefined );
-        template.order.subtotal.set( template.price );
-        template.order.total.set((template.order.subtotal.get() * 1.08875 ) + template.delivFee.get());
-        template.discount.set( 0 );
-        template.discountPercent.set( 0 );
-        template.discountValue.set( false );
+        // template.order.coupon.set( false );
+        // template.order.subtotal.set( template.price );
+        // template.order.total.set((template.order.subtotal.get() * 1.08875 ) + template.delivFee.get());
+        // template.discount.set( 0 );
+        // template.discountPercent.set( 0 );
+        // template.discountValue.set( false );
 
         const promo = Promos.findOne({code: code});
         const origPriceWTax = Math.round(template.price * 108.875) / 100;
         
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
-          template.order.coupon.set( undefined );
-        // } else if (promo.users && promo.users[user] === promo.useLimitPerCustomer) {
-        //   sAlert.error("Sorry, you've used that code " + promo.users[user] + "/" + promo.useLimitPerCustomer + " times.");
-        //   template.order.coupon.set( undefined );
+          template.order.coupon.set( false );
+        } else if (promo.users[user] === promo.useLimitPerCustomer) {
+          sAlert.error('Sorry, that code has already been used.');
+          template.order.coupon.set( false );
         } else if (promo && promo.credit) {
+          var total = template.order.total.get();
           var discount = promo.credit;
           template.order.coupon.set( code );
-          var newTotal = template.order.total.get() - discount;
+
+          var newTotal = total - discount;
           if (newTotal < 0) {
-            const credit = 0 - newTotal;
+            var newCredit = 0 - newTotal;
             // FIX if (!Meteor.userId()) {
-            template.userHasCredit.set(credit);
-            template.discountValue.set("- $" + template.order.total.get().toFixed(2));
-            template.discount.set( template.order.total.get() );
-            sAlert.success('You now have a credit of $' + credit.toFixed(2) + ".");
+            template.newCredit = Math.round(newCredit * 100) / 100;
+            template.discountValue.set("- $" + total.toFixed(2));
+            template.discount.set( total );
+            template.appliedCredit.set( total );
+            sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
           } else {
             template.discount.set( discount );
+            template.appliedCredit.set( discount );
+            template.newCredit = 0;
             template.discountValue.set( "- $" + discount.toFixed(2) );
           };
+
+          const discountPromo = {
+            type: 'credit',
+            code: code,
+            description: promo.desc,
+            value: template.appliedCredit.get(),
+          };
+          template.discountPromo.set(discountPromo);
         } else if (promo && promo.percentage) {
           template.order.coupon.set( code );
-          var percentOff = promo.percentage;
-          template.discountPercent.set( template.price * percentOff / 100 );
-          template.discountValue.set( "-" + percentOff + "%" );
-        } else if (promo && promo.function) {
-          template.order.coupon.set( code );
-          if (code === "MORE4LESS") {
-            var percentOff = ()=> {
-              switch (template.price) {
-                case 85:
-                  return 34;
-                  break;
-                case 110:
-                  return 26;
-                  break;
-                case 135:
-                  return 20;
-                  break;
-                case 159:
-                  return 18;
-                  break;
-              };
+          if (code === "FED40") {
+            sAlert.error("Sorry, that code only applies toward subscriptions");
+            template.order.coupon.set( false );
+          } else {
+            var percentOff = promo.percentage;
+            template.discountPercent.set( template.price * percentOff / 100 );
+            template.discountValue.set( "-" + percentOff + "%" );
+            const discountPromo = {
+              type: 'percent',
+              code: code,
+              description: promo.desc,
+              value: percentOff,
             };
-            template.discount.set( template.price * percentOff() / 100 );
-            template.discountValue.set( "2 Meals FREE!" );
-          } else if (code === "GETMOREFED") {
-            template.order.coupon.set( code );
-            template.order.packDishes.push("+ 2 Chef's Plate");
-            template.discountValue.set( "$0" );
-            sAlert.success("Great! 2 Chef's Plates have been added to your pack!");
+            template.discountPromo.set(discountPromo);
           };
+
+          
+        // } else if (promo && promo.function) {
+        //   template.order.coupon.set( code );
+        //   if (code === "MORE4LESS") {
+        //     var percentOff = ()=> {
+        //       switch (template.price) {
+        //         case 85:
+        //           return 34;
+        //           break;
+        //         case 110:
+        //           return 26;
+        //           break;
+        //         case 135:
+        //           return 20;
+        //           break;
+        //         case 159:
+        //           return 18;
+        //           break;
+        //       };
+        //     };
+        //     template.discount.set( template.price * percentOff() / 100 );
+        //     template.discountValue.set( "2 Meals FREE!" );
+        //   } else if (code === "GETMOREFED") {
+        //     template.order.coupon.set( code );
+        //     template.order.packDishes.push("+ 2 Chef's Plate");
+        //     template.discountValue.set( "$0" );
+        //     sAlert.success("Great! 2 Chef's Plates have been added to your pack!");
+        //   };
         } else {
           sAlert.error("Sorry, that code isn't recognized");
           template.discount.set( 0 );
           template.discountValue.set( false );
+
+          // Session.set('salePrice', Session.get('price'));
+          // Session.set('discount', false);
+          // var newTotal = origPriceWTax + Session.get('delivFee');
+          // Session.set('total', newTotal);
         };
       },
       onError: function () {
@@ -403,21 +481,34 @@ Template.Checkout_page.events({
   'click #applyCredit'(event, template) {
     event.preventDefault();
 
+
     const credit = template.userHasCredit.get();
-    const origPriceWTax = template.price * 1.08875;
-    var newTotal = origPriceWTax + template.delivFee.get() - credit;
-    if (newTotal < 0) {
-      const newCredit = 0 - newTotal;
-      template.order.coupon.set( "ACCOUNT CREDIT" );
-      template.userHasCredit.set(newCredit);
-      template.discountValue.set("- $" + template.order.subtotal.get().toFixed(2));
-      template.discount.set( template.order.subtotal.get() );
+    const discount = template.discount.get();
+    const total = template.order.total.get();
+    var newDiscount = discount + credit;
+    if (total < newDiscount) {
+      const newCredit = newDiscount - total;
+      template.order.coupon.set( "ACCOUNT CREDIT of" + total );
+      template.discountValue.set("- $" + template.order.total.get().toFixed(2));
+      template.discount.set( template.order.total.get() );
       sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
+      template.appliedCredit.set(credit);
+      template.newCredit = newCredit;
     } else {
       template.order.coupon.set( "ACCOUNT CREDIT OF" + credit );
-      template.userHasCredit.set(0);
+      template.appliedCredit.set(credit);
+      template.newCredit = 0;
       template.discountValue.set("- $" + credit);
       template.discount.set( credit );
+      sAlert.success('$' + credit.toFixed(2) + " worth of FedCred has been applied!");
+    };
+  },
+
+  'blur #address-zip'(event, template) {
+    const value = event.currentTarget.value;
+    if (!zipZones[value]) {
+      const errorElement = document.getElementById('zip-errors');
+      errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
     };
   },
 
@@ -426,607 +517,462 @@ Template.Checkout_page.events({
     Session.set('loading', true);
 
     var orderToProcess = template.order.get();
-    const user = Meteor.userId();
-    const total = template.order.total.get().toFixed(2);
-    const finalPrice = Math.round(Number(total) * 100);
-    const packName = Session.get('order').description;
-    const first_name = template.find('[name="customer.firstName"]').value;
-    const last_name = template.find('[name="customer.lastName"]').value;
-    const phone = template.find('[name="customer.phone"]').value;
-    const email = template.find('[name="customer.email"]').value;
-    const address_line_1 = template.find('[name="customer.address.line1"]').value;
-    const address_line_2 = template.find('[name="customer.address.line2"]').value;
-    const address_city = template.find('[name="customer.address.city"]').value;
-    const address_state = template.find('[name="customer.address.state"]').value;
-    const address_zipcode = template.find('[name="customer.address.zipCode"]').value;
-    const comments = template.find('[name="destinationComments"]').value;
-    const promo = template.order.coupon.get();
-    const credit = template.userHasCredit.get();
+    
+    orderToProcess.total = template.order.total.get().toFixed(2);
+    // orderToProcess.packName = Session.get('pack').description;
+    orderToProcess.coupon = template.order.coupon.get();
+    
+    var customer = {
+      first_name: template.find('[name="customer.firstName"]').value,
+      last_name: template.find('[name="customer.lastName"]').value,
+      phone: template.find('[name="customer.phone"]').value,
+      email: template.find('[name="customer.email"]').value,
+      address_line_1: template.find('[name="customer.address.line1"]').value,
+      address_line_2: template.find('[name="customer.address.line2"]').value,
+      address_city: template.find('[name="customer.address.city"]').value,
+      address_state: template.find('[name="customer.address.state"]').value,
+      address_zipcode: template.find('[name="customer.address.zipCode"]').value,
+    };
+    orderToProcess.recipient = customer;
+    orderToProcess.delivery_comments = template.find('[name="destinationComments"]').value;
+
+    let credit;
+    if (template.appliedCredit.get()) {
+      credit = template.newCredit;
+    } else {
+      credit = template.userHasCredit.get();
+    };
+
     var stripe_id = template.stripe_id;
 
-    Stripe.card.createToken({
-      number: $('.number').val(),
-      cvc: $('.cvc').val(),
-      exp_month: $('.exp_month').val(),
-      exp_year: $('.exp_year').val(),
-      address_zip: address_zipcode,
-    }, ( status, response ) => {
-      if ( response.error ) {
-        Session.set('loading', false );
-        sAlert.error(response.error.message);
-      } else {
-        var token = response.id;
+    const finalPrice = Math.round(Number(orderToProcess.total) * 100);
 
-        if (stripe_id) {
-          let charge;
-
-          if (Meteor.user().subscriptions && Meteor.user().subscriptions.status != "canceled") {
-            charge  = {
-              amount: finalPrice,
-              currency: 'usd',
-              customer: stripe_id,
-              capture: false,
-              description: packName + " for " + first_name + " " + last_name,
-              receipt_email: email
-            };
-          } else {
-            charge  = {
-              amount: finalPrice,
-              currency: 'usd',
-              // customer: stripe_id,
-              source: token,
-              description: packName + " for " + first_name + " " + last_name,
-              receipt_email: email
-            };
-          }
-
-          if (finalPrice > 0) {
-            Meteor.call( 'processPayment', charge, ( error, response ) => {
-              if ( error ) {
-                Session.set('loading', false );
-                sAlert.error( error.reason );
-                console.log(error);
-              } else {
-                orderToProcess.stripe_id = response.id;
-                orderToProcess.paidAt = new Date();
-                orderToProcess.salePrice = (finalPrice / 100).toFixed(2);
-                orderToProcess.status = "created";
-
-                const delivCustomer = {
-                  first_name: first_name,
-                  last_name: last_name,
-                  email: email,
-                  phone: phone,
-                  address_line_1: address_line_1,
-                  address_line_2: address_line_2,
-                  address_city: address_city,
-                  address_state: address_state,
-                  address_zipcode: address_zipcode,
-                };
-
-                const packages = [{
-                  name: packName,
-                  price: template.price,
-                  height: 12,
-                  width: 14,
-                  depth: 10,
-                }];
-
-                var delDay = $('[name="deliveryWindow"]').val();
-                var windows = Session.get('delivEstimate');
-                if ( delDay === "Monday") {
-                  var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-                } else {
-                  var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-                };
-
-                const delivRequest = {
-                  "order_reference": Session.get('orderId')._id,
-                  "customer": delivCustomer,
-                  "packages": packages,
-                  "delivery_window_id": delivery_window,
-                  "destination_comments": comments,
-                };
-
-                Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-                  if ( error ) {
-                    Session.set('loading', false );
-                    sAlert.error(error.reason);
-                  } else {
-                    const last_purchase = response;
-                    const amount_spent = total;
-                    const customer = {
-                      first_name,
-                      last_name,
-                      email,
-                      phone,
-                      address_line_1,
-                      address_line_2,
-                      address_city,
-                      address_state,
-                      address_zipcode,
-                      amount_spent,
-                      credit,
-                      last_purchase,
-                      stripe_id
-                    };
-
-                    Meteor.call( 'updateUser', user, customer, ( error, response ) => {
-                      if ( error ) {
-                        console.log(error + "; error");
-                      };
-                    });
-
-                    orderToProcess.readyBy = delivery_window.starts_at;
-                    orderToProcess.deliv_day = delDay;
-                    orderToProcess.deliv_id = last_purchase.id;
-                    orderToProcess.trackingCode = last_purchase.tracking_code;
-                    orderToProcess.coupon = promo;
-
-                    const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
-                      if ( error ) {
-                        console.log(error);
-                      } else {
-                        ga('ec:addProduct', {               // Provide product details in an productFieldObject.
-                          'name': packName,                 // Product name (string).
-                          'price': total,                 // Product price (currency).
-                          'coupon': promo,          // Product coupon (string).
-                          'quantity': 1                     // Product quantity (number).
-                        });
-                        ga('ec:setAction', 'purchase', {          // Transaction details are provided in an actionFieldObject.
-                          'id': last_purchase.tracking_code,                         // (Required) Transaction id (string).
-                          'affiliation': 'Getfednyc.com', // Affiliation (string).
-                          'revenue': parseFloat(template.order.subtotal.get().toFixed(2)),                     // Revenue (currency).
-                          'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)),                          // Tax (currency).
-                          'shipping': parseFloat(template.delivFee.get().toFixed(2)),                     // Shipping (currency).
-                          'coupon': template.order.coupon.get(),                  // Transaction coupon (string).
-                        });
-                        ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
-                        // analytics.track('Order Completed', {
-                        //   checkout_id: last_purchase.tracking_code,
-                        //   order_id: response.id,
-                        //   affiliation: 'Getfednyc.com',
-                        //   total: total,
-                        //   revenue: parseFloat(template.order.subtotal.get().toFixed(2)),
-                        //   shipping: parseFloat(template.delivFee.get().toFixed(2)),
-                        //   tax: parseFloat((template.order.subtotal.get() * .08875).toFixed(2)),
-                        //   discount: template.discount.get(),
-                        //   coupon: template.order.coupon.get(),
-                        //   currency: 'USD',
-                        //   products: [
-                        //     {
-                        //       name: orderToProcess.description,
-                        //       price: parseFloat(template.price.toFixed(2)),
-                        //       quantity: 1,
-                        //     },
-                        //   ]
-                        // });
-                      };
-                    });
-                  };
-                });
-                Session.set('loading', false);
-                sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
-              };
-            });
-          } else {
-            orderToProcess.paidAt = new Date();
-            orderToProcess.salePrice = "0";
-            orderToProcess.status = "created";
-         
-            const delivCustomer = {
-              first_name: first_name,
-              last_name: last_name,
-              email: email,
-              phone: phone,
-              address_line_1: address_line_1,
-              address_line_2: address_line_2,
-              address_city: address_city,
-              address_state: address_state,
-              address_zipcode: address_zipcode,
-            };
-            
-            const packages = [{
-              name: packName,
-              price: template.price,
-              height: 12,
-              width: 14,
-              depth: 10,
-            }];
-
-            var delDay = $('[name="deliveryWindow"]').val();
-
-            if ( delDay === "Monday") {
-              var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-            } else {
-              var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-            };
-
-            const delivRequest = {
-              "order_reference": Session.get('orderId')._id,
-              "customer": delivCustomer,
-              "packages": packages,
-              "delivery_window_id": delivery_window,
-              "destination_comments": comments,
-            };
-
-            Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-              if ( error ) {
-                Session.set('loading', false );
-                sAlert.error( error.reason );
-              } else {
-                const last_purchase = response;
-                const amount_spent = total;
-                const customer = {
-                  first_name,
-                  last_name,
-                  email,
-                  phone,
-                  address_line_1,
-                  address_line_2,
-                  address_city,
-                  address_state,
-                  address_zipcode,
-                  amount_spent,
-                  credit,
-                  last_purchase,
-                  stripe_id                  
-                };
-
-                Meteor.call( 'updateUser', user, customer, ( error, response ) => {
-                  if ( error ) {
-                    console.log(error + "; error");
-                  };
-                });
-
-                orderToProcess.readyBy = delivery_window.starts_at;
-                orderToProcess.deliv_day = delDay;
-                orderToProcess.deliv_id = last_purchase.id;
-                orderToProcess.trackingCode = last_purchase.tracking_code;
-                const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
-                  if ( error ) {
-                    console.log(error);
-                  } else {
-                    ga('ec:addProduct', {               // Provide product details in an productFieldObject.
-                      'name': packName,                 // Product name (string).
-                      'price': total,                 // Product price (currency).
-                      'coupon': promo,          // Product coupon (string).
-                      'quantity': 1                     // Product quantity (number).
-                    });
-                    ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-                      'id': last_purchase.tracking_code,// (Required) Transaction id (string).
-                      'affiliation': 'Getfednyc.com', // Affiliation (string).
-                      'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
-                      'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
-                      'shipping': parseFloat(template.delivFee.get().toFixed(2)), // Shipping (currency).
-                      'coupon': template.order.coupon.get(), // Transaction coupon (string).
-                    });
-                    ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
-                    // analytics.track('Completed Order', {
-                    //   checkout_id: last_purchase.tracking_code,
-                    //   order_id: response.id,
-                    //   affiliation: 'Getfednyc.com',
-                    //   total: total,
-                    //   revenue: parseFloat(template.order.subtotal.get().toFixed(2)),
-                    //   shipping: parseFloat(template.delivFee.get().toFixed(2)),
-                    //   tax: parseFloat((template.order.subtotal.get() * .08875).toFixed(2)),
-                    //   discount: template.discount.get(),
-                    //   coupon: template.order.coupon.get(),
-                    //   currency: 'USD',
-                    //   products: [
-                    //     {
-                    //       name: orderToProcess.description,
-                    //       price: parseFloat(template.price.toFixed(2)),
-                    //       quantity: 1,
-                    //     },
-                    //   ]
-                    // });
-                  };
-                });
-              };
-            });
-
-            Session.set('loading', false);
-            sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
+    const callWithPromise = (method, myParameters) => {
+      return new Promise((resolve, reject) => {
+        Meteor.call(method, myParameters, (err, res) => {
+          if (err) {
+            reject(err);
           };
-        } else {
-          const cust = {
-            description: "Customer for " + email,
-            source: token,
-            account_balance: 0
-          };
+          resolve(res);
+        });
+      });
+    };
 
-          Meteor.call( 'createCustomer', cust, ( error, response ) => {
-            if (error) {
-              console.log(error);
+    async function processPromo() {
+      try {
+        const code = orderToProcess.coupon;
+        var codeCheck = false;
+        if (code) {
+          usePromo.call({
+            code: code
+          }, (err, res) => {
+            if (err) {
+              return(err);
             } else {
-              stripe_id = response.id;
-              let charge  = {
-                amount: finalPrice,
-                currency: 'usd',
-                customer: stripe_id,
-                description: orderToProcess.packName,
-                receipt_email: email
-              };
-
-              if (finalPrice > 0) {
-                Meteor.call( 'processPayment', charge, ( error, response ) => {
-                  if ( error ) {
-                    Session.set('loading', false );
-                    sAlert.error( error.reason );
-                    console.log(error);
-                  } else {
-                    orderToProcess.stripe_id = response.id;
-                    orderToProcess.paidAt = new Date();
-                    orderToProcess.salePrice = (finalPrice / 100).toFixed(2);
-                    orderToProcess.status = "created";
-
-                    const delivCustomer = {
-                      first_name: first_name,
-                      last_name: last_name,
-                      email: email,
-                      phone: phone,
-                      address_line_1: address_line_1,
-                      address_line_2: address_line_2,
-                      address_city: address_city,
-                      address_state: address_state,
-                      address_zipcode: address_zipcode,
-                    };
-
-                    const packages = [{
-                      name: packName,
-                      price: template.price,
-                      height: 12,
-                      width: 14,
-                      depth: 10,
-                    }];
-
-                    var delDay = $('[name="deliveryWindow"]').val();
-                    var windows = Session.get('delivEstimate');
-                    if ( delDay === "Monday") {
-                      var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-                    } else {
-                      var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-                    };
-
-                    const delivRequest = {
-                      "order_reference": Session.get('orderId')._id,
-                      "customer": delivCustomer,
-                      "packages": packages,
-                      "delivery_window_id": delivery_window,
-                      "destination_comments": comments,
-                    };
-
-                    Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-                      if ( error ) {
-                        Session.set('loading', false );
-                        sAlert.error(error.reason);
-                      } else {
-                        const last_purchase = response;
-                        const amount_spent = total;
-                        const customer = {
-                          first_name,
-                          last_name,
-                          email,
-                          phone,
-                          address_line_1,
-                          address_line_2,
-                          address_city,
-                          address_state,
-                          address_zipcode,
-                          amount_spent,
-                          credit,
-                          last_purchase,
-                          stripe_id
-                        };
-
-                        Meteor.call( 'updateUser', user, customer, ( error, response ) => {
-                          if ( error ) {
-                            console.log(error + "; error");
-                          };
-                        });
-
-                        orderToProcess.readyBy = delivery_window.starts_at;
-                        orderToProcess.deliv_day = delDay;
-                        orderToProcess.deliv_id = last_purchase.id;
-                        orderToProcess.trackingCode = last_purchase.tracking_code;
-                        orderToProcess.coupon = promo;
-
-                        const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
-                          if ( error ) {
-                            console.log(error);
-                          } else {
-                            ga('ec:addProduct', {               // Provide product details in an productFieldObject.
-                              'name': packName,                 // Product name (string).
-                              'price': total,                 // Product price (currency).
-                              'coupon': promo,          // Product coupon (string).
-                              'quantity': 1                     // Product quantity (number).
-                            });
-                            ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-                              'id': last_purchase.tracking_code,// (Required) Transaction id (string).
-                              'affiliation': 'Getfednyc.com', // Affiliation (string).
-                              'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
-                              'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
-                              'shipping': parseFloat(template.delivFee.get().toFixed(2)), // Shipping (currency).
-                              'coupon': template.order.coupon.get(), // Transaction coupon (string).
-                            });
-                            ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
-                            // analytics.track('Order Completed', {
-                            //   checkout_id: last_purchase.tracking_code,
-                            //   order_id: response.id,
-                            //   affiliation: 'Getfednyc.com',
-                            //   total: total,
-                            //   revenue: parseFloat(template.order.subtotal.get().toFixed(2)),
-                            //   shipping: parseFloat(template.delivFee.get().toFixed(2)),
-                            //   tax: parseFloat((template.order.subtotal.get() * .08875).toFixed(2)),
-                            //   discount: template.discount.get(),
-                            //   coupon: template.order.coupon.get(),
-                            //   currency: 'USD',
-                            //   products: [
-                            //     {
-                            //       name: orderToProcess.description,
-                            //       price: parseFloat(template.price.toFixed(2)),
-                            //       quantity: 1,
-                            //     },
-                            //   ]
-                            // });
-                          };
-                        });
-                      };
-                    });
-                    Session.set('loading', false);
-                    sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
-                  };
-                });
-              } else {
-                orderToProcess.paidAt = new Date();
-                orderToProcess.salePrice = "0";
-                orderToProcess.status = "created";
-             
-                const delivCustomer = {
-                  first_name: first_name,
-                  last_name: last_name,
-                  email: email,
-                  phone: phone,
-                  address_line_1: address_line_1,
-                  address_line_2: address_line_2,
-                  address_city: address_city,
-                  address_state: address_state,
-                  address_zipcode: address_zipcode,
-                };
-                
-                const packages = [{
-                  name: packName,
-                  price: template.price,
-                  height: 12,
-                  width: 14,
-                  depth: 10,
-                }];
-
-                var delDay = $('[name="deliveryWindow"]').val();
-
-                if ( delDay === "Monday") {
-                  var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
-                } else {
-                  var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
-                };
-
-                const delivRequest = {
-                  "order_reference": Session.get('orderId')._id,
-                  "customer": delivCustomer,
-                  "packages": packages,
-                  "delivery_window_id": delivery_window,
-                  "destination_comments": comments,
-                };
-
-                Meteor.call( 'createDelivery', delivRequest, ( error, response ) => {
-                  if ( error ) {
-                    Session.set('loading', false );
-                    sAlert.error( error.reason );
-                  } else {
-                    const last_purchase = response;
-                    const amount_spent = total;
-                    const customer = {
-                      first_name,
-                      last_name,
-                      email,
-                      phone,
-                      address_line_1,
-                      address_line_2,
-                      address_city,
-                      address_state,
-                      address_zipcode,
-                      amount_spent,
-                      credit,
-                      last_purchase,
-                      stripe_id                  
-                    };
-
-                    Meteor.call( 'updateUser', user, customer, ( error, response ) => {
-                      if ( error ) {
-                        console.log(error + "; error");
-                      };
-                    });
-
-                    orderToProcess.readyBy = delivery_window.starts_at;
-                    orderToProcess.deliv_day = delDay;
-                    orderToProcess.deliv_id = last_purchase.id;
-                    orderToProcess.trackingCode = last_purchase.tracking_code;
-                    console.log(orderToProcess);
-                    const updatedOrder = updateOrder.call(orderToProcess, ( error, response ) => {
-                      if ( error ) {
-                        console.log(error);
-                      } else {
-                        ga('ec:addProduct', {               // Provide product details in an productFieldObject.
-                          'name': packName,                 // Product name (string).
-                          'price': total,                 // Product price (currency).
-                          'coupon': promo,          // Product coupon (string).
-                          'quantity': 1                     // Product quantity (number).
-                        });
-                        ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-                          'id': last_purchase.tracking_code,// (Required) Transaction id (string).
-                          'affiliation': 'Getfednyc.com', // Affiliation (string).
-                          'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
-                          'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
-                          'shipping': parseFloat(template.delivFee.get().toFixed(2)), // Shipping (currency).
-                          'coupon': template.order.coupon.get(), // Transaction coupon (string).
-                        });
-                        ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
-                        // analytics.track('Order Completed', {
-                        //   checkout_id: last_purchase.tracking_code,
-                        //   order_id: response.id,
-                        //   affiliation: 'Getfednyc.com',
-                        //   total: total,
-                        //   revenue: parseFloat(template.order.subtotal.get().toFixed(2)),
-                        //   shipping: parseFloat(template.delivFee.get().toFixed(2)),
-                        //   tax: parseFloat((template.order.subtotal.get() * .08875).toFixed(2)),
-                        //   discount: template.discount.get(),
-                        //   coupon: template.order.coupon.get(),
-                        //   currency: 'USD',
-                        //   products: [
-                        //     {
-                        //       name: orderToProcess.description,
-                        //       price: parseFloat(template.price.toFixed(2)),
-                        //       quantity: 1,
-                        //     },
-                        //   ]
-                        // });
-                      };
-                    });
-                  };
-                });
-
-                Session.set('loading', false);
-                sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
-              };
+              return(res);
             };
           });
         };
+      } catch(error) {
+        sAlert.error(error.reason);
       };
-    });
+    };
+
+    async function createStripeTokenFromElement() {
+      try {
+        var childView = Blaze.getView(template.find('#card-element'));
+        var childTemplateInstance = childView._templateInstance;
+        var card = childTemplateInstance.card;
+        var stripe = childTemplateInstance.stripe;
+        const {token, error} = await stripe.createToken(card);
+        return token;
+      } catch(error) {
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
+      };
+    };
+
+    async function createStripeCustomer(cust) {
+      try {
+        const newStripeCustomer = await callWithPromise('createCustomer', cust );
+        return newStripeCustomer;
+      } catch(error) {
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
+      }
+    };
+
+    async function chargeStripe(charge) {
+      try {
+        const newCharge = await callWithPromise( 'processPayment', charge );
+        return newCharge;
+      } catch(error) {
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
+      };
+    };
+
+    async function processSingleOrder () {
+      try {
+        const codeCheck = await processPromo();
+
+        // Make finalPrice in cents as a number from total
+        let charge;
+
+        // If user already has a Stripe customer ID
+        if (stripe_id) {
+          var source = template.find('[id="Source"]').value;
+          charge  = {
+            amount: finalPrice,
+            currency: 'usd',
+            customer: stripe_id,
+            source: source,
+            description: "Order for " + customer.first_name + " " + customer.last_name,
+            receipt_email: customer.email
+          };
+        // Else if new customer
+        } else {
+          const token = await createStripeTokenFromElement();
+          const cust = {
+            description: "Customer for " + customer.first_name + " " + customer.last_name,
+            source: token.id,
+            account_balance: 0,
+            email: customer.email
+          };
+
+          const newStripeCustomer = await createStripeCustomer( cust );
+          stripe_id = newStripeCustomer.id;
+          charge  = {
+            amount: finalPrice,
+            currency: 'usd',
+            customer: stripe_id,
+            description: "Order for " + customer.first_name + " " + customer.last_name,
+            receipt_email: customer.email
+          };
+        };
+
+        // If final price is positive, charge stripe
+        if (finalPrice > 0) {
+          // Charge Stripe
+          const payment = await chargeStripe( charge );
+          orderToProcess.payment_id = payment.id;
+          orderToProcess.total = Number((finalPrice / 100).toFixed(2));
+        } else {
+          orderToProcess.total = 0;
+        };
+
+        orderToProcess.paid_at = new Date();
+
+        const delDay = $('[name="deliveryWindow"]').val();
+        // var windows = Session.get('delivEstimate');
+        // if ( delDay === "Monday") {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[3].id;
+        // } else {
+        //   var delivery_window = Session.get('delivEstimate').delivery_windows[0].id;
+        // };
+
+        // const delivRequest = {
+        //   "order_reference": Session.get('orderId')._id,
+        //   "customer": customer,
+        //   "packages": packages,
+        //   "delivery_window_id": delivery_window,
+        //   "destination_comments": comments,
+        // };
+
+        // const newDelivery = await createNewDelivery( delivRequest );
+
+        // customer.last_purchase = newDelivery;
+        // orderToProcess.deliv_id = newDelivery.id;
+        // orderToProcess.trackingCode = newDelivery.tracking_code;
+
+        customer.amount_spent = orderToProcess.total;
+        customer.stripe_id = stripe_id;
+        customer.credit = Math.round(credit * 100) / 100;
+        
+        Meteor.call( 'updateUser', Meteor.userId(), customer );
+
+        // orderToProcess.readyBy = delivery_window.starts_at;
+        // if (!Meteor.userId()) orderToProcess.customer = {
+        //   first_name: customer.first_name,
+        //   last_name: customer.last_name
+        //   phone: customer.phone
+        //   email: customer.email
+        //   address_line_1: customer.address_line_1
+        //   address_line_2customer.address_line_2 
+        //   customer.address_city
+        //   customer.address_state 
+        //   customer.address_zipcode
+        // }
+
+        const order = Session.get('orderId');
+        order.recipient = customer;
+        order.gift = null;
+        order.discount = {
+          subscriber_discount: template.subscriber_discount.get(),
+          promo: template.promo.get(),
+          credit: template.appliedCredit.get(),
+          value: template.discountValue.get(),
+        };
+        order.delivery_fee = template.delivFee.get();
+        order.subtotal = template.order.subtotal.get();
+        order.total = Math.round(template.order.total.get() * 100) / 100;
+        order.payment_id = orderToProcess.payment_id;
+        order.paid_at = orderToProcess.paid_at;
+        order.ready_by = Session.get('menu').ready_by;
+        order.delivery_window_id = delDay;
+        order.delivery_comments = orderToProcess.delivery_comments;
+
+        const processedOrder = processOrder.call(order, ( error, response ) => {
+          if(error) {
+            console.log(error);
+            throw new Meteor.Error(404, error);
+            sAlert.error(error);
+            Session.set('loading', false);
+          } else {
+            // ga('ec:addProduct', {               // Provide product details in an productFieldObject.
+            //   'name': orderToProcess.packName,                 // Product name (string).
+            //   'price': orderToProcess.total,                 // Product price (currency).
+            //   'coupon': orderToProcess.coupon,          // Product coupon (string).
+            //   'quantity': 1                     // Product quantity (number).
+            // });
+            // ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
+            //   'id': response._id,// (Required) Transaction id (string).
+            //   'affiliation': 'Getfednyc.com', // Affiliation (string).
+            //   'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
+            //   'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
+            //   'shipping': parseFloat(template.delivFee.get().toFixed(2)), // Shipping (currency).
+            //   'coupon': orderToProcess.coupon, // Transaction coupon (string).
+            // });
+            // ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
+            Meteor.call( 'sendOrderConfirmationEmail', Meteor.userId(), order, ( error, response ) => {
+              if ( error ) {
+                console.log(error);
+              };
+            }); 
+          };
+        });
+
+        Session.set('loading', false);
+        // FIX... sAlert
+        sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
+      } catch(error) {
+        console.log(error);
+        Session.set('loading', false);
+        throw new Meteor.Error(401, error);
+      };
+    };
+
+    // Stripe.card.createToken({
+    //   number: $('.number').val(),
+    //   cvc: $('.cvc').val(),
+    //   exp_month: $('.exp_month').val(),
+    //   exp_year: $('.exp_year').val(),
+    //   address_zip: customer.address_zipcode,
+    // }, ( status, response ) => {
+    //   if ( response.error ) {
+    //     Session.set('loading', false );
+    //     sAlert.error(response.error.message);
+    //   } else {
+    processSingleOrder();
+    //   };
+    // });
   },
 
-  // 'click #SaveOrder'(event, template) {
-  //   event.preventDefault();
-  //   Session.set('loading', true);
+  'submit #insertSubscriberOrderForm'(event, template) {
+    event.preventDefault();
+    Session.set('loading', true);
 
-  //   var orderToProcess = template.order.get();
-  //   const user = Meteor.userId();
-  //   const total = template.order.total.get().toFixed(2);
-  //   const finalPrice = Math.round(Number(total) * 100);
-  //   const packName = Session.get('order').description;
-  //   const first_name = template.find('[name="customer.firstName"]').value;
-  //   const last_name = template.find('[name="customer.lastName"]').value;
-  //   const phone = template.find('[name="customer.phone"]').value;
-  //   const email = template.find('[name="customer.email"]').value;
-  //   const address_line_1 = template.find('[name="customer.address.line1"]').value;
-  //   const address_line_2 = template.find('[name="customer.address.line2"]').value;
-  //   const address_city = template.find('[name="customer.address.city"]').value;
-  //   const address_state = template.find('[name="customer.address.state"]').value;
-  //   const address_zipcode = template.find('[name="customer.address.zipCode"]').value;
-  //   const comments = template.find('[name="destinationComments"]').value;
-  //   const promo = template.order.coupon.get();
-  //   const credit = template.userHasCredit.get();
-  //   var stripe_id = template.stripe_id;
-  // }
+    var orderToProcess = template.order.get();
+    orderToProcess.user_id = Meteor.userId();
+    orderToProcess.total = template.order.total.get().toFixed(2);
+    orderToProcess.packName = Session.get('pack').description;
+    orderToProcess.coupon = template.order.coupon.get();
+    var customer = {
+      first_name: template.find('[name="customer.firstName"]').value,
+      last_name: template.find('[name="customer.lastName"]').value,
+      phone: template.find('[name="customer.phone"]').value,
+      email: template.find('[name="customer.email"]').value,
+      address_line_1: template.find('[name="customer.address.line1"]').value,
+      address_line_2: template.find('[name="customer.address.line2"]').value,
+      address_city: template.find('[name="customer.address.city"]').value,
+      address_state: template.find('[name="customer.address.state"]').value,
+      address_zipcode: template.find('[name="customer.address.zipCode"]').value,
+    };
+    const recipient = customer;
+    const comments = template.find('[name="destinationComments"]').value;
+    var credit = template.userHasCredit.get();
+    if (template.appliedCredit.get()) {
+      credit = template.newCredit;
+    } else {
+      credit = template.userHasCredit.get();
+    };
+    var stripe_id = template.stripe_id;
+    var source = template.find('[id="Source"]').value;
+
+    const callWithPromise = (method, myParameters) => {
+      return new Promise((resolve, reject) => {
+        Meteor.call(method, myParameters, (err, res) => {
+          if (err) reject('Something went wrong while ' + method);
+          resolve(res);
+        });
+      });
+    };
+
+    async function processPromo() {
+      try {
+        const code = orderToProcess.coupon;
+        var codeCheck = false;
+        if (code) {
+          usePromo.call({
+            code: code
+          }, (err, res) => {
+            if (err) {
+              return(err);
+            } else {
+              return(res);
+            };
+          });
+        };
+      } catch(error) {
+        sAlert.error(error.reason);
+      };
+    };
+
+    async function chargeStripe(charge) {
+      try {
+        const newCharge = await callWithPromise( 'processPayment', charge );
+        return newCharge;
+      } catch(error) {
+        // Inform the customer that there was an error
+        const errorElement = document.getElementById('payment-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
+      };
+    };
+
+    async function updateSubscriber() {
+      try {
+        const subscriptionId = Meteor.user().subscriptions.id;
+
+        var nextThursdayTime = moment().day(11).hours(0).minutes(0).seconds(0).unix();
+        
+        const args = {
+          subscription_id: subscriptionId,
+          trial_end: nextThursdayTime,
+          prorate: false,
+        };
+
+        const updatedSub = await callWithPromise( 'updateSubscription', args );
+      } catch(error) {
+        throw new Meteor.Error(407, error);
+      };
+    }
+
+    async function processOrder () {
+      try {
+        const codeCheck = await processPromo();
+        // Make finalPrice in cents as a number from total
+        const finalPrice = Math.round(Number(orderToProcess.total) * 100);
+
+        charge = {
+          amount: finalPrice,
+          currency: 'usd',
+          customer: stripe_id,
+          source: source,
+          description: orderToProcess.packName + " for " + customer.first_name + " " + customer.last_name,
+          receipt_email: customer.email
+        };
+
+        if (finalPrice > 0) {
+          // Charge Stripe
+          const payment = await chargeStripe( charge );
+          // Set users to TRIALING in Stripe FIX
+
+          // Save the Stripe payment_id (FIX how we link the two)
+          orderToProcess.payment_id = payment.id;
+          orderToProcess.salePrice = (finalPrice / 100).toFixed(2);
+        } else {
+          orderToProcess.salePrice = "0";
+        };
+
+        orderToProcess.paid_at = new Date();
+
+        var delDay = $('[name="deliveryWindow"]').val();
+
+        customer.amount_spent = orderToProcess.total;
+        customer.stripe_id = stripe_id;
+        customer.credit = Math.round(credit * 100) / 100;
+        // customer.customized = true;
+        // updateSubscriber();
+
+        Meteor.call( 'updateUser', orderToProcess.user_id, customer, (error,response) => {
+          if (error) {
+            throw new Meteor.Error(402, error);
+            console.log(error);
+          };
+        });
+
+        const order = Session.get('orderId');
+        order.recipient = recipient;
+        order.gift = null;
+        order.discount = {
+          subscriber_discount: template.subscriber_discount.get(),
+          promo: template.promo.get(),
+          credit: template.appliedCredit.get(),
+          value: template.discount.get(),
+        };
+        order.delivery_fee = template.delivFee.get();
+        order.subtotal = template.subtotal.get();
+        order.total = Math.round(template.order.total.get() * 100) / 100;
+        order.payment_id = orderToProcess.payment_id;
+        order.paid_at = orderToProcess.paid_at;
+        order.ready_by = Session.get('menu').ready_by;
+        order.delivery_window_id = delDay;
+        order.delivery_comments = comments;
+
+        const processedOrder = processSubscriberOrder.call(order, ( error, response ) => {
+          if(error) {
+            throw new Meteor.Error(404, error);
+            sAlert.error(error);
+            Session.set('loading', false);
+          } else {
+            // ga('ec:addProduct', {               // Provide product details in an productFieldObject.
+            //   'name': orderToProcess.packName,                 // Product name (string).
+            //   'price': orderToProcess.total,                 // Product price (currency).
+            //   'coupon': orderToProcess.coupon,          // Product coupon (string).
+            //   'quantity': 1                     // Product quantity (number).
+            // });
+            // ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
+            //   'id': response._id,// (Required) Transaction id (string).
+            //   'affiliation': 'Getfednyc.com', // Affiliation (string).
+            //   'revenue': parseFloat(template.order.subtotal.get().toFixed(2)), // Revenue (currency).
+            //   'tax': parseFloat((template.order.subtotal.get() * .08875).toFixed(2)), // Tax (currency).
+            //   'shipping': parseFloat(template.delivFee.get().toFixed(2)), // Shipping (currency).
+            //   'coupon': orderToProcess.coupon, // Transaction coupon (string).
+            // });
+            // ga('send', 'event', 'enhanced ecommerce', 'purchase', {'nonInteraction': true});
+            Meteor.call( 'sendOrderConfirmationEmail', Meteor.userId(), order, ( error, response ) => {
+              if ( error ) {
+                console.log(error);
+              };
+            }); 
+          };
+        });
+
+        Session.set('loading', false);
+        sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});       
+      } catch(error) {
+        Session.set('loading', false);
+        throw new Meteor.Error(401, error);
+      };
+    };
+
+    processOrder();
+  },
 });

@@ -5,49 +5,89 @@ import './menu-toolbar.html';
 
 Template.Menu_toolbar.onCreated(function menuToolbarOnCreated() {
 	Session.setDefault('packEditorOpen', false);
-	Session.setDefault('filterMenuOpen', false);
+	Session.setDefault('cartOpen', false);
 });
 
 Template.Menu_toolbar.helpers({
-	diets: ()=> {
-		const diets = ['Omnivore', 'Vegetarian', 'Vegan', 'Pescetarian', 'Paleo'];
-		return diets;
+	dietFilter: ()=> {
+		return Session.get('filters').diet;
 	},
 
-	restrictions: ()=> {
-		const restrictions = ['Peanuts', 'Shellfish', 'Milk', 'Eggs', 'Beef', 'Chicken', 'Fish', 'Soy', 'Wheat'];
-		return restrictions;
+	userHasRestrictions: ()=> {
+		return Session.get('filters').restrictions.length;
 	},
 
-	goals: ()=> {
-		const goals = ['Weight Loss', 'Weight Gain', 'Low-Carb'];
-		return goals;
-	},
+	// goals: ()=> {
+	// 	const goals = ['Weight Loss', 'Weight Gain', 'Low-Carb'];
+	// 	return goals;
+	// },
 
 	filterMenuOpen: ()=> {
 		return Session.get('filterMenuOpen') && 'filterMenuOpen';
+	},
+
+	cartOpen: ()=> {
+		return Session.get('cartOpen');
 	},
 
 	packEditorOpen: ()=> {
 		return Session.get('packEditorOpen') && 'packEditorOpen';
 	},
 
+	hasPack: ()=> {
+		const order = Session.get('Order');
+		return order && order.style === 'pack';
+	},
+
+	// packArray: ()=> {
+	// 	const order = Session.get('Order');
+	// 	if (order && order.style === 'pack') {
+	// 		var packs = [];
+	// 		var items = order.items;
+	// 		for (var i = items.length - 1; i >= 0; i--) {
+	// 			if (items[i].category.toLowerCase() === 'pack') {
+	// 				if (items[i].sub_items.schema.total > items[i].sub_items.items.length) {
+	// 					packs.push(items[i]);
+	// 				};
+	// 			};
+	// 		};
+	// 		return packs;
+	// 	};
+	// },
+
 	dishesInPack: ()=> {
-		if (Session.get('pack')) {
-			var pack = Session.get('pack').dishes;
-			var dishesInPack = [];
-			for (var i = pack.length - 1; i >= 0; i--) {
-				if (pack[i].length > 1) {
-					dishesInPack.push(pack[i]);
-				}
+		const order = Session.get('Order');
+		if (order && order.style === 'pack') {
+			var items = order.items;
+			if (items) {
+				for (var i = items.length - 1; i >= 0; i--) {
+					if (items[i].category.toLowerCase() === 'pack') {
+						if (items[i].sub_items.schema.total >= items[i].sub_items.items.length) {
+							return items[i].sub_items.items.length;
+						};
+					};
+				};
+			} else {
+				return _;
 			};
-			return dishesInPack.length;
 		};
 	},
 
 	packSize: ()=> {
-		if (Session.get('pack')) {
-			return Session.get('pack').dishes.length;
+		const order = Session.get('Order');
+		if (order && order.style === 'pack') {
+			var items = order.items;
+			if (items) {
+				for (var i = items.length - 1; i >= 0; i--) {
+					if (items[i].category.toLowerCase() === 'pack') {
+						if (items[i].sub_items.schema.total >= items[i].sub_items.items.length) {
+							return items[i].sub_items.schema.total;
+						};
+					};
+				};
+			} else {
+				return _;
+			};
 		};
 	},
 });
@@ -64,6 +104,13 @@ Template.Menu_toolbar.events({
 		event.preventDefault();
 
 		Session.set('filterMenuOpen', !Session.get('filterMenuOpen'));
-		Session.set('packEditorOpen', false);
+		Session.set('cartOpen', false);
+	},
+
+	'click #Cart-toggle'(event, template) {
+		event.preventDefault();
+
+		Session.set('cartOpen', !Session.get('cartOpen'));
+		Session.set('filterMenuOpen', false);
 	},
 });

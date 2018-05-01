@@ -8,10 +8,17 @@ import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+import moment from 'moment';
 
-import '../components/cart.js';
+import {
+  findUserFutureOrders
+} from '../../api/orders/methods.js';
+
 import '../components/loader.js';
 import '../components/side-nav.js';
+import '../components/mobile-nav.js';
+import '../components/modals.js';
+import '../components/content-overlay.js';
 
 const CONNECTION_ISSUE_TIMEOUT = 6000;
 
@@ -62,31 +69,35 @@ Meteor.startup(() => {
 
 Template.App_body.onCreated(function appBodyOnCreated() {
   Session.setDefault({
-    packEditorOpen: false,
-    userMenuOpen: false,
     processing: false,
     sideNavOpen: false,
     unsubscribed: true,
     capped: false,
   });
 
-  const handle = this.subscribe('limitedUserData');
+  const handle = this.subscribe('thisUserData');
 
   this.autorun(() => {
-    var current = FlowRouter.current();
+    // var current = FlowRouter.current();
     Tracker.afterFlush(function () {
       $(window).scrollTop(0);
     });
 
-    const isReady = handle.ready();
-    if (isReady) {
+    if (handle.ready()) {
+      const userId = Meteor.userId();
+      const timestamp = moment().toDate();
+
+      // delete?
       if (Meteor.user() && Meteor.user().last_purchase) {
         Session.set('newUser', false);
       } else {
         Session.set('newUser', true);
       };
 
-      if (Meteor.user() && Meteor.user().subscriptions && Meteor.user().subscriptions.status != "canceled") {
+      if (Meteor.user() && Meteor.user().subscriptions) {
+        // GET ORDER
+        const order = findUserFutureOrders(userId, timestamp);
+        Session.setDefault('Order', order);
         Session.set('subscribed', true);
       } else {
         Session.set('subscribed', false);
@@ -108,25 +119,6 @@ Template.App_body.onRendered(function appBodyOnRendered() {
 });
 
 Template.App_body.helpers({
-  loading() {
-    return Session.get('loading') && 'loading';
-  },
-  closed() {
-    const route = FlowRouter.getRouteName();
-    return route === 'Menu.show' && !Session.get('customizable') && !Session.get('capped') && 'uncustomizable';
-  },
-  capped() {
-    const route = FlowRouter.getRouteName();
-    return route === 'Menu.show' && Session.get('capped') && !Session.get('subscribed') && 'capped';
-  },
-  firstName() {
-    return Meteor.user().first_name && ("Welcome, " + Meteor.user().first_name);
-  },
-  emailLocalPart() {
-    const email = Meteor.user().emails[0].address;
-    const username = email.slice(0, email.indexOf('@'));
-    return ("Welcome, " + username);
-  },
   notSubscribed() {
     return !Session.get('subscribed');
   },
@@ -146,11 +138,11 @@ Template.App_body.helpers({
   userMenuOpen() {
     return Session.get('userMenuOpen');
   },
-  currentPage(page) {
-    const route = FlowRouter.getRouteName();
-    const active = page === route;
-    return active && 'active';
-  },
+  // currentPage(page) {
+  //   const route = FlowRouter.getRouteName();
+  //   const active = page === route;
+  //   return active && 'active';
+  // },
   // activeMenuClass(menu) {
   //   const active = ActiveRoute.name('Menus.show')
   //     && FlowRouter.getParam('_id') === list._id;
@@ -251,12 +243,5 @@ Template.App_body.events({
       nav.slideToggle();
       Session.set('navOpen', false);
     };
-  },
-
-  'click .js-logout'(event) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    Session.set('userMenuOpen', !Session.get('userMenuOpen'));
-    Meteor.logout();
   },
 });

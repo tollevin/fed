@@ -31,32 +31,31 @@ Template.NewItem.events({
 	  event.preventDefault();
 
 	  const formName = template.find('[name="name"]').value;
-	  const formCourse = template.find('[name="course"]').value;
+	  const formCategory = template.find('[name="category"]').value;
 	  const formDesc = template.find('[name="description"]').value;
-	  const formExp = template.find('[name="goodFor_Days"]').value;
+	  const formExp = template.find('[name="good_for_days"]').value;
 	  const ingredients = template.findAll('[name^="ingredients"]');
 	  const formIngredients = [];
 	  for (var i = ingredients.length - 1; i >= 0; i--) {
 	  	formIngredients[i] = ingredients[i].value;
 	  };
-	  const formNFSS = template.find('[name="nutritionFacts.servingSize"]').value;
-	  const formNFCal = template.find('[name="nutritionFacts.calories"]').value;
-	  const formNFTF = template.find('[name="nutritionFacts.totalFat"]').value;
-	  const formNFSF = template.find('[name="nutritionFacts.saturatedFat"]').value;
-	  const formNFTrF = template.find('[name="nutritionFacts.transFat"]').value;
-	  const formNFP = template.find('[name="nutritionFacts.protein"]').value;
-	  const formNFTC = template.find('[name="nutritionFacts.totalCarb"]').value;
-	  const formNFS = template.find('[name="nutritionFacts.sodium"]').value;
-	  const formNFC = template.find('[name="nutritionFacts.cholesterol"]').value;
-	  const formNFDF = template.find('[name="nutritionFacts.dietaryFiber"]').value;
-	  const formNFSu = template.find('[name="nutritionFacts.sugars"]').value;
-	  const formNFPDVvA = template.find('[name="nutritionFacts.PDV.vitaminA"]').value;
-	  const formNFPDVvC = template.find('[name="nutritionFacts.PDV.vitaminC"]').value;
-	  const formNFPDVC = template.find('[name="nutritionFacts.PDV.calcium"]').value;
-	  const formNFPDVI = template.find('[name="nutritionFacts.PDV.iron"]').value;
+	  const formNFSS = template.find('[name="nutrition_facts.servingSize"]').value;
+	  const formNFCal = template.find('[name="nutrition_facts.calories"]').value;
+	  const formNFTF = template.find('[name="nutrition_facts.totalFat"]').value;
+	  const formNFSF = template.find('[name="nutrition_facts.saturatedFat"]').value;
+	  const formNFTrF = template.find('[name="nutrition_facts.transFat"]').value;
+	  const formNFP = template.find('[name="nutrition_facts.protein"]').value;
+	  const formNFTC = template.find('[name="nutrition_facts.totalCarb"]').value;
+	  const formNFS = template.find('[name="nutrition_facts.sodium"]').value;
+	  const formNFC = template.find('[name="nutrition_facts.cholesterol"]').value;
+	  const formNFDF = template.find('[name="nutrition_facts.dietaryFiber"]').value;
+	  const formNFSu = template.find('[name="nutrition_facts.sugars"]').value;
+	  const formNFPDVvA = template.find('[name="nutrition_facts.PDV.vitaminA"]').value;
+	  const formNFPDVvC = template.find('[name="nutrition_facts.PDV.vitaminC"]').value;
+	  const formNFPDVC = template.find('[name="nutrition_facts.PDV.calcium"]').value;
+	  const formNFPDVI = template.find('[name="nutrition_facts.PDV.iron"]').value;
 	  const formADF = template.find('[name="attributes.dairyFree"]').checked;
 	  const formAGF = template.find('[name="attributes.glutenFree"]').checked;
-	  const formAHP = template.find('[name="attributes.highProtein"]').checked;
 	  const formAP = template.find('[name="attributes.paleo"]').checked;
 	  const formAV = template.find('[name="attributes.vegan"]').checked;
 	  const formAVeg = template.find('[name="attributes.vegetarian"]').checked;
@@ -71,19 +70,18 @@ Template.NewItem.events({
 	  const formEggs = template.find('[name="warnings.eggs"]').checked;
 	  const formWheat = template.find('[name="warnings.wheat"]').checked;
 	  const formWeight = template.find('[name="weight"]').value;
+	  const formProducer = template.find('[name="producer"]').value;
+	  const formCost = template.find('[name="cost_per_unit"]').value;
+	  const formPrice = template.find('[name="price_per_unit"]').value;
 
 	  const item = {
 	    name: formName,
-	    course: formCourse,
+	    category: formCategory,
 	    photo: template.find('[name="photo"]').value,
 	    description: template.find('[name="description"]').value,
-	    packs: {
-        omnivorePack: false,
-        vegetarianPack: false,
-      },
       ingredients: formIngredients,
-      goodFor_Days: formExp,
-      nutritionFacts: {
+      good_for_days: formExp,
+      nutrition_facts: {
       	servingSize: formNFSS,
       	calories: formNFCal,
       	totalFat: formNFTF,
@@ -105,7 +103,6 @@ Template.NewItem.events({
       attributes: {
       	dairyFree: formADF,
       	glutenFree: formAGF,
-      	highProtein: formAHP,
       	paleo: formAP,
       	vegan: formAV,
       	vegetarian: formAVeg,
@@ -123,6 +120,10 @@ Template.NewItem.events({
       	wheat: formWheat,
       },
       weight: formWeight,
+      active: false,
+      producer: formProducer,
+      cost_per_unit: formCost,
+      price_per_unit: formPrice,
 	  };
 
 	  insertItem.call(item, (err) => {

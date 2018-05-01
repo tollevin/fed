@@ -1,0 +1,52 @@
+import { Meteor } from 'meteor/meteor';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import moment from 'moment';
+
+import { Menus } from '../menus.js';
+import { Items } from '../../items/items.js';
+
+Meteor.publishComposite('Menus.thisWeek', function(now) {
+  new SimpleSchema({
+    now: {type: Date}
+  }).validate({ now });
+
+  return {
+    find() {
+      const thisWeeksStart = moment(now).startOf('week').toDate();
+      return Menus.find({"active": true});
+    },
+    children: [{
+      find(menu) {
+        return Items.find({
+          _id: {$in: menu.items},
+        });
+      }
+    },
+    {
+      find() {
+        return Items.find({active: true});
+      }
+    }]
+  };
+});
+
+Meteor.publishComposite('Menus.active', function() {
+
+  return {
+    find() {
+      return Menus.find({"active": true});
+    },
+    children: [{
+      find(menu) {
+        return Items.find({
+          _id: {$in: menu.items},
+        });
+      }
+    },
+    {
+      find() {
+        return Items.find({active: true});
+      }
+    }]
+  };
+});

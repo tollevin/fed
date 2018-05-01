@@ -1,43 +1,28 @@
 <template name="Menu_toolbar">
 	<div id="menu-toolbar" class="{{filterMenuOpen}}">
 		<div id="Filter-menu-toggle">
-			<i class="fa fa-filter"></i>
-			<p>Filter |</p>
 			{{#if filterMenuOpen}}
-				<span>less...</span>
-			{{else}}
-				<span>more...</span>
-			{{/if}}
+        <i class="fa fa-caret-up"></i>
+      {{else}}
+        <i class="fa fa-caret-down"></i>
+      {{/if}}
+      <p>Filters</p>
+      <div class="active-filters">
+      	<p>{{dietFilter}}</p>
+      	{{#if userHasRestrictions}}
+      		<p>+ {{userHasRestrictions}}</p>
+      	{{/if}}
+      </div>
 		</div>
-		<div id="filter-buttons" class="{{filterMenuOpen}}">
-			<div class="byDiet {{filterMenuOpen}}">
-				<h5 class="{{filterMenuOpen}}">by diet</h5>
-				<div class="buttons-holder">
-				{{#each diet in diets}}
-					<a href="#" class="filter-button diet-filter-button {{diet}} {{filterMenuOpen}}" name="{{diet}}">{{diet}}</a>
-				{{/each}}
+		
+		<div id="Cart-toggle">
+			<!-- {{#if hasPack}}
+				<div id="Pack-toggle">
+		      <p>{{dishesInPack}} / {{packSize}} pack</p>
 				</div>
-			</div>
-			<div class="toAvoid {{filterMenuOpen}}">
-				<h5 class="{{filterMenuOpen}}">to avoid</h5>
-				<div class="buttons-holder">
-				{{#each restriction in restrictions}}
-					<a href="#" class="filter-button avoid-filter-button {{restriction}}" name="{{restriction}}">{{restriction}}</a>
-				{{/each}}
-				</div>
-			</div>
-			<!-- <div class="byGoal {{filterMenuOpen}}">
-				<h5 class="{{filterMenuOpen}}">or for</h5>
-				<div class="buttons-holder">
-				{{#each goal in goals}}
-					<a href="#" class="filter-button goal-filter-button {{goal}}" name="{{goal}}">{{goal}}</a>
-				{{/each}}
-				</div>
-			</div> -->
-		</div>
-		<div id="thisPack">
-			<p>{{dishesInPack}} / {{packSize}} pack</p>
-			{{#if packEditorOpen}}
+			{{/if}} -->
+			<p>Cart</p>
+			{{#if cartOpen}}
         <i class="fa fa-caret-up"></i>
       {{else}}
         <i class="fa fa-caret-down"></i>

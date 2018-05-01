@@ -4,6 +4,10 @@ import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { 
+  Items
+} from '../items/items.js';
+
 // SimpleSchema.debug = true;
 
 class OrdersCollection extends Mongo.Collection {
@@ -17,11 +21,7 @@ class OrdersCollection extends Mongo.Collection {
     const result = super.update(selector, modifier);
     return result;
   }
-  // remove(selector) {
-  //   const orders = this.find(selector).fetch();
-  //   const result = super.remove(selector);
-  //   return result;
-  // }
+  // No remove -- Orders should only be updated
 };
 
 export const Orders = new OrdersCollection('Orders');
@@ -30,10 +30,10 @@ export const Orders = new OrdersCollection('Orders');
 Orders.deny({
   insert() { return true; },
   update() { return true; },
-  // remove() { return true; },
+  remove() { return true; },
 });
 
-Customer = new SimpleSchema({
+Recipient = new SimpleSchema({
   first_name: { type: String },
   last_name: { type: String },
   phone: { 
@@ -79,12 +79,31 @@ Orders.schema = new SimpleSchema({
       type: "hidden"
     },
   },
-  id: {
+  created_at: {
+    type: Date,
+    label: "Created at",
+    optional: true
+  },
+  id_number: {
     type: Number,
-    label: 'ID',
+    label: 'ID Number',
     optional: true,
   },
-  userId: {
+  week_of: {
+    type: Date,
+    label: "Week of",
+  },
+  status: {
+    type: String,
+    label: "Status",
+    allowedValues: ['skipped', 'pending', 'pending-sub', 'created', 'canceled', 'assigned', 'in_transit', 'delivered', 'rejected', 'returned', 'lost'],
+  },
+  style: { 
+    type: String,
+    label: 'Style',
+    optional: true
+  },
+  user_id: {
     type: String,
     label: 'User ID',
     regEx: SimpleSchema.RegEx.Id,
@@ -93,129 +112,263 @@ Orders.schema = new SimpleSchema({
     },
     optional: true
   },
-  customer: {
-    type: Customer,
+  menu_id: {
+    type: String,
+    label: 'Menu ID',
+    regEx: SimpleSchema.RegEx.Id,
+    autoform: {
+      type: "hidden"
+    },
     optional: true
+  },
+  recipient: {
+    type: Recipient,
+    optional: true,
+  },
+  gift: {
+    type: Boolean,
+    optional: true,
   },
   items: {
     type: [ String ],
     label: "Order Items",
     optional: true,
   },
-  packName: {
+  'items.$': {
     type: String,
-    label: "Pack Name",
-    optional: true
+    label: "Order Item",
+    optional: true,
   },
-  packPrice: {
+  subscriptions: {
+    type: [ Object ],
+    label: "Order Subscriptions",
+    optional: true,
+  },
+  'subscriptions.$': {
+    type: Object,
+    label: "Order Subscription",
+    blackbox: true,
+    optional: true,
+  },
+  subtotal: {
     type: Number,
-    label: "Pack Price"
-  },
-  salePrice: {
-    type: String,
+    decimal: true,
     label: "Subtotal",
     optional: true,
   },
+  discount: {
+    type: Object,
+    label: 'Discount',
+    optional: true,
+  },
+  "discount.subscriber_discounts": {
+    type: [ Object ],
+    label: 'Subscriber Discounts',
+    optional: true,
+  },
+  "discount.subscriber_discounts.$": {
+    type: Object,
+    label: 'Subscriber Discount Code',
+    optional: true,
+  },
+  "discount.subscriber_discounts.$.item_id": {
+    type: String,
+    label: 'Subscription Item',
+    optional: true,
+  },
+  "discount.subscriber_discounts.$.percent_off": {
+    type: String,
+    label: 'Subscription Item',
+    optional: true,
+  },
+  "discount.subscriber_discounts.$.value": {
+    type: String,
+    label: 'Subscription Item',
+    optional: true,
+  },
+  "discount.promo": {
+    type: Object,
+    label: 'Promotion',
+    optional: true,
+  },
+  "discount.promo.type": {
+    type: String,
+    label: 'Promotion Type',
+    optional: true,
+  },
+  "discount.promo.code": {
+    type: String,
+    label: 'Promotion Code',
+    optional: true,
+  },
+  "discount.promo.description": {
+    type: String,
+    label: 'Promotion Description',
+    optional: true,
+  },
+  "discount.promo.value": {
+    type: Number,
+    decimal: true,
+    label: 'Promotion Discount Value',
+    optional: true,
+  },
+  "discount.credit": {
+    type: Number,
+    decimal: true,
+    label: 'Account Credit Used',
+    optional: true,
+  },
+  "discount.value": {
+    type: Number,
+    decimal: true,
+    label: 'Discount Value',
+    optional: true,
+  },
+  delivery_fee: {
+    type: Number,
+    decimal: true,
+    label: 'Delivery Fee',
+    optional: true,
+  },
+  sales_tax: {
+    type: Number,
+    decimal: true,
+    label: 'Sales Tax',
+    optional: true,
+  },
   total: {
-    type: String,
-    label: "Total",
+    type: Number,
+    decimal: true,
+    label: "Total Price",
     optional: true,
   },
-  packDishes: {
-    type: [ String ],
+  payment_id: {
+    type: String,
     optional: true,
   },
-  packSnacks: {
-    type: [ String ],
-    optional: true,
-  },
-  coupon: {
-    type: String,
-    label: "Promo Code",
-    optional: true,
-  },
-  status: {
-    type: String,
-    label: "Status",
-    allowedValues: ['pending', 'pending-sub', 'created', 'assigned', 'in_transit', 'delivered', 'cancelled', 'returned']
-  },
-  readyBy: {
-    type: String,
-    label: "Ready By",
-    optional: true
-  },
-  deliveryWindow: {
-    type: String,
-    label: "Delivery Window",
-    optional: true
-  },
-  destinationComments: {
-    type: String,
-    label: "Comments for delivery",
-    optional: true
-  },
-  deliveredAt: {
-    type: String,
-    label: "Delivered at",
-    optional: true
-  },
-  trackingCode: {
-    type: String,
-    label: "Tracking Code",
-    optional: true
-  },
-  createdAt: {
-    type: Date,
-    label: "Created at",
-    optional: true
-  },
-  paidAt: {
+  paid_at: {
     type: Date,
     label: "Paid at",
     optional: true
   },
-  deliv_id: {
+  ready_by: {
+    type: Date,
+    label: "Ready By",
+    optional: true
+  },
+  delivery_window_id: {
     type: String,
+    label: "Delivery Window",
+    optional: true
+  },
+  delivery_comments: {
+    type: String,
+    label: "Comments for delivery",
+    optional: true
+  },
+  tracking_code: {
+    type: String,
+    label: "Tracking Code",
+    optional: true
+  },
+  courier: {
+    type: String,
+    label: 'Courier',
     optional: true,
   },
-  deliv_day: {
+  delivered_at: {
+    type: Date,
+    label: "Delivered at",
+    optional: true
+  },
+  notes: {
     type: String,
+    label: 'Notes',
     optional: true,
   },
-  stripe_id: {
-    type: String,
+  changes: {
+    type: Object,
+    label: 'Changes Made',
+    autoform: {
+      type: "hidden"
+    },
     optional: true,
-  }
+  },
+  'changes.removed': {
+    type: [ String ],
+    label: 'Items Removed',
+    autoform: {
+      type: "hidden"
+    },
+    optional: true,
+  },
+  'changes.removed.$': {
+    type: String,
+    label: 'Removed Item',
+    autoform: {
+      type: "hidden"
+    },
+    optional: true,
+  },
+  'changes.added': {
+    type: [ String ],
+    label: 'Items Added',
+    autoform: {
+      type: "hidden"
+    },
+    optional: true,
+  },
+  'changes.added.$': {
+    type: String,
+    label: 'Added Item',
+    autoform: {
+      type: "hidden"
+    },
+    optional: true,
+  },
+  auto_correct: {
+    type: Number,
+    label: 'Automation Score',
+    autoform: {
+      type: "hidden"
+    },
+    optional: true,
+  },
 });
 
 Orders.attachSchema(Orders.schema);
 
 // This represents the keys from Orders objects that should be published
-// to the client. If we add secret properties to List objects, don't list
+// to the client. If we add secret properties to objects, don't list
 // them here to keep them private to the server.
 Orders.publicFields = {
   _id: 1,
-  id: 1,
-  userId: 1,
-  customer: 1,
-  packName: 1,
-  packPrice: 1,
-  salePrice: 1,
-  total: 1,
-  packDishes: 1,
-  packSnacks: 1,
-  coupon: 1,
+  created_at: 1,
+  id_number: 1,
+  week_of: 1,
   status: 1,
-  readyBy: 1,
-  deliveryWindow: 1,
-  destinationComments: 1,
-  deliveredAt: 1,
-  trackingCode: 1,
-  createdAt: 1,
-  paidAt: 1,
-  deliv_id: 1,
-  deliv_day: 1,
-  stripe_id: 1,
+  user_id: 1,
+  menu_id: 1,
+  recipient: 1,
+  gift: 1,
+  items: 1,
+  subscriptions: 1,
+  subtotal: 1,
+  discount: 1,
+  delivery_fee: 1,
+  sales_tax: 1,
+  total: 1,
+  payment_id: 1,
+  paid_at: 1,
+  ready_by: 1,
+  delivery_window_id: 1,
+  delivery_comments: 1,
+  tracking_code: 1,
+  courier: 1,
+  delivered_at: 1,
+  notes: 1,
+  changes: 1,
+  auto_correct: 1,
 };
 
 // Factory.define('order', Orders, {

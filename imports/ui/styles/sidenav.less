@@ -1,9 +1,11 @@
 /* The side navigation menu */
 #sideNav {
+  display: flex;
+  flex-direction: column;
   height: 100%; /* 100% Full-height */
   width: 0; /* 0 width - change this with JavaScript */
   position: fixed; /* Stay in place */
-  z-index: 5; /* Stay on top */
+  z-index: 10; /* Stay on top */
   top: @nav-height-m;
   left: 0;
   background: #bef7cd;  /* fallback for old browsers */
@@ -17,29 +19,85 @@
     width: 250px;
   }
 
+  @media screen and (min-width: 450px) {
+    width: @side-nav-width;
+    background: none;
+    top: 0;
+    padding-top: 0;
+  }
+
   .close-sideNav {
     .position(absolute, 5px, 5px, auto, auto);
     max-width: 30px;
+
+    @media screen and (min-width: 450px) {
+      display: none;
+    }
   }
 
-  ul {
-    padding-left: 15px;
+  .logo-holder {
+    width: @side-nav-width;
+    height: 120px;
 
-    li {
-      display: block;
-      margin: 10px 10px 17px;
+    a.logoLink {
+      .position(absolute, 22px, 0, auto, 27px, 100px, 100px);
+      background-image: url("/fed_logo_366732_trans.png") !important;
+      background-size: cover;
 
-      a {
-        text-decoration: none;
-        font-weight: 400;
-        color: @fgreene;
-        font-size: 16px;
-        padding: 10px 5px;
+      @media screen and (max-width: 600px) {
+        display: none;
+      }
+    }
 
-        &.active {
-          color: @forange;
+    @media screen and (max-width: 600px) {
+      height: 60px;
+      width: 60px;
+      top: 0;
+      //left: 0;
+      //bottom: 0;
+      //right: 0;
+      //margin: auto;
+    }   
+  }
+
+  #Main-Nav, #User-Nav {
+    ul {
+      padding-left: 30px;
+
+      li {
+        display: block;
+        margin-bottom: 7px;
+
+        a {
+          text-decoration: none;
+          font-weight: 400;
+          color: @fgreene;
+          font-size: 14px;
+          padding: 8px 5px;
+          letter-spacing: .1em;
+          /*text-shadow: -1px -1px 0px #fff;*/
+          text-transform: uppercase;
+
+          &.active {
+            color: @forange;
+          }
         }
       }
+
+      ul {
+        padding-left: 16px;
+        margin-bottom: 7px;
+        height: auto;
+
+        li {
+          margin-bottom: 3px;
+        }
+      }
+    }
+
+    .login-buttons {
+      /*.position(absolute, auto, auto, 30px, 0);*/
+      margin-top: 60px;
     }
   }
 

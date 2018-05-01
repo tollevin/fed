@@ -3,6 +3,8 @@ const Stripe = stripePackage("sk_test_w4ls8BFupkyDG8WQ4F5fB7VZ" );
 
 Meteor.methods({
 
+  // Charges
+
   async processPayment( charge ) {
     check( charge, {
       amount: Number,
@@ -23,6 +25,8 @@ Meteor.methods({
       throw new Meteor.Error(err.statusCode, err.message);
     };
   },
+
+  // Customers
    
   async createCustomer( cust ) {
     check( cust, {
@@ -111,6 +115,8 @@ Meteor.methods({
     }
   },
 
+  // Credit
+
   async updateStripeCredit( args ) {
     check( args, {
       id: String,
@@ -127,6 +133,35 @@ Meteor.methods({
       console.log('error: updateStripeCredit');
     }
   },
+
+  // Plans
+
+  async createPlan( plan ) {
+    check( plan, {
+      amount: Number,
+      interval: String,
+      product: Object,
+    });
+
+    try {
+      plan.currency = "usd";
+
+      let planId = await Stripe.plans.create( plan );
+
+      // Meteor.users.update(Meteor.user(), {
+      //   $set: {
+      //     stripe_id: customer.id
+      //   }
+      // });
+
+      return planId;
+    } catch(err) {
+      console.log(err);
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  // Sources
 
   async updateDefaultSource( args ) {
     check( args, {
@@ -155,6 +190,8 @@ Meteor.methods({
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
+
+  // Subscriptions
 
   async updateSubscription( args ) {
     try {

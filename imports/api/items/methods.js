@@ -12,7 +12,8 @@ export const insertItem = new ValidatedMethod({
   name: 'Meteor.insertItem',
   validate: new SimpleSchema({
     name: { type: String },
-    course: { type: String, optional: true },
+    category: { type: String, optional: true },
+    subcategory: { type: String, optional: true },
     photo: { type: String, optional: true },
     description: { type: String, optional: true },
     ingredients: { type: [ String ], optional: true },
@@ -28,28 +29,25 @@ export const insertItem = new ValidatedMethod({
     'warnings.wheat': { type: Boolean, optional: true },
     'warnings.milk': { type: Boolean, optional: true },
     'warnings.eggs': { type: Boolean, optional: true },
-    goodFor_Days: { type: Number, optional: true },
-    active: { type: Boolean, optional: true },
-    packs: { type: Object, optional: true },
-    'packs.omnivorePack': { type: Boolean, optional: true },
-    'packs.vegetarianPack': { type: Boolean, optional: true },
-    nutritionFacts: { type: Object, optional: true },
-    'nutritionFacts.servingSize': { type: String, optional: true },
-    'nutritionFacts.calories': { type: String, optional: true },
-    'nutritionFacts.totalFat': { type: String, optional: true },
-    'nutritionFacts.saturatedFat': { type: String, optional: true },
-    'nutritionFacts.transFat': { type: String, optional: true },
-    'nutritionFacts.cholesterol': { type: String, optional: true },
-    'nutritionFacts.sodium': { type: String, optional: true },
-    'nutritionFacts.protein': { type: String, optional: true },
-    'nutritionFacts.dietaryFiber': { type: String, optional: true },
-    'nutritionFacts.sugars': { type: String, optional: true },
-    'nutritionFacts.totalCarb': { type: String, optional: true },
-    'nutritionFacts.PDV': { type: Object, optional: true },
-    'nutritionFacts.PDV.vitaminA': { type: String, optional: true },
-    'nutritionFacts.PDV.vitaminC': { type: String, optional: true },
-    'nutritionFacts.PDV.calcium': { type: String, optional: true },
-    'nutritionFacts.PDV.iron': { type: String, optional: true },
+    nutrition_facts: { type: Object, optional: true },
+    'nutrition_facts.servingSize': { type: String, optional: true },
+    'nutrition_facts.calories': { type: String, optional: true },
+    'nutrition_facts.totalFat': { type: String, optional: true },
+    'nutrition_facts.saturatedFat': { type: String, optional: true },
+    'nutrition_facts.transFat': { type: String, optional: true },
+    'nutrition_facts.cholesterol': { type: String, optional: true },
+    'nutrition_facts.sodium': { type: String, optional: true },
+    'nutrition_facts.protein': { type: String, optional: true },
+    'nutrition_facts.dietaryFiber': { type: String, optional: true },
+    'nutrition_facts.sugars': { type: String, optional: true },
+    'nutrition_facts.totalCarb': { type: String, optional: true },
+    'nutrition_facts.PDV': { type: Object, optional: true },
+    'nutrition_facts.PDV.vitaminA': { type: String, optional: true },
+    'nutrition_facts.PDV.vitaminC': { type: String, optional: true },
+    'nutrition_facts.PDV.calcium': { type: String, optional: true },
+    'nutrition_facts.PDV.iron': { type: String, optional: true },
+    good_for_days: { type: Number, optional: true },
+    active: { type: Boolean },
     attributes: { type: Object, optional: true },
     'attributes.dairyFree': { type: Boolean, optional: true },
     'attributes.glutenFree': { type: Boolean, optional: true },
@@ -57,94 +55,144 @@ export const insertItem = new ValidatedMethod({
     'attributes.paleo': { type: Boolean, optional: true },
     'attributes.vegan': { type: Boolean, optional: true },
     'attributes.vegetarian': { type: Boolean, optional: true },
-    weight: { type: Number, optional: true }
+    weight: { type: Number, optional: true },
+    dimensions: { type: Number, optional: true },
+    producer: { type: String, optional: true },
+    cost_per_unit: { type: Number, decimal: true, optional: true },
+    price_per_unit: { type: Number, decimal: true, optional: true },
+    unit: { type: String, optional: true },
+    sub_items: { type: [ String ], optional: true },
+    'sub_items.$': { type: String, optional: true },
+    inventory: { type: Number, optional: true },
+    rank: { type: Number, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
   },
-  run({ name, course, photo, description, ingredients, warnings, goodFor_Days, active, packs, nutritionFacts, attributes, weight }) {
+  run({ name, category, subcategory, photo, description, ingredients, warnings, nutrition_facts, good_for_days, active, attributes, weight, dimensions, producer, cost_per_unit, price_per_unit, unit, sub_items, inventory, rank }) {
 
     const item = {
+      user_id: Meteor.userId(),
+      created_at: new Date(),
       name,
-      course,
+      category,
+      subcategory,
+      photo,
       description,
-      createdAt: new Date(),
-      userId: Meteor.userId(),
       ingredients,
       warnings,
-      photo,
-      goodFor_Days,
+      nutrition_facts,
+      good_for_days,
       active,
-      packs,
-      nutritionFacts,
       attributes,
+      comments: {},
+      ratings: {},
       weight,
-      ordersThisWeek: 0,
-      ordersTotal: 0,
+      dimensions,
+      producer,
+      cost_per_unit,
+      price_per_unit,
+      unit,
+      sub_items,
+      inventory,
+      rank
     };
 
     Items.insert(item);
+
+    // Create Stripe Product
+    // Update Item with Product ID
   },
 });
 
-export const toggleActive = new ValidatedMethod({
-  name: 'Items.methods.toggleActive',
-  validate: new SimpleSchema({
-    itemId: Items.simpleSchema().schema('_id'),
-    // newCheckedStatus: Items.simpleSchema().schema('active'),
-  }).validator({ clean: true, filter: false }),
-  run({ itemId }) {
-    const item = Items.findOne(itemId);
+// export const editItem = new ValidatedMethod({
+//   name: 'Items.methods.editItem',
+//   validate: new SimpleSchema({
+//     item_id: Items.simpleSchema().schema('_id')
+//   }).validator({ clean: true, filter: false }),
+//   run({ item_id, data }) {
+//     const item = Items.findOne(item_id);
 
-    const newCheckedStatus = !(item.active);
+//     Items.update(item_id, { $set: {
+//       active: newCheckedStatus,
+//     } });
+//   },
+// });
 
-    // if (!item.editableBy(this.userId)) {
-    //   throw new Meteor.Error('items.setForThisWeek.accessDenied',
-    //     'Cannot edit checked status in the menu');
-    // }
+// export const addToMenu = new ValidatedMethod({
+//   name: 'Items.methods.addToMenu',
+//   validate: new SimpleSchema({
+//     item_id: Items.simpleSchema().schema('_id'),
+//     menu_id: Menus.simpleSchema().schema('_id'),
+//   }).validator({ clean: true, filter: false }),
+//   run({ item_id, menu_id }) {
+//     const item = Items.findOne(item_id);
 
-    Items.update(itemId, { $set: {
-      active: newCheckedStatus,
-    } });
-  },
-});
+//     Menus.update(menu_id, { $set: {
+//       active: newCheckedStatus,
+//     } });
+//   },
+// });
 
-export const orderItem = new ValidatedMethod({
-  name: 'Items.methods.orderItem',
-  validate: new SimpleSchema({
-    name: Items.simpleSchema().schema('name'),
-    // newCheckedStatus: Items.simpleSchema().schema('active'),
-  }).validator({ clean: true, filter: false }),
-  run({ name }) {
-    const item = Items.findOne({name: name});
+// export const toggleActive = new ValidatedMethod({
+//   name: 'Items.methods.toggleActive',
+//   validate: new SimpleSchema({
+//     itemId: Items.simpleSchema().schema('_id'),
+//     // newCheckedStatus: Items.simpleSchema().schema('active'),
+//   }).validator({ clean: true, filter: false }),
+//   run({ itemId }) {
+//     const item = Items.findOne(itemId);
 
-    const ordersThisWeek = item.ordersThisWeek + 1;
-    const ordersTotal = item.ordersTotal + 1;    
+//     const newCheckedStatus = !(item.active);
 
-    Items.update(item._id, { $set: {
-      ordersThisWeek: ordersThisWeek,
-      ordersTotal: ordersTotal,
-    } });
-  },
-});
+//     // if (!item.editableBy(this.userId)) {
+//     //   throw new Meteor.Error('items.setForThisWeek.accessDenied',
+//     //     'Cannot edit checked status in the menu');
+//     // }
 
-export const toggleInPack = new ValidatedMethod({
-  name: 'Items.methods.toggleInPack',
-  validate: new SimpleSchema({
-    itemId: Items.simpleSchema().schema('_id'), 
-    pack: { type: String },
-  }).validator({ clean: true, filter: false }),
-  run({ itemId, pack }) {
-    const item = Items.findOne(itemId);
+//     Items.update(itemId, { $set: {
+//       active: newCheckedStatus,
+//     } });
+//   },
+// });
 
-    var packOption = pack;
-    var newCheckedStatus = !(item.packs[pack]);
+// export const orderItem = new ValidatedMethod({
+//   name: 'Items.methods.orderItem',
+//   validate: new SimpleSchema({
+//     name: Items.simpleSchema().schema('name'),
+//     // newCheckedStatus: Items.simpleSchema().schema('active'),
+//   }).validator({ clean: true, filter: false }),
+//   run({ name }) {
+//     const item = Items.findOne({name: name});
 
-    Items.update(itemId, { $set: {
-      ["packs." + packOption]: newCheckedStatus,
-    } });
-  },
-});
+//     const ordersThisWeek = item.ordersThisWeek + 1;
+//     const ordersTotal = item.ordersTotal + 1;    
+
+//     Items.update(item._id, { $set: {
+//       ordersThisWeek: ordersThisWeek,
+//       ordersTotal: ordersTotal,
+//     } });
+//   },
+// });
+
+// export const toggleInPack = new ValidatedMethod({
+//   name: 'Items.methods.toggleInPack',
+//   validate: new SimpleSchema({
+//     itemId: Items.simpleSchema().schema('_id'), 
+//     pack: { type: String },
+//   }).validator({ clean: true, filter: false }),
+//   run({ itemId, pack }) {
+//     const item = Items.findOne(itemId);
+
+//     var packOption = pack;
+//     var newCheckedStatus = !(item.packs[pack]);
+
+//     Items.update(itemId, { $set: {
+//       ["packs." + packOption]: newCheckedStatus,
+//     } });
+//   },
+// });
+
 // export const updateText = new ValidatedMethod({
 //   name: 'items.updateText',
 //   validate: new SimpleSchema({
@@ -180,9 +228,7 @@ export const remove = new ValidatedMethod({
 // Get list of all method names on items
 const Items_METHODS = _.pluck([
   insertItem,
-  toggleActive,
-  toggleInPack,
-  orderItem,
+  // editItem,
   remove,
 ], 'name');
 

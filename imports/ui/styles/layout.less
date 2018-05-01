@@ -9,6 +9,7 @@ body {
 
 #container {
   .position(absolute, 0, 0, 0, 0);
+  overflow-y: scroll;
 
   @media screen and (min-width: 60em) {
     padding-left: @column;
@@ -66,20 +67,24 @@ body {
   opacity: 1;
   overflow-y: visible !important;
 
+  @media screen and (max-width: 600px) {
+    top: 30px;
+  }
+
   &.uncustomizable {
 /*    overflow-y: hidden !important;
 */  }
 
   .page {
-    .position(absolute, @nav-height, 0, 0, 0);
+    .position(absolute, 0, 0, 0, @side-nav-width);
+    background: #fefffa;
 
     @media screen and (max-width: 600px) { 
-      .position(absolute, @nav-height-m, 0, 0, 0);
+      .position(absolute, 30px, 0, 0, 0);
     }
   }
 
-  //  @media screen and (max-width: 40em) {
-  //  }
+  
 
   .content-scrollable {
     .position(absolute, 0, 0, 0, 0);
@@ -87,126 +92,6 @@ body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-}
-
-#closed {
-  .position(fixed, 0,0,0,0);
-
-  display: flex;
-  background-color: rgba(0,0,0,.6);
-  z-index: 4;
-
-  p {
-    padding: 5px;
-    font-weight: 400;
-    font-size: 20px;
-    color: #FFF;
-    margin: auto;
-    text-align: center;
-  }
-
-  a {
-    text-decoration: none;
-    color: #FFF;
-    font-weight: 600;
-  }
-}
-
-.capped {
-  background-color: rgba(0,0,0,.3);
-  position: relative;
-}
-
-#capped {
-  position: relative;
-  width:90%;
-  max-width: 375px;
-  margin-right: auto;
-  margin-left: auto;
-  background-color: rgba(255,255,255,.9);
-  padding: 20px;
-  margin-top: 75px;
-  border-radius: 15px;
-  z-index: 4;
-  text-align: center;
-
-  @media screen and (min-width: 600px) {
-    margin-top: 175px;
-  }
-
-  span {
-    .position(absolute,10px,10px,auto,auto);
-  }
-
-  h2 {
-    margin-top: 5px;
-  }
-
-  p {
-    padding: 5px;
-    font-weight: 300;
-    font-size: 18px;
-    color: @fgreene;
-    margin: auto;
-  }
-
-  a {
-    text-decoration: none;
-    color: @forange;
-    font-weight: 400;
-  }
-}
-
-// Transparent screen to prevent interactions on content when menu is open
-.content-overlay {
-  .position(fixed, 0, 0, 0, 0);
-  cursor: pointer;
-  transition: 0.5s;
-  display: none;
-
-  &.uncustomizable {
-    display: block;
-    z-index: 4;
-  }
-
-  &.capped {
-    display: block;
-    z-index: 4;
-  }
-
-  &.sideNavOpen{
-    background-color: rgba(0,0,0,.4);
-    z-index: 2;
-    display: block;
-  }
-
-  &.loading{
-    background-color: rgba(0,0,0,.4);
-    z-index: 3;
-    display: block;
-
-    #loader-1 {
-      .position(absolute,33%,33%,33%,33%,33%,auto);
-      max-width: 500px;
-
-      @media screen and (max-width: 600px) {
-        .position(absolute,33%,auto,auto,25%,50%,auto);
-      }
-
-      path {
-        fill: #fff !important;
-      }
-    }
-  }
-
-  //&.packEditorOpen{
-  //  background-color: rgba(0,0,0,.4);
-  //  z-index: 2;
-  //  display: block;
-  //}
-
-  // Hide overlay on desktop
-  @media screen and (min-width: 40em) { display: none; }
 }
 
 .new:after {

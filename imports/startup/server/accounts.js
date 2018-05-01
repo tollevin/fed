@@ -4,9 +4,12 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 
 import { makeGiftCardCode } from '../../utils/codify.js';
 
-// Menus collection
+// Collections
 import { Items } from '../../api/items/items.js';
 import { Promos } from '../../api/promos/promos.js';
+import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
+
+
 import { insertPromo } from '../../api/promos/methods.js';
 
 Meteor.methods({
@@ -18,6 +21,8 @@ Meteor.methods({
       const updated = Meteor.users.update({ _id: user_id }, {
         $set: data,
       });
+
+      if (!user.credit) user.credit = 0;
 
       var creditUpdated = (user.credit != data.credit) && ('Updating credit for ' + user.first_name + ' ' + user.last_name + ': $' + user.credit + ' to $' + data.credit); 
       if (creditUpdated) {
@@ -121,17 +126,15 @@ Meteor.methods({
       var emailData = data;
       emailData.email = user.emails[0].address;
       emailData.packItems = [];
-      for (var i = emailData.packDishes.length - 1; i >= 0; i--) {
-        emailData.packItems[i] = Items.findOne({name: emailData.packDishes[i]});
+      for (var i = emailData.items.length - 1; i >= 0; i--) {
+        emailData.packItems[i] = Items.findOne({name: emailData.items[i]});
       };
 
-      const now = new moment();
+      const dw = DeliveryWindows.findOne({_id: emailData.delivery_window_id});
+      const endDate = moment(dw.delivery_start_time).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
+      const dateToString = moment(dw.delivery_start_time).format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
 
-      if (emailData.deliv_day[0].toLowerCase() === "s") {
-        emailData.deliveryInfo = now.day(7).format("ddd DD MMM");
-      } else {
-        emailData.deliveryInfo = now.day(8).format("ddd DD MMM"); 
-      };
+      emailData.deliveryInfo = dateToString;
 
       Email.send({
         to: emailData.email,
@@ -291,8 +294,8 @@ Meteor.methods({
     };
   },
 
-  // updatePassword () {
-  //   Accounts.setPassword("nKRge2f39ddQhH4Dc", "joem123");
+  // updatePassword (id, key) {
+  //   Accounts.setPassword(id, key);
   // },
 });
 
@@ -558,6 +561,43 @@ Meteor.publish("subscriberData", function() {
       'profile':1,
       'notes':1,
       'customized':1,
+    },
+  };
+
+  return Meteor.users.find({"subscriptions.quantity": { $gt: 0 }}, options);
+});
+
+Meteor.publish("subscriberFullData", function() {
+  const options = {
+    fields: {
+      '_id':1,
+      'createdAt':1,
+      'first_name':1,
+      'last_name':1,
+      'phone':1,
+      'emails':1,
+      'email':1,
+      'address_line_1':1,
+      'address_line_2':1,
+      'address_city':1,
+      'address_state':1,
+      'address_zipcode':1,
+      'deliv_window':1,
+      'deliv_comments':1,
+      'amount_spent':1,
+      'credit':1,
+      'last_purchase':1,
+      'diet':1,
+      'plan':1,
+      'restrictions':1,
+      'coupon':1,
+      'stripe_id':1,
+      'preferredDelivDay':1,
+      'subscriptions':1,
+      'past_subscriptions':1,
+      'referrer':1,
+      'profile':1,
+      'notes':1,
     },
   };
 

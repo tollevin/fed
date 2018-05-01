@@ -52,6 +52,10 @@ Promos.schema = new SimpleSchema({
     type: String,
     label: "code"
   },
+  // type: {
+  //   type: String,
+  //   label: "type"
+  // },
   desc: {
     type: String,
     label: "Description"

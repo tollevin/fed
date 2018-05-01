@@ -4,7 +4,9 @@ import { invoiceCreated } from './invoice-created.js';
 import { invoicePaymentFailed } from './invoice-paymentFailed.js';
 import { invoicePaymentSucceeded } from './invoice-paymentSucceeded.js';
 import { customerUpdated } from './customer-updated.js';
+import { subscriptionCreated } from './subscription-created.js';
 import { subscriptionUpdated } from './subscription-updated.js';
+import { subscriptionDeleted } from './subscription-deleted.js';
 
 const scenarios = {
   'charge.succeeded': chargeSucceeded,
@@ -13,9 +15,9 @@ const scenarios = {
   'invoice.payment_succeeded': invoicePaymentSucceeded,
   'customer.updated': customerUpdated,
   // 'customer.subscription.trial_will_end': subscriptionTrialWillEnd,
-  // 'customer.subscription.created': subscriptionCreated,
+  'customer.subscription.created': subscriptionCreated,
   'customer.subscription.updated': subscriptionUpdated,
-  // 'customer.subscription.deleted': subscriptionDeleted,
+  'customer.subscription.deleted': subscriptionDeleted,
   // 'customer.discount.created': discountCreated,
   // 'customer.discount.updated': discountUpdated,
   // 'customer.discount.deleted': discountDeleted,

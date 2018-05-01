@@ -35,7 +35,7 @@ Template.Landing_page.onRendered(function landingPageOnRendered() {
       pauseOnHover: false,
       swipe: false,
       autoplay: true,
-      autoplaySpeed: 8000,
+      autoplaySpeed: 15000,
       infinite: true,
       speed: 1500,
       fade: true,

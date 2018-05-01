@@ -1,0 +1,22 @@
+<template name="Filters">
+	<div id="Filters-panel" class="animated out">
+    <div id="filter-buttons" class="{{filterMenuOpen}}">
+			<div class="byDiet {{filterMenuOpen}}">
+				<p class="{{filterMenuOpen}}">by diet</p>
+				<div class="buttons-holder">
+				{{#each diet in diets}}
+					<a href="#" class="filter-button diet-filter-button {{isActiveDiet diet}}" name="{{diet}}">{{diet}}</a>
+				{{/each}}
+				</div>
+			</div>
+			<div class="toAvoid {{filterMenuOpen}}">
+				<p class="{{filterMenuOpen}}">by allergens</p>
+				<div class="buttons-holder">
+				{{#each restriction in restrictions}}
+					<a href="#" class="filter-button restrictions-filter-button {{isActiveRestriction restriction}}" name="{{restriction}}">{{restriction}}</a>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

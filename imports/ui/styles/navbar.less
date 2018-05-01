@@ -1,14 +1,14 @@
 @import './utils.less';
 
 .navbar-fixed-top {
-  .position(fixed, 0, 0, auto, 0, @hundred, @nav-height);
+  .position(fixed, 0, 0, auto, 0, @hundred, @nav-height-m);
   background-color: #FFF;
   display: inline;
   transition: all 200ms ease-in;
   z-index: 10;
 
-  @media screen and (max-width: 600px) {
-    height: @nav-height-m;
+  @media screen and (min-width: 600px) {
+    display: none;
   }
 
   &.scrolled {
@@ -219,41 +219,4 @@
   .position(absolute, 50px, 0, auto, auto);
   display: flex;
   flex-direction: column;
-}
-
-#Modal {
-  .position(fixed, 0, 0, 0, 0, auto, auto);
-  z-index: 1;
-  background-color: rgba(0,0,0,.7);
-  transition: background-color 400ms;
-
-  span {
-    .position(fixed, 5px, 5px, auto, auto, 50px, 50px);
-    cursor: pointer;
-
-    i {
-      color: #FFF;
-    }
-  }
-
-  ul {
-    margin-top: 80px;
-    text-align: center;
-    padding-left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    li {
-      list-style-type: none;
-      color: #FFF;
-      font-weight: 400;
-      font-size: 2em;
-      font-weight: 600;
-      line-height: 2em;
-      width: 50%;
-      max-width: 200px;
-      cursor: pointer;
-    }
-  }
 }

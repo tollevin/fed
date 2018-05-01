@@ -1,6 +1,22 @@
 import './side-nav.html';
 
 Template.Side_Nav.onCreated(function menuItemOnCreated() {
+  this.showMenuLinks = new ReactiveVar(false);
+  this.showAboutLinks = new ReactiveVar(false);
+
+  this.autorun(() => {
+    const route = FlowRouter.getRouteName();
+    const isMenuPage = 'Menu' === route.split('.')[0];
+    const isAboutPage = 'About' === route.split('.')[0];
+    
+    if (isMenuPage) {
+      this.showMenuLinks.set(true);
+    };
+
+    if (isAboutPage) {
+      this.showAboutLinks.set(true);
+    };
+  });
 });
 
 Template.Side_Nav.helpers({
@@ -21,6 +37,14 @@ Template.Side_Nav.helpers({
     const active = page === route;
     return active && 'active';
   },
+
+  showMenuLinks() {
+    return Template.instance().showMenuLinks.get();
+  },
+
+  showAboutLinks() {
+    return Template.instance().showAboutLinks.get();
+  },
 });
 
 Template.Side_Nav.events({
@@ -28,8 +52,30 @@ Template.Side_Nav.events({
 		Session.set('sideNavOpen', false);
 	},
 
-  'click .js-logout'(event) {
-    // event.preventDefault();
+  'mouseenter .shop-menu-link, .menu-link-ul'() {
+    Template.instance().showMenuLinks.set(true);
+  },
+
+  'mouseenter .about-link, .about-link-ul'() {
+    Template.instance().showAboutLinks.set(true);
+  },
+
+  'mouseleave #Main-Nav'() {
+    const route = FlowRouter.getRouteName();
+    const isNotMenuPage = 'Menu' != route.split('.')[0];
+    const isNotAboutPage = 'About' != route.split('.')[0];
+
+    if (isNotMenuPage) {
+      Template.instance().showMenuLinks.set(false);
+    };
+
+    if (isNotAboutPage) {
+      Template.instance().showAboutLinks.set(false);
+    };
+  },
+
+  'click #logout'(event) {
+    event.preventDefault();
     // event.stopImmediatePropagation();
     Meteor.logout();
   },

@@ -1,23 +1,98 @@
 @import './utils.less';
 
 #cart {
-  .position(fixed, 185px, 0, 0, auto, @cart-width);
-  background-color: #d2d8d3;
-  background-image: linear-gradient(#d2d8d3, #bedcc3 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  text-align: left;
-  overflow-y: scroll;
-  transition: all 200ms linear;
-  z-index: 3;
-  padding: 10px;
+  position: fixed;
+  top: 54px;
+  width: 90%;
+  right: 1%;
+  background-color: #FFF;
+  max-width: 375px;
+  padding: 10px 10px;
+  box-shadow: 5px 5px 5px rgba(0,0,0,.2);
+  z-index: 5;
 
-  @media screen and (max-width: 645px) {
+  /*@media screen and (max-width: 645px) {
     top: 110px;
     width: 250px;
+  }*/
+
+  .cart-header {
+    p {
+      margin: 0 auto;
+      width: fit-content;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: @fgreene;
+      line-height: 20px;
+      border-bottom: 1px solid @fgreene;
+    }
   }
 
-  .pack-select {
+  .cart-preview {
+    position: relative;
+    height: 80%;
+    min-height: 300px;
+    width: 100%;
+    margin: 15px auto;
+    border: 1px inset #e3eae5;
+    background-color: #fbfffb;
+    text-align: center;
+    overflow-y: scroll;
+
+    p {
+      font-weight: 200;
+      letter-spacing: 1px;
+      font-size: 16px;
+    }
+
+    ul {
+      .position(absolute, 0,0,0,0);
+      margin: 0;
+      padding: 0;
+
+      li {
+        list-style-type: none;
+      }
+    }
+  }
+
+  .cart-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    p {
+      margin-right: auto;
+      margin-left: auto;
+      width: fit-content;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: @fgreene;
+      line-height: 20px;
+      padding: 0 10px;
+    }
+
+    #checkout {
+      border: 1px solid transparent;
+      color: #FFF;
+      background-color: @fgray;
+      border-radius: 5px;
+
+      &.ready {
+        color: #c0dbc3;
+        background-color: @fgreene;
+      }
+
+      @media screen and (max-width: 500px) {
+        right: 15%;
+      }
+    }
+  }
+}
+
+/*.pack-select {
     margin: 0px auto 20px;
 
 
@@ -95,10 +170,9 @@
     @media screen and (max-width: 500px) {
       right: 15%;
     }
-  }
-}
+  }*/
 
-// Toggle cart on mobile
+/*// Toggle cart on mobile
 .cart-open & {
   transform: translate3d(@cart-width, 0, 0);
   opacity: .85;
@@ -110,4 +184,4 @@
     opacity: 1;
     right: @cart-width;
   }
-}
+}*/
