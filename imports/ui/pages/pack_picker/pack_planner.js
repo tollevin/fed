@@ -53,7 +53,7 @@ export const getPack = (packType) => {
 export const generateDefaultPack = (pack, restrictions, itemChoices) => {
   const {
     total: totalPlates,
-    ...plateNumbers,
+    ...plateNumbers
   } = pack.plates;
 
   const rejectedFoods =
