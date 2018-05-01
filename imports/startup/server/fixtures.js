@@ -182,6 +182,9 @@ Meteor.startup(() => {
       itemIdsB.push(itemId);
     });
 
+
+    // asdjf;aldsjflk;j
+
     const snacks = [
       {"name":"Antioxidant Energy Bar","id":"SN-002","course":"Snack","description":"Superfruits and oats, wrapped in silky dark chocolate","ingredients":["figs","dates","cherries","mango","goji berry","sunflower seeds","oats","dark chocolate","sea salt"],"createdAt":"2016-10-31T06:23:06.107Z","userId":"dvC2r25nr8JkyaMhP","active":true,"photo":"/images/menu/0.jpg","cost_per_unit":2.07,"price_per_unit":3,"unit":"bar"},
       {"name":"Cranberry Energy Bites","id":"SN-003","course":"Snack","description":"Artisanal fruit & nut bites","ingredients":["dried cranberry","pistachio","dates","maple syrup","ground flax seeds","pumpkin seeds","chocolate chips"],"createdAt":"2016-10-10T08:57:41.409Z","userId":"dvC2r25nr8JkyaMhP","active":true,"photo":"/images/menu/00.jpg","cost_per_unit":2.29,"price_per_unit":3.5,"unit":"pouch"},
