@@ -194,6 +194,11 @@ Menus.schema = new SimpleSchema({
     label: 'Delivery Windows',
     optional: true,
   },
+  active: {
+    type: Boolean,
+    label: 'Active',
+    optional: true,
+  }
 });
 
 Menus.attachSchema(Menus.schema);

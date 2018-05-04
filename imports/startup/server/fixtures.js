@@ -1016,6 +1016,7 @@ Meteor.startup(() => {
         created_at: new Date,
         name: item.name,
         category: 'Pack',
+        subcategory: item.name.split(' ')[0],
         description: 'Fed ' + item.name,
         comments: {},
         ratings: {},
@@ -1031,7 +1032,8 @@ Meteor.startup(() => {
     const now = {
       date: moment().toDate(),
       items: itemIdsA,
-      id: 0
+      id: 0,
+      active: true
     };
     const nextWeek = {
       date: moment().add(1, 'week').toDate(),
@@ -1063,6 +1065,7 @@ Meteor.startup(() => {
         offline_at,
         ready_by,
         delivery_windows,
+        active: week.active,
       };
 
       const menuId = Menus.insert(menu);

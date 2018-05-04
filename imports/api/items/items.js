@@ -78,7 +78,6 @@ Items.schema = new SimpleSchema({
   subcategory: {
     type: String,
     label: "Subcategory",
-    allowedValues: ['Beef','Chicken','Fish','Soy','Vegetable','Grain','Salad','Soup'],
     optional: true,
   },
   photo: {
