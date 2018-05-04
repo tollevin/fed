@@ -11,6 +11,7 @@ import './pack-editor.html';
 import '../components/pack-editor-item.js';
 
 // Collections
+import { Menus } from '../../api/menus/menus.js';
 import { Items } from '../../api/items/items.js';
 
 // Pack schemas
