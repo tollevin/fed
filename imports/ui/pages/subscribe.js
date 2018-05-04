@@ -15,8 +15,6 @@ import { Items } from '../../api/items/items.js';
 import { updateOrder } from '../../api/orders/methods.js';
 import { usePromo } from '../../api/promos/methods.js';
 
-import { ALL_PACKS } from './pack_picker/all_packs.js';
-
 import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
   from './pack_picker/diet_food_restrictions.js';
 import { generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
