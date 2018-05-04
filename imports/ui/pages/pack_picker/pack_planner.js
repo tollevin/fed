@@ -45,14 +45,32 @@ const pickPlateIds = (plateTypeDishIds, numPlate) => {
 
 export const getPack = (packItems, packType) => {
   const {name: packName, number: packNumber} = packType;
-  return packItems[packName][packNumber];
+
+  const computedPackItems =
+    lodash
+      .chain(packItems)
+      .groupBy(({subcategory}) => subcategory)
+      .toPairs()
+      .map(([subcategory, subcategoryItemArray]) =>
+        [
+          subcategory,
+          lodash
+            .chain(subcategoryItemArray)
+            .map(({sub_items: {schema} }) => schema)
+            .keyBy(({total}) => total)
+            .value()
+        ])
+      .fromPairs()
+      .value();
+
+  return computedPackItems[packName][packNumber];
 }
 
 export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) => {
   const {
     total: totalPlates,
     ...plateNumbers
-  } = pack.plates;
+  } = pack;
 
   const rejectedFoods =
     lodash.difference(ALL_FOODS, restrictions)

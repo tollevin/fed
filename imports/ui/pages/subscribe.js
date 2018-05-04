@@ -284,14 +284,8 @@ Template.Subscribe.events({
     //////////// Experiment Pack Genration Code Start /////////////
     const packType = {name: "paleo", number: 12};
     const packItems = Items.find({category: "Pack"}).fetch();
-    console.log("packItems= %j", packItems);
     const pack = getPack(packItems, packType);
-
     const items = Items.find({category: "Meal"}).fetch();
-    
-
-    console.log("items = %j", items);
-
     const res = generateDefaultPack(pack, foodTypeArray, items, items, packItems);
     console.log("res = %j", res);
     //////////// Experiment Pack Genration Code End /////////////

@@ -1016,7 +1016,7 @@ Meteor.startup(() => {
         created_at: new Date,
         name: item.name,
         category: 'Pack',
-        subcategory: item.name.split(' ')[0],
+        subcategory: item.name.split(' ')[0].toLowerCase(),
         description: 'Fed ' + item.name,
         comments: {},
         ratings: {},
