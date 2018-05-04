@@ -1,5 +1,3 @@
-import { ALL_PACKS } from './all_packs.js';
-import { ALL_ITEMS } from './all_items.js';
 import { ALL_FOODS } from './diet_food_restrictions.js';
 
 const RESTRICTION_TO_ITEM_RESTRICTION = {
@@ -45,12 +43,12 @@ const pickPlateIds = (plateTypeDishIds, numPlate) => {
   return repeatedSelection.concat(leftoverDishes);
 }
 
-export const getPack = (packType) => {
+export const getPack = (packItems, packType) => {
   const {name: packName, number: packNumber} = packType;
-  return ALL_PACKS[packName][packNumber];
+  return packItems[packName][packNumber];
 }
 
-export const generateDefaultPack = (pack, restrictions, itemChoices) => {
+export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) => {
   const {
     total: totalPlates,
     ...plateNumbers
@@ -60,7 +58,7 @@ export const generateDefaultPack = (pack, restrictions, itemChoices) => {
     lodash.difference(ALL_FOODS, restrictions)
 
   const allowedDishes =
-    lodash.filter(ALL_ITEMS, ({warnings}) =>
+    lodash.filter(allItems, ({warnings}) =>
       !lodash.some(rejectedFoods, (food) =>
         warnings[RESTRICTION_TO_ITEM_RESTRICTION[food]]));
 
@@ -72,7 +70,7 @@ export const generateDefaultPack = (pack, restrictions, itemChoices) => {
       .chain(plateNumbers)
       .toPairs()
       .map(([plateType, numPlate]) => {
-        const plateTypeDishIds = lodash.map(categoryGroupedDishes[plateType], "id");
+        const plateTypeDishIds = lodash.map(categoryGroupedDishes[plateType], "_id");
         const plateSelection = pickPlateIds(plateTypeDishIds, numPlate);
         return plateSelection;
       })
@@ -84,7 +82,7 @@ export const generateDefaultPack = (pack, restrictions, itemChoices) => {
     lodash.chain(idcounts)
       .toPairs()
       .map(([plateId, numberOfPlate]) =>
-        [numberOfPlate, lodash.find(itemChoices, (item) => item.id === +plateId)])
+        [numberOfPlate, lodash.find(itemChoices, (item) => item._id === plateId)])
       .value();
 
   const numDishes = numberToItem.reduce((sum, [num]) => sum + num, 0);

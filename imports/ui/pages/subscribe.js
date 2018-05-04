@@ -16,7 +16,7 @@ import { updateOrder } from '../../api/orders/methods.js';
 import { usePromo } from '../../api/promos/methods.js';
 
 import { ALL_PACKS } from './pack_picker/all_packs.js';
-import { ALL_ITEMS } from './pack_picker/all_items.js';
+
 import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
   from './pack_picker/diet_food_restrictions.js';
 import { generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
@@ -61,6 +61,7 @@ Template.Subscribe.onCreated(function subscribeOnCreated() {
     this.subscribe('thisUserData');
     this.subscribe('DeliveryWindows.nextTwoWeeks', now);
     this.subscribe('Items.packs');
+    this.subscribe('items.all');
   });
 });
 
@@ -282,8 +283,16 @@ Template.Subscribe.events({
 
     //////////// Experiment Pack Genration Code Start /////////////
     const packType = {name: "paleo", number: 12};
-    const pack = getPack(packType);
-    const res = generateDefaultPack(pack, foodTypeArray, ALL_ITEMS);
+    const packItems = Items.find({category: "Pack"}).fetch();
+    console.log("packItems= %j", packItems);
+    const pack = getPack(packItems, packType);
+
+    const items = Items.find({category: "Meal"}).fetch();
+    
+
+    console.log("items = %j", items);
+
+    const res = generateDefaultPack(pack, foodTypeArray, items, items, packItems);
     console.log("res = %j", res);
     //////////// Experiment Pack Genration Code End /////////////
 
