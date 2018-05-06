@@ -11,6 +11,9 @@
 						<li>
 							<span class="item-tally" name={{@index}}>{{item.value}}</span>
 							<span class="item-name" name={{@index}}>{{item.name}}</span>
+							{{#if isPlan item}}
+								<span class="item-plan" name={{@index}}> Plan</span>
+							{{/if}}
 						</li>
 					{{/each}}
 					</ul>

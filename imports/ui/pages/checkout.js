@@ -207,6 +207,16 @@ Template.Checkout_page.helpers({
     return result;
   },
 
+  isPlan(item) {
+    var subscriptions = Session.get('orderId').subscriptions;
+    if (subscriptions) {
+      for (var i = subscriptions.length - 1; i >= 0; i--) {
+        var subItemName = subscriptions[i].item_name;
+        if (subItemName === item.name) return true;
+      };
+    };
+  },
+
   price() {
     return "$" + Template.instance().order.subtotal.get().toFixed(2);
   },

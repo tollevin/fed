@@ -170,6 +170,11 @@ Plans.schema = new SimpleSchema({
       type: "hidden"
     }
   },
+  item_name: {
+    type: String,
+    label: 'Item Name',
+    optional: true,
+  },
   // livemode: {
   //   type: Boolean,
   //   label: 'ID',

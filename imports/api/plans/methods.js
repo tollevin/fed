@@ -21,7 +21,8 @@ import {
 export const insertPlan = new ValidatedMethod({
 	name: 'Plans.insert',
   validate: new SimpleSchema({
-	  item_id: { type: String },
+    item_id: { type: String },
+    item_name: { type: String, optional: true },
 	  percent_off: { type: Number, optional: true },
 	  quantity: { type: Number, optional: true },
 	  frequency: { type: Number, optional: true },
@@ -30,10 +31,11 @@ export const insertPlan = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ item_id, percent_off, quantity, frequency, tax_percent }) {
+  run({ item_id, item_name, percent_off, quantity, frequency, tax_percent }) {
 
   	const newPlan = { 
 		  item_id,
+      item_name,
 		  created_at: new Date(),
 		  canceled_at: null,
 		  percent_off: percent_off || 5,

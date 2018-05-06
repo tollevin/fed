@@ -43,12 +43,13 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   Session.setDefault('filters', filters);
   Session.setDefault('selector',{});
 
-  // If editing a pack, figure that out...
+  // If order.subscription, set diet and packSize
+  if (order && order.subscriptions) {
 
-  // If order.subscription, set diet and packSize 
+  };
 
   this.diet = new ReactiveVar(Session.get('filters').diet);
-  this.packSize = new ReactiveVar('6');
+  this.packSize = new ReactiveVar(6);
   this.priceChange = new ReactiveVar(0);
   this.schema = new ReactiveVar({
     protein:0,
@@ -58,18 +59,32 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     soup:0,
     total:0
   });
+  this.order = new ReactiveVar(Session.get('Order'));
+
+  // If they have a pack in their order, open that pack to edit
+  var order = this.order.get();
+  if (order && order.items) {
+    for (var i = order.items.length - 1; i >= 0; i--) {
+      if (order.items[i].category === 'Pack') { // FIX if more than meal packs / more than 1 pack?
+        Session.set('pack', order.items[i]);
+        this.diet.set(order.items[i].name.split(' ')[0]);
+        this.packSize.set(order.items[i].sub_items.schema.total);
+        order.items.splice(i, 1);
+      };
+    };
+  };
+  this.order.set(order);
 
   this.autorun(() => {
     this.subscribe('Menus.active');
     this.subscribe('Items.packs');
 
     if (this.subscriptionsReady()) {
-      this.diet.set(Session.get('filters').diet);
-      var diet = Session.get('filters').diet;
-      var packSize = this.packSize.get();
-      var packName = diet + ' ' + packSize + '-Pack';
-      var pack = Items.findOne({name: packName});
-      Session.set('pack', pack);
+      // var diet = this.diet.get();
+      // var packSize = this.packSize.get();
+      // var packName = diet + ' ' + packSize + '-Pack';
+      // var pack = Items.findOne({name: packName});
+      // Session.set('pack', pack); // Overwrites any pack...
 
       var menu = Menus.findOne({});
       var data = {
@@ -83,7 +98,6 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
 });
 
 Template.Pack_Editor.onRendered(function packEditorOnRendered() {
-
 });
 
 Template.Pack_Editor.onDestroyed(function packEditorOnDestroyed() {
@@ -91,6 +105,18 @@ Template.Pack_Editor.onDestroyed(function packEditorOnDestroyed() {
 });
 
 Template.Pack_Editor.helpers({
+  selectedDiet: (diet)=> {
+    if (diet === Template.instance().diet.get()) {
+      return 'selected';
+    };
+  },
+
+  selectedNumber: (packSize)=> {
+    if (packSize === Template.instance().packSize.get()) {
+      return 'selected';
+    };
+  },
+
   packPrice: ()=> {
     return Session.get('pack') && Session.get('pack').price_per_unit;
   },
@@ -229,7 +255,6 @@ Template.Pack_Editor.helpers({
 
 Template.Pack_Editor.events({
   'change .diet'(event, template) {
-    console.log(2);
     // set diet to filters.diet
     // add basic restrictions   
     const filter = event.currentTarget.value;
@@ -281,12 +306,23 @@ Template.Pack_Editor.events({
 
     existingFilters.diet = filter;
     Session.set('filters', existingFilters);
+
+    Template.instance().diet.set(filter);
+    var packSize = Template.instance().packSize.get();
+    var packName = filter + ' ' + packSize + '-Pack';
+    var pack = Items.findOne({name: packName});
+    Session.set('pack', pack);
   },
 
   'change .packSize'(event, template) {
     const input = event.target.value;
     const name = event.target.name;
     template[name].set(input);
+
+    var diet = Template.instance().diet.get();
+    var packName = diet + ' ' + input + '-Pack';
+    var pack = Items.findOne({name: packName});
+    Session.set('pack', pack);
   },
 
   'click .accordion'(event, template) {
@@ -467,10 +503,14 @@ Template.Pack_Editor.events({
     Session.set('overlay', 'loading');
 
     var pack = Session.get('pack');
-    var order = Session.get('Order');
+    var order = Template.instance().order.get();
     var menu = Session.get('menu');
 
-    order.items ? order.items.push(pack) : order.items = [pack];
+    for (var i = order.items.length - 1; i >= 0; i--) {
+      order.items[i]
+    }
+
+    order.items.push(pack);
     Session.set('Order', order);
     Session.set('pack', null);
 

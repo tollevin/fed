@@ -1,23 +1,23 @@
 <template name="Pack_Editor">
-	<div id="Pack-Editor">
+	<div id="Pack-Editor" class="pack-editor">
 		<div class="editor-head">
 			<h2>Choose your meals</h2>
 			<div class="pack-info">
 				<div class="pack-selects">
 					<div class="selects-wrapper">
 						<select class="diet" autofocus="autofocus" name="diet">
-							<option value="Omnivore" selected="selected">Omnivore</option>
-							<option value="Paleo">Paleo</option>
-							<option value="Pescetarian">Pescetarian</option>
-							<option value="Vegetarian">Vegetarian</option>
-							<option value="Vegan">Vegan</option>
+							<option value="Omnivore" selected="{{selectedDiet 'Omnivore'}}">Omnivore</option>
+							<option value="Paleo" selected="{{selectedDiet 'Paleo'}}">Paleo</option>
+							<option value="Pescetarian" selected="{{selectedDiet 'Pescetarian'}}">Pescetarian</option>
+							<option value="Vegetarian" selected="{{selectedDiet 'Vegetarian'}}">Vegetarian</option>
+							<option value="Vegan" selected="{{selectedDiet 'Vegan'}}">Vegan</option>
 						</select>
 						<select class="packSize" name="packSize">
-							<option value="4">4 - Pack</option>
-							<option value="6" selected="selected">6 - Pack</option>
-							<option value="8">8 - Pack</option>
-							<option value="10">10 - Pack</option>
-							<option value="12">12 - Pack</option>
+							<option value="4" selected="{{selectedNumber 4}}">4 - Pack</option>
+							<option value="6" selected="{{selectedNumber 6}}">6 - Pack</option>
+							<option value="8" selected="{{selectedNumber 8}}">8 - Pack</option>
+							<option value="10" selected="{{selectedNumber 10}}">10 - Pack</option>
+							<option value="12" selected="{{selectedNumber 12}}">12 - Pack</option>
 						</select>
 					</div>
 					<span>Click to edit</span>

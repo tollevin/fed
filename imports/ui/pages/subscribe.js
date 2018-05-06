@@ -44,8 +44,11 @@ import '../components/pack-editor.js';
 
 
 Template.Subscribe.onCreated(function subscribeOnCreated() {
-  this.userHasPromo = new ReactiveVar(false);
+  if (!Meteor.userId()) {
+    FlowRouter.go('join');
+  };
 
+  this.userHasPromo = new ReactiveVar(false);
 	Session.set('cartOpen', false);
   Session.setDefault('stage', 0);
   this.diet = new ReactiveVar('omnivore');
@@ -83,7 +86,7 @@ Template.Subscribe.helpers({
         var cf = 'plan';
         break;
       case 2:
-        var cf = 'payment';
+        var cf = 'meals';
         break;
       case 3:
         var cf = 'delivery';
@@ -107,7 +110,7 @@ Template.Subscribe.helpers({
     return (Session.get('stage') === 1);
   },
 
-  payment() {
+  meals() {
     return (Session.get('stage') === 2);
   },
 
@@ -281,12 +284,12 @@ Template.Subscribe.events({
     const foodTypeArray = dietNameToFoodTypeArray(dietName);
 
     //////////// Experiment Pack Genration Code Start /////////////
-    const packType = {name: "paleo", number: 12};
-    const packItems = Items.find({category: "Pack"}).fetch();
-    const pack = getPack(packItems, packType);
-    const items = Items.find({category: "Meal"}).fetch();
-    const res = generateDefaultPack(pack, foodTypeArray, items, items, packItems);
-    console.log("res = %j", res);
+    // const packType = {name: "paleo", number: 12};
+    // const packItems = Items.find({category: "Pack"}).fetch();
+    // const pack = getPack(packItems, packType);
+    // const items = Items.find({category: "Meal"}).fetch();
+    // const res = generateDefaultPack(pack, foodTypeArray, items, items, packItems);
+    // console.log("res = %j", res);
     //////////// Experiment Pack Genration Code End /////////////
 
     selectRelevantFoods(foodTypeArray);
@@ -393,6 +396,8 @@ Template.Subscribe.events({
         planExists = insertPlan.call(data);
       };
 
+      planExists.item_name = packName;
+
       let order;
       if (Session.get('Order')) {
         order = Session.get('Order');
@@ -449,7 +454,7 @@ Template.Subscribe.events({
       Session.set('filters', filters);
       Session.set('Order', order);
       Session.set('loading', false);
-      Session.set('overlay','packEditor');
+      Session.set('stage', 2);
     } else {
       sAlert.error("Please choose a plan");
     };
