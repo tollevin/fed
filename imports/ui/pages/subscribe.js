@@ -38,6 +38,7 @@ import '../components/trial-signup.js';
 import '../components/pack-schemas.js';
 import '../components/stripe-card-element.js';
 import '../components/delivery-day-toggle.js';
+import '../components/pack-editor.js';
 
 
 
@@ -59,7 +60,7 @@ Template.Subscribe.onCreated(function subscribeOnCreated() {
     this.subscribe('thisUserData');
     this.subscribe('DeliveryWindows.nextTwoWeeks', now);
     this.subscribe('Items.packs');
-    this.subscribe('items.all');
+    // this.subscribe('Menus.active');
   });
 });
 

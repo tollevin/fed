@@ -22,7 +22,7 @@ Meteor.methods({
         $set: data,
       });
 
-      if (!user.credit) user.credit = 0;
+      if (user && !user.credit) user.credit = 0;
 
       var creditUpdated = (user.credit != data.credit) && ('Updating credit for ' + user.first_name + ' ' + user.last_name + ': $' + user.credit + ' to $' + data.credit); 
       if (creditUpdated) {
