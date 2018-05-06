@@ -499,7 +499,7 @@ export const findUserFutureOrders = new ValidatedMethod({
     const weekStart = moment(timestamp).startOf('week').toDate();
 
     const args = {
-      user_id: id,
+      user_id: user_id,
       ready_by: { $gte: weekStart },
     };
     

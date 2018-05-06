@@ -6,14 +6,40 @@ import { createDeliveryWindows } from '../../api/delivery/methods.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  // const subscribers = Meteor.users.find({"subscriptions.quantity": { $gt: 0 }}).fetch();
-  // for (var i = subscribers.length - 1; i >= 0; i--) {
-  //   const oldSub = subscribers[i].subscriptions;
-  //   const oldPlan = Number(oldSub.plan.id.split('PP')[0]);
-  //   const oldDiscount = Number(oldSub.discount.coupon.id.split('Sub')[1]);
-  // }
+  const subscribers = Meteor.users.find({"subscriptions.status": { $nin: ['canceled', null] }}).fetch();
+  for (var i = subscribers.length - 1; i >= 0; i--) {
+    const oldSub = subscribers[i].subscriptions;
 
-  if (Items.find().count() === 0) {
+    const oldPlan = Number(oldSub.plan.id.split('PP')[0]);
+    const oldDiscount = Number(oldSub.discount.coupon.id.split('Sub')[1]);
+    const oldCreated = new Date (oldSub.created * 1000);
+
+    const newPlanItemName = subscribers[i].diet + ' ' + oldPlan + '-Pack';
+    const subItem = Items.findOne({name: newPlanItemName});
+
+    const newSub = [{
+      item_id: subItem._id,
+      created_at: oldCreated,
+      canceled_at: null,
+      percent_off: oldDiscount,
+      quantity: 1,
+      frequency: 7,
+      tax_percent: 8.875,
+      _id: null,
+      status: 'active',
+      item_name: newPlanItemName,
+      subscribed_at: oldCreated
+    }];
+
+    Meteor.users.update({ _id: subscibers[i]._id }, {
+      $set: {
+        past_subscriptions: oldSub,
+        subscriptions: newSub,
+      }
+    });
+  };
+
+  // if (Items.find().count() === 0) {
     console.log('Creating fixtures...');
 
     // When using API 1.0 items, manually change "course":"Dish" to "category":"Meal","subcategory":""
@@ -1084,5 +1110,5 @@ Meteor.startup(() => {
 
       // for each current subscriber, generate pending-sub order
     });
-  };
+  // };
 });

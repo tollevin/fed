@@ -84,7 +84,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
     });
 
     if (handle.ready()) {
-      const userId = Meteor.userId();
+      const user_id = Meteor.userId();
       const timestamp = moment().toDate();
 
       // delete?
@@ -96,8 +96,13 @@ Template.App_body.onCreated(function appBodyOnCreated() {
 
       if (Meteor.user() && Meteor.user().subscriptions) {
         // GET ORDER
-        const order = findUserFutureOrders(userId, timestamp);
-        Session.setDefault('Order', order);
+        const data = {
+          user_id,
+          timestamp
+        };
+
+        const orders = findUserFutureOrders.call(data);
+        Session.setDefault('Order', orders[0]);
         Session.set('subscribed', true);
       } else {
         Session.set('subscribed', false);

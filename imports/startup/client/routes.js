@@ -16,6 +16,7 @@ import '../../ui/pages/checkout.js';
 import '../../ui/pages/success.js';
 import '../../ui/pages/account-page.js';
 import '../../ui/pages/subscribe.js';
+import '../../ui/pages/my-subscriptions.js';
 import '../../ui/pages/packs.js';
 import '../../ui/pages/gift-cards.js';
 import '../../ui/pages/sign-up.js';
@@ -130,6 +131,13 @@ FlowRouter.route('/subscribe', {
   name: 'Subscribe',
   action() {
     BlazeLayout.render('App_body', { main: 'Subscribe' });
+  },
+});
+
+FlowRouter.route('/subscriptions', {
+  name: 'My.subscriptions',
+  action() {
+    BlazeLayout.render('App_body', { main: 'My_Subscriptions' });
   },
 });
 
