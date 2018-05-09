@@ -10,6 +10,7 @@ BrowserPolicy.content.allowOriginForAll( 'https://getfednyc.com' );
 BrowserPolicy.content.allowOriginForAll( '*.google.com' );
 BrowserPolicy.content.allowOriginForAll( '*.google-analytics.com' );
 BrowserPolicy.content.allowOriginForAll( '*.googletagmanager.com' );
+BrowserPolicy.content.allowOriginForAll( '*.googleapis.com' );
 BrowserPolicy.content.allowOriginForAll( '*.optimizely.com' );
 BrowserPolicy.content.allowOriginForAll( '*.doubleclick.net' );
 BrowserPolicy.content.allowOriginForAll( '*.facebook.net' );
