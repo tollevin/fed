@@ -121,24 +121,9 @@ Template.Menu_item.events({
       // Ping here (GA)
       // Possibly Ping here if adding to an empty cart (GA)
 
-      let packWithSpace;
-      for (var i = order.items.length - 1; i >= 0; i--) {
-        if (order.items[i].category.toLowerCase() === 'pack' && item.category === 'Meal' && order.items[i].sub_items.schema.total > order.items[i].sub_items.items.length) {
-          packWithSpace = {
-            index: i, 
-            pack: order.items[i],
-          };
-        };
-      };
-
-      if (packWithSpace) {
-        packWithSpace.pack.sub_items.items.push(item);
-        order.items[packWithSpace.index] = packWithSpace.pack;
-        Session.set('Order', order);
-      } else {
-        order.items.push(item);
-        Session.set('Order', order);
-      };
+      
+      order.items.push(item);
+      Session.set('Order', order);
     } else {
       FlowRouter.go('join');
     }
@@ -162,31 +147,17 @@ Template.Menu_item.events({
       // Ping here (GA)
       // Possibly Ping here if adding to an empty cart (GA)
       let itemInCart;
-      let packWithItem;
+      // let packWithItem;
       for (var i = order.items.length - 1; i >= 0; i--) {
         if (order.items[i]._id === item._id) {
           itemInCart = {
             index: i,
           };
-        } else if (order.items[i].category.toLowerCase() === 'pack') {
-          for (var j = order.items[i].sub_items.items.length - 1; j >= 0; j--) {
-            if (!packWithItem && order.items[i].sub_items.items[j]._id === item._id) {
-              packWithItem = {
-                index: i,
-                itemIndex: j,
-                pack: order.items[i],
-              };
-            };
-          }
         };
       };
 
       if (itemInCart) {
         order.items.splice(itemInCart.index, 1);
-        Session.set('Order', order);
-      } else if (packWithItem) {
-        packWithItem.pack.sub_items.items.splice(packWithItem.itemIndex, 1);
-        order.items[packWithItem.index] = packWithItem.pack;
         Session.set('Order', order);
       };
     } else {

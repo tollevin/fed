@@ -21,7 +21,8 @@ import {
 
 // Methods
 import {
-  insertOrder
+  insertOrder,
+  updateOrder
 } from '../../api/orders/methods.js'
 
 Template.Pack_Editor.onCreated(function packEditorOnCreated() {
@@ -43,11 +44,6 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   Session.setDefault('filters', filters);
   Session.setDefault('selector',{});
 
-  // If order.subscription, set diet and packSize
-  if (order && order.subscriptions) {
-
-  };
-
   this.diet = new ReactiveVar(Session.get('filters').diet);
   this.packSize = new ReactiveVar(6);
   this.priceChange = new ReactiveVar(0);
@@ -60,9 +56,20 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     total:0
   });
   this.order = new ReactiveVar(Session.get('Order'));
+  var order = this.order.get();
+
+  // If order.subscription, set diet and packSize
+  // if (order && order.subscriptions.length > 0) {
+  //   var packName = order.subscriptions.item_name;
+  //   this.diet.set(packName.split('')[0]);
+  //   this.packSize.set(packName.split('')[1].split('-')[0]);
+  // };
+
+  // If they have a pending-sub order, open that pack to edit
+  var orderId = Session.get('orderId');
+  if (orderId) order = orderId;
 
   // If they have a pack in their order, open that pack to edit
-  var order = this.order.get();
   if (order && order.items) {
     for (var i = order.items.length - 1; i >= 0; i--) {
       if (order.items[i].category === 'Pack') { // FIX if more than meal packs / more than 1 pack?
@@ -73,6 +80,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
       };
     };
   };
+
   this.order.set(order);
 
   this.autorun(() => {
@@ -80,11 +88,13 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     this.subscribe('Items.packs');
 
     if (this.subscriptionsReady()) {
-      // var diet = this.diet.get();
-      // var packSize = this.packSize.get();
-      // var packName = diet + ' ' + packSize + '-Pack';
-      // var pack = Items.findOne({name: packName});
-      // Session.set('pack', pack); // Overwrites any pack...
+      if (!Session.get('pack')) {
+        var diet = this.diet.get();
+        var packSize = this.packSize.get();
+        var packName = diet + ' ' + packSize + '-Pack';
+        var pack = Items.findOne({name: packName});
+        Session.setDefault('pack', pack); 
+      };
 
       var menu = Menus.findOne({});
       var data = {
@@ -432,8 +442,8 @@ Template.Pack_Editor.events({
             for (var i = panels.length - 1; i >= 0; i--) {
               if (panels[i].style.maxHeight) {
                 // close current panel, restyle
-                panels[i].style.maxHeight = null;
-                accordions[i].classList.remove('open');
+                // panels[i].style.maxHeight = null;
+                // accordions[i].classList.remove('open');
                 accordions[i].classList.add('filled');
 
                 // open next panel
@@ -450,6 +460,7 @@ Template.Pack_Editor.events({
         Session.set('pack', pack);
       };
     } else {
+      Session.set('overlay','pause');
       FlowRouter.go('join');
     }
   },
@@ -491,8 +502,12 @@ Template.Pack_Editor.events({
   'click .cancel'(event, template) {
     event.preventDefault();
 
+    var order = Session.get('Order');
+    order.style = 'alacarte';
+    Session.set('Order', order);
     Session.set('pack', null);
     Session.set('overlay', false);
+
   },
 
   'click .toShop'(event, template) {
@@ -505,26 +520,34 @@ Template.Pack_Editor.events({
     var pack = Session.get('pack');
     var order = Template.instance().order.get();
     var menu = Session.get('menu');
+    
+    // if order._id, update instead of insert
+    if (order._id) {
+      // replace pack
+      for (var i = order.items.length - 1; i >= 0; i--) {
+        if (order.items[i]._id === pack._id) order.items[i] = pack;
+      };
+      // update order
+      updateOrder.call(order)
+    } else {
 
-    for (var i = order.items.length - 1; i >= 0; i--) {
-      order.items[i]
-    }
+      order.items.push(pack);
+      Session.set('Order', order);
+      Session.set('pack', null);
 
-    order.items.push(pack);
-    Session.set('Order', order);
-    Session.set('pack', null);
+      const orderToCreate = {
+        user_id: Meteor.userId(),
+        menu_id: menu._id,
+        style: order.style,
+        week_of: order.week_of,
+        items: order.items,
+        subscriptions: order.subscriptions,
+      };
 
-    const orderToCreate = {
-      user_id: Meteor.userId(),
-      menu_id: menu._id,
-      style: order.style,
-      week_of: order.week_of,
-      items: order.items,
-      subscriptions: order.subscriptions,
+      const orderId = insertOrder.call(orderToCreate);
+      Session.set('orderId', orderId);
     };
 
-    const orderId = insertOrder.call(orderToCreate);
-    Session.set('orderId', orderId);
     Session.set('overlay', null);
     FlowRouter.go('/checkout');
   },

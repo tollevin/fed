@@ -18,25 +18,25 @@ Meteor.methods({
     try {
       const user = Meteor.users.findOne({ _id: user_id });
 
-      const updated = Meteor.users.update({ _id: user_id }, {
+      if (user && !user.credit) user.credit = 0;
+
+      const updated = Meteor.users.update({ _id: user._id }, {
         $set: data,
       });
 
-      if (user && !user.credit) user.credit = 0;
+      // var creditUpdated = (user.credit != data.credit) && ('Updating credit for ' + user.first_name + ' ' + user.last_name + ': $' + user.credit + ' to $' + data.credit); 
+      // if (creditUpdated) {
+      //   console.log(creditUpdated);
+      // };
 
-      var creditUpdated = (user.credit != data.credit) && ('Updating credit for ' + user.first_name + ' ' + user.last_name + ': $' + user.credit + ' to $' + data.credit); 
-      if (creditUpdated) {
-        console.log(creditUpdated);
-      };
+      // if (data.credit) {
+      //   const args = {
+      //     id: user.stripe_id,
+      //     account_balance: data.credit,
+      //   };
 
-      if (data.credit) {
-        const args = {
-          id: user.stripe_id,
-          account_balance: data.credit,
-        };
-
-        Meteor.call('updateStripeCredit', args);
-      };
+      //   Meteor.call('updateStripeCredit', args);
+      // };
 
       return (Meteor.users.findOne({ _id: user_id }));
     } catch (err) {
@@ -107,6 +107,24 @@ Meteor.methods({
     };
   },
 
+  async getUserSubscriptionItems(user_id) {
+    try {
+      const user = Meteor.users.findOne({ _id: user_id });
+      const subscriptions = user.subscriptions;
+      var items = [];
+
+      for (var i = subscriptions.length - 1; i >= 0; i--) {
+        var subItem = Items.findOne({_id: subscriptions[i].item_id});
+        items.push(subItem);
+      };
+
+      return items;
+    } catch (err) {
+      console.log(err);
+      throw new Meteor.Error(err.statusCode, err.message);
+    };
+  },
+
   async sendOrderConfirmationEmail(user_id,data) {
     try {
       const user = Meteor.users.findOne({ _id: user_id });
@@ -125,10 +143,6 @@ Meteor.methods({
 
       var emailData = data;
       emailData.email = user.emails[0].address;
-      emailData.packItems = [];
-      for (var i = emailData.items.length - 1; i >= 0; i--) {
-        emailData.packItems[i] = Items.findOne({name: emailData.items[i]});
-      };
 
       const dw = DeliveryWindows.findOne({_id: emailData.delivery_window_id});
       const endDate = moment(dw.delivery_start_time).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
@@ -143,6 +157,8 @@ Meteor.methods({
         subject: "Your custom order with Fed",
         html: SSR.render('htmlEmail', emailData),
       });
+
+      console.log(emailData);
 
       return true;
     } catch (err) {

@@ -1,6 +1,5 @@
 <template name="My_Orders">
 	<div id="my-orders" class="page">
-		{{#if hasOrders}}
 		{{#if Template.subscriptionsReady}}
 			<h2>My Orders</h2>
 			<div id="next-order">
@@ -13,7 +12,7 @@
 					{{#each futureOrders}}
 						{{> orderToggle}}
 					{{/each}}
-				{{#else}}
+				{{else}}
 					<a href="/subscribe">Subscribe Today for dependable nutrition</a>
 				{{/if}}
 			</div>

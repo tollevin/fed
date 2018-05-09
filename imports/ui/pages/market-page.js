@@ -5,7 +5,7 @@ import { Session } from 'meteor/session';
 import moment from 'moment';
 import Isotope from 'isotope-layout';
 
-import './menu-page.html';
+import './market-page.html';
 
 // Collections
 import { Items } from '../../api/items/items.js';
@@ -19,9 +19,9 @@ import '../components/menu-toolbar.js';
 
 import { cartSlots } from '../lib/helpers.js';
 
-Template.Menu_page.onCreated(function menuPageOnCreated() {
+Template.Market_page.onCreated(function marketPageOnCreated() {
 	// Session.setDefault('PackSelected', false);
-	// Session.setDefault('filterMenuOpen', false);
+	// Session.setDefault('filterMarketOpen', false);
 	Session.set('processing', false);
 	var filters = {
 		diet: 'Omnivore',
@@ -41,35 +41,19 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	Session.setDefault('filters', filters);
 	Session.setDefault('selector',{});
 
-	var insertedOrder = Session.get('orderId');
-	if (insertedOrder) {
-		
-	}
-
   // const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
 	this.autorun(() => {
 		const handle = this.subscribe('Menus.active');
 
 		if (handle.ready()) {
-			// Set Session menu data if none
 			var menu = Menus.findOne({});
 			var data = {
 				_id: menu._id,
 				ready_by: menu.ready_by,
 				delivery_windows: menu.delivery_windows
 			};
-
 			Session.setDefault('menu', data);
-
-			// 
-			var order = Session.get('Order');
-			var pack = Session.get('pack');
-
-			// If unfull pack, pull up pack editor
-			if (pack && pack.sub_items.items.length < pack.sub_items.schema.total) {
-				Session.set('overlay', 'packEditor');
-			};
 		};
 
 		// this.subscribe('items.active');
@@ -119,16 +103,11 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	// };
 });
 
-Template.Menu_page.onRendered(function menuPageOnRendered() {
+Template.Market_page.onRendered(function marketPageOnRendered() {
 	
 });
 
-Template.Menu_page.onDestroyed(function menuPageOnDestroyed() {
-	// Session.set('Back', Session.get('overlay'))
-	Session.set('overlay', false);
-});
-
-Template.Menu_page.helpers({
+Template.Market_page.helpers({
 	// pack: ()=> {
 	// 	return Session.get('PackSelected');  
 	// },
@@ -154,7 +133,7 @@ Template.Menu_page.helpers({
 	// },
 });
 
-Template.Menu_meals.helpers({
+Template.Market_meals.helpers({
 	meals: ()=> {
 		var selector = {
 			"category": "Meal",
@@ -171,19 +150,19 @@ Template.Menu_meals.helpers({
 	},
 });
 
-Template.Menu_snacks.helpers({
+Template.Market_snacks.helpers({
 	snacks: ()=> {
 		return Items.find({category: 'Snack'});
 	},
 });
 
-Template.Menu_drinks.helpers({
+Template.Market_drinks.helpers({
 	drinks: ()=> {
 		return Items.find({category: 'Drink'});
 	},
 });
 
-Template.Menu_packs.helpers({
+Template.Market_packs.helpers({
 	packs: ()=> {
 		return Items.find({category: 'Pack'});
 	},
@@ -192,7 +171,7 @@ Template.Menu_packs.helpers({
 
 
 
-Template.Menu_page.events({
+Template.Market_page.events({
 	// 'click #Filters-panel'(event) {
 	// 	event.stopImmediatePropagation();
 	// },

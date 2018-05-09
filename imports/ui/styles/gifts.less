@@ -15,6 +15,78 @@
 		cursor: pointer;
 	}
 
+	h1 {
+		font-size: 30px;
+		width: 90%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+	}
+
+	.md-banner {
+		width: 90%;
+		max-width: 900px;
+		margin-left: auto;
+		margin-right: auto;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .message-wrapper {
+    	padding: 5px;
+    	width: 100%;
+			max-width: 500px;
+			margin-bottom: 20px;
+
+			@media screen and (min-width: 450px) {
+				width: 40%;
+			}
+
+			.message {
+				border: 1px solid @fgreene;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 10px;
+
+				.title {
+					color: @fgreene;
+					text-align: center;
+					text-transform: uppercase;
+					letter-spacing: 1px;
+					margin-top: -23px;
+					background-color: #fefffa;
+					display: block;
+			    width: fit-content;
+			    padding-right: 5px;
+			    padding-left: 5px;
+				}
+
+				.msg {
+
+				}
+
+				.promo {
+					font-weight: 400;
+				}
+			}
+		}
+
+		.mom-img {
+			width: 100%;
+			max-width: 500px;
+			margin-right: 5px;
+			margin-left: 5px;
+
+			@media screen and (min-width: 450px) {
+				width: 40%;
+			}
+		}
+	}
+
 	.panel-wrapper {
     width: 90%;
     max-width: 900px;
@@ -168,6 +240,7 @@
 	    border-radius: 5px;
 	    text-align: center;
 	    padding: 15px;
+	    margin-top: 40px;
 
 	    @media screen and (max-width: 924px) {
 				margin-bottom: 30px;

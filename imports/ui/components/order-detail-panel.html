@@ -1,0 +1,40 @@
+<template name="Order_detail_panel">
+	<div class="order-detail-panel">
+		<div class="order-detail-toggle">
+			<div class="text">
+				<div class="delivery-date">
+					<span class="date">{{date}}</span> 
+					<span class="time">{{time}}</span>
+				</div>
+				<div class="recipient-address">
+					<p class="address">{{recipient.address_line_1}}, {{recipient.address_city}} {{recipient.address_zipcode}}</p>
+				</div>
+			</div>
+			<div class="toggle">
+				<label class="switch">
+				  <input type="checkbox" id="delivery-day-checkbox" checked={{active}}>
+				  <span class="slider"></span>
+				  <p class="status">{{status}}</p>
+				</label>
+			</div>
+		</div>
+
+		<div class="order-items-preview">
+			{{#each item in items}}
+				<span class="item">{{item.tally}} {{item.name}}</span>
+				{{#if item.sub_items}}
+					<ul>
+					{{#each subItem in item.sub_items.items}}
+						<li class="sub-item">{{subItem.name}}</li>
+					{{/each}}
+					</ul>
+				{{/if}}
+			{{/each}}
+		</div>
+
+		<div class="buttons-holder">
+			<button class="edit-delivery">Change Delivery</button>
+			<button class="edit-order">Change Order</button>
+		</div>
+	</div>
+</template>

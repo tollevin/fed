@@ -191,14 +191,14 @@
                     <h2>Delivery Info</h2>
                   </div>
                   <div style="text-align:left">
-                    <p>For: {{customer.first_name}} {{customer.last_name}}</p>
+                    <p>For: {{recipient.first_name}} {{recipient.last_name}}</p>
                     <div style="display: table-cell;min-width: 64px;">
                       <p>Address:</p>
                     </div>
                     <div style="display: table-cell">
-                      <p style="margin-bottom: 0;margin-top: 0">{{customer.address_line_1}}</p>
-                      <p style="margin-bottom: 0;margin-top: 0">{{customer.address_line_2}}</p>
-                      <p style="margin-bottom: 0;margin-top: 0">{{customer.address_city}}, {{customer.address_state}} {{customer.address_zipcode}}</p>
+                      <p style="margin-bottom: 0;margin-top: 0">{{recipient.address_line_1}}</p>
+                      <p style="margin-bottom: 0;margin-top: 0">{{recipient.address_line_2}}</p>
+                      <p style="margin-bottom: 0;margin-top: 0">{{recipient.address_city}}, {{recipient.address_state}} {{recipient.address_zipcode}}</p>
                     </div>
                     <p style="margin-bottom: 0;">Delivery Date: {{deliveryInfo}} 6-9pm</p>
                     <p style="margin-top: 0;font-weight: 200;font-size: 12px;">Tracking Number: {{_id}}</p>
@@ -219,28 +219,8 @@
                       <h2 style="text-align: center; color: #3b7b27">Order Info</h2>
                     </div>
                     <div>
-                      <h3 style="text-align: left; font-weight: 200">{{packName}}</h3>
-                    </div>
-                    <div>
-                      {{#each packItems}}
-                        <!-- Column : BEGIN -->
-                        <td width="25%" class="stack-column-center">
-                          <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                            <tr>
-                              <td style="text-align: center;">
-                                <div style="width: 100px;overflow-x: hidden;">
-                                  <img src="https://getfednyc.com{{photo}}" width="200px" height="100px" alt="name" border="0" class="fluid" style="background: #dddddd; font-family: avenir, sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555; transform: translateX(-50px);">
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="font-family: avenir, sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #555555; padding: 0 10px 10px 0; text-align: left;" class="">
-                                {{name}} 
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                        <!-- Column : END -->
+                      {{#each items}}
+                        <p style="text-align: center; font-weight: 400">{{item.name}}</p>
                       {{/each}}
                     </div>
                   </td>

@@ -1,0 +1,54 @@
+<head><meta name="fragment" content="!"></head>
+<template name="Market_page">
+  <div id="market-page" class="page {{cartOpen}}">
+		{{> Menu_toolbar}}
+
+		<div id="coming-soon">
+			<p>Coming Soon</p>
+		</div>
+
+<!-- 		<div id="content-scrollable">
+			<div id="market-view">
+				{{#if Template.subscriptionsReady}}
+					<div class="market-items">
+						{{> Market_meals}}
+						{{> Market_snacks}}
+						{{> Market_drinks}}
+					</div>
+				{{else}}
+					<p>Loading...</p>
+				{{/if}}
+			</div>
+		</div> -->
+	</div>
+</template>
+
+<template name="Market_meals">
+	{{#transition in="zoomIn" out="zoomOut"}}
+		<h2>Meals</h2>
+		{{#each meals}}
+			{{> Menu_item}}
+		{{/each}}
+	{{/transition}}
+</template>
+
+<template name="Market_snacks">
+	<h2>Snacks</h2>
+	{{#each snacks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Market_drinks">
+	<h2>Drinks</h2>
+	{{#each drinks}}
+		{{> Menu_item}}
+	{{/each}}
+</template>
+
+<template name="Market_packs">
+	<h2>Packs</h2>
+	{{#each packs}}
+		{{> Menu_item}}
+	{{/each}}
+</template>

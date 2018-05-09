@@ -6,7 +6,9 @@ import { lodash } from 'meteor/erasaur:meteor-lodash';
 // Import user templates
 import '../../ui/layouts/app-body.js';
 import '../../ui/pages/landing-page.js';
+import '../../ui/pages/user-home.js';
 import '../../ui/pages/menu-page.js';
+import '../../ui/pages/market-page.js';
 import '../../ui/pages/about-page.js';
 import '../../ui/pages/support.js';
 import '../../ui/pages/blog-page.js';
@@ -17,6 +19,7 @@ import '../../ui/pages/success.js';
 import '../../ui/pages/account-page.js';
 import '../../ui/pages/subscribe.js';
 import '../../ui/pages/my-subscriptions.js';
+import '../../ui/pages/my-orders.js';
 import '../../ui/pages/packs.js';
 import '../../ui/pages/gift-cards.js';
 import '../../ui/pages/sign-up.js';
@@ -92,6 +95,13 @@ FlowRouter.route('/', {
   },
 });
 
+FlowRouter.route('/home', {
+  name: 'User.home',
+  action() {
+    BlazeLayout.render('App_body', { main: 'User_home' });
+  },
+});
+
 FlowRouter.route('/packs', {
   name: 'Packs',
   action() {
@@ -106,6 +116,13 @@ FlowRouter.route('/menu', {
   },
 });
 
+FlowRouter.route('/market', {
+  name: 'Market',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Market_page' });
+  },
+});
+
 FlowRouter.route('/about-us', {
   name: 'About.us',
   action() {
@@ -113,12 +130,12 @@ FlowRouter.route('/about-us', {
   },
 });
 
-FlowRouter.route('/my-account', {
-  name: 'My.account',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Account_page' });
-  },
-});
+// FlowRouter.route('/my-account', {
+//   name: 'My.account',
+//   action() {
+//     BlazeLayout.render('App_body', { main: 'Account_page' });
+//   },
+// });
 
 FlowRouter.route('/settings', {
   name: 'Account.settings',
@@ -138,6 +155,13 @@ FlowRouter.route('/subscriptions', {
   name: 'My.subscriptions',
   action() {
     BlazeLayout.render('App_body', { main: 'My_Subscriptions' });
+  },
+});
+
+FlowRouter.route('/orders', {
+  name: 'My.orders',
+  action() {
+    BlazeLayout.render('App_body', { main: 'My_Orders' });
   },
 });
 

@@ -108,19 +108,19 @@ Template.Main_admin.helpers({
   },
 
   newSubs: ()=> {
-  	const thisWeekStartInUnixSeconds = moment().day(0).hour(0).minute(0).second(0).unix();
-  	return Meteor.users.find({'subscriptions.created': {$gte : thisWeekStartInUnixSeconds}}).count();
+  	const thisWeekStart = moment().day(0).hour(0).minute(0).second(0).toDate();
+  	return Meteor.users.find({'subscriptions.created_at': {$gte : thisWeekStart}}).count();
   },
 
   canceledSubs: ()=> {
-  	const thisWeekStartInUnixSeconds = moment().day(0).hour(0).minute(0).second(0).unix();
-  	return Meteor.users.find({'subscriptions.canceled_at': {$gte : thisWeekStartInUnixSeconds}}).count();
+  	const thisWeekStart = moment().day(0).hour(0).minute(0).second(0).toDate();
+  	return Meteor.users.find({'subscriptions.canceled_at': {$gte : thisWeekStart}}).count();
   },
 
   estimatedSubPlates: ()=> {
   	var estimatedPlates = 0;
     // Get all uncanceled subs
-  	const activeSubs = Meteor.users.find({'subscriptions.status': { $in: ['active','trialing']}}).fetch();
+  	const activeSubs = Meteor.users.find({'subscriptions.status': 'active'}).fetch();
   	// Add the default number of dishes for each to total
     for (var i = activeSubs.length - 1; i >= 0; i--) {
   		var subPlateCount = Number(activeSubs[i].subscriptions.plan.id.split('PP')[0]);
@@ -128,7 +128,7 @@ Template.Main_admin.helpers({
   	};
   	const customizedSubs = Meteor.users.find({customized: true}).fetch();
   	for (var i = customizedSubs.length - 1; i >= 0; i--) {
-  		var customizedSubPlateCount = Number(customizedSubs[i].subscriptions.plan.id.split('PP')[0]);
+  		var customizedSubPlateCount = Number(customizedSubs[i].subscriptions[0].plan.id.split('PP')[0]);
   		estimatedPlates -= customizedSubPlateCount;
   	};
     const skippingSubs = Meteor.users.find({skipping: { $ne : undefined }}).fetch();

@@ -130,13 +130,14 @@ Orders.schema = new SimpleSchema({
     optional: true,
   },
   items: {
-    type: [ String ],
+    type: [ Object ],
     label: "Order Items",
     optional: true,
   },
   'items.$': {
-    type: String,
+    type: Object,
     label: "Order Item",
+    blackbox: true,
     optional: true,
   },
   subscriptions: {

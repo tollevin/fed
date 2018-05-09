@@ -6,38 +6,48 @@ import { createDeliveryWindows } from '../../api/delivery/methods.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  const subscribers = Meteor.users.find({"subscriptions.status": { $nin: ['canceled', null] }}).fetch();
-  for (var i = subscribers.length - 1; i >= 0; i--) {
-    const oldSub = subscribers[i].subscriptions;
+  if (Menus.find().count() === 0) {
+    console.log('fixturing...');
+    var subscribers = Meteor.users.find({"subscriptions.status": { $nin: ['canceled', null] }}).fetch();
+    for (var i = subscribers.length - 1; i >= 0; i--) {
+      var oldSub = subscribers[i].subscriptions;
+      if (!oldSub.plan) console.log(subscribers[i]._id);
+      if (oldSub.plan) {
+        var oldPlan = Number(oldSub.plan.id.split('PP')[0]);
+        
+        let oldDiscount;
+        oldSub.discount ? oldDiscount = Number(oldSub.discount.coupon.id.split('Sub')[1]) : oldDiscount = 0;
+        
+        var oldCreated = new Date (oldSub.created * 1000);
 
-    const oldPlan = Number(oldSub.plan.id.split('PP')[0]);
-    const oldDiscount = Number(oldSub.discount.coupon.id.split('Sub')[1]);
-    const oldCreated = new Date (oldSub.created * 1000);
+        var newPlanItemName = subscribers[i].diet + ' ' + oldPlan + '-Pack';
+        var subItem = Items.findOne({name: newPlanItemName});
+        if (!subItem) {
+          subItem = {_id: 'FIX'};
+          console.log(2, newPlanItemName, subscribers[i]._id);
+        };
+        var newSub = [{
+          item_id: subItem._id,
+          created_at: oldCreated,
+          canceled_at: null,
+          percent_off: oldDiscount,
+          quantity: 1,
+          frequency: 7,
+          tax_percent: 8.875,
+          _id: null,
+          status: 'active',
+          item_name: newPlanItemName,
+          subscribed_at: oldCreated
+        }];
 
-    const newPlanItemName = subscribers[i].diet + ' ' + oldPlan + '-Pack';
-    const subItem = Items.findOne({name: newPlanItemName});
-
-    const newSub = [{
-      item_id: subItem._id,
-      created_at: oldCreated,
-      canceled_at: null,
-      percent_off: oldDiscount,
-      quantity: 1,
-      frequency: 7,
-      tax_percent: 8.875,
-      _id: null,
-      status: 'active',
-      item_name: newPlanItemName,
-      subscribed_at: oldCreated
-    }];
-
-    Meteor.users.update({ _id: subscibers[i]._id }, {
-      $set: {
-        past_subscriptions: oldSub,
-        subscriptions: newSub,
-      }
-    });
-  };
+        Meteor.users.update({ _id: subscribers[i]._id }, {
+          $set: {
+            past_subscriptions: oldSub,
+            subscriptions: newSub,
+          }
+        });
+      };
+    };
 
   // if (Items.find().count() === 0) {
     console.log('Creating fixtures...');
@@ -1110,5 +1120,5 @@ Meteor.startup(() => {
 
       // for each current subscriber, generate pending-sub order
     });
-  // };
+  };
 });

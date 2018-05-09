@@ -27,6 +27,8 @@ Template.Landing_page.onRendered(function landingPageOnRendered() {
   // BlazeLayout.reset(); // this will remove the current template.
   // BlazeLayout.render(...) // rerender
 
+  // if (subscribed) FlowRouter.go('/home');
+
   $(function(){
     $('#Lander-carousel').slick({
       dots: true,

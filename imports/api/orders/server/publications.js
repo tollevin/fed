@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import moment from 'moment';
 
 import { Orders } from '../orders.js';
 
@@ -39,3 +40,14 @@ Meteor.publish('thisWeeks.orders', function thisWeeksOrders() {
 
   return Orders.find({"status": { $in: ['created', 'creating'] }, "createdAt": { $gte: new Date(ordersResetTime) }}, options);
 });
+
+Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
+  const weekStart = moment(timestamp).startOf('week').toDate();
+
+  const args = {
+    user_id: Meteor.userId(),
+    week_of: { $gte: weekStart },
+  };
+  
+  return Orders.find(args);
+})

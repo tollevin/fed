@@ -404,7 +404,7 @@ Template.Subscribe.events({
         order.style = 'pack';
 
         // Check to see if pack subscription exists, 'Add another?/Edit' prompt
-        order.items.push(pack);
+        order.items ? order.items.push(pack) : order.items = [pack];
 
         if (order.subscriptions) {
           order.subscriptions.push(planExists);
@@ -455,6 +455,14 @@ Template.Subscribe.events({
       Session.set('Order', order);
       Session.set('loading', false);
       Session.set('stage', 2);
+
+      var userData = {
+        restrictions: filters.restrictions,
+        diet: filters.diet,
+        preferred_deliv_windows: deliveryDay
+      };
+
+      Meteor.call('updateUser', Meteor.userId(), userData);
     } else {
       sAlert.error("Please choose a plan");
     };

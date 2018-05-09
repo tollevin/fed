@@ -47,7 +47,6 @@ export const insertOrder = new ValidatedMethod({
 
     // Prep vars
     var subtotal = 0;
-    var itemIds = [];
     var discount = {
       subscriber_discounts: [],
       value : 0
@@ -56,7 +55,6 @@ export const insertOrder = new ValidatedMethod({
 
     // Calc subtotal, build items list
     for (var i = items.length - 1; i >= 0; i--) {
-      itemIds.push(items[i]._id);
       subtotal += items[i].price_per_unit;
     };   
 
@@ -70,20 +68,24 @@ export const insertOrder = new ValidatedMethod({
       
         // find the subscription item in the items list
         var subItem = items.find((item)=> {
+          console.log(item._id, subItemId);
           return item._id === subItemId;
         });
-        
-        const subscriber_discount = {
-          item_id: subItemId,
-          percent_off: subs[i].percent_off,
-          value: subs[i].percent_off / 100 * subItem.price_per_unit,
-        };
 
-        // add discount property to item
-        // subItem.discount.subscriber_discount = subs[i].discount;
-        // add discount object to order.discount
-        discount.subscriber_discounts.push(subscriber_discount);
-        discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
+        // Only add discount if subItem is in list? What about a general pack discount?
+        if (subItem) {
+          const subscriber_discount = {
+            item_id: subItemId,
+            percent_off: subs[i].percent_off,
+            value: subs[i].percent_off / 100 * subItem.price_per_unit,
+          };
+
+          // add discount property to item
+          // subItem.discount.subscriber_discount = subs[i].discount;
+          // add discount object to order.discount
+          discount.subscriber_discounts.push(subscriber_discount);
+          discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
+        };
       };
     };
 
@@ -122,7 +124,7 @@ export const insertOrder = new ValidatedMethod({
       created_at: new Date(),
       week_of,
       style,
-      items: itemIds,
+      items,
       subscriptions,
       subtotal,
       discount,
@@ -138,47 +140,46 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
-export const insertBlankSubscriberOrder = new ValidatedMethod({
-  name: 'Orders.insertBlank',
+export const autoinsertSubscriberOrder = new ValidatedMethod({
+  name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
     user_id: { type: String },
-    menu_id: { type: String },
+    menu_id: { type: String, optional: true },
     week_of: { type: Date },
-    style: { type: String },
     items: { type: [ Object ], optional: true },
     'items.$': { type: Object, blackbox: true, optional: true },
-    subscriptions: { type: [ Object ], optional: true },
-    'subscriptions.$': { type: Object, blackbox: true, optional: true },
-    changes: { type: Object, blackbox: true, optional: true },
+    // subscriptions: { type: [ Object ], optional: true },
+    // 'subscriptions.$': { type: Object, blackbox: true, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
   },
-  run({ user_id, menu_id, week_of, style, items, subscriptions, changes }) {
+  run({ user_id, menu_id, week_of, items }) {
 
     // Prep vars
     var subtotal = 0;
     var itemIds = [];
-    var subIds = [];
     var discount = {
       subscriber_discounts: [],
-      value : 0
+      value: 0
     };
     var user = Meteor.users.findOne({_id: user_id});
+    const subs = user.subscriptions;
 
     // Set Subscription Discounts
-    if (user.subscriptions && user.subscriptions.length > 0) {  // FIX to fix old user.subscriptions
-      const subs = user.subscriptions;
+    if (user.subscriptions && user.subscriptions.length > 0) {  
 
       // for each subscription
       for (var i = subs.length - 1; i >= 0; i--) {
-        subIds.push(subs[i]._id);
         const subItemId = subs[i].item_id;
-      
+
         // find the subscription item in the items list
         var subItem = items.find((item)=> {
           return item._id === subItemId;
         });
+
+        // add price to subtotal
+        subtotal += subItem.price_per_unit;
         
         const subscriber_discount = {
           item_id: subItemId,
@@ -186,59 +187,31 @@ export const insertBlankSubscriberOrder = new ValidatedMethod({
           value: subs[i].percent_off / 100 * subItem.price_per_unit,
         };
 
-        // add discount property to item
-        // subItem.discount.subscriber_discount = subs[i].discount;
         // add discount object to order.discount
         discount.subscriber_discounts.push(subscriber_discount);
         discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
       };
     };
 
-    // Set Pending Subscription Discounts
-    if (subscriptions && subscriptions.length > 0) {
-
-      // for each subscription
-      for (var i = subscriptions.length - 1; i >= 0; i--) {
-
-        const subItemId = subscriptions[i].item_id;
-        // find the subscription item in the items list
-        var subItem = items.find((item)=> {
-          return item._id === subItemId;
-        });
-        console.log(subItem);
-
-        const subscriber_discount = {
-          item_id: subItemId,
-          percent_off: subscriptions[i].percent_off,
-          value: subscriptions[i].percent_off / 100 * subItem.price_per_unit,
-        };
-
-        // add discount property to item
-        // subItem.discount.subscriber_discount = subs[i].discount;
-        // add discount object to order.discount
-        discount.subscriber_discounts.push(subscriber_discount);
-        discount.value += (subscriptions[i].percent_off / 100 * subItem.price_per_unit);
-        console.log(subscriptions[i].percent_off);
-      };
-    };
-
     var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
     var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;
+    var ready_by = moment(week_of).add(1,'week').add(16,'hours').toDate();
 
     const newOrder = { 
       user_id,
       menu_id,
       created_at: new Date(),
       week_of,
-      style,
-      items: itemIds,
-      subscriptions: subIds,
+      style: 'pack',
+      items,
+      subscriptions: subs,
       subtotal,
       discount,
       sales_tax,
       total,
-      changes,
-      status: 'pending',
+      changes: {},
+      status: 'pending-sub',
+      ready_by: ready_by,
     };
 
     const orderId = Orders.insert(newOrder);
@@ -260,8 +233,8 @@ export const processOrder = new ValidatedMethod({
     style: { type: String },
     recipient: { type: Object, blackbox: true },
     gift: { type: Boolean, optional: true },
-    items: { type: [ String ] },
-    'items.$': { type: String },
+    items: { type: [ Object ] },
+    'items.$': { type: Object, blackbox: true },
     subscriptions: { type: [ Object ], optional: true },
     'subscriptions.$': { type: Object , blackbox: true, optional: true },
     subtotal: { type: Number, decimal: true },
@@ -290,24 +263,26 @@ export const processOrder = new ValidatedMethod({
     const user = Meteor.users.findOne({_id: user_id});
 
     // if pending subscriptions, attach to customer.subscriptions
-    for (var i = subscriptions.length - 1; i >= 0; i--) {
-      if (subscriptions[i].status === 'pending') {
-        subscriptions[i].status = 'active';
-        subscriptions[i].subscribed_at = new Date();
+    if (subscriptions) {
+      for (var i = subscriptions.length - 1; i >= 0; i--) {
+        if (subscriptions[i].status === 'pending') {
+          subscriptions[i].status = 'active';
+          subscriptions[i].subscribed_at = new Date();
 
-        var currentSubscriptions = user.subscriptions;
+          var currentSubscriptions = user.subscriptions;
 
-        if (currentSubscriptions) {
-          currentSubscriptions.push(subscriptions[i]);
-        } else {
-          currentSubscriptions = [subscriptions[i]];
+          if (currentSubscriptions) {
+            currentSubscriptions.push(subscriptions[i]);
+          } else {
+            currentSubscriptions = [subscriptions[i]];
+          };
+
+          Meteor.users.update({ _id: user_id }, {
+            $set: {
+              subscriptions: currentSubscriptions,
+            }
+          });
         };
-
-        Meteor.users.update({ _id: user_id }, {
-          $set: {
-            subscriptions: currentSubscriptions,
-          }
-        });
       };
     };
 
@@ -353,8 +328,8 @@ export const processSubscriberOrder = new ValidatedMethod({
     style: { type: String },
     recipient: { type: Object, blackbox: true },
     gift: { type: Boolean, optional: true },
-    items: { type: [ String ] },
-    'items.$': { type: String },
+    items: { type: [ Object ] },
+    'items.$': { type: Object, blackbox: true },
     subtotal: { type: Number, decimal: true },
     discount: { type: Object, blackbox: true, optional: true },
     delivery_fee: { type: Number, optional: true },
@@ -409,6 +384,21 @@ export const processSubscriberOrder = new ValidatedMethod({
   },
 });
 
+export const updateOrderItems = new ValidatedMethod({
+  name: 'updateOrderItems',
+  validate: new SimpleSchema({
+    _id: { type: String },
+    items: { type:[ Object ]},
+    'items.$': { type: Object, blackbox: true },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ _id, item }) {
+
+  },
+});
+
 export const updateOrder = new ValidatedMethod({
   name: 'updateOrder',
   validate: new SimpleSchema({
@@ -421,10 +411,10 @@ export const updateOrder = new ValidatedMethod({
     menu_id: { type: String, optional: true },
     recipient: { type: Object, blackbox: true, optional: true },
     gift: { type: Boolean, optional: true },
-    items: { type: [ String ] },
-    'items.$': { type: String },
-    subscriptions: { type: [ String ], optional: true },
-    'subscriptions.$': { type: String, optional: true },
+    items: { type: [ Object ], optional: true },
+    'items.$': { type: Object, blackbox: true, optional: true },
+    subscriptions: { type: [ Object ], optional: true },
+    'subscriptions.$': { type: Object, blackbox: true, optional: true },
     subtotal: { type: Number, optional: true },
     discount: { type: Object, blackbox: true, optional: true },
     delivery_fee: { type: Number, optional: true },
@@ -504,6 +494,29 @@ export const findUserFutureOrders = new ValidatedMethod({
     };
     
     const result = Orders.find(args);
+    return result;
+  },
+});
+
+export const findUserCurrentOrder = new ValidatedMethod({
+  name: 'Orders.methods.findUserCurrentOrder',
+  validate: new SimpleSchema({
+    user_id: { type: String },
+    timestamp: { type: Date },
+  }).validator({}),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ user_id, timestamp }) {
+
+    const weekStart = moment(timestamp).startOf('week').toDate();
+
+    const args = {
+      user_id: user_id,
+      ready_by: { $gte: weekStart },
+    };
+    
+    const result = Orders.find(args, {sort: {ready_by: 1}}).fetch()[0];
     return result;
   },
 });
@@ -612,7 +625,9 @@ export const findUserFutureOrders = new ValidatedMethod({
 // Get list of all method names on orders
 const Orders_METHODS = _.pluck([
   insertOrder,
+  autoinsertSubscriberOrder,
   processOrder,
+  updateOrder,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,

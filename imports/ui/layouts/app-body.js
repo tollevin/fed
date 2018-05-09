@@ -10,15 +10,23 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
 
+// Collections
+import { Orders } from '../../api/orders/orders.js';
+import { Menus } from '../../api/menus/menus.js';
+
+// Methods
 import {
-  findUserFutureOrders
+  findUserFutureOrders,
+  autoinsertSubscriberOrder
 } from '../../api/orders/methods.js';
 
+// Components
 import '../components/loader.js';
 import '../components/side-nav.js';
 import '../components/mobile-nav.js';
 import '../components/modals.js';
 import '../components/content-overlay.js';
+import '../components/footer.js';
 
 const CONNECTION_ISSUE_TIMEOUT = 6000;
 
@@ -75,17 +83,19 @@ Template.App_body.onCreated(function appBodyOnCreated() {
     capped: false,
   });
 
-  const handle = this.subscribe('thisUserData');
+  const timestamp = moment().toDate();
 
+  this.subscribe('thisUserData');
+  this.subscribe('thisUsersFuture.orders', timestamp);
+  this.subscribe('Menus.toCome');
+  
   this.autorun(() => {
     // var current = FlowRouter.current();
     Tracker.afterFlush(function () {
       $(window).scrollTop(0);
     });
 
-    if (handle.ready()) {
-      const user_id = Meteor.userId();
-      const timestamp = moment().toDate();
+    if (this.subscriptionsReady()) {      
 
       // delete?
       if (Meteor.user() && Meteor.user().last_purchase) {
@@ -94,15 +104,57 @@ Template.App_body.onCreated(function appBodyOnCreated() {
         Session.set('newUser', true);
       };
 
-      if (Meteor.user() && Meteor.user().subscriptions) {
+      // if a user has subscriptions,
+      if (Meteor.user() && Meteor.user().subscriptions && Meteor.user().subscriptions.length > 0) {
         // GET ORDER
-        const data = {
-          user_id,
-          timestamp
+        // const data = {
+        //   user_id: Meteor.userId(),
+        //   timestamp
+        // };
+
+        var week_of = moment().startOf('week').toDate();
+        var week_two = moment().add(1,'week').startOf('week').toDate();
+        var week_three = moment().add(2,'week').startOf('week').toDate();
+        var weeks = [week_of, week_two, week_three];
+
+        // find future orders
+        var orders = Orders.find({}, {sort: {ready_by: 1}}).fetch();
+
+        // if future orders are les than 3, populate pending-sub orders (DELETE AFTER CRON!)
+        if (orders && orders.length < 3) {
+          let subItems;
+          Meteor.call('getUserSubscriptionItems', Meteor.userId(), ( error, response ) => {
+            if ( error ) {
+              console.log(error + "; error");
+            } else {
+              subItems = response;
+
+              for (var j = orders.length; j < 3; j++) {
+                var menu = Menus.findOne({online_at: weeks[j]});
+
+                var data = {
+                  user_id: Meteor.userId(),
+                  menu_id: menu._id,
+                  week_of: weeks[j],
+                  items: subItems,
+                };
+
+                const subOrder = autoinsertSubscriberOrder.call(data);
+                orders.push(subOrder);
+              };
+            };
+          });          
         };
 
-        const orders = findUserFutureOrders.call(data);
-        Session.setDefault('Order', orders[0]);
+        if (orders.length > 3) {
+          console.log('overage, fix');
+        } else if (orders.length < 3) {
+          console.log('underage, fix');
+        };
+
+        // Session.setDefault('Order', orders[0]);
+        Session.setDefault('orderId', orders[0]);
+
         Session.set('subscribed', true);
       } else {
         Session.set('subscribed', false);

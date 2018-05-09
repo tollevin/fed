@@ -19,6 +19,7 @@ Template.Style_select.events({
   	const order = {
   		user_id: Meteor.userId(),
   		style: 'pack',
+      items: [],
       week_of: moment().startOf('week').toDate(),
       created_at: moment().toDate(),
   	};

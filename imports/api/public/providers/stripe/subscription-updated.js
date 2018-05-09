@@ -7,9 +7,9 @@ const handler = (data, promise) => {
     modulo = promise;
     const newSubscription = data;
     const user = Meteor.users.findOne({stripe_id: data.customer});
-    user.subscriptions = newSubscription;
+    user.past_subscriptions ? user.past_subscriptions.push(newSubscription) : user.past_subscriptions = [ newSubscription ];
     const updatedSubscription = Meteor.call('updateUser', user._id, user);
-    console.log(data.id + " subscription updated for " + user._id);
+    console.log(data.id + " stripe_subscription updated for " + user._id);
     return updatedSubscription;
   } catch (exception) {
     throw new Meteor.Error(400, `[subscriptionUpdated.handler] ${exception} ID: ${data.customer}`);

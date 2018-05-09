@@ -1,0 +1,47 @@
+<head><meta name="fragment" content="!"></head>
+<template name="User_home">
+	<div id="user-home" class="page">
+    <div class="page-title">
+      <h1>Home</h1>
+    </div>
+
+    <div class="page-body">
+      <div class="user-orders">
+        <div class="next-order">
+          <h2>My Next Order</h2>
+          {{#with nextOrder}}
+            {{> Order_detail_panel}}
+          {{/with}}
+        </div>
+        <div class="future-orders">
+          <h2>Upcoming Orders</h2>
+          {{#each order in futureOrders}}
+            {{#with order}}
+              {{> Order_toggle}}
+            {{/with}}
+          {{/each}}
+        </div>
+      </div>
+      <div class="fed-cred">
+        <h2>My Fed Cred</h2>
+        <div class="credit">
+          <span class="sign">$</span>
+          <span class="dollars">{{creditDollars}}.</span>
+          <span class="cents">{{creditCents}}</span>
+        </div>
+        <div class="message">
+          <p>Use Fed Cred towards any purchase! </p>
+        </div>
+        <div class="buttons-holder">
+          <button class="invite">Invite Friends</button>
+          <button class="promo">Use a Promo</button>
+        </div>
+      </div>
+      <div class="dynamic-content">
+        {{#if rate}}
+        {{else}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,5 +1,8 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+// import { FlowRouter } from 'meteor/kadira:flow-router';
+// import { Session } from 'meteor/session';
+// import { Tracker } from 'meteor/tracker';
 import { callWithPromise } from '../lib/helpers.js';
 import { yesZips } from '../../api/delivery/zipcodes.js';
 
@@ -52,12 +55,12 @@ Template.Gift_Cards.helpers({
   },
 
   discount() {
-    return "30%"; // Add built-in discount here. Need to allow for more variables?
+    return "5%"; // Add built-in discount here. Need to allow for more variables?
   },
 
   salePrice() {
     var order = Template.instance().order.get();
-    return order && (order.price / 100).toFixed(2); // Add built-in discount here.
+    return order && (order.price * .95 / 100).toFixed(2); // Add built-in discount here.
   },
 });
 
@@ -207,7 +210,7 @@ Template.Gift_Cards.events({
       try {
         const zipInRange = checkZipInRange();
         const giftCardValue = await checkGiftCardValue();
-        const giftCardPrice = giftCardValue; // Add discount here
+        const giftCardPrice = giftCardValue * .95; // Add discount here
         var customer = {};
         customer.first_name = template.find('[name="customer.first_name"]').value;
         customer.last_name = template.find('[name="customer.last_name"]').value;

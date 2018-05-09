@@ -1,151 +1,153 @@
 <template name="Checkout_page">
 	<div id="checkout-page" class="page">
 	{{#momentum plugin="fade"}}
-		<div class="order-report">
-			<h1>Checkout</h1>
-			<div class="order-report-main">
-				<p class="pack-desc">Your Order</p>
-				<div class="ul-wrapper">
-					<ul>
-					{{#each item in packItems}}
-						<li>
-							<span class="item-tally" name={{@index}}>{{item.value}}</span>
-							<span class="item-name" name={{@index}}>{{item.name}}</span>
-							{{#if isPlan item}}
-								<span class="item-plan" name={{@index}}> Plan</span>
-							{{/if}}
-						</li>
-					{{/each}}
-					</ul>
-				</div>
+		<div class="panel-holder">
+			<div class="order-report">
+				<h1>Checkout</h1>
+				<div class="order-report-main">
+					<p class="pack-desc">Your Order</p>
+					<div class="ul-wrapper">
+						<ul>
+						{{#each item in packItems}}
+							<li>
+								<span class="item-tally" name={{@index}}>{{item.value}}</span>
+								<span class="item-name" name={{@index}}>{{item.name}}</span>
+								{{#if isPlan item}}
+									<span class="item-plan" name={{@index}}> Plan</span>
+								{{/if}}
+							</li>
+						{{/each}}
+						</ul>
+					</div>
 
-				{{#if recommend}}
-					<div class="recommender">
-					
-					</div>
-				{{/if}}
-
-				<div class="pricing-wrapper">
-					<div class="subtotal">
-						<p class="label">Subtotal</p>
-						<p class="num">{{price}}</p>
-					</div>
-					<div class="tax">
-						<p class="label">Sales Tax</p>
-						<p class="num">{{tax}}</p>
-					</div>
-					<div class="deliv">
-						<p class="label">Delivery</p>
-						<p class="num">{{deliveryFee}}</p>
-					</div>
-					{{#if userHasCredit}}
-						<div class="credit">
-				    	<p class="label">Account Credit</p>
-				    	<p class="num">{{userHasCredit}}</p>
-							<button type="submit" id="applyCredit">Apply</button>
-					  </div>
-					{{/if}}
-					{{#if discount}}
-						<div class="coupon">
-							<p class="label">Discount</p>
-							<p class="num">{{discount}}</p>
+					{{#if recommend}}
+						<div class="recommender">
+						
 						</div>
 					{{/if}}
-					<div class="total">
-						<p class="label">Total</p>
-						<p class="num">{{total}}</p>
+
+					<div class="pricing-wrapper">
+						<div class="subtotal">
+							<p class="label">Subtotal</p>
+							<p class="num">{{price}}</p>
+						</div>
+						<div class="tax">
+							<p class="label">Sales Tax</p>
+							<p class="num">{{tax}}</p>
+						</div>
+						<div class="deliv">
+							<p class="label">Delivery</p>
+							<p class="num">{{deliveryFee}}</p>
+						</div>
+						{{#if userHasCredit}}
+							<div class="credit">
+					    	<p class="label">Account Credit</p>
+					    	<p class="num">{{userHasCredit}}</p>
+								<button type="submit" id="applyCredit">Apply</button>
+						  </div>
+						{{/if}}
+						{{#if discount}}
+							<div class="coupon">
+								<p class="label">Discount</p>
+								<p class="num">{{discount}}</p>
+							</div>
+						{{/if}}
+						<div class="total">
+							<p class="label">Total</p>
+							<p class="num">{{total}}</p>
+						</div>
 					</div>
+
+					{{#if deliverytiermessage}}
+						<div class="delivery-tier-message">
+
+						</div>
+					{{/if}}
 				</div>
 
-				{{#if deliverytiermessage}}
-					<div class="delivery-tier-message">
-
-					</div>
-				{{/if}}
-			</div>
-
-			{{#if havePromo}}
-				<div class="form-group">
-			    <label>
-			      <input type="text" placeholder="Enter your promo code" id="promo">
-			      <button type="submit" id="promoSub">Apply</button>
-			    </label>
-			  </div>
-			{{else}}
-				<div class="CTAbuttons">
-					<button class="enterPromo">Have a promo code?</button>
-				</div>
-			{{/if}}
-			<div class="stripe-logo">
-				<img src="/icons/powered_by_stripe.png" alt="Powered by Stripe">
-			</div>
-		</div>
-
-		<div class="form-shell">
-			<form id="{{formType}}"> 
-				<h2>Delivery Info</h2>
-				<div class="form-group">
-					<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" data-schema-key="customer.firstName" class="form-control" required placeholder="First Name" value="{{first_name}}">
-					<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" data-schema-key="customer.lastName" class="form-control" required placeholder="Last Name" value="{{last_name}}">
-				</div>
-
-				<div class="form-group">
-					<input type="text" name="customer.email" id="email" data-schema-key="customer.email" class="form-control" required placeholder="Email" value="{{email}}">
-					<input type="tel" name="customer.phone" id="phone" data-schema-key="customer.phone" class="form-control" required placeholder="Phone" value="{{phone}}">
-				</div>
-
-				<span class="address-errors"></span>
-
-				<input type="text" name="customer.address.line1" id="address-line-1" data-schema-key="customer.address.line1" class="form-control" required placeholder="Address Line 1" value="{{address1}}">
-
-				<input type="text" name="customer.address.line2" id="address-line-2" data-schema-key="customer.address.line2" class="form-control" placeholder="Address Line 2" value="{{address2}}">
-
-				<div id="zip-errors"></div>
-
-				<div class="form-group">
-					<input type="text" name="customer.address.city" id="address-city" data-schema-key="customer.address.city" class="form-control" required placeholder="City" value="{{city}}">
-
-					<select name="customer.address.state" id="address-state" data-schema-key="customer.address.state" autocomplete="off" class="form-control " value="NY" required> 
-						<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected>NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
-					</select>
-					<input type="text" name="customer.address.zipCode" id="address-zip" data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" required>
-				</div>
-
-				<select name="deliveryWindow" id="9B4bKQHybDyHem8nh" data-schema-key="deliveryWindow" class="form-control" required>
-					<option class="default-select-option" value="">Select your delivery date <i class="fa fa-caret-down"></i></option>
-					{{#each option in deliveryWindows}}
-						{{#with option}}
-							<option name="{{option.delivery_day}}" value="{{option._id}}">{{toDateStr option.delivery_start_time}}</option>
-						{{/with}}
-					{{/each}}
-				</select>
-
-				<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL" data-schema-key="destinationComments" class="form-control" placeholder="Notes for delivery?"></textarea>
-
-				<h2>Payment Info</h2>
-				<div id="payment-errors"></div>
-				{{#if stripeID}}
-			  	<select id="Source" required>
-			  		{{#with sources}}
-			  			<option value="">Select a payment source <i class="fa fa-caret-down"></i></option>
-			  			{{#each source in sources.data}}
-						    <option value="{{source.id}}">
-						    	<span class="card-brand">{{source.brand}}
-						    	</span> - 
-						    	<span>*{{source.last4}}</span>
-						    </option>
-						  {{/each}}
-				    {{/with}}
-				  </select>
+				{{#if havePromo}}
+					<div class="form-group">
+				    <label>
+				      <input type="text" placeholder="Enter your promo code" id="promo">
+				      <button type="submit" id="promoSub">Apply</button>
+				    </label>
+				  </div>
 				{{else}}
-					{{> Card_element}}
-				{{/if}}
-					<div class="sbmt-button">
-						<button disabled="{{disabled}}" class="sbmtOrder btn-secondary">
-							{{formSubmitButtonText}}
-						</button>
+					<div class="CTAbuttons">
+						<button class="enterPromo">Have a promo code?</button>
 					</div>
-			</form>
+				{{/if}}
+				<div class="stripe-logo">
+					<img src="/icons/powered_by_stripe.png" alt="Powered by Stripe">
+				</div>
+			</div>
+
+			<div class="form-shell">
+				<form id="{{formType}}"> 
+					<h2>Delivery Info</h2>
+					<div class="form-group">
+						<input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" data-schema-key="customer.firstName" class="form-control" required placeholder="First Name" value="{{first_name}}">
+						<input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" data-schema-key="customer.lastName" class="form-control" required placeholder="Last Name" value="{{last_name}}">
+					</div>
+
+					<div class="form-group">
+						<input type="text" name="customer.email" id="email" data-schema-key="customer.email" class="form-control" required placeholder="Email" value="{{email}}">
+						<input type="tel" name="customer.phone" id="phone" data-schema-key="customer.phone" class="form-control" required placeholder="Phone" value="{{phone}}">
+					</div>
+
+					<span class="address-errors"></span>
+
+					<input type="text" name="customer.address.line1" id="address-line-1" data-schema-key="customer.address.line1" class="form-control" required placeholder="Address Line 1" value="{{address1}}">
+
+					<input type="text" name="customer.address.line2" id="address-line-2" data-schema-key="customer.address.line2" class="form-control" placeholder="Address Line 2" value="{{address2}}">
+
+					<div id="zip-errors"></div>
+
+					<div class="form-group">
+						<input type="text" name="customer.address.city" id="address-city" data-schema-key="customer.address.city" class="form-control" required placeholder="City" value="{{city}}">
+
+						<select name="customer.address.state" id="address-state" data-schema-key="customer.address.state" autocomplete="off" class="form-control " value="NY" required> 
+							<option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected>NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
+						</select>
+						<input type="text" name="customer.address.zipCode" id="address-zip" data-schema-key="customer.address.zipCode" value="{{zipCode}}" class="form-control" required>
+					</div>
+
+					<select name="deliveryWindow" id="9B4bKQHybDyHem8nh" data-schema-key="deliveryWindow" class="form-control" required>
+						<option class="default-select-option" value="">Select your delivery date <i class="fa fa-caret-down"></i></option>
+						{{#each option in deliveryWindows}}
+							{{#with option}}
+								<option name="{{option.delivery_day}}" value="{{option._id}}">{{toDateStr option.delivery_start_time}}</option>
+							{{/with}}
+						{{/each}}
+					</select>
+
+					<textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL" data-schema-key="destinationComments" class="form-control" placeholder="Notes for delivery?"></textarea>
+
+					<h2>Payment Info</h2>
+					<div id="payment-errors"></div>
+					{{#if stripeID}}
+				  	<select id="Source" required>
+				  		{{#with sources}}
+				  			<option value="">Select a payment source <i class="fa fa-caret-down"></i></option>
+				  			{{#each source in sources.data}}
+							    <option value="{{source.id}}">
+							    	<span class="card-brand">{{source.brand}}
+							    	</span> - 
+							    	<span>*{{source.last4}}</span>
+							    </option>
+							  {{/each}}
+					    {{/with}}
+					  </select>
+					{{else}}
+						{{> Card_element}}
+					{{/if}}
+						<div class="sbmt-button">
+							<button disabled="{{disabled}}" class="sbmtOrder btn-secondary">
+								{{formSubmitButtonText}}
+							</button>
+						</div>
+				</form>
+			</div>
 		</div>
 	{{/momentum}}
 	</div>
