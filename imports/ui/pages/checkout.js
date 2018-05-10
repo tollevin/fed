@@ -12,6 +12,8 @@ import { Orders } from '../../api/orders/orders.js';
 import { Promos } from '../../api/promos/promos.js';
 import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
 
+const geocoder = new google.maps.Geocoder();
+
 // Zip Codes
 import { 
   zipZones
@@ -525,15 +527,11 @@ Template.Checkout_page.events({
     };
   },
 
-  'submit #insertOrderForm'(event, template) {
+  async 'submit #insertOrderForm'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
 
-    var orderToProcess = template.order.get();
     
-    orderToProcess.total = template.order.total.get().toFixed(2);
-    // orderToProcess.packName = Session.get('pack').description;
-    orderToProcess.coupon = template.order.coupon.get();
     
     var customer = {
       first_name: template.find('[name="customer.firstName"]').value,
@@ -546,6 +544,50 @@ Template.Checkout_page.events({
       address_state: template.find('[name="customer.address.state"]').value,
       address_zipcode: template.find('[name="customer.address.zipCode"]').value,
     };
+
+    const fullAddress =
+      lodash.compact([
+        customer.address_line_1,
+        customer.address_line_2,
+        customer.address_city,
+        customer.address_state,
+        customer.address_zipcode,
+      ]).join(", ");
+
+    console.log("fullAddress = %j", fullAddress);
+
+    // this may need a try catch
+    let addressResults = await new Promise((resolve, reject) =>
+      geocoder.geocode({address: fullAddress}, (res, status) =>
+        (status === 'OK') ? resolve(res) : reject(status)));
+
+    console.log("addressResults = %j", addressResults);
+
+    const setAddressFailure = () => {
+      const errorElement = document.getElementById('address-errors');
+      errorElement.textContent = "Address does not exist";
+      Session.set('loading', false);
+    };
+
+    if(addressResults.length === 0){
+      setAddressFailure();
+      return;
+    }
+
+    var formattedAddress = addressResults[0].formatted_address;
+
+    /* https://medium.com/@gabesumner/address-validation-using-the-google-maps-api-72a1fb709996 */
+    if (formattedAddress.match(/,/g).length < 3) {
+      setAddressFailure();
+      return;
+    }
+
+    var orderToProcess = template.order.get();
+    
+    orderToProcess.total = template.order.total.get().toFixed(2);
+    // orderToProcess.packName = Session.get('pack').description;
+    orderToProcess.coupon = template.order.coupon.get();
+
     orderToProcess.recipient = customer;
     orderToProcess.delivery_comments = template.find('[name="destinationComments"]').value;
 
