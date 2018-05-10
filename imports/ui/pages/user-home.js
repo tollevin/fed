@@ -28,11 +28,12 @@ Template.User_home.onCreated(function userHomeOnCreated() {
 
   this.nextOrder = new ReactiveVar(Session.get('orderId'));
 
-  const orders = Orders.find({}, {sort: {ready_by: 1}}).fetch();
-  this.futureOrders = new ReactiveVar(orders.slice(1));
+  this.futureOrders = new ReactiveVar();
 
-  // this.autorun(() => {
-  // });
+  this.autorun(() => {
+    const orders = Orders.find({status:{$nin: ['pending', 'canceled']}}, {sort: {ready_by: 1}}).fetch();
+    this.futureOrders = new ReactiveVar(orders.slice(1));
+  });
 });
 
 Template.User_home.onRendered(function userHomeOnRendered() {

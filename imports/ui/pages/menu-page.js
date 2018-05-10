@@ -41,19 +41,16 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	Session.setDefault('filters', filters);
 	Session.setDefault('selector',{});
 
-	var insertedOrder = Session.get('orderId');
-	if (insertedOrder) {
-		
-	}
+	// Session.get('ord')
 
-  // const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
+  const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
 	this.autorun(() => {
 		const handle = this.subscribe('Menus.active');
 
 		if (handle.ready()) {
 			// Set Session menu data if none
-			var menu = Menus.findOne({});
+			var menu = Menus.findOne({online_at: thisWeeksStart});
 			var data = {
 				_id: menu._id,
 				ready_by: menu.ready_by,

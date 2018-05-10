@@ -47,6 +47,7 @@ Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
   const args = {
     user_id: Meteor.userId(),
     week_of: { $gte: weekStart },
+    status: { $nin: ['pending','canceled'] },
   };
   
   return Orders.find(args);

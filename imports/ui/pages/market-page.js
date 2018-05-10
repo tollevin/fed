@@ -47,6 +47,7 @@ Template.Market_page.onCreated(function marketPageOnCreated() {
 		const handle = this.subscribe('Menus.active');
 
 		if (handle.ready()) {
+			var thisWeeksStart = moment().startOf('week').toDate();
 			var menu = Menus.findOne({});
 			var data = {
 				_id: menu._id,

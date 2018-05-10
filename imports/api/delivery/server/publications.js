@@ -29,7 +29,6 @@ Meteor.publish('DeliveryWindows.nextTwoWeeks', function nextFourDeliveryWindows(
 });
 
 Meteor.publish('DeliveryWindows.single', function singleDelivery(_id) {
-
   return DeliveryWindows.find({_id: _id});
 });
 

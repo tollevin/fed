@@ -598,7 +598,7 @@ Template.Checkout_page.events({
         var card = childTemplateInstance.card;
         var stripe = childTemplateInstance.stripe;
         const {token, error} = await stripe.createToken(card);
-        console.log(card, stripe, token);
+        // console.log(card, stripe, token);
         return token;
       } catch(error) {
         // Inform the customer that there was an error
@@ -654,7 +654,7 @@ Template.Checkout_page.events({
         // Else if new customer
         } else {
           const token = await createStripeTokenFromElement();
-          console.log(token);
+          // console.log(token);
           const cust = {
             description: "Customer for " + customer.first_name + " " + customer.last_name,
             source: token.id,
@@ -663,7 +663,7 @@ Template.Checkout_page.events({
           };
 
           const newStripeCustomer = await createStripeCustomer( cust );
-          console.log(newStripeCustomer);
+          // console.log(newStripeCustomer);
           stripe_id = newStripeCustomer.id;
           charge  = {
             amount: finalPrice,
@@ -678,7 +678,7 @@ Template.Checkout_page.events({
         if (finalPrice > 0) {
           // Charge Stripe
           const payment = await chargeStripe( charge );
-          console.log(payment);
+          // console.log(payment);
           orderToProcess.payment_id = payment.id;
           orderToProcess.total = Number((finalPrice / 100).toFixed(2));
         } else {

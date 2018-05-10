@@ -22,7 +22,9 @@ import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
 
 Template.Order_toggle.onCreated(function orderToggleOnCreated() {
 	this.subscribe('DeliveryWindows.forMenu', this.data.menu_id);
+
 	this.delivery_window = new ReactiveVar();
+
 	this.autorun(()=> {
 		if (this.subscriptionsReady()) {
 			const dw = DeliveryWindows.findOne({_id: this.data.delivery_window_id})

@@ -47,7 +47,7 @@ AccountsTemplates.configure({
       amountspent,
     };
 
-    Meteor.call( 'updateUser', user, data, ( error, response ) => {
+    Meteor.call( 'updateUser', user._id, data, ( error, response ) => {
       if ( error ) {
         console.log(error + ": error");
       } else {

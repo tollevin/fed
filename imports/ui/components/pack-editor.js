@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
+import moment from 'moment';
 
 // Template
 import './pack-editor.html';
@@ -82,21 +83,20 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   };
 
   this.order.set(order);
+  const thisWeeksStart = moment().startOf('week').toDate();
 
   this.autorun(() => {
     this.subscribe('Menus.active');
     this.subscribe('Items.packs');
 
     if (this.subscriptionsReady()) {
-      if (!Session.get('pack')) {
-        var diet = this.diet.get();
-        var packSize = this.packSize.get();
-        var packName = diet + ' ' + packSize + '-Pack';
-        var pack = Items.findOne({name: packName});
-        Session.setDefault('pack', pack); 
-      };
+      var diet = this.diet.get();
+      var packSize = this.packSize.get();
+      var packName = diet + ' ' + packSize + '-Pack';
+      var pack = Items.findOne({name: packName});
+      Session.setDefault('pack', pack); 
 
-      var menu = Menus.findOne({});
+      var menu = Menus.findOne({online_at: thisWeeksStart});
       var data = {
         _id: menu._id,
         ready_by: menu.ready_by,

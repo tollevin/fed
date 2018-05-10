@@ -53,4 +53,5 @@ Meteor.publishComposite('Menus.active', function() {
 
 Meteor.publish('Menus.toCome', function itemsAll() {
   return Menus.find({ready_by: {$gte: new Date()}});
+  this.stop();
 });

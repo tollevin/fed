@@ -63,9 +63,26 @@ export const insertMenu = new ValidatedMethod({
   },
 });
 
+export const getMenuDWs = new ValidatedMethod({
+  name: 'Menus.DWs',
+  validate: new SimpleSchema({
+    menu_id: { type: String },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ menu_id }) {
+    const menu = Menus.findOne({_id: menu_id});
+    console.log(menu.delivery_windows);
+    return menu.delivery_windows;
+  },
+});
+
+
 // Get list of all method names on menus
 const Menus_METHODS = _.pluck([
   insertMenu,
+  getMenuDWs
 ], 'name');
 
 if (Meteor.isServer) {

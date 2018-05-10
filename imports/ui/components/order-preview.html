@@ -2,19 +2,19 @@
 	<tr class="order-preview">
 		{{#if Template.subscriptionsReady}}
 		<td class="order-paid-at">
-			{{paidAt}}
+			{{paid_at}}
 		</td>
 		<td class="order-number">
-			{{id}}
+			{{id_number}}
 		</td>
 		<td class="order-stripe-id">
-			{{stripe_id}}
+			{{payment_id}}
 		</td>
 		<!-- <td class="deliv-id">
 			{{trackingCode}}
 		</td> -->
 		<td class="customer-name">
-			{{user.first_name}} {{user.last_name}}
+			<span>{{user.first_name}} {{user.last_name}}</span>
 		</td>
 		<td class="customer-address">
 			{{user.address_line_1}}
@@ -52,22 +52,23 @@
 			{{deliv_day}}
 		</td>
 		<td class="delivFee">
-			{{delivFee}}
+			{{delivery_fee}}
 		</td>
 		<td class="saleAmount">
-			{{saleAmount}}
+			{{subtotal}}
 		</td>
 		<td class="taxAmount">
-			{{taxAmount}}
+			{{sales_tax}}
 		</td>
 		<td class="total">
 			{{total}}
 		</td>
 		<td class="customer-delivComments">
-			{{user.deliv_comments}}
+			{{delivery_comments}}
 		</td>
 		<td class="coupon">
-			{{coupon}}
+			{{discount.promo}}
+			{{discount.value}}
 		</td>
 		{{/if}}
 	</tr>

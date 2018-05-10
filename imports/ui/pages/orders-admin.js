@@ -35,12 +35,12 @@ Template.Orders_admin.helpers({
 	},
 
 	orders() {
-    return Orders.find({}, {sort: {status: 1, id: -1}});
+    return Orders.find({}, {sort: {status: 1, id_number: -1}});
   },
 
   currentOrders() {
   	const lastSundayAtNoon = moment().day(0).hour(12).minute(1).second(0).toISOString();
-  	return Orders.find({"createdAt": { $gte: new Date(lastSundayAtNoon) }}, { sort: { status: -1, id: -1 }});
+  	return Orders.find({"created_at": { $gte: new Date(lastSundayAtNoon) }}, { sort: { status: -1, id: -1 }});
   }
 });
 

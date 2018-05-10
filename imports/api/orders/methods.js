@@ -8,11 +8,16 @@ import moment from 'moment';
 
 import { Orders } from './orders.js';
 import { Items } from '../items/items.js';
+import { Menus } from '../menus/menus.js';
 import { Plans } from '../plans/plans.js';
 
 import { 
   orderItem
 } from '../items/methods.js';
+
+import { 
+  getMenuDWs
+} from '../menus/methods.js';
 
 // Call from server only
 var ordersLength = Orders.find({status: { $nin: ['pending', 'pending-sub', 'skipped' ] }}).fetch.length;
@@ -191,32 +196,47 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         discount.subscriber_discounts.push(subscriber_discount);
         discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
       };
+
+      // find preferred delivery_window
+
+      const dws = getMenuDWs.call({menu_id: menu_id});
+      let delivery_window_id;
+
+      switch (user.preferred_delivery_windows) {
+        case 'sunday':
+          delivery_window_id = dws[0];
+        case 'monday':
+          delivery_window_id = dws[1];
+      };
+
+      console.log(dws);
+
+      var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
+      var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;
+      var ready_by = moment(week_of).add(1,'week').add(16,'hours').toDate();
+
+      const newOrder = { 
+        user_id,
+        menu_id,
+        created_at: new Date(),
+        week_of,
+        style: 'pack',
+        items,
+        subscriptions: subs,
+        subtotal,
+        discount,
+        sales_tax,
+        total,
+        changes: {},
+        status: 'pending-sub',
+        ready_by: ready_by,
+        delivery_window_id,
+      };
+
+      const orderId = Orders.insert(newOrder);
+      const result = Orders.findOne({_id: orderId});
+      return result;
     };
-
-    var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
-    var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;
-    var ready_by = moment(week_of).add(1,'week').add(16,'hours').toDate();
-
-    const newOrder = { 
-      user_id,
-      menu_id,
-      created_at: new Date(),
-      week_of,
-      style: 'pack',
-      items,
-      subscriptions: subs,
-      subtotal,
-      discount,
-      sales_tax,
-      total,
-      changes: {},
-      status: 'pending-sub',
-      ready_by: ready_by,
-    };
-
-    const orderId = Orders.insert(newOrder);
-    const result = Orders.findOne({_id: orderId});
-    return result;
   },
 });
 
@@ -521,106 +541,33 @@ export const findUserCurrentOrder = new ValidatedMethod({
   },
 });
 
-// export const insertCustomOrder = new ValidatedMethod({
-//   name: 'Orders.methods.insertCustomOrder',
-//   validate: new SimpleSchema({
-//     user_id: { type: String, optional: true },
-//     style: { type: String, optional: true },
-//     week_of: { type: Date, optional: true }, // FIX BIX
-//     items: { type: [ String ], optional: true },
-//   }).validator({ clean: true, filter: false }),
-//   applyOptions: {
-//     noRetry: true,
-//   },
-//   run({ user_id, style, week_of, items }) {
+export const toggleSkip = new ValidatedMethod({
+  name: 'Orders.methods.toggleSkip',
+  validate: new SimpleSchema({
+    order_id: { type: String },
+  }).validator({}),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ order_id }) {
 
-//     const order = {
-//       user_id: user_id || Meteor.userId(),
-//       created_at: new Date(),
-//       week_of,
-//       items,
-//       status: 'pending',
-//       style,
-//     };
-    
-//     const order_id = Orders.insert(order);
-//     // const result = Orders.findOne({_id: order_id});
-//     return order_id;
-//   },
-// });
+    const order = Orders.findOne({_id: order_id});
+    const sub = order.subscriptions && order.subscriptions.length > 0;
 
-// export const insertSubscriberOrder = new ValidatedMethod({
-//   name: 'createSubscriptionOrder',
-//   validate: new SimpleSchema({
-//     user_id: { type: String },
-//     created_at: { type: Date },
-//     week_of: { type: Date },
-//     items: { type: [ String ] },
-//     'items.$': { type: String },
-//     subtotal: { type: Number, optional: true },
-//     discount: { type: Object, optional: true },
-//     total: { type: Number, optional: true },
-//     coupon: { type: String, optional: true },
-//     delivery_comments: { type: String, optional: true },
-//     deliv_day: { type: String, optional: true },
-//   }).validator({ clean: true, filter: false }),
-//   applyOptions: {
-//     noRetry: true,
-//   },
-//   run({ user_id, week_of, items, packName, packPrice, salePrice, total, status, coupon, destinationComments, deliv_day }) {
-
-//     const id_number = Orders.find({status: { $ne: 'pending'}}).count();
-
-//     const newOrder = { 
-//       id_number,
-//       user_id,
-//       packName,
-//       packPrice,
-//       salePrice,
-//       total,
-//       status: 'pending-sub',
-//       coupon,
-//       destinationComments,
-//       deliv_day,
-//     };
-
-//     const orderId = Orders.insert(newOrder);
-//     const result = Orders.findOne({_id: orderId});
-//     return result;
-//   },
-// });
-
-// export const createRecurringOrder = new ValidatedMethod({
-//   name: 'CreateRecurringOrder',
-//   validate: new SimpleSchema({
-//     userId: { type: String, optional: true },
-//     packName: { type: String, optional: true },
-//     packPrice: { type: Number, optional: true },
-//     packDishes: { type: [ String ] },
-//     'packDishes.$': { type: String },
-//     packSnacks: { type: [ String ] },
-//     'packSnacks.$': { type: String },
-//   }).validator({ clean: true, filter: false }),
-//   applyOptions: {
-//     noRetry: true,
-//   },
-//   run({ userId, packName, packPrice, packDishes, packSnacks }) {
-
-//     const order = {
-//       userId,
-//       packName,
-//       packPrice,
-//       packDishes,
-//       packSnacks,
-//       createdAt: new Date(),
-//       status: 'pending'
-//     };
-    
-//     const orderId = Orders.insert(order);
-//     const result = Orders.findOne({_id: orderId});
-//     return result;
-//   },
-// });
+    if (order.status === 'skipped') {
+      var newStatus = 'pending';
+      if (sub) newStatus += '-sub';
+      Orders.update(order._id, { $set: {
+        status: newStatus,
+      } });
+    } else {
+      var newStatus = 'skipped';
+      Orders.update(order._id, { $set: {
+        status: newStatus,
+      } });
+    };
+  },
+});
 
 // Get list of all method names on orders
 const Orders_METHODS = _.pluck([
@@ -631,6 +578,7 @@ const Orders_METHODS = _.pluck([
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,
+  toggleSkip
 ], 'name');
 
 if (Meteor.isServer) {

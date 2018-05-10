@@ -6,7 +6,7 @@ import { createDeliveryWindows } from '../../api/delivery/methods.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  if (Menus.find().count() === 0) {
+  if (Items.find().count() === 0) {
     console.log('fixturing...');
     var subscribers = Meteor.users.find({"subscriptions.status": { $nin: ['canceled', null] }}).fetch();
     for (var i = subscribers.length - 1; i >= 0; i--) {

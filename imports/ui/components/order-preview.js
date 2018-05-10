@@ -5,6 +5,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Orders } from '../../api/orders/orders.js';
 import { Promos } from '../../api/promos/promos.js';
+import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
 
 import { 
   MH,
@@ -16,24 +17,39 @@ import {
 } from '../../api/delivery/methods.js';
 
 Template.Order_preview.onCreated(function orderPreviewOnCreated() {
-  this.autorun(() => {
-    var orderSub = this.subscribe('single.order', this._id);
-    var userSub = this.subscribe('thisUserData', this.userId);
-  });
+	this.subscribe('DeliveryWindows.single', this.data.delivery_window_id);
+	this.subscribe('single.order', this.data._id);
+	this.subscribe('thisUserData', this.user_id);
+  
+  // this.autorun(() => {
+   
+  // });
 });
 
 Template.Order_preview.helpers({
   user() {
-  	if (this.customer) {
-  		return this.customer;
+  	if (this.recipient) {
+  		return this.recipient;
   	} else {
 	  	return Meteor.users.findOne({_id: this.userId});
 	  };
   },
 
   dishList() {
-  	var dishList = Template.currentData().packDishes;
+  	var dishList = [];
 		var dishTally = {};
+
+  	var itemList = Template.currentData().items;
+  	for (var i = itemList.length - 1; i >= 0; i--) {
+  		if (itemList[i].category === 'Pack') {
+  			for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+  				dishList.push(itemList[i].sub_items.items[j].name);
+  			}
+  		} else if (itemList[i].category === 'Meal'){
+  			dishList.push(itemList[i].name);
+  		};
+  	};
+
 		for (var i = dishList.length - 1; i >= 0; i--) {
 			if (dishList[i] != '' && !dishTally[dishList[i]]) {
 				dishTally[dishList[i]] = 1;
@@ -41,14 +57,23 @@ Template.Order_preview.helpers({
 				dishTally[dishList[i]] += 1;
 			};
 		};
+
 		var result = [];
     for (var key in dishTally) result.push({name:key,value:dishTally[key]});
     return result;
   },
 
   snackList() {
-  	var snackList = Template.currentData().packSnacks;
+  	var snackList = [];
 		var snackTally = {};
+
+		var itemList = Template.currentData().items;
+		for (var i = itemList.length - 1; i >= 0; i--) {
+  		if (itemList[i].category === 'Snack') {
+  			snackList.push(itemList[i].name);
+  		};
+  	};
+
 		for (var i = snackList.length - 1; i >= 0; i--) {
 			if (snackList[i] != '' && !snackTally[snackList[i]]) {
 				snackTally[snackList[i]] = 1;
@@ -59,6 +84,13 @@ Template.Order_preview.helpers({
 		var result = [];
     for (var key in snackTally) result.push({name:key,value:snackTally[key]});
     return result;
+	},
+
+	deliv_day() {
+		var dw_id = Template.currentData().delivery_window_id;
+		const dw = DeliveryWindows.findOne({});
+		const dday = moment(dw.delivery_start_time).format('dddd');
+		return dday
 	},
 
 	deliveryZone() {
@@ -74,40 +106,6 @@ Template.Order_preview.helpers({
 			var zipZone = getZipZone.call(args);
 			return zipZone;
 	  };
-	},
-
-	delivFee() {
-		var customer = Template.currentData().customer;
-  	if (!customer) {
-  		customer = Meteor.users.findOne({_id: this.userId});
-  	}; // This should be an attribute of orders themselves (FIX)
-		if (customer) {
-			var zip = customer.address_zipcode;
-			if (MH.indexOf(zip) > -1) {
-	      return 13;
-	    } else if (MH_20.indexOf(zip) > -1) {
-	      return 20;
-	    } else {
-	    	return 0;
-	    };
-	  };
-	},
-
-	saleAmount() {
-		const salePrice = Template.currentData().salePrice;
-		const salePriceMinusTax = salePrice * .91125;
-		return salePriceMinusTax.toFixed(2);
-	},
-
-	taxAmount() {
-		const salePrice = Template.currentData().salePrice;
-		const taxAmount = (salePrice * .08875);
-		return taxAmount.toFixed(2);
-	},
-
-	total() {
-		const salePrice = Template.currentData().salePrice;
-    return (salePrice * 1.08875).toFixed(2);
 	},
 
 	packPriceToDecimal() {
