@@ -18,7 +18,7 @@ Meteor.methods({
     try {
       const user = Meteor.users.findOne({ _id: user_id });
 
-      if (user && !user.credit) user.credit = 0;
+      if (!user.credit) user.credit = 0;
 
       const updated = Meteor.users.update({ _id: user._id }, {
         $set: data,
@@ -571,7 +571,9 @@ Meteor.publish("subscriberData", function() {
       'coupon':1,
       'stripe_id':1,
       'preferredDelivDay':1,
+      'preferred_deliv_windows':1,
       'subscriptions':1,
+      'past_subscriptions':1,
       'skipping':1,
       'referrer':1,
       'profile':1,

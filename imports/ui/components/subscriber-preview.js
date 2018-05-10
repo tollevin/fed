@@ -156,6 +156,28 @@ Template.Subscriber_preview.helpers({
 		var zipZone = getZipZone.call(args);
 		return zipZone;
 	},
+
+	subscription: () => {
+		return Template.currentData().subscriptions && Template.currentData().subscriptions[0];
+	},
+
+	deliv: ()=> {
+		return Template.currentData().preferred_deliv_windows ? Template.currentData().preferred_deliv_windows : Template.currentData().preferredDelivDay;
+	},
+
+	allergies: ()=> {
+		const restrictions = Template.currentData().restrictions;
+		const keys = Object.keys(restrictions);
+		var allergies = [];
+
+		for (var i = keys.length - 1; i >= 0; i--) {
+			if (restrictions[keys[i]]) {
+				allergies.push(keys[i]);
+			};
+		};
+
+		return allergies;
+	},
 });
 
 Template.Subscriber_preview.events({

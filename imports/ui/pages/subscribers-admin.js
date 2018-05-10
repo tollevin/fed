@@ -13,21 +13,15 @@ import { autoinsertSubscriberOrder } from '../../api/orders/methods.js';
 import '../components/subscriber-preview.js';
 
 Template.Subscribers_admin.onCreated(function subscribersAdminOnCreated() {
-  this.autorun(() => {
-  	this.subscribe('subscriberData');
-  });
+  this.subscribe('subscriberData');
+  // this.autorun(() => {
+  	
+  // });
 });
 
 Template.Subscribers_admin.helpers({
 	subscribers() {
-		// const new_subs = Meteor.users.find({"subscriptions.status": "trialing", "skipping": null }, { sort: { "subscriptions.created": -1 }}).fetch();
-		// const active = Meteor.users.find({"subscriptions.status": "active"}, { sort: { "subscriptions.created": -1 }}).fetch();
-		// const past_due = Meteor.users.find({"subscriptions.status": "past_due"}, { sort: { "subscriptions.created": -1 }}).fetch();
-		// const unpaid = Meteor.users.find({"subscriptions.status": "unpaid"}, { sort: { "subscriptions.created": -1 }}).fetch();
-		// const skipping = Meteor.users.find({"subscriptions.status": "unpaid"}, { sort: { "subscriptions.created": -1 }}).fetch();
-		// const canceled = Meteor.users.find({"subscriptions.status": "canceled"}, { sort: { "subscriptions.created": -1 }}).fetch();
-		// return Meteor.users.find({"subscriptions.quantity": { $gt: 0 }, "subscriptions.status": { $ne: "canceled" }}, { sort: { "subscriptions.created": -1 }});
-		return Meteor.users.find({}, { sort: { "subscriptions.created_at": -1 }});
+		return Meteor.users.find({}, {sort: {'subscriptions.created_at': -1}});
 	},
 
 	numberOfSubscribers() {

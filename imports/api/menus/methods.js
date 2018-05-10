@@ -73,7 +73,6 @@ export const getMenuDWs = new ValidatedMethod({
   },
   run({ menu_id }) {
     const menu = Menus.findOne({_id: menu_id});
-    console.log(menu.delivery_windows);
     return menu.delivery_windows;
   },
 });

@@ -79,7 +79,6 @@ Template.App_body.onCreated(function appBodyOnCreated() {
   Session.setDefault({
     processing: false,
     sideNavOpen: false,
-    unsubscribed: true,
     capped: false,
   });
 
@@ -144,12 +143,6 @@ Template.App_body.onCreated(function appBodyOnCreated() {
               };
             };
           });          
-        };
-
-        if (orders.length > 3) {
-          console.log('overage, fix');
-        } else if (orders.length < 3) {
-          console.log('underage, fix');
         };
 
         // Session.setDefault('Order', orders[0]);

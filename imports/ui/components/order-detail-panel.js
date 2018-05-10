@@ -47,7 +47,6 @@ Template.Order_detail_panel.onRendered(function orderDetailPanelOnRendered() {
 Template.Order_detail_panel.helpers({
 	date: ()=> {
 		const dw = Template.instance().delivery_window.get();
-		console.log(dw);
 		if (dw) return moment(dw.delivery_start_time).format('dddd, MMM Do');
 	},
 
@@ -67,7 +66,7 @@ Template.Order_detail_panel.helpers({
 	status: ()=> {
 		switch (Template.instance().status.get()) {
 			case 'created':
-				return 'Received';
+				return 'Paid';
 			case 'pending':
 				return 'Pending';
 			case 'pending-sub':

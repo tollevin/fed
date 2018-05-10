@@ -13,22 +13,24 @@ import { Orders } from '../../api/orders/orders.js';
 import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
 
 // Methods
-// import {
-// 	changeOrderDeliveryWindow,
-// 	changeOrderAddress,
-// 	// changeOrderRecipient,
-
-// } from '../../api/orders/methods.js';
+import {
+	toggleSkip
+} from '../../api/orders/methods.js';
 
 Template.Order_toggle.onCreated(function orderToggleOnCreated() {
 	this.subscribe('DeliveryWindows.forMenu', this.data.menu_id);
+	this.subscribe('single.order', this.data._id);
 
 	this.delivery_window = new ReactiveVar();
+	this.status = new ReactiveVar();
 
 	this.autorun(()=> {
 		if (this.subscriptionsReady()) {
 			const dw = DeliveryWindows.findOne({_id: this.data.delivery_window_id})
 			this.delivery_window.set(dw);
+
+			const order = Orders.findOne({_id: this.data._id});
+			this.status.set(order.status);
 		};
 	});
 });
@@ -51,8 +53,19 @@ Template.Order_toggle.helpers({
 			return start + '-' + end;
 		};
 	},
+
+	checked: ()=> {
+		return['skipped','canceled'].indexOf(Template.instance().status.get()) <= -1;
+	},
 });
 
 Template.Order_toggle.events({
-
+	'click .switch'(event, template) {
+		event.preventDefault();
+		// const order = Orders.findOne({_id: template._id});
+		const data = {
+			order_id: template.data._id
+		}
+		toggleSkip.call(data);
+	},
 });

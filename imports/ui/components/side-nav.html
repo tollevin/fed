@@ -9,7 +9,7 @@
     {{#if currentUser}}
       <nav id="User-Nav">
         <ul>
-          <!-- <li><a href="/home" class="{{currentPage 'User.home'}}" alt="Home">Home</a></li> -->
+          {{#if subscribed}}<li><a href="/home" class="{{currentPage 'User.home'}}" alt="Home">Home</a></li>{{/if}}
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
           <li><a href="/market" class="{{currentPage 'Market.show'}}" alt="Market">Market</a></li>
           <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>

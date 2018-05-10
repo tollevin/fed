@@ -73,7 +73,6 @@ export const insertOrder = new ValidatedMethod({
       
         // find the subscription item in the items list
         var subItem = items.find((item)=> {
-          console.log(item._id, subItemId);
           return item._id === subItemId;
         });
 
@@ -197,19 +196,16 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
       };
 
-      // find preferred delivery_window
-
+      // find preferred delivery_window (FIX)
       const dws = getMenuDWs.call({menu_id: menu_id});
       let delivery_window_id;
 
-      switch (user.preferred_delivery_windows) {
-        case 'sunday':
-          delivery_window_id = dws[0];
+      switch (user.preferred_deliv_windows) {
         case 'monday':
+          delivery_window_id = dws[0];
+        case 'sunday':
           delivery_window_id = dws[1];
       };
-
-      console.log(dws);
 
       var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
       var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;

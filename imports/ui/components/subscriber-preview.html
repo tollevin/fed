@@ -5,24 +5,24 @@
 				{{createdAt}}
 			</td>
 			<td class="subscribed-at">
-				{{subscribedAt}}
+				{{subscription.subscribed_at}}
 			</td>
 			<td class="subscription-status {{processStatus subscriptions.status}}">
-				{{processStatus subscriptions.status}}
+				{{subscription.status}}
 			</td>
 			<td class="customer-name">
 				<p>{{first_name}} {{last_name}}</p>
 			</td>
-			{{#each email in emailss}}
+			<!-- {{#each email in emailss}} -->
 				<td class="customer-emails {{verified}}">
-					{{email.address}}
+					{{email}}
 				</td>
-			{{/each}}
+			<!-- {{/each}} -->
 			<td class="customer-phone">
 				{{phone}}
 			</td>
 			<td class="delivery-zone">
-				{{deliveryZone}}
+				<!-- {{deliveryZone}} -->
 			</td>
 			<td class="address">
 				{{address_line_1}}
@@ -35,7 +35,7 @@
 				{{address_zipcode}}
 			</td>
 			<td class="customer-delivDay">
-				{{preferredDelivDay}}
+				{{deliv}}
 			</td>
 			<td class="customer-diet">
 				{{diet}}
@@ -48,22 +48,22 @@
 				{{/if}}
 			</td>
 			<td class="pack">
-				{{subscriptions.plan.id}}
+				{{subscription.item_name}}
 			</td>
 			<td class="discount">
-				{{subscriptions.discount.coupon.id}}
+				{{subscription.percent_off}}
 			</td>
 			<td class="delivFee">
-				{{delivFee}}
+				<!-- {{delivery_fee}} -->
 			</td>
 			<td class="saleAmount">
-				{{saleAmount}}
+				<!-- {{saleAmount}} -->
 			</td>
 			<td class="taxAmount">
-				{{taxAmount}}
+				<!-- {{taxAmount}} -->
 			</td>
 			<td class="total">
-				{{total}}
+				<!-- {{total}} -->
 			</td>
 			<td class="customer-delivComments">
 				{{deliv_comments}}
