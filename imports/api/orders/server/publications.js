@@ -12,7 +12,7 @@ Meteor.publish('some.orders', function(limit) {
   }).validate({ limit });
 
   const options = {
-    sort: {createdAt: -1},
+    sort: {created_at: -1},
     limit: Math.min(limit, MAX_ORDERS)
   };
 
@@ -35,10 +35,10 @@ Meteor.publish('thisWeeks.orders', function thisWeeksOrders() {
   };
 
   const options = {
-    sort: {createdAt: -1},
+    sort: {created_at: -1},
   };
 
-  return Orders.find({"status": { $in: ['created', 'creating'] }, "createdAt": { $gte: new Date(ordersResetTime) }}, options);
+  return Orders.find({"status": { $in: ['created', 'creating'] }, "created_at": { $gte: new Date(ordersResetTime) }}, options);
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
