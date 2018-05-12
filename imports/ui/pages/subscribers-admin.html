@@ -1,81 +1,8 @@
 <template name="Subscribers_admin">
 	<div class="content-scrollable">
-		{{#momentum plugin="fade"}}
 			<div id="subscribers-admin" class="page">
-				<button id="createFixtureSubOrders">Do Not CLICK!</button>
-				<div class="subscribers-view">
-					<table class="subscribers-table"> 
-						<tr class="table-header">
-							<th>
-								Created At
-							</th>
-							<th>
-								Subscribed At
-							</th>
-							<th>
-								Status
-							</th>
-							<th>
-								Name
-							</th>
-							<th>
-								Email
-							</th>
-							<th>
-								Phone
-							</th>
-							<th class="delivery-zone">
-								Zone
-							</th>
-							<th>
-								Address
-							</th>
-							<th>
-								City
-							</th>
-							<th>
-								Zip Code
-							</th>
-							<th>
-								Delivery Day
-							</th>
-							<th>
-								Diet
-							</th>
-							<th>
-								Restrictions
-							</th>
-							<th>
-								Pack
-							</th>
-							<th>
-								Discount
-							</th>
-							<th>
-								Delivery Fee
-							</th>
-							<th>
-								Sale Amount
-							</th>
-							<th>
-								Tax Amount
-							</th>
-							<th>
-								Total
-							</th>
-							<th>
-								Deliv Comments
-							</th>
-							<th>
-								Notes
-							</th>
-						</tr>
-						{{#each subscribers}}
-							{{> Subscriber_preview}}
-						{{/each}}
-					</table>
-				</div>
+				{{> Customers_toolbar}}
+				{{> Subscribers_view}}
 			</div>
-		{{/momentum}}
 	</div>
 </template>

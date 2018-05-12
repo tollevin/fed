@@ -19,15 +19,12 @@ import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOOD
   from './pack_picker/diet_food_restrictions.js';
 import { generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
 
-// import { updateUser } from '../../startup/server/accounts.js';
-
+// Methods
 import { 
   checkForPlan,
   insertPlan
 } from '../../api/plans/methods.js';
 
-// import { usePromo } from '../../api/promos/methods.js';
-// import { updateUser } from '../../startup/server/accounts.js';
 
 // Template
 import './subscribe.html';
@@ -457,7 +454,7 @@ Template.Subscribe.events({
       Session.set('stage', 2);
 
       var userData = {
-        restrictions: filters.restrictions,
+        restrictions: restrictionsArray,
         diet: filters.diet,
         preferred_deliv_windows: deliveryDay
       };

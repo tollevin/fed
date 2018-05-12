@@ -41,10 +41,10 @@ AccountsTemplates.configure({
   postSignUpHook: function(userId) {
     const user = Meteor.users.findOne(userId);
     const address_zipcode = user.profile.zipCode;
-    const amountspent = 0;
+    const amount_spent = 0;
     const data = { 
       address_zipcode,
-      amountspent,
+      amount_spent,
     };
 
     Meteor.call( 'updateUser', user._id, data, ( error, response ) => {

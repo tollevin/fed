@@ -34,4 +34,10 @@ Template.Customers_toolbar.events({
 	'autocompleteselect input'(event, template, doc) {
     FlowRouter.go('Customer.detail', { _id: doc._id });
   },
+
+  // 'click . restrictionsToArray'(event, template) {
+  //   event.preventDefault() {
+      
+  //   },
+  // }
 });

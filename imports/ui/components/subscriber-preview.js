@@ -149,12 +149,12 @@ Template.Subscriber_preview.helpers({
 	},
 
 	deliveryZone() {
-		var args = {
-			zip_code: Template.currentData().address_zipcode
-		};
+		// var args = {
+		// 	zip_code: Template.currentData().address_zipcode
+		// };
 
-		var zipZone = getZipZone.call(args);
-		return zipZone;
+		// var zipZone = getZipZone.call(args);
+		// return zipZone;
 	},
 
 	subscription: () => {
@@ -167,16 +167,20 @@ Template.Subscriber_preview.helpers({
 
 	allergies: ()=> {
 		const restrictions = Template.currentData().restrictions;
-		const keys = Object.keys(restrictions);
-		var allergies = [];
+		if (restrictions) {
+			const keys = Object.keys(restrictions);
+			var allergies = [];
 
-		for (var i = keys.length - 1; i >= 0; i--) {
-			if (restrictions[keys[i]]) {
-				allergies.push(keys[i]);
+			for (var i = keys.length - 1; i >= 0; i--) {
+				if (restrictions[keys[i]]) {
+					allergies.push(keys[i]);
+				};
 			};
-		};
 
-		return allergies;
+			return allergies;
+		} else {
+			return false
+		}
 	},
 });
 

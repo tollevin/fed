@@ -425,6 +425,7 @@ export const updateOrder = new ValidatedMethod({
     style: { type: String, optional: true },
     user_id: { type: String, optional: true },
     menu_id: { type: String, optional: true },
+    week_of: { type: Date, optional: true },
     recipient: { type: Object, blackbox: true, optional: true },
     gift: { type: Boolean, optional: true },
     items: { type: [ Object ], optional: true },
@@ -451,7 +452,7 @@ export const updateOrder = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ _id, created_at, id_number, status, user_id, menu_id, recipient, gift, items, subscriptions, subtotal, discount, delivery_fee, sales_tax, total, payment_id, paid_at, ready_by, delivery_window_id, delivery_comments, tracking_code, courier, delivered_at, notes, changes, auto_correct }) {
+  run({ _id, created_at, id_number, status, user_id, menu_id, week_of, recipient, gift, items, subscriptions, subtotal, discount, delivery_fee, sales_tax, total, payment_id, paid_at, ready_by, delivery_window_id, delivery_comments, tracking_code, courier, delivered_at, notes, changes, auto_correct }) {
 
     const id = Orders.find({status: { $ne: 'pending'}}).count();
 
@@ -464,6 +465,7 @@ export const updateOrder = new ValidatedMethod({
         status: status,
         user_id: user_id,
         menu_id: menu_id,
+        week_of: week_of,
         recipient: recipient,
         gift: gift,
         items: items,
