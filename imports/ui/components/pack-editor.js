@@ -96,7 +96,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
       var pack = Items.findOne({name: packName});
       Session.setDefault('pack', pack); 
 
-      var menu = Menus.findOne({online_at: thisWeeksStart});
+      var menu = Menus.findOne({active: true});
       var data = {
         _id: menu._id,
         ready_by: menu.ready_by,

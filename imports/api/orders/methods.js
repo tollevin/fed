@@ -196,6 +196,19 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
       };
 
+      // Create default recipient obj
+      const recipient = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        email: user.email,
+        address_line_1: user.address_line_1,
+        address_line_2: user.address_line_2, 
+        address_city: user.address_city,
+        address_state: user.address_state,
+        address_zipcode: user.address_zipcode
+      };
+
       // find preferred delivery_window (FIX)
       const dws = getMenuDWs.call({menu_id: menu_id});
       let delivery_window_id;
@@ -219,6 +232,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         style: 'pack',
         items,
         subscriptions: subs,
+        recipient,
         subtotal,
         discount,
         sales_tax,
@@ -231,6 +245,10 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
 
       const orderId = Orders.insert(newOrder);
       const result = Orders.findOne({_id: orderId});
+
+      // REMOVE
+      console.log('autoinsertSubscriberOrder called for ' + Meteor.userId());
+
       return result;
     };
   },
@@ -273,7 +291,7 @@ export const processOrder = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ _id, user_id, recipient, gift, items, subscriptions, subtotal, discount, delivery_fee, sales_tax, total, payment_id, paid_at, ready_by, delivery_window_id, delivery_comments, tracking_code, notes, changes, auto_correct }) {
+  run({ _id, status, user_id, recipient, gift, items, subscriptions, subtotal, discount, delivery_fee, sales_tax, total, payment_id, paid_at, ready_by, delivery_window_id, delivery_comments, tracking_code, notes, changes, auto_correct }) {
 
     const id_number = Orders.find({status: {$ne: 'pending'}}).count();
     const user = Meteor.users.findOne({_id: user_id});
@@ -302,10 +320,23 @@ export const processOrder = new ValidatedMethod({
       };
     };
 
+    let newStatus;
+
+    switch (status) {
+      case 'pending':
+        newStatus = 'created';
+        break;
+      case 'pending-sub':
+        newStatus = 'custom-sub';
+        break;
+      default:
+        newStatus = status;
+    };
+
     Orders.update(_id, {
       $set: { 
         id_number: id_number,
-        status: 'created',
+        status: newStatus,
         recipient: recipient,
         gift: gift,
         items: items,

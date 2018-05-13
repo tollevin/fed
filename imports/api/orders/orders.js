@@ -96,7 +96,7 @@ Orders.schema = new SimpleSchema({
   status: {
     type: String,
     label: "Status",
-    allowedValues: ['skipped', 'pending', 'pending-sub', 'created', 'canceled', 'assigned', 'in_transit', 'delivered', 'rejected', 'returned', 'lost'],
+    allowedValues: ['skipped', 'pending', 'pending-sub', 'custom-sub', 'created', 'canceled', 'assigned', 'in_transit', 'delivered', 'rejected', 'returned', 'lost'],
   },
   style: { 
     type: String,

@@ -42,11 +42,10 @@ Meteor.publish('thisWeeks.orders', function thisWeeksOrders() {
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
-  const weekStart = moment(timestamp).startOf('week').toDate();
 
   const args = {
     user_id: Meteor.userId(),
-    week_of: { $gte: weekStart },
+    ready_by: { $gte: timestamp },
     status: { $nin: ['pending','canceled'] },
   };
   

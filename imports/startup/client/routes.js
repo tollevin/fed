@@ -15,6 +15,7 @@ import '../../ui/pages/blog-page.js';
 import '../../ui/components/menu-item.js';
 import '../../ui/pages/item-detail.js';
 import '../../ui/pages/checkout.js';
+import '../../ui/pages/confirmation.js';
 import '../../ui/pages/success.js';
 import '../../ui/pages/account-page.js';
 import '../../ui/pages/subscribe.js';
@@ -130,12 +131,12 @@ FlowRouter.route('/about-us', {
   },
 });
 
-// FlowRouter.route('/my-account', {
-//   name: 'My.account',
-//   action() {
-//     BlazeLayout.render('App_body', { main: 'Account_page' });
-//   },
-// });
+FlowRouter.route('/confirmation', {
+  name: 'Confirmation',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Confirmation' });
+  },
+});
 
 FlowRouter.route('/settings', {
   name: 'Account.settings',
@@ -353,6 +354,12 @@ Accounts.onLogin(function(){
 });
 
 Accounts.onLogout(function(){
+  Session.set('Order', undefined);
+  Session.set('orderId', undefined);
+  Session.set('newUser', undefined);
+  Session.set('subscribed', undefined);
+  Session.set('pack', undefined);
+  
   FlowRouter.go('App.home')
 });
 

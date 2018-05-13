@@ -755,6 +755,7 @@ Template.Checkout_page.events({
             Session.set('loading', false);
           } else {
             Session.set('Order', null);
+            Session.set('orderId', response)
             // ga('ec:addProduct', {               // Provide product details in an productFieldObject.
             //   'name': orderToProcess.packName,                 // Product name (string).
             //   'price': orderToProcess.total,                 // Product price (currency).
@@ -779,8 +780,7 @@ Template.Checkout_page.events({
         });
 
         Session.set('loading', false);
-        // FIX... sAlert
-        sAlert.success("All done! We'll email you soon with details about your delivery.", { timeout: 'none', onClose: function() { FlowRouter.go('/'); }});
+        FlowRouter.go('Confirmation');
       } catch(error) {
         console.log(error);
         Session.set('loading', false);

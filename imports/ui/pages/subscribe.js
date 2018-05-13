@@ -381,6 +381,7 @@ Template.Subscribe.events({
       // check if plan exists
       const data = {
         item_id: pack._id,
+        price: pack.price_per_unit,
         quantity: 1,
         frequency: 7,
       };

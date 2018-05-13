@@ -50,7 +50,7 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 
 		if (handle.ready()) {
 			// Set Session menu data if none
-			var menu = Menus.findOne({online_at: thisWeeksStart});
+			var menu = Menus.findOne({active: true});
 			var data = {
 				_id: menu._id,
 				ready_by: menu.ready_by,

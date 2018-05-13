@@ -26,13 +26,16 @@ Template.User_home.onCreated(function userHomeOnCreated() {
     FlowRouter.go('signin');
   };
 
-  this.nextOrder = new ReactiveVar(Session.get('orderId'));
-
+  this.nextOrder = new ReactiveVar();
   this.futureOrders = new ReactiveVar();
 
   this.autorun(() => {
     const orders = Orders.find({status:{$nin: ['pending', 'canceled']}}, {sort: {ready_by: 1}}).fetch();
-    this.futureOrders = new ReactiveVar(orders.slice(1));
+    if (!Session.get('orderId')) {
+      Session.set('orderId', orders[0]);
+    };
+    this.nextOrder.set(Session.get('orderId'));
+    this.futureOrders.set(orders.slice(1));
   });
 });
 
@@ -67,32 +70,4 @@ Template.User_home.helpers({
 });
 
 Template.User_home.events({
-  // 'click #MainCTA' (event) {
-  //   event.preventDefault();
-
-  //   ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-  //     'id': 'test',
-  //     'affiliation': 'Getfednyc.com',
-  //     'revenue': '85.00',
-  //     'tax': '5.00',
-  //     'shipping': '13.00',
-  //     'coupon': 'TestCoupon'
-  //   });
-
-  //   console.log('sent');
-  // },
-  
-	'click #zipSubmit'(event, instance) {
-    event.preventDefault();
-
-    const zipInput = document.getElementById("zip").value.trim();
-
-    if (yesZips.indexOf(zipInput) > -1 ) {
-      Session.set('zipOk', true); 
-      Session.set('zipNotYet', false);
-    } else {
-    	Session.set('zipNotYet', true);
-    	Session.set('zipOk', false); 
-    };
-  },
 });

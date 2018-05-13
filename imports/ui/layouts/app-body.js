@@ -127,9 +127,10 @@ Template.App_body.onCreated(function appBodyOnCreated() {
               console.log(error + "; error");
             } else {
               subItems = response;
+              var menus = Menus.find({}).fetch();
 
               for (var j = orders.length; j < 3; j++) {
-                var menu = Menus.findOne({online_at: weeks[j]});
+                var menu = menus[j];
 
                 var data = {
                   user_id: Meteor.userId(),

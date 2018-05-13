@@ -214,6 +214,11 @@ Plans.schema = new SimpleSchema({
     decimal: true,
     defaultValue: 8.875,
   },
+  price: {
+    type: Number,
+    label: 'Price',
+    decimal: true,
+  },
   // trial_end: {
   //   type: Number,
   //   label: 'ID',
@@ -267,6 +272,7 @@ Plans.publicFields = {
   // start: 1,
   status: 1,
   tax_percent: 1,
+  price: 1,
   // trial_end: 1,
   // trial_start: 1,
   frequency: 1,

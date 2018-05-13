@@ -69,31 +69,42 @@ Template.Subscriber_preview.helpers({
     };
 	},
 
-	saleAmount() {
-		// Price - Discount
+	subtotal() {
 		if (Template.currentData().subscriptions) {
-			const basePrice = Template.currentData().subscriptions.plan.amount / 100;
-			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
-			return saleAmount;
+			const subscriptions = Template.currentData().subscriptions;
+			var subtotal = 0;
+			for (var i = subscriptions.length - 1; i >= 0; i--) {
+				subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+			};
+
+			return subtotal.toFixed(2);
 		};
 	},
 
-	taxAmount() {
+	sales_tax() {
 		if (Template.currentData().subscriptions) {
-			const basePrice = Template.currentData().subscriptions.plan.amount / 100; // Cost of plan
-			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
-			const taxAmount = (saleAmount * .08875);
-			return taxAmount.toFixed(2);
+			const subscriptions = Template.currentData().subscriptions;
+			var subtotal = 0;
+			for (var i = subscriptions.length - 1; i >= 0; i--) {
+				subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+			};
+
+			const sales_tax = subtotal * .08875;
+
+			return sales_tax.toFixed(2);
 		};
 	},
 
 	total() {
 		if (Template.currentData().subscriptions) {
-			const basePrice = Template.currentData().subscriptions.plan.amount / 100;
-			const saleAmount = basePrice * (100 - Number(Template.currentData().subscriptions.discount.coupon.id.split('b')[1])) / 100;
-			const taxAmount = saleAmount * .08875;
-	    const totalAmount = saleAmount + taxAmount;
-	    return totalAmount.toFixed(2);
+			const subscriptions = Template.currentData().subscriptions;
+			var subtotal = 0;
+			for (var i = subscriptions.length - 1; i >= 0; i--) {
+				subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+			};
+
+			const total = subtotal * 1.08875;
+	    return total.toFixed(2);
 	  };
 	},
 
