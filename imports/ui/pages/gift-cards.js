@@ -54,13 +54,13 @@ Template.Gift_Cards.helpers({
     return order && (order.price / 100).toFixed(2);
   },
 
-  discount() {
-    return "5%"; // Add built-in discount here. Need to allow for more variables?
-  },
+  // discount() {
+  //   return "5%"; // Add built-in discount here. Need to allow for more variables?
+  // },
 
   salePrice() {
     var order = Template.instance().order.get();
-    return order && (order.price * .95 / 100).toFixed(2); // Add built-in discount here.
+    return order && (order.price / 100).toFixed(2); // Add built-in discount here.
   },
 });
 
@@ -210,7 +210,7 @@ Template.Gift_Cards.events({
       try {
         const zipInRange = checkZipInRange();
         const giftCardValue = await checkGiftCardValue();
-        const giftCardPrice = giftCardValue * .95; // Add discount here
+        const giftCardPrice = giftCardValue; // Add discount here
         var customer = {};
         customer.first_name = template.find('[name="customer.first_name"]').value;
         customer.last_name = template.find('[name="customer.last_name"]').value;

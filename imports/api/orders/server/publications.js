@@ -16,7 +16,7 @@ Meteor.publish('some.orders', function(limit) {
     limit: Math.min(limit, MAX_ORDERS)
   };
 
-  return Orders.find({"status": { $in: ['created', 'creating'] }}, options);
+  return Orders.find({"status": { $in: ['created', 'custom-sub'] }}, options);
 });
 
 Meteor.publish('single.order', function singleOrder(id) {
@@ -38,7 +38,7 @@ Meteor.publish('thisWeeks.orders', function thisWeeksOrders() {
     sort: {created_at: -1},
   };
 
-  return Orders.find({"status": { $in: ['created', 'creating'] }, "created_at": { $gte: new Date(ordersResetTime) }}, options);
+  return Orders.find({"status": { $in: ['created', 'custom-sub'] }, "created_at": { $gte: new Date(ordersResetTime) }}, options);
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {

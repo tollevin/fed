@@ -75,6 +75,51 @@ Template.Order_detail_panel.helpers({
 				return 'Skipped';
 		};
 	},
+
+	itemsTally: ()=> {
+    var itemList = Template.currentData().items;
+    var itemTally = {};
+
+    for (var i = itemList.length - 1; i >= 0; i--) {
+      if (!itemTally[itemList[i].name]) {
+        itemTally[itemList[i].name] = 1;
+      } else {
+        itemTally[itemList[i].name] += 1;
+      };
+    };
+    
+    var result = [];
+    for (var key in itemTally) result.push({name:key,value:itemTally[key]});
+    return result;
+  },
+
+  isPack: (item)=> {
+    return item.name.split('-')[1] === 'Pack';
+  },
+
+  subitems: (item)=> {
+    var orderItemList = Template.currentData().items;
+    var subItemList = [];
+    var subItemTally = {};
+
+    for (var i = orderItemList.length - 1; i >= 0; i--) {
+      if (orderItemList[i].name === item.name) {
+        subItemList = orderItemList[i].sub_items.items;
+      };
+    };
+
+    for (var i = subItemList.length - 1; i >= 0; i--) {
+      if (!subItemTally[subItemList[i].name]) {
+        subItemTally[subItemList[i].name] = 1;
+      } else {
+        subItemTally[subItemList[i].name] += 1;
+      };
+    };
+    
+    var result = [];
+    for (var key in subItemTally) result.push({name:key,value:subItemTally[key]});
+    return result;
+  },
 });
 
 Template.Order_detail_panel.events({

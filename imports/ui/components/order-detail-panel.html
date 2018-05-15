@@ -20,16 +20,14 @@
 		</div>
 
 		<div class="order-items-preview">
-			{{#each item in items}}
-				<span class="item">{{item.tally}} {{item.name}}</span>
-				{{#if item.sub_items}}
-					<ul>
-					{{#each subItem in item.sub_items.items}}
-						<li class="sub-item">{{subItem.name}}</li>
-					{{/each}}
-					</ul>
-				{{/if}}
-			{{/each}}
+			{{#each item in itemsTally}}
+        <p class="item">{{item.value}} {{item.name}}</p>
+        {{#if isPack item}}
+          {{#each subitem in subitems item}}
+            <p class="subitem">{{subitem.value}} {{subitem.name}}</p>
+          {{/each}}
+        {{/if}}
+      {{/each}}
 		</div>
 
 		<!-- <div class="buttons-holder">
