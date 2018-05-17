@@ -29,9 +29,9 @@ Template.Content_Overlay.helpers({
   },
 
   selectStyle: ()=> {
-    const route = FlowRouter.getRouteName();
-    const order = Session.get('Order');
-    return route === 'Menu.show' && !order && 'selectStyle';
+    // const route = FlowRouter.getRouteName();
+    // const order = Session.get('Order');
+    // return route === 'Menu.show' && !order && 'selectStyle';
   },
 
   // selectPack: ()=> {
@@ -49,7 +49,8 @@ Template.Content_Overlay.helpers({
     const route = FlowRouter.getRouteName();
     const uncustomizable = Session.get('customizable') === false;
     // return route === 'Menu.show' && uncustomizable && 'uncustomizable';
-    return false;
+    // return false;
+    return route === 'Menu.show' && 'uncustomizable';
   },
 
   capped() {

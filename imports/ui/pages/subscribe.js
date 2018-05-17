@@ -457,7 +457,7 @@ Template.Subscribe.events({
       var userData = {
         restrictions: restrictionsArray,
         diet: filters.diet,
-        preferred_deliv_windows: deliveryDay
+        preferredDelivDay: deliveryDay
       };
 
       Meteor.call('updateUser', Meteor.userId(), userData);

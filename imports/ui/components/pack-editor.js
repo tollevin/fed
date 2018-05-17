@@ -528,12 +528,11 @@ Template.Pack_Editor.events({
         if (order.items[i]._id === pack._id) order.items[i] = pack;
       };
       // update order
-      updateOrder.call(order)
+      const updatedOrder = updateOrder.call(order)
+      Session.set('Order', updatedOrder);
     } else {
 
       order.items.push(pack);
-      Session.set('Order', order);
-      Session.set('pack', null);
 
       const orderToCreate = {
         user_id: Meteor.userId(),
@@ -545,9 +544,10 @@ Template.Pack_Editor.events({
       };
 
       const orderId = insertOrder.call(orderToCreate);
-      Session.set('orderId', orderId);
+      Session.set('Order', orderId);
     };
 
+    Session.set('pack', null);
     Session.set('overlay', null);
     FlowRouter.go('/checkout');
   },

@@ -213,7 +213,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       const dws = getMenuDWs.call({menu_id: menu_id});
       let delivery_window_id;
 
-      switch (user.preferred_deliv_windows) {
+      switch (user.preferredDelivDay) {
         case 'monday':
           delivery_window_id = dws[0];
         case 'sunday':

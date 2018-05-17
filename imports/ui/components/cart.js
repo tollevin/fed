@@ -134,14 +134,14 @@ Template.Cart.helpers({
 	// },
 
 	ready() {
-		var subtotal = 0;
-		const order = Session.get('Order');
+		// var subtotal = 0;
+		// const order = Session.get('Order');
 
-		for (var i = order.items.length - 1; i >= 0; i--) {
-			subtotal += order.items[i].price_per_unit;
-		};
+		// for (var i = order.items.length - 1; i >= 0; i--) {
+		// 	subtotal += order.items[i].price_per_unit;
+		// };
 
-		return subtotal > 50 && 'ready';
+		return 'ready';
 	},
 });
 
@@ -185,7 +185,7 @@ Template.Cart.events({
     };
 
     const orderId = insertOrder.call(orderToCreate);
-    Session.set('orderId', orderId);
+    Session.set('Order', orderId);
 		Session.set('cartOpen', false);
 
     FlowRouter.go('/checkout');

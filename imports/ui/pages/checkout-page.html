@@ -46,10 +46,10 @@
 								<button type="submit" id="applyCredit">Apply</button>
 						  </div>
 						{{/if}}
-						{{#if discount}}
+						{{#if hasDiscount}}
 							<div class="coupon">
 								<p class="label">Discount</p>
-								<p class="num">{{discount}}</p>
+								<p class="num">- ${{discount}}</p>
 							</div>
 						{{/if}}
 						<div class="total">

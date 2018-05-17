@@ -31,8 +31,8 @@ import '../components/stripe-card-element.js';
 
 Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
   // Create a handle for subscription to this 'single.order', 'thisUserData'
-  if (Session.get('orderId')) {
-    const handle = this.subscribe('single.order', Session.get('orderId')._id);
+  if (Session.get('Order')) {
+    const handle = this.subscribe('single.order', Session.get('Order')._id);
     const thisUserData = this.subscribe('thisUserData', Meteor.userId());
     this.subscribe('DeliveryWindows.forMenu', Session.get('menu')._id);
     
@@ -51,17 +51,17 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
     this.userHasPromo = new ReactiveVar(false);  // toggle promo input
     this.order = new ReactiveVar(order); // base order
     this.order.coupon = new ReactiveVar( false ); // discount.promo.code
-    this.order.total = new ReactiveVar(Session.get('orderId').total);  // order.total
-    this.order.subtotal = new ReactiveVar(Session.get('orderId').subtotal);  // order.subtotal
+    this.order.total = new ReactiveVar(Session.get('Order').total);  // order.total
+    this.order.subtotal = new ReactiveVar(Session.get('Order').subtotal);  // order.subtotal
     this.delivFee = new ReactiveVar(0);  // order.delivery_fee
     this.sources = new ReactiveVar(false); // stored card IDs
 
     // Discount Vars
-    this.discount = new ReactiveVar(Session.get('orderId').discount);  // discount Object
+    this.discount = new ReactiveVar(Session.get('Order').discount);  // discount Object
     this.appliedCredit = new ReactiveVar(0);  // discount.credit
-    this.subscriber_discount = new ReactiveVar(Session.get('orderId').discount.subscriber_discount);  // discount.subscriber_discount
+    this.subscriber_discount = new ReactiveVar(Session.get('Order').discount.subscriber_discount);  // discount.subscriber_discount
     this.promo = new ReactiveVar(null);  // discount.promo
-    this.discountValue = new ReactiveVar(Session.get('orderId').discount.value); // discount.value    
+    this.discountValue = new ReactiveVar(Session.get('Order').discount.value); // discount.value    
 
     // All reactive data for autorun
     this.autorun(() => {
@@ -208,7 +208,7 @@ Template.Checkout_page.helpers({
   },
 
   isPlan(item) {
-    var subscriptions = Session.get('orderId').subscriptions;
+    var subscriptions = Session.get('Order').subscriptions;
     if (subscriptions) {
       for (var i = subscriptions.length - 1; i >= 0; i--) {
         var subItemName = subscriptions[i].item_name;
@@ -226,19 +226,29 @@ Template.Checkout_page.helpers({
   },
 
   deliveryFee() {
-    return "$" + Template.instance().delivFee.get().toFixed(2);
+    const delivFee = Template.instance().delivFee.get();
+
+    if (delivFee > 0) {
+      return "$" + delivFee.toFixed(2);
+    } else {
+      return "FREE";
+    };
   },
 
   userHasCredit() {
-    if(Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
+    if (Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
       return "$" + Template.instance().userHasCredit.get().toFixed(2);
     } else {
       return false;
     }
   },
 
+  hasDiscount() {
+    return Template.instance().discountValue.get();
+  },
+
   discount() {
-    return "- $" + Template.instance().discountValue.get();
+    return Template.instance().discountValue.get().toFixed(2);
   },
 
   total() {
@@ -729,7 +739,7 @@ Template.Checkout_page.events({
         //   customer.address_zipcode
         // }
 
-        const order = Session.get('orderId');
+        const order = Session.get('Order');
         order.recipient = customer;
         order.gift = null;
         order.discount = {

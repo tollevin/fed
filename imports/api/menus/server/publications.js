@@ -30,6 +30,31 @@ Meteor.publishComposite('Menus.thisWeek', function(now) {
   };
 });
 
+Meteor.publishComposite('Menus.byWeek', function(timestamp) {
+  new SimpleSchema({
+    timestamp: {type: Date}
+  }).validate({ timestamp });
+
+  return {
+    find() {
+      const thisWeeksStart = moment(timestamp).startOf('week').toDate();
+      return Menus.find({"week_of": thisWeeksStart});
+    },
+    children: [{
+      find(menu) {
+        return Items.find({
+          _id: {$in: menu.items},
+        });
+      }
+    },
+    {
+      find() {
+        return Items.find({active: true});
+      }
+    }]
+  };
+});
+
 Meteor.publishComposite('Menus.active', function() {
 
   return {
