@@ -1,6 +1,8 @@
 @import './utils.less';
 
 #market-page {
+	text-align: center;
+
 	#coming-soon {
 		text-align: center;
 		
@@ -8,5 +10,50 @@
 			font-size: 48px;
 			font-weight: 200;
 		}
+	}
+
+	.market-header {
+		background-image: url("/images/get_fed_orange.jpg");
+		background-position-y: 45%;
+		background-position-x: 35%;
+	}
+
+	.market-items {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+    justify-content: space-between;
+    width: auto;
+    margin-left: 3%;
+    margin-right: 3%;
+
+		h2 {
+			text-align: left;
+			margin-left: 6px; 
+		}
+
+		#Meals,
+		#Snacks,
+		#Drinks,
+		#Packs {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: left;
+		}
+	}
+
+	.hr-holder {
+		width: 100%;
+
+		hr {
+			width: 80%;
+			margin-top: 40px;
+			margin-bottom: 60px;
+		}
+	}
+
+	h2 {
+		width: 100%;
 	}
 }

@@ -25,6 +25,7 @@ import '../components/loader.js';
 import '../components/side-nav.js';
 import '../components/mobile-nav.js';
 import '../components/modals.js';
+import '../components/banner.js';
 import '../components/content-overlay.js';
 import '../components/footer.js';
 

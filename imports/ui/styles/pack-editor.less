@@ -92,6 +92,16 @@
     overflow-y: scroll;
     max-height: 500px;
     position: relative;
+    border: 1px solid @fgreene;
+    background-color: #FFF;
+
+    .meal-category {
+      border-bottom: 1px solid;
+      width: 30%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 0;
+    }
 
     .accordion {
       background-color: #eee;
@@ -122,10 +132,8 @@
       background-color: #ccc;
     }
 
-    .panel {
-      padding: 0 18px;
-      background-color: white;
-      max-height: 0;
+    .meals-panel {
+      padding: 0 18px 10px;
       overflow-y: scroll;
       transition: max-height 0.2s ease-out;
       display: flex;

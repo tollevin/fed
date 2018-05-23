@@ -57,14 +57,10 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
   });
 
 	Session.set('cartOpen', false);
-  Session.set('stage', 0);
 });
 
 Template.Account_page.onRendered(function accountPageOnRendered() {
-  // stripe.setPublishableKey('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  // stripe.setPublishableKey('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
-  // const stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
-  // const stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
+  
 });
 
 Template.Account_page.helpers({

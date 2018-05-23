@@ -17,8 +17,8 @@ import './sitemaps.js';
 import './prerenderio.js';
 
 // Get custom Stripe payment method
-import './stripe.js';
-// import './stripe-dev.js';
+// import './stripe.js';
+import './stripe-dev.js';
 
 // import './deliv.js';
 // import './deliv-dev.js';

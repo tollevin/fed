@@ -33,11 +33,12 @@ export const insertMenu = new ValidatedMethod({
   run({ user_id, name, items, online_at, custom_until, offline_at, ready_by }) {
 
     const ready_by_date = moment(ready_by);
-    const on_at = online_at || ready_by_date.subtract(7, 'd').unix;
-    const custom_til = custom_until || ready_by_date.add(4, 'd').unix;
-    const off_at = offline_at || ready_by_date.endOf('week').unix;
+    const on_at = online_at || ready_by_date.subtract(7, 'd').toDate();
+    const custom_til = custom_until || ready_by_date.add(4, 'd').toDate();
+    const off_at = offline_at || ready_by_date.endOf('week').toDate();
 
     const menu = {
+      created_at: new Date,
       id_number: menusLength,
       name,
       items,
@@ -48,18 +49,17 @@ export const insertMenu = new ValidatedMethod({
     };
 
     createDeliveryWindows.call({
-      ready_by_date: ready_by_date
+      ready_by_date: ready_by
     }, (err, res) => {
       if (err) {
         console.log(err.error);
-      }
-
-      menu.delivery_windows = res;
+      } else {
+        menu.delivery_windows = res;
+        const menuId = Menus.insert(menu);
+        const result = Menus.findOne({_id: menuId});
+        return result;
+      };
     });
-    
-    const menuId = Menus.insert(menu);
-    const result = Menus.findOne({_id: menuId});
-    return result;
   },
 });
 

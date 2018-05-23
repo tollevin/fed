@@ -1,11 +1,13 @@
 <template name="App_body">
   {{#HammerTouchArea gestureMap=templateGestures}}
   <div id="container">
+    {{> sAlert}}
     {{> Side_Nav}}
     {{> Mobile_Nav}}
     {{> Modals}}
     {{> Content_Overlay}}
     <div id="content-container">
+      {{> Banner}}
       {{#momentum plugin="fade"}}
         {{#if Template.subscriptionsReady}}
           {{> Template.dynamic template=main}}

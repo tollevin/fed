@@ -359,6 +359,7 @@ Accounts.onLogout(function(){
   Session.set('newUser', undefined);
   Session.set('subscribed', undefined);
   Session.set('pack', undefined);
+  Session.set('stage', undefined);
   
   FlowRouter.go('App.home')
 });

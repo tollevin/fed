@@ -36,23 +36,22 @@ import '../components/pack-schemas.js';
 import '../components/stripe-card-element.js';
 import '../components/delivery-day-toggle.js';
 import '../components/pack-editor.js';
+import '../components/signUpModal.js';
 
 
 
 
 Template.Subscribe.onCreated(function subscribeOnCreated() {
-  if (!Meteor.userId()) {
-    FlowRouter.go('join');
-  };
-
+  // Set vars
   this.userHasPromo = new ReactiveVar(false);
 	Session.set('cartOpen', false);
   Session.setDefault('stage', 0);
-  this.diet = new ReactiveVar('omnivore');
+  this.diet = new ReactiveVar('Omnivore');
   this.restrictions = new ReactiveVar([]);
   this.preferredDelivDay = new ReactiveVar('sunday');
   this.skip_first_delivery = new ReactiveVar(false);
   this.menu_id = new ReactiveVar(false);
+  Session.setDefault('signIn', false);
 
   const now = moment().toDate();
 
@@ -60,7 +59,6 @@ Template.Subscribe.onCreated(function subscribeOnCreated() {
     this.subscribe('thisUserData');
     this.subscribe('DeliveryWindows.nextTwoWeeks', now);
     this.subscribe('Items.packs');
-    // this.subscribe('Menus.active');
   });
 });
 
@@ -69,13 +67,16 @@ Template.Subscribe.onRendered(function freeTrialOnRendered() {
 });
 
 Template.Subscribe.helpers({
-  trialable() {
-    return !Meteor.userId();
+  signIn() {
+    return Session.get('signIn');
   },
 
   currentForm(thisForm) {
     var cf;
     switch (Session.get('stage')) {
+      case undefined:
+        var cf = 'diet';
+        break;
       case 0:
         var cf = 'diet';
         break;
@@ -96,7 +97,7 @@ Template.Subscribe.helpers({
   },
 
   diet() {
-    return (Session.get('stage') === 0);
+    return !Session.get('stage');
   },
 
   restrictions() {
@@ -141,92 +142,31 @@ Template.Subscribe.helpers({
     const dateToString = date.format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
     return dateToString;
   },
-
-  havePromo() {
-    return Template.instance().userHasPromo.get();
-  },
 });
 
 Template.Subscribe.events({
+  'click #Subscribe-status-bar li'(event, template) {
+    var form = event.target.innerText;
+    var stage;
+    var currentStage = Session.get('stage');
+    switch (form) {
+      case 'diet':
+        stage = '0';
+        break;
+      case 'plan':
+        stage = 1;
+        break;
+      case 'meals':
+        // if 
+        stage = 2;
+        break;
+      case 'payment':
+        stage = 3;
+        break;
+    };
 
-  // 'click .enterPromo'(event,template) {
-  //   event.preventDefault();
-
-  //   Template.instance().userHasPromo.set(true);
-  // },
-
-  // 'click #promoSub'(event, template) {
-  //   event.preventDefault();
-  //   Session.set('loading', true);
-  //   var formdata = Session.get('formData');
-  //   formdata.account_balance = 0;
-
-
-  //   // async function processPromo() {
-  //   //   try {
-  //   //     const code = orderToProcess.coupon;
-  //   //     var codeCheck = false;
-  //   //     if (code) {
-  //   //       usePromo.call({
-  //   //         code: code
-  //   //       }, (err, res) => {
-  //   //         if (err) {
-  //   //           return(err);
-  //   //         } else {
-  //   //           return(res);
-  //   //         };
-  //   //       });
-  //   //     };
-  //   //   } catch(error) {
-  //   //     sAlert.error(error.reason);
-  //   //   };
-  //   // };
-
-
-  //   const code = template.find('[id="promo"]').value.toUpperCase();
-  //   template.subscribe('single.promo', code, {
-  //     onReady: function () {
-  //       Session.set('newUser', false);
-
-  //       const promo = Promos.findOne({code: code});
-        
-  //       if (promo && !promo.active) {
-  //         sAlert.error('Sorry, that code is no longer valid.');
-  //         formdata.account_balance = 0;
-  //         Session.set('formData', formdata);
-  //       } else if (promo && promo.credit) {
-  //         var credit = 0 - (promo.credit * 100);
-  //         formdata.account_balance = credit;
-  //         Session.set('formData', formdata);
-  //         sAlert.success('You now have a credit of $' + promo.credit.toFixed(2) + ".");
-  //         usePromo.call({code: code});
-  //       } else if (promo && promo.percentage && (promo.useLimitPerCustomer === 0)) {
-  //         formdata.percentOff = promo.percentage;
-  //         Session.set('formData', formdata);
-  //         sAlert.success("Lucky you! You get " + formdata.percentOff + "% off!");
-  //         usePromo.call({code: code});
-  //       } else if ( promo && code === 'FED40') {
-  //         formdata.percentOff = promo.percentage;
-  //         formdata.newTrialCustomer = true;
-  //         Session.set('formData', formdata);
-  //         sAlert.success("You get " + formdata.percentOff + "% off your first week!");
-  //         usePromo.call({code: code});
-  //       } else {
-  //         formdata.account_balance = 0;
-  //         Session.set('formData', formdata);
-  //         sAlert.error("Sorry, that code doesn't work for subscriptions!");
-  //       };
-  //     },
-  //     onError: function () {
-  //       sAlert.error("Sorry, that code isn't recognized");
-  //       formdata.account_balance = 0;
-  //       Session.set('formData', formdata);
-  //     },
-  //   });
-
-  //   Session.set('loading', false);
-  //   template.userHasPromo.set( false );
-  // },
+    Session.set('stage', stage);
+  },
 
   'click .diet label, touchstart .diet label'(event, template) {
     event.preventDefault();
@@ -311,20 +251,49 @@ Template.Subscribe.events({
     var diet = template.find('.clicked');
     
     if (!diet) {
-      sAlert.error("Please choose a type of diet.");
+      sAlert.error("Please choose a diet.");
       Session.set('loading', false);
     } else {
-      template.diet.set(diet.innerText);
       var restrictions = template.findAll('.checked');
       var restrictionsArray = [];
       for (var i = restrictions.length - 1; i >= 0; i--) {
         restrictionsArray.push(restrictions[i].id);
       };
-      template.restrictions.set(restrictionsArray);
 
-      $('.content-scrollable').scrollTop(0, 2000);
+      var dietToUpperCase = diet.innerText[0].toUpperCase() + diet.innerText.slice(1);
+      console.log(dietToUpperCase);
+      var restrictionsObject = {
+        peanuts: false,
+        treenuts: false,
+        soy: false,
+        beef: false,
+        chicken: false,
+        fish: false,
+        shellfish: false,
+        milk: false,
+        eggs: false,
+        wheat: false,
+      };
+
+      for (var i = restrictionsArray.length - 1; i >= 0; i--) {
+        restrictionsObject[restrictionsArray[i]] = true;
+      };
+
+      var filters = {
+        diet: dietToUpperCase,
+        restrictions: restrictionsObject,
+      };
+
+      Session.set('filters', filters);
+      template.diet.set(dietToUpperCase);
+
       Session.set('loading', false);
-      Session.set('stage', 1);
+      if (!Meteor.userId()) {
+        Session.set('signIn',true);
+      } else {
+        Session.set('stage', 1);
+        $('.content-scrollable').scrollTop(0, 2000);
+      };
     };
   },
 
@@ -361,6 +330,7 @@ Template.Subscribe.events({
 
   'click #next1'(event, template) {
     event.preventDefault();
+
     const packSelected = document.querySelector('input[name="plan"]:checked');
 
     if (packSelected) {
@@ -378,7 +348,7 @@ Template.Subscribe.events({
       //   }
       // },
 
-      // check if plan exists
+      // check if plan exists FIX
       const data = {
         item_id: pack._id,
         price: pack.price_per_unit,
@@ -386,7 +356,7 @@ Template.Subscribe.events({
         frequency: 7,
       };
 
-      var planExists = pack.plans(data);
+      var planExists = pack.plans(data); // FIX!!
       console.log(planExists);
 
       // if !plan, insert plan
@@ -422,40 +392,14 @@ Template.Subscribe.events({
         };
       };
 
-      var diet = template.diet.get();
-      var dietToUpperCase = diet[0].toUpperCase() + diet.slice(1);
-      var restrictionsArray = template.restrictions.get();
-      var restrictionsObject = {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      };
-      var restrictions = Object.keys(restrictionsObject);
-
-      for (var i = restrictionsArray.length - 1; i >= 0; i--) {
-        restrictionsObject[restrictionsArray[i]] = true;
-      };
-
-      var filters = {
-        diet: dietToUpperCase,
-        restrictions: restrictionsObject,
-      };
-
-      // FIX you're not saving their restriction settings...
-      Session.set('filters', filters);
       Session.set('Order', order);
       Session.set('loading', false);
       Session.set('stage', 2);
 
+      var filters = Session.get('filters');
+
       var userData = {
-        restrictions: restrictionsArray,
+        restrictions: filters.restrictions,
         diet: filters.diet,
         preferredDelivDay: deliveryDay
       };

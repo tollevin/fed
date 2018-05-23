@@ -1,0 +1,41 @@
+<template name="Market_item">
+	<article class="market-item animated {{attributes}} {{restrictions}}">
+		<a class="item-details" href="#">
+			<div class="menu-item-img">
+				<img src="{{photo}}" alt="" />
+			</div>
+			<div class="menu-item-name">
+				<h3>{{name}}</h3>
+			</div>
+		</a>
+
+		<div class="menu-item-icons"></div>
+
+		<div class="menu-item-attributes">
+			{{veggie}}
+			{{paleo}}
+		</div>
+
+		<div class="menu-item-desc">
+			<p>{{description}}</p>
+		</div>
+
+		<div class="item-interactive">
+			<div class="menu-item-price">
+				{{#if showFullPrice}}
+					<span>${{price_per_unit}}</span>
+				{{/if}}
+
+				{{#if showAddOnPrice}}
+					<span><i class="fa fa-plus"></i> ${{addOnPrice}}</span>
+				{{/if}}
+			</div>
+
+			<div class="counter">
+				<button class="remove-from-cart"><i class="fa fa-minus"></i></button>
+				<input type="number" value="{{tally}}" readonly>
+				<button class="add-to-cart"><i class="fa fa-plus"></i></button>
+			</div>
+		</div>
+	</article>
+</template>

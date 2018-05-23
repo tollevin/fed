@@ -32,36 +32,36 @@
 				</div>
 			</div>
 			<div class="meal-categories">
-				<h3 class="meal-category">Proteins <span>{{schema 'Protein'}}  {{price proteins}}</span></h3>
-				<div class="meals-panel">
+				<button class="accordion">Proteins <span>{{schema 'Protein'}}  {{price proteins}}</span></button>
+				<div class="panel">
 				  {{#each proteins}}
 				  	{{> Pack_Editor_Item}}
 				  {{/each}}
 				</div>
 
-				<h3 class="meal-category">Vegetables <span>{{schema 'Vegetable'}}  {{price vegetables}}</span></h3>
-				<div class="meals-panel">
+				<button class="accordion">Vegetables <span>{{schema 'Vegetable'}}  {{price vegetables}}</span></button>
+				<div class="panel">
 				  {{#each vegetables}}
 				  	{{> Pack_Editor_Item}}
 				  {{/each}}
 				</div>
 
-				<h3 class="meal-category">Grains <span>{{schema 'Grain'}}  {{price grains}}</span></h3>
-				<div class="meals-panel">
+				<button class="accordion">Grains <span>{{schema 'Grain'}}  {{price grains}}</span></button>
+				<div class="panel">
 				  {{#each grains}}
 				  	{{> Pack_Editor_Item}}
 				  {{/each}}
 				</div>
 
-				<h3 class="meal-category">Soups <span>{{schema 'Soup'}}  {{price soups}}</span></h3>
-				<div class="meals-panel">
+				<button class="accordion">Soups <span>{{schema 'Soup'}}  {{price soups}}</span></button>
+				<div class="panel">
 				  {{#each soups}}
 				  	{{> Pack_Editor_Item}}
 				  {{/each}}
 				</div>
 
-				<h3 class="meal-category">Salads <span>{{schema 'Salad'}}  {{price salads}}</span></h3>
-				<div class="meals-panel">
+				<button class="accordion">Salads <span>{{schema 'Salad'}}  {{price salads}}</span></button>
+				<div class="panel">
 				  {{#each salads}}
 				  	{{> Pack_Editor_Item}}
 				  {{/each}}

@@ -6,10 +6,15 @@ import { Autoform } from 'meteor/aldeed:autoform';
 
 import './new-item.html';
 import { Items } from '../../api/items/items.js';
+import { Menus } from '../../api/menus/menus.js';
 
 import {
 	insertItem
 } from '../../api/items/methods.js';
+
+import {
+	insertMenu
+} from '../../api/menus/methods.js';
 
 Template.NewItem.onCreated(function newItemOnCreated() {
   let template = this
@@ -127,6 +132,23 @@ Template.NewItem.events({
 	  };
 
 	  insertItem.call(item, (err) => {
+	    if (err) {
+	      alert(err); // eslint-disable-line no-alert
+	    }
+	  });
+	},
+
+	'click #newMenu'(event, template) {
+		event.preventDefault();
+
+		const nextReadyBy = moment().startOf('week').add(3, 'week').toDate();
+
+    const menu = {
+      name: 'test',
+      ready_by: nextReadyBy,
+    };
+
+    const menuId = insertMenu.call(menu, (err) => {
 	    if (err) {
 	      alert(err); // eslint-disable-line no-alert
 	    }

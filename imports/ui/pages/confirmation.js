@@ -22,7 +22,9 @@ Template.Confirmation.onCreated(function confirmationOnCreated() {
 
   const order = Session.get('orderId');
   this.order = new ReactiveVar(order);
-  this.subscribe('DeliveryWindows.single', order.delivery_window_id);
+  this.autorun(()=> {
+    this.subscribe('DeliveryWindows.single', order.delivery_window_id);
+  })
 });
 
 Template.Confirmation.onRendered(function confirmationOnRendered() {
@@ -112,6 +114,7 @@ Template.Confirmation.helpers({
   },
 
   deliveryFee: ()=> {
+    console.log(Template.instance().order.get());
     return Template.instance().order.get() && Template.instance().order.get().delivery_fee.toFixed(2);
   },
 

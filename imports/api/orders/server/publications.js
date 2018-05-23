@@ -50,4 +50,13 @@ Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
   };
   
   return Orders.find(args);
+});
+
+Meteor.publish('Future.orders', function futureOrders(timestamp) {
+  const args = {
+    ready_by: { $gte: timestamp },
+    status: { $nin: ['pending','canceled'] },
+  };
+
+  return Orders.find(args);
 })

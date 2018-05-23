@@ -1,5 +1,6 @@
 <template name="NewItem">
 	<div class="new-item-container">
+		<button id="newMenu">Create New Menu</button>
 		{{> quickForm id="insertItemForm" collection=items type="method" meteormethod="Meteor.insertItem" class="new-item-form" buttonClasses="sbmtItem" buttonContent="Submit Item"}}
 		<!-- <form id="insertItemForm" class="new-item-form" novalidate="novalidate">
 		  <div class="form-group" data-required="true">

@@ -1,37 +1,26 @@
 <template name="Content_Overlay">
   <div class="content-overlay {{loading}} {{filterMenuOpen}} {{cartOpen}} {{selectStyle}} {{selectPack}} {{closed}} {{capped}} {{active}}">
-    {{#if loading}}
-      {{> loader}}
-    {{/if}}
+    {{#transition in="fadeIn" out="fadeOut"}}
+      {{#if loading}}
+        {{> loader}}
+      {{/if}}
 
-    {{#transition wrap="true" in="fadeIn" out="fadeOut"}}
+    
       {{#if selectStyle}}
         {{> Style_select}}
       {{/if}}
-    {{/transition}}
 
-    <!-- {{#transition wrap="true" in="fadeIn" out="fadeOut"}}
-      {{#if selectPack}}
-        {{> Pack_select}}
-      {{/if}}
-    {{/transition}} -->
-
-    {{#transition wrap="true" in="fadeIn" out="fadeOut"}}
       {{#if packEditorOpen}}
         {{> Pack_Editor}}
       {{/if}}
-    {{/transition}}
 
-    {{#transition wrap="true" in="fadeIn" out="fadeOut"}}
       {{#if closed}}
         <div id="closed">
           <p>Custom packs are available Sunday at Noon<br>until Wednesday at Midnight each week.<br><br>
           <a href="/subscribe">Subscribe and we'll do our best<br>to get your fridge filled this weekend.<br><br>CLICK HERE TO GET STARTED</a></p>
         </div>
       {{/if}}
-    {{/transition}}
 
-    {{#transition wrap="true" in="fadeIn" out="fadeOut"}}
       {{#if capped}}
         <div id="capped">
           <!-- <span>x</span> -->
@@ -44,6 +33,5 @@
         </div>
       {{/if}}
     {{/transition}}
-
   </div>
 </template>

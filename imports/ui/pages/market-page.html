@@ -7,11 +7,10 @@
 			<p>Coming Soon</p>
 		</div>
 
-<!-- 		<div id="content-scrollable">
+		<!-- <div id="content-scrollable">
 			<div id="market-view">
 				{{#if Template.subscriptionsReady}}
 					<div class="market-items">
-						{{> Market_meals}}
 						{{> Market_snacks}}
 						{{> Market_drinks}}
 					</div>
@@ -33,17 +32,21 @@
 </template>
 
 <template name="Market_snacks">
-	<h2>Snacks</h2>
-	{{#each snacks}}
-		{{> Menu_item}}
-	{{/each}}
+	{{#transition in="zoomIn" out="zoomOut"}}
+		<h2>Snacks</h2>
+		{{#each snacks}}
+			{{> Menu_item}}
+		{{/each}}
+	{{/transition}}
 </template>
 
 <template name="Market_drinks">
-	<h2>Drinks</h2>
-	{{#each drinks}}
-		{{> Menu_item}}
-	{{/each}}
+	{{#transition in="zoomIn" out="zoomOut"}}
+		<h2>Drinks</h2>
+		{{#each drinks}}
+			{{> Menu_item}}
+		{{/each}}
+	{{/transition}}
 </template>
 
 <template name="Market_packs">

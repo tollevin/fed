@@ -27,23 +27,24 @@ import {
 } from '../../api/orders/methods.js'
 
 Template.Pack_Editor.onCreated(function packEditorOnCreated() {
-  var filters = {
-    diet: 'Omnivore',
-    restrictions: {
-      peanuts: false,
-      treenuts: false,
-      soy: false,
-      beef: false,
-      chicken: false,
-      fish: false,
-      shellfish: false,
-      milk: false,
-      eggs: false,
-      wheat: false,
-    },
+  if (!Session.get('filters')) {
+    var filters = {
+      diet: 'Omnivore',
+      restrictions: {
+        peanuts: false,
+        treenuts: false,
+        soy: false,
+        beef: false,
+        chicken: false,
+        fish: false,
+        shellfish: false,
+        milk: false,
+        eggs: false,
+        wheat: false,
+      },
+    };
+    Session.set('filters', filters);
   };
-  Session.setDefault('filters', filters);
-  Session.setDefault('selector',{});
 
   this.diet = new ReactiveVar(Session.get('filters').diet);
   this.packSize = new ReactiveVar(6);
@@ -66,7 +67,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   //   this.packSize.set(packName.split('')[1].split('-')[0]);
   // };
 
-  // If they have a pending-sub order, open that pack to edit
+  // If they have an order for this week (pending-sub order / created), open that pack to edit ??
   var orderId = Session.get('orderId');
   if (orderId) order = orderId;
 
@@ -502,15 +503,53 @@ Template.Pack_Editor.events({
   'click .cancel'(event, template) {
     event.preventDefault();
 
-    var order = Session.get('Order');
-    order.style = 'alacarte';
-    Session.set('Order', order);
+    // If no pack
+    // Set order style to alacarte
+    // var order = Session.get('Order');
+    // order.style = 'alacarte';
+    // Session.set('Order', order);
     Session.set('pack', null);
     Session.set('overlay', false);
 
   },
 
   'click .toShop'(event, template) {
+    event.preventDefault();
+    Session.set('overlay', 'loading');
+
+    var pack = Session.get('pack');
+    var order = Template.instance().order.get();
+    var menu = Session.get('menu');
+    
+    // if order._id, update instead of insert
+    if (order._id) {
+      // replace pack
+      for (var i = order.items.length - 1; i >= 0; i--) {
+        if (order.items[i]._id === pack._id) order.items[i] = pack;
+      };
+      // update order
+      const updatedOrder = updateOrder.call(order)
+      Session.set('Order', updatedOrder);
+    } else {
+
+      order.items.push(pack);
+
+      const orderToCreate = {
+        user_id: Meteor.userId(),
+        menu_id: menu._id,
+        style: order.style,
+        week_of: order.week_of,
+        items: order.items,
+        subscriptions: order.subscriptions,
+      };
+
+      const orderId = insertOrder.call(orderToCreate);
+      Session.set('Order', orderId);
+    };
+
+    Session.set('pack', null);
+    Session.set('overlay', null);
+    FlowRouter.go('/market');
   },
 
   'click .toCheckout'(event, template) {

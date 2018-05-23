@@ -1,5 +1,8 @@
 <template name="Subscribe">
 	<div id="Subscribe" class="page">
+		{{#if signIn}}
+			{{> signUp_Modal}}
+		{{/if}}
 		<div class="content-scrollable">
       <div class="wrapper-auth">
 				<form class="subscribe-form">
