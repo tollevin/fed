@@ -1,13 +1,8 @@
 <template name="Content_Overlay">
-  <div class="content-overlay {{loading}} {{filterMenuOpen}} {{cartOpen}} {{selectStyle}} {{selectPack}} {{closed}} {{capped}} {{active}}">
+  <div class="content-overlay {{loading}} {{filterMenuOpen}} {{cartOpen}} {{selectPack}} {{closed}} {{capped}} {{active}}">
     {{#transition in="fadeIn" out="fadeOut"}}
       {{#if loading}}
         {{> loader}}
-      {{/if}}
-
-    
-      {{#if selectStyle}}
-        {{> Style_select}}
       {{/if}}
 
       {{#if packEditorOpen}}

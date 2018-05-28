@@ -146,7 +146,8 @@ Meteor.methods({
 
       const dw = DeliveryWindows.findOne({_id: emailData.delivery_window_id});
       const endDate = moment(dw.delivery_start_time).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
-      const dateToString = moment(dw.delivery_start_time).format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
+      // const dateToString = moment(dw.delivery_start_time).format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
+      const dateToString = moment(dw.delivery_start_time).format("dddd, MMMM Do,");
 
       emailData.deliveryInfo = dateToString;
 

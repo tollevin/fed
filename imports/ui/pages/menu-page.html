@@ -6,13 +6,26 @@
 
 		<div id="content-scrollable">
 			<div id="menu-view">
-				<!-- <div class="header"></div> -->
+				<!-- <div class="header">
+					{{#if pack}}
+						<div class="edit-pack-cta">
+							<p class="title">Edit your pack</p>
+							<p class="info">You can cha</p>
+						</div>
+					{{else}}
+						<button>Get a Pack</button>
+					{{/if}}
+					{{#if notSubscribed}}
+						<div class="">
+							Subscribe today to get 5% off<br>your customized meal plan
+						</div>
+					{{/if}}
+				</div> -->
 				{{#if Template.subscriptionsReady}}
 					<div class="menu-items">
 						{{> Menu_meals}}
 						{{> Menu_snacks}}
 						<!-- {{> Menu_drinks}} -->
-						<!-- {{> Menu_packs}} -->
 					</div>
 				{{else}}
 					<p>Loading...</p>
@@ -41,13 +54,6 @@
 <template name="Menu_drinks">
 	<h2>Drinks</h2>
 	{{#each drinks}}
-		{{> Menu_item}}
-	{{/each}}
-</template>
-
-<template name="Menu_packs">
-	<h2>Packs</h2>
-	{{#each packs}}
 		{{> Menu_item}}
 	{{/each}}
 </template>

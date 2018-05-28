@@ -41,7 +41,17 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 	Session.setDefault('filters', filters);
 	Session.setDefault('selector',{});
 
-	// Session.get('ord')
+	if (!Session.get('Order')) {
+		const order = {
+			user_id: Meteor.userId(),
+			style: 'alacarte',
+	    items: [],
+	    week_of: moment().startOf('week').toDate(),
+	    created_at: moment().toDate(),
+		};
+
+		Session.set('Order', order);
+	};
 
   const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
@@ -126,9 +136,17 @@ Template.Menu_page.onDestroyed(function menuPageOnDestroyed() {
 });
 
 Template.Menu_page.helpers({
-	// pack: ()=> {
-	// 	return Session.get('PackSelected');  
-	// },
+	pack: ()=> {
+		const order = Session.get('Order');
+		const items = order.items;
+		var hasPack = false;
+
+		for (var i = items.length - 1; i >= 0; i--) {
+			if (items[i].name.split('-')[1] === 'Pack') hasPack = true;
+		}
+		
+		return hasPack;
+	},
 
 	filterMenuOpen: ()=> {
 		return Session.get('filterMenuOpen');
@@ -179,15 +197,6 @@ Template.Menu_drinks.helpers({
 		return Items.find({category: 'Drink'});
 	},
 });
-
-Template.Menu_packs.helpers({
-	packs: ()=> {
-		return Items.find({category: 'Pack'});
-	},
-});
-
-
-
 
 Template.Menu_page.events({
 	// 'click #Filters-panel'(event) {

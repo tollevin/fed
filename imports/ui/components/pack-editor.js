@@ -255,6 +255,11 @@ Template.Pack_Editor.helpers({
     };
   },
 
+  isMenu: ()=> {
+    const route = FlowRouter.current().route.name;
+    return route === 'Menu.show'; // FIX ?
+  },
+
   packSpace: ()=> {
     if (Session.get('pack')) {
       var itemTotal = Session.get('pack').sub_items.items.length;

@@ -17,7 +17,7 @@ import { usePromo } from '../../api/promos/methods.js';
 
 import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
   from './pack_picker/diet_food_restrictions.js';
-import { generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
+import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
 
 // Methods
 import { 
@@ -145,28 +145,25 @@ Template.Subscribe.helpers({
 });
 
 Template.Subscribe.events({
-  'click #Subscribe-status-bar li'(event, template) {
-    var form = event.target.innerText;
-    var stage;
-    var currentStage = Session.get('stage');
-    switch (form) {
-      case 'diet':
-        stage = '0';
-        break;
-      case 'plan':
-        stage = 1;
-        break;
-      case 'meals':
-        // if 
-        stage = 2;
-        break;
-      case 'payment':
-        stage = 3;
-        break;
-    };
+  // 'click #Subscribe-status-bar li'(event, template) {
+  //   var form = event.target.innerText;
+  //   var stage;
+  //   var currentStage = Session.get('stage');
+  //   switch (form) {
+  //     case 'diet':
+  //       stage = '0';
+  //       break;
+  //     case 'plan':
+  //       if (Session.get('filters')) stage = 1;
+  //       break;
+  //     case 'meals':
+  //       // if 
+  //       stage = 2;
+  //       break;
+  //   };
 
-    Session.set('stage', stage);
-  },
+  //   Session.set('stage', stage);
+  // },
 
   'click .diet label, touchstart .diet label'(event, template) {
     event.preventDefault();
@@ -257,11 +254,10 @@ Template.Subscribe.events({
       var restrictions = template.findAll('.checked');
       var restrictionsArray = [];
       for (var i = restrictions.length - 1; i >= 0; i--) {
-        restrictionsArray.push(restrictions[i].id);
+        restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[restrictions[i].id]);
       };
 
       var dietToUpperCase = diet.innerText[0].toUpperCase() + diet.innerText.slice(1);
-      console.log(dietToUpperCase);
       var restrictionsObject = {
         peanuts: false,
         treenuts: false,
@@ -397,9 +393,16 @@ Template.Subscribe.events({
       Session.set('stage', 2);
 
       var filters = Session.get('filters');
+      var restrictions = filters.restrictions;
+      var restrictionsArray = [];
+      var restrictionsKeys = Object.keys(restrictions);
+
+      for (var i = restrictionsKeys.length - 1; i >= 0; i--) {
+        if (restrictions[restrictionsKeys[i]]) restrictionsArray.push(restrictionsKeys[i]);
+      };
 
       var userData = {
-        restrictions: filters.restrictions,
+        restrictions: restrictionsArray,
         diet: filters.diet,
         preferredDelivDay: deliveryDay
       };

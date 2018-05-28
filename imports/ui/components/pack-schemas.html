@@ -12,12 +12,14 @@
 	<li class="pack-schema {{packName}}">
 		<input type="radio" name="plan" id="{{packSize}}" value="{{packName}}">
 		<label for="{{packSize}}">
-			<div class="pack-size">
-				<p class="number">{{packSize}}</p>
-				<p class="mpw">meals per week</p>
+			<div class="wrapper">
+				<div class="pack-size">
+					<p class="number">{{packSize}}</p>
+					<p class="mpw">meals per week</p>
+				</div>
 				<div class="pack-price">
-					<p class="value strikethrough">${{packOriginalPrice}}</p>
-					<p class="value">${{packPrice}}</p>
+					<span class="value strikethrough">${{packOriginalPrice}}</span>
+					<span class="value">${{packPrice}}</span>
 				</div>
 			</div>
 			{{#with packSchema}}

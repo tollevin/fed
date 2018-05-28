@@ -1,6 +1,6 @@
 import { ALL_FOODS } from './diet_food_restrictions.js';
 
-const RESTRICTION_TO_ITEM_RESTRICTION = {
+export const RESTRICTION_TO_ITEM_RESTRICTION = {
   beef: "beef",
   chicken: "chicken",
   fish: "fish",

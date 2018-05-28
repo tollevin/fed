@@ -16,6 +16,7 @@
 		color: #366833;
 		font-size: 2.5em;
 		margin-bottom: 0;
+		margin-top: 0;
 	}
 
   ul {
@@ -112,28 +113,20 @@
 					text-align: center;
 					line-height: 30px;
 					cursor: pointer;
-					background: @fgreene;  /* fallback for old browsers */
-			   	background: -webkit-linear-gradient(to right, @fgreene, #2e753d);  /* Chrome 10-25, Safari 5.1-6 */
-		     	background: linear-gradient(to right, @fgreene, #609475, #2e753d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-					color: #FFF;
-					border: 1px solid transparent;
-					border-radius: 5px;
+					background: transparent;
+					color: @fgreene;
+					border: 1px solid @fgreene;
 					box-shadow: 2px 2px 2px @fgray;
 					font-weight: 400;
 					font-size: 1.2em;
+					transition: background 400ms;
 
-					&:hover {
-						background: #FFF;
-						color: #366833;
-						border-color: ;
-						transition: background 300ms;
+					&:hover,
+					&.clicked {
+						background: @fgreene;
+						color: #FFF;
+						border-color: transparent;
 					}
-				}
-
-				.clicked {
-					background-color: #FFF;
-					color: #366833;
-					border-color: #FFF;
 				}
 			}
 		}
@@ -234,41 +227,56 @@
 
 				    p {
 				    	font-weight: 300;
-				    	margin: 0;
+				    	font-size: 16px;
+					    margin: 0;
+					    line-height: 20px;
 				    }
 				    
 				    span {
 				    	font-weight: 200;
 				    }
 
-						.pack-size {
-							display: flex;
-					    flex-direction: row;
-					    align-items: center;
-						}
+				    .wrapper {
+				    	display: flex;
+				    	flex-direction: column;
+				    	justify-content: center;
+				    	padding-top: 20px;
+				    	width: 64%;
+					    max-width: 250px;
 
-						.number {
-							font-size: 5em;
-							font-weight: 200;
-							margin-right: 6px;
-						}
+				    	.pack-size {
+								display: flex;
+						    flex-direction: row;
+						    align-items: center;
 
-						.mpw {
-							font-weight: 400;
-							font-size: 25px;
+						    .number {
+									font-size: 3em;
+									font-weight: 200;
+									margin-right: 6px;
+								}
 
-							@media screen and (max-width: 500px) {
-								margin-top: 0;
+								.mpw {
+									font-weight: 400;
+									font-size: 1em;
+
+									@media screen and (max-width: 500px) {
+										margin-top: 0;
+									}
+								}
 							}
-						}
+				    }
 
-						.value {
-							font-size: 18px;
-							font-weight: 400;
+						.pack-price {
+							text-align: right;
 
-							&.strikethrough {
-								font-weight: 200 !important;
-								margin-right: 6px;
+							.value {
+								font-size: 18px;
+								font-weight: 400;
+
+								&.strikethrough {
+									font-weight: 200 !important;
+									margin-right: 6px;
+								}
 							}
 						}
 					}
@@ -277,16 +285,21 @@
 		}
 
 		#Delivery {
+			padding-bottom: 30px;
+			
 			.delivery-day-checkbox {
 				display: flex;
+				flex-direction: row;
 				flex-wrap: nowrap;
 				align-items: center;
-				justify-content: center;
+		    justify-content: space-around;
+		    margin-bottom: 25px;
+		    margin-left: auto;
+		    margin-right: auto;
+		    max-width: 275px;
 
 				.delivery-day {
-					font-size: 30px;
-					margin-left: 30px;
-					margin-right: 30px;
+					font-size: 1em;
 				}
 
 				.slider {

@@ -50,6 +50,10 @@ Template.Menu_item.helpers({
     if (order) return order.style === 'alacarte';
   },
 
+  toFixed: (price)=> {
+    return price.toFixed(2);
+  },
+
   showAddOnPrice: ()=> {
     const order = Session.get('Order');
     if (order && order.style === 'pack') {

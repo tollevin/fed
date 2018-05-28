@@ -12,7 +12,7 @@ Template.Subscribers_view.onCreated(function subscribersViewOnCreated() {
 });
 
 Template.Subscribers_view.helpers({
-	subscribers() {
+	subscribers: ()=> {
 		return Meteor.users.find({'subscriptions':{$exists: true}},{ sort: { "createdAt": -1 }});
 	},
 });

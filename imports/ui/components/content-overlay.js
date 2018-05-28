@@ -2,7 +2,6 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './content-overlay.html';
 
-import './style-select.js';
 import './pack-select.js';
 import './pack-editor.js';
 
@@ -26,12 +25,6 @@ Template.Content_Overlay.helpers({
 
   cartOpen() {
     return Session.get('cartOpen') && 'cartOpen';
-  },
-
-  selectStyle: ()=> {
-    const route = FlowRouter.getRouteName();
-    const order = Session.get('Order');
-    return route === 'Menu.show' && !order && 'selectStyle';
   },
 
   // selectPack: ()=> {

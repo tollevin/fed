@@ -23,7 +23,7 @@ Template.Confirmation.onCreated(function confirmationOnCreated() {
   const order = Session.get('orderId');
   this.order = new ReactiveVar(order);
   this.autorun(()=> {
-    this.subscribe('DeliveryWindows.single', order.delivery_window_id);
+    this.subscribe('DeliveryWindows.single', Session.get('orderId').delivery_window_id);
   })
 });
 
@@ -114,12 +114,11 @@ Template.Confirmation.helpers({
   },
 
   deliveryFee: ()=> {
-    console.log(Template.instance().order.get());
     return Template.instance().order.get() && Template.instance().order.get().delivery_fee.toFixed(2);
   },
 
   discountTotal: ()=> {
-    return Template.instance().order.get() && Template.instance().order.get().discount.total && Template.instance().order.get().discount.total.toFixed(2);
+    return Template.instance().order.get() && Template.instance().order.get().discount.value && Template.instance().order.get().discount.value.toFixed(2);
   },
 
   sales_tax: ()=> {
