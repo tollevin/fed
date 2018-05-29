@@ -518,7 +518,7 @@ Template.Pack_Editor.events({
 
   },
 
-  'click .toShop'(event, template) {
+  'click .toMarket'(event, template) {
     event.preventDefault();
     Session.set('overlay', 'loading');
 

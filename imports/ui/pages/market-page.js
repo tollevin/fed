@@ -41,13 +41,24 @@ Template.Market_page.onCreated(function marketPageOnCreated() {
 	Session.setDefault('filters', filters);
 	Session.setDefault('selector',{});
 
-  // const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
+	if (!Session.get('Order')) {
+		const order = {
+			user_id: Meteor.userId(),
+			style: 'alacarte',
+	    items: [],
+	    week_of: moment().startOf('week').toDate(),
+	    created_at: moment().toDate(),
+		};
+
+		Session.set('Order', order);
+	};
+
+  const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
 	this.autorun(() => {
 		const handle = this.subscribe('Menus.active');
 
 		if (handle.ready()) {
-			var thisWeeksStart = moment().startOf('week').toDate();
 			var menu = Menus.findOne({});
 			var data = {
 				_id: menu._id,

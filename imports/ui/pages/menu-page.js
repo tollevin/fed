@@ -17,6 +17,10 @@ import '../components/cart.js';
 import '../components/menu-item.js';
 import '../components/menu-toolbar.js';
 
+// Methods
+import { insertOrder } from '../../api/orders/methods.js';
+
+// Helpers
 import { cartSlots } from '../lib/helpers.js';
 
 Template.Menu_page.onCreated(function menuPageOnCreated() {
@@ -199,9 +203,33 @@ Template.Menu_drinks.helpers({
 });
 
 Template.Menu_page.events({
-	// 'click #Filters-panel'(event) {
-	// 	event.stopImmediatePropagation();
-	// },
+	'click .toMarket'(event) {
+		event.preventDefault();
+
+		FlowRouter.go('/market');
+	},
+
+	'click .toCheckout' (event, template) {
+    Session.set('processing', true);
+
+  	const order = Session.get('Order');
+  	const menu = Session.get('menu');
+
+		const orderToCreate = {
+    	user_id: Meteor.userId(),
+    	menu_id: menu._id,
+    	style: order.style,
+    	week_of: order.week_of,
+    	items: order.items,
+    	subscriptions: order.subscriptions,
+    };
+
+    const orderId = insertOrder.call(orderToCreate);
+    Session.set('Order', orderId);
+		Session.set('cartOpen', false);
+
+    FlowRouter.go('/checkout');
+	},
 
 	// 'click .diet-filter-button'(event, template) {
 	// 	event.preventDefault();

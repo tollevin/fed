@@ -24,8 +24,11 @@
 				{{#if Template.subscriptionsReady}}
 					<div class="menu-items">
 						{{> Menu_meals}}
-						{{> Menu_snacks}}
-						<!-- {{> Menu_drinks}} -->
+						<!-- {{> Menu_snacks}} -->
+						<div class="buttons-group">
+							<button class="toMarket">Shop Products</button>
+							<button class="toCheckout">Checkout</button>
+						</div>
 					</div>
 				{{else}}
 					<p>Loading...</p>
