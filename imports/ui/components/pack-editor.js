@@ -28,7 +28,7 @@ import {
 
 import { 
   RESTRICTION_TO_ITEM_RESTRICTION
-} from '../pages/pack_picker/pack_planner.js';
+} from '../lib/pack_picker/pack_planner.js';
 
 Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   // if no filters, set defaults

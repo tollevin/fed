@@ -16,8 +16,8 @@ import { updateOrder } from '../../api/orders/methods.js';
 import { usePromo } from '../../api/promos/methods.js';
 
 import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
-  from './pack_picker/diet_food_restrictions.js';
-import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from './pack_picker/pack_planner.js';
+  from '../lib/pack_picker/diet_food_restrictions.js';
+import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from '../lib/pack_picker/pack_planner.js';
 
 // Methods
 import { 
