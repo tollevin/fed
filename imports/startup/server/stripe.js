@@ -3,6 +3,8 @@ const Stripe = stripePackage("sk_live_KmzNeLrpctp1iT9Eo8n6qWoO");
 
 Meteor.methods({
 
+  // Charges
+
   async processPayment( charge ) {
     check( charge, {
       amount: Number,
@@ -23,7 +25,9 @@ Meteor.methods({
       throw new Meteor.Error(err.statusCode, err.message);
     };
   },
-   
+
+  // Customers
+
   async createCustomer( cust ) {
     check( cust, {
       description: String,
@@ -67,39 +71,6 @@ Meteor.methods({
     }
   },
 
-  async subscribeCustomer( sub ) {
-    
-    check( sub, {
-      customer: String,
-      plan: String,
-      trial_period_days: Number,
-      tax_percent: Number,
-      coupon: String,
-    });
-
-    try {
-
-      let subscription = await Stripe.subscriptions.create({
-        customer: sub.customer,
-        plan: sub.plan,
-        trial_period_days: sub.trial_period_days,
-        tax_percent: sub.tax_percent,
-        coupon: sub.coupon
-      });
-
-      Meteor.users.update(Meteor.user(), {
-        $set: {
-          subscriptions: subscription
-        }
-      });
-
-      return subscription;
-    } catch(err) {
-      console.log(err);
-      throw new Meteor.Error(err.statusCode, err.message);
-    }
-  },
-
   async retrieveCustomer( id ) {
     try {
       let customer = await Stripe.customers.retrieve( id );
@@ -111,13 +82,15 @@ Meteor.methods({
     }
   },
 
+  // Credit
+
   async updateStripeCredit( args ) {
     check( args, {
       id: String,
       account_balance: Number,
     });
 
-    var credit = 0 - (args.account_balance * 100);
+    var credit = 0 - Math.round(args.account_balance * 100);
 
     try {
       let customer = await Stripe.customers.update( args.id, { account_balance: credit } );
@@ -127,6 +100,8 @@ Meteor.methods({
       console.log('error: updateStripeCredit');
     }
   },
+
+  // Sources
 
   async updateDefaultSource( args ) {
     check( args, {
@@ -156,77 +131,79 @@ Meteor.methods({
     }
   },
 
-  async updateSubscription( args ) {
-    try {
-      let subscriptionUpdate = await Stripe.subscriptions.update( args.subscription_id, { trial_end: args.trial_end, prorate: false } );
-      return subscriptionUpdate;
-    } catch(error) {
-      throw new Meteor.Error(error.statusCode, error.message);
-    }
-  },
+  // Subscriptions
 
-  async cancelSubscription( subscriptionId ) {
-    try {
-      let cancelledSubscription = await Stripe.subscriptions.del( subscriptionId );
-      return cancelledSubscription;
-    } catch(err) {
-      throw new Meteor.Error(err.statusCode, err.message);
-    }
-  },
+  // async updateSubscription( args ) {
+  //   try {
+  //     let subscriptionUpdate = await Stripe.subscriptions.update( args.subscription_id, { trial_end: args.trial_end, prorate: false } );
+  //     return subscriptionUpdate;
+  //   } catch(error) {
+  //     throw new Meteor.Error(error.statusCode, error.message);
+  //   }
+  // },
 
-  async updateAllSubscriptions() {
-    try {
-      let allSubscriptionsObject = await Stripe.subscriptions.list({ limit: 50 });
-      let allSubscriptionsList = allSubscriptionsObject.data;
-      for (var i = allSubscriptionsList.length - 1; i >= 0; i--) {
-        let customerExists = await Meteor.users.findOne({"stripe_id": allSubscriptionsList[i].customer});
-        if (customerExists) {
-          const data = {
-            subscriptions: allSubscriptionsList[i],
-          };
+  // async cancelSubscription( subscriptionId ) {
+  //   try {
+  //     let cancelledSubscription = await Stripe.subscriptions.del( subscriptionId );
+  //     return cancelledSubscription;
+  //   } catch(err) {
+  //     throw new Meteor.Error(err.statusCode, err.message);
+  //   }
+  // },
 
-          const updatedCustomer = await Meteor.call('updateUser', customerExists._id, data);
+  // async updateAllSubscriptions() {
+  //   try {
+  //     let allSubscriptionsObject = await Stripe.subscriptions.list({ limit: 50 });
+  //     let allSubscriptionsList = allSubscriptionsObject.data;
+  //     for (var i = allSubscriptionsList.length - 1; i >= 0; i--) {
+  //       let customerExists = await Meteor.users.findOne({"stripe_id": allSubscriptionsList[i].customer});
+  //       if (customerExists) {
+  //         const data = {
+  //           subscriptions: allSubscriptionsList[i],
+  //         };
+
+  //         const updatedCustomer = await Meteor.call('updateUser', customerExists._id, data);
           
-          console.log(updatedCustomer.emails[0].address + " " + updatedCustomer.stripe_id)
-        } else {
-          console.log("XXX - " + allSubscriptionsList[i].customer + " IS A BIIIITCH!")
-        }
-      };
-    } catch(err) {
-      console.log(err);
-    }
-  },
+  //         console.log(updatedCustomer.emails[0].address + " " + updatedCustomer.stripe_id)
+  //       } else {
+  //         console.log("XXX - " + allSubscriptionsList[i].customer + " IS A BIIIITCH!")
+  //       }
+  //     };
+  //   } catch(err) {
+  //     console.log(err);
+  //   }
+  // },
 
-  async pauseAllSubscriptions() {
-    try {
-      let allSubscriptionsObject = await Stripe.subscriptions.list();
-      let allSubscriptionsList = allSubscriptionsObject.data;
-      var trial_end = moment("2017-06-01").unix();
-      const data = {
-        trial_end: trial_end,
-      };
-      var updatedTally = 0;
-      for (var i = allSubscriptionsList.length - 1; i >= 0; i--) {
-        // let customerExists = await Meteor.users.findOne({"stripe_id": allSubscriptionsList[i].customer});
-        // if (customerExists) {
-          if (allSubscriptionsList[i].status === "active") {
-            const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
+  // async pauseAllSubscriptions() {
+  //   try {
+  //     let allSubscriptionsObject = await Stripe.subscriptions.list();
+  //     let allSubscriptionsList = allSubscriptionsObject.data;
+  //     var trial_end = moment("2017-06-01").unix();
+  //     const data = {
+  //       trial_end: trial_end,
+  //     };
+  //     var updatedTally = 0;
+  //     for (var i = allSubscriptionsList.length - 1; i >= 0; i--) {
+  //       // let customerExists = await Meteor.users.findOne({"stripe_id": allSubscriptionsList[i].customer});
+  //       // if (customerExists) {
+  //         if (allSubscriptionsList[i].status === "active") {
+  //           const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
             
-            console.log(pausedSubscription.id + " PAUSED");
-            updatedTally += 1;
-          };
-        // } else {
-        //   const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
+  //           console.log(pausedSubscription.id + " PAUSED");
+  //           updatedTally += 1;
+  //         };
+  //       // } else {
+  //       //   const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
           
-        //   console.log("NOT IN SYSTEM - " + allSubscriptionsList[i].customer + " PAUSED");
-        //   updatedTally += 1;
-        // };
-      };
-      console.log(updatedTally + " subscriptions paused");
-      return updatedTally;
-    } catch(err) {
-      console.log(err.statusCode, err.message);
-      throw new Meteor.Error(err.statusCode, err.message);
-    };
-  },
+  //       //   console.log("NOT IN SYSTEM - " + allSubscriptionsList[i].customer + " PAUSED");
+  //       //   updatedTally += 1;
+  //       // };
+  //     };
+  //     console.log(updatedTally + " subscriptions paused");
+  //     return updatedTally;
+  //   } catch(err) {
+  //     console.log(err.statusCode, err.message);
+  //     throw new Meteor.Error(err.statusCode, err.message);
+  //   };
+  // },
 });

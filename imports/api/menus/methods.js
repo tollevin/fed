@@ -3,16 +3,14 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import moment from 'moment';
 
+// Collections
+import { Menus } from './menus.js';
+import { Items } from '../items/items.js';
+
+// Methods
 import { createDeliveryWindows } from '../delivery/methods.js'
-
-import { 
-  Menus
-} from './menus.js';
-
-import {
-  Items
-} from '../items/items.js';
 
 var menusLength = Menus.find({}).fetch.length;
 
@@ -77,11 +75,42 @@ export const getMenuDWs = new ValidatedMethod({
   },
 });
 
+export const getFutureMenus = new ValidatedMethod({
+  name: 'Menus.getFuture',
+  validate: null,
+  applyOptions: {
+    noRetry: true,
+  },
+  run() {
+    const timestamp = moment.utc().toDate();
+    const menus = Menus.find({online_at: {$gte: timestamp}});
+    return menus;
+  },
+});
+
+export const getNextWeeksMenu = new ValidatedMethod({
+  name: 'Menus.getNextWeeks',
+  validate: new SimpleSchema({
+    online_at: { type: Date },
+  }).validator({}),
+  applyOptions: {
+    noRetry: true,
+  },
+  run(online_at) {
+    const time = moment.utc(online_at).toDate();
+    console.log(time);
+    const menu = Menus.find({online_at: time});
+    return menu;
+  },
+});
+
 
 // Get list of all method names on menus
 const Menus_METHODS = _.pluck([
   insertMenu,
-  getMenuDWs
+  getMenuDWs,
+  getFutureMenus,
+  getNextWeeksMenu
 ], 'name');
 
 if (Meteor.isServer) {

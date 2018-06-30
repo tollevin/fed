@@ -53,15 +53,19 @@ Template.User_home.helpers({
   },
 
   creditDollars() {
-    const credit = Meteor.user().credit;
-    return Math.floor(credit);
+    if (Meteor.user()) {
+      const credit = Meteor.user().credit;
+      return Math.floor(credit);
+    }
   },
 
   creditCents() {
-    const credit = Meteor.user().credit;
-    const dollars =  Math.floor(credit);
-    var cents = (credit - dollars) * 100;
-    return cents < 10 ? '0' + cents : cents;
+    if (Meteor.user()) {
+      const credit = Math.round(Meteor.user().credit * 100) / 100;
+      const dollars =  Math.floor(credit);
+      var cents = Math.round((credit - dollars) * 100);
+      return cents < 10 ? '0' + cents : cents;
+    }
   },
 
   rate() {

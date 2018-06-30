@@ -5,8 +5,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { 
-  MH,
-  MH_20
+  zipZones
 } from '../../api/delivery/zipcodes.js';
 
 import { 
@@ -58,15 +57,20 @@ Template.Subscriber_preview.helpers({
 		return emails;
 	},
 
-	delivFee() {
+	deliveryFee() {
 		const zip = Template.currentData().address_zipcode;
-		if (MH.indexOf(zip) > -1) {
-      return 13;
-    } else if (MH_20.indexOf(zip) > -1) {
-      return 20;
+		const subtotal = Template.currentData().subtotal;
+
+		let delivery_fee;
+    const deliveryFees = zipZones[zip].delivery_fees;
+      
+    if (subtotal > 150) {
+      delivery_fee = deliveryFees.tier3;
     } else {
-    	return 0;
+      delivery_fee = deliveryFees.tier1;
     };
+
+    return delivery_fee;
 	},
 
 	subtotal() {
@@ -103,9 +107,28 @@ Template.Subscriber_preview.helpers({
 				subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
 			};
 
-			const total = subtotal * 1.08875;
+			var total = subtotal * 1.08875;
+
+			const zip = Template.currentData().address_zipcode;
+
+			let delivery_fee;
+	    const deliveryFees = zipZones[zip].delivery_fees;
+	      
+	    if (subtotal > 150) {
+	      delivery_fee = deliveryFees.tier3;
+	    } else {
+	      delivery_fee = deliveryFees.tier1;
+	    };
+
+	    total += delivery_fee;
+
 	    return total.toFixed(2);
 	  };
+	},
+
+	hasCredit: ()=> {
+		const credit = Template.currentData().credit;
+		return credit;
 	},
 
 	processStatus(status) {
@@ -160,12 +183,12 @@ Template.Subscriber_preview.helpers({
 	},
 
 	deliveryZone() {
-		// var args = {
-		// 	zip_code: Template.currentData().address_zipcode
-		// };
+		var args = {
+			zip_code: Template.currentData().address_zipcode
+		};
 
-		// var zipZone = getZipZone.call(args);
-		// return zipZone;
+		var zipZone = getZipZone.call(args);
+		return zipZone;
 	},
 
 	subscription: () => {

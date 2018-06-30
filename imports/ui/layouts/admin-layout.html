@@ -34,6 +34,16 @@
               <li class="primary-tab">
                 <a id="subscribers-tab" href="{{pathFor 'Subscribers.admin'}}" class="{{currentAdminPage 'Subscribers.admin'}}">Subscribers</a>
               </li>
+              {{#if currentAdminPage 'Subscribers.admin'}}
+                <ul>
+                  <li class="secondary-tab">
+                    <a id="Active-Subs" class="{{currentAdminPage 'Subscribers.admin'}}">Active</a>
+                  </li>
+                  <li class="secondary-tab">
+                    <a id="Canceled-Subs" class="{{currentAdminPage 'Past_Subscribers.admin'}}">Canceled</a>
+                  </li>
+                </ul>
+              {{/if}}
               <li class="primary-tab">
                 <a id="Menu-tab" href="{{pathFor 'Menu.admin'}}" class="{{currentAdminPage 'Menu.admin'}}">Menu</a>
               </li>

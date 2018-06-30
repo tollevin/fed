@@ -54,7 +54,7 @@
 				{{subscription.percent_off}}
 			</td>
 			<td class="delivFee">
-				<!-- {{delivery_fee}} -->
+				{{deliveryFee}}
 			</td>
 			<td class="saleAmount">
 				{{subtotal}}
@@ -64,6 +64,12 @@
 			</td>
 			<td class="total">
 				{{total}}
+				{{#if hasCredit}}
+					<br>
+					-----
+					<br>
+					*{{hasCredit}}* Credit
+				{{/if}}
 			</td>
 			<td class="customer-delivComments">
 				{{deliv_comments}}

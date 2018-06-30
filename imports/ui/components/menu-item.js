@@ -107,7 +107,12 @@ Template.Menu_item.events({
 	'click .add-to-cart'(event, template) {
 		event.preventDefault();
 
-    if (Meteor.user()) {
+    const afterWednes = moment().day() > 3;
+    const sundayBeforeNoon = moment().day() === 0 && moment().hour() < 12;
+    
+    if (afterWednes || sundayBeforeNoon) {
+      Session.set('customizable', false);
+    } else if (Meteor.user()) {
       const options = {
         fields: {
           _id: 1,
@@ -136,7 +141,12 @@ Template.Menu_item.events({
   'click .remove-from-cart'(event, template) {
     event.preventDefault();
 
-    if (Meteor.user()) {
+    const afterWednes = moment().day() > 3;
+    const sundayBeforeNoon = moment().day() === 0 && moment().hour() < 12;
+    
+    if (afterWednes || sundayBeforeNoon) {
+      Session.set('customizable', false);
+    } else if (Meteor.user()) {
       const options = {
         fields: {
           _id: 1,

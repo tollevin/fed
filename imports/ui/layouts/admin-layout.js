@@ -111,6 +111,14 @@ Template.Admin_layout.events({
     Session.set('state','thisWeeksOrders');
   },
 
+  'click #Active-Subs'(event, template) {
+    Session.set('substate', 'active');
+  },
+
+  'click #Canceled-Subs'(event, template) {
+    Session.set('substate', 'canceled');
+  },
+
   'click .js-menu'(event, instance) {
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },

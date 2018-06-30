@@ -6,21 +6,17 @@
 
 		<div id="content-scrollable">
 			<div id="menu-view">
-				<!-- <div class="header">
-					{{#if pack}}
-						<div class="edit-pack-cta">
-							<p class="title">Edit your pack</p>
-							<p class="info">You can cha</p>
+				{{#if notSubscribed}}
+					<div class="header">
+						<div class="getPack">
+							<p>Get a Pack</p>
 						</div>
-					{{else}}
-						<button>Get a Pack</button>
-					{{/if}}
-					{{#if notSubscribed}}
-						<div class="">
-							Subscribe today to get 5% off<br>your customized meal plan
+						<div class="subscribe-cta">
+							<p>Subscribe today to get 5% off <br class="hide-mobile">your customized meal plan</p>
+							<button class="button toSubscribe">Subscribe</button>
 						</div>
-					{{/if}}
-				</div> -->
+					</div>
+				{{/if}}
 				{{#if Template.subscriptionsReady}}
 					<div class="menu-items">
 						{{> Menu_meals}}

@@ -15,16 +15,16 @@ import '../components/footer.js';
 import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
 
 Template.Confirmation.onCreated(function confirmationOnCreated() {
-
   if (!Meteor.userId()) {
     FlowRouter.go('signin');
+  } else {
+    this.order = new ReactiveVar();
+    this.autorun(()=> {
+      const order = Session.get('orderId');
+      this.order.set(order);
+      this.subscribe('DeliveryWindows.single', Session.get('orderId').delivery_window_id);
+    })
   };
-
-  const order = Session.get('orderId');
-  this.order = new ReactiveVar(order);
-  this.autorun(()=> {
-    this.subscribe('DeliveryWindows.single', Session.get('orderId').delivery_window_id);
-  })
 });
 
 Template.Confirmation.onRendered(function confirmationOnRendered() {
@@ -35,7 +35,7 @@ Template.Confirmation.helpers({
   orderStatus: ()=> {
     const order = Template.instance().order.get();
     switch (order.status) {
-      case 'custom-sub':
+      case "custom-sub":
         return "Your order has been saved";
       case "created":
         if (order.subscriptions && order.subscriptions.length > 1) {
@@ -114,7 +114,8 @@ Template.Confirmation.helpers({
   },
 
   deliveryFee: ()=> {
-    return Template.instance().order.get() && Template.instance().order.get().delivery_fee.toFixed(2);
+    const delivery_fee = Template.instance().order.get().delivery_fee;
+    return delivery_fee && delivery_fee.toFixed(2);
   },
 
   discountTotal: ()=> {

@@ -33,9 +33,6 @@ Template.SignUp.events({
         Meteor.loginWithPassword(user.email, user.password, ( error ) => {
           if (error) {
             console.log(error);
-          } else {
-            Session.set('trialable', true);
-            FlowRouter.go('/free-trial');
           };
         });
       };

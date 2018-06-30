@@ -46,10 +46,22 @@
 								<button type="submit" id="applyCredit">Apply</button>
 						  </div>
 						{{/if}}
-						{{#if hasDiscount}}
+						{{#if subDiscount}}
+							<div class="sub-discount">
+								<p class="label">Subscription Discount</p>
+								<p class="num">- ${{subDiscount}}</p>
+							</div>
+						{{/if}}
+						{{#if appliedCredit}}
+							<div class="credit">
+					    	<p class="label">Applied Credit</p>
+					    	<p class="num">- ${{appliedCredit}}</p>
+						  </div>
+						{{/if}}
+						{{#if couponDiscount}}
 							<div class="coupon">
-								<p class="label">Discount</p>
-								<p class="num">- ${{discount}}</p>
+								<p class="label">Applied Promo</p>
+								<p class="num">- ${{couponDiscount}}</p>
 							</div>
 						{{/if}}
 						<div class="total">

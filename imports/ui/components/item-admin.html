@@ -11,7 +11,15 @@
 				<p>{{description}}</p>
 			</div>
 		</div>
-		<div class="item-admin-icons">
+		<div class="item-admin-warnings">
+			{{#each warning in trueWarnings}}
+				{{warning}}
+			{{/each}}
+		</div>
+		<div class="item-admin-attributes">
+			{{#each attribute in trueAttributes}}
+				{{attribute}}
+			{{/each}}
 		</div>
 		<!-- <div class="item-ingredients">
 			<p>

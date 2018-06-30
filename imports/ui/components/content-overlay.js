@@ -41,7 +41,7 @@ Template.Content_Overlay.helpers({
   closed() {
     const route = FlowRouter.getRouteName();
     const uncustomizable = Session.get('customizable') === false;
-    return route === 'Menu.show' && uncustomizable && 'uncustomizable';
+    return (route === 'Menu.show' || 'Market') && uncustomizable && 'uncustomizable';
     // return false;
     // return route === 'Menu.show' && 'uncustomizable';
   },
@@ -57,7 +57,11 @@ Template.Content_Overlay.events({
     Session.set('filterMenuOpen', false);
     Session.set('cartOpen', false);
 
-    const route = FlowRouter.getRouteName();
+    // const route = FlowRouter.getRouteName();
+  },
+
+  'click .x'(event) {
+    Session.set('customizable', true);
   },
 
   // 'click #Filters-panel'(event) {

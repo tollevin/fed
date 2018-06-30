@@ -24,6 +24,8 @@ import '../../ui/pages/my-orders.js';
 import '../../ui/pages/packs.js';
 import '../../ui/pages/gift-cards.js';
 import '../../ui/pages/sign-up.js';
+import '../../ui/pages/equinox-join.js';
+import '../../ui/pages/dean-street.js';
 import '../../ui/pages/jobs.js';
 import '../../ui/pages/media.js';
 
@@ -96,7 +98,7 @@ FlowRouter.route('/', {
   },
 });
 
-FlowRouter.route('/home', {
+FlowRouter.route('/my-account', {
   name: 'User.home',
   action() {
     BlazeLayout.render('App_body', { main: 'User_home' });
@@ -307,10 +309,24 @@ adminRoutes.route('/specs', {
   },
 });
 
-FlowRouter.route('/signup', {
-  name: 'Sign.Up',
+// FlowRouter.route('/signup', {
+//   name: 'Sign.Up',
+//   action() {
+//     BlazeLayout.render('App_body', { main: 'Sign_up' });
+//   },
+// });
+
+FlowRouter.route('/equinox', {
+  name: 'Equinox.join',
   action() {
-    BlazeLayout.render('App_body', { main: 'Sign_up' });
+    BlazeLayout.render('App_body', { main: 'Equinox_join' });
+  },
+});
+
+FlowRouter.route('/deanstreet', {
+  name: 'DeanStreet',
+  action() {
+    BlazeLayout.render('App_body', { main: 'DeanStreet' });
   },
 });
 
@@ -347,9 +363,18 @@ AccountsTemplates.configureRoute('resetPwd', {
 
 Accounts.onLogin(function(){
   const route = FlowRouter.current().route.name;
+  var user = Meteor.user();
+  let subs;
+
+  if (user) subs = user.subscriptions;
+
   // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
   if (route === 'signin') {
     FlowRouter.go('Menu.show');
+  } else {
+    if (subs && subs[0].status != 'canceled') {
+      FlowRouter.go('User.home');
+    };
   };
 });
 

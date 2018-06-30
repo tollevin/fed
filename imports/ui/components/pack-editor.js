@@ -18,31 +18,53 @@ import { Items } from '../../api/items/items.js';
 // Pack schemas
 import {
   PackSchemas
-} from '../../api/packs/packs.js'
+} from '../../api/packs/packs.js';
 
 // Methods
 import {
   insertOrder,
-  updateOrder
-} from '../../api/orders/methods.js'
+  updatePendingSubOrder
+} from '../../api/orders/methods.js';
+
+import { 
+  RESTRICTION_TO_ITEM_RESTRICTION
+} from '../pages/pack_picker/pack_planner.js';
 
 Template.Pack_Editor.onCreated(function packEditorOnCreated() {
+  // if no filters, set defaults
   if (!Session.get('filters')) {
-    var filters = {
-      diet: 'Omnivore',
-      restrictions: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      },
+    const user = Meteor.user();
+    var diet = 'Omnivore';
+    var restrictions = {
+      peanuts: false,
+      treenuts: false,
+      soy: false,
+      beef: false,
+      chicken: false,
+      fish: false,
+      shellfish: false,
+      milk: false,
+      eggs: false,
+      wheat: false,
     };
+
+    if (user) {
+      diet = user.diet;
+      var restrictionsArray = [];
+      for (var i = user.restrictions.length - 1; i >= 0; i--) {
+        restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[user.restrictions[i]]);
+      };
+
+      for (var i = restrictionsArray.length - 1; i >= 0; i--) {
+        restrictions[restrictionsArray[i]] = true;
+      };
+    };
+
+    var filters = {
+      diet: diet,
+      restrictions: restrictions,
+    };
+
     Session.set('filters', filters);
   };
 
@@ -60,19 +82,20 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   this.order = new ReactiveVar(Session.get('Order'));
   var order = this.order.get();
 
-  // If order.subscription, set diet and packSize
-  // if (order && order.subscriptions.length > 0) {
-  //   var packName = order.subscriptions.item_name;
-  //   this.diet.set(packName.split('')[0]);
-  //   this.packSize.set(packName.split('')[1].split('-')[0]);
-  // };
-
   // If they have an order for this week (pending-sub order / created), open that pack to edit ??
   var orderId = Session.get('orderId');
-  if (orderId) order = orderId;
+  if (!order && orderId) order = orderId;
+
+  // If order.subscription, set diet and packSize
+  if (order && order.subscriptions.length > 0) {
+    var packName = order.subscriptions[0].item_name; // FIX
+    if (!packName) packName = order.subscriptions.item_name;
+    this.diet.set(packName.split(' ')[0]);
+    this.packSize.set(parseInt(packName.split(' ')[1].split('-')[0]));
+  };
 
   // If they have a pack in their order, open that pack to edit
-  if (order && order.items) {
+  if (order && order.items && order.items.length > 0) {
     for (var i = order.items.length - 1; i >= 0; i--) {
       if (order.items[i].category === 'Pack') { // FIX if more than meal packs / more than 1 pack?
         Session.set('pack', order.items[i]);
@@ -84,7 +107,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   };
 
   this.order.set(order);
-  const thisWeeksStart = moment().startOf('week').toDate();
+  const thisWeeksStart = moment().startOf('week').utc().toDate();
 
   this.autorun(() => {
     this.subscribe('Menus.active');
@@ -95,7 +118,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
       var packSize = this.packSize.get();
       var packName = diet + ' ' + packSize + '-Pack';
       var pack = Items.findOne({name: packName});
-      Session.setDefault('pack', pack); 
+      Session.set('pack', pack); 
 
       var menu = Menus.findOne({active: true});
       var data = {
@@ -255,9 +278,9 @@ Template.Pack_Editor.helpers({
     };
   },
 
-  isMenu: ()=> {
+  notSubscribe: ()=> {
     const route = FlowRouter.current().route.name;
-    return route === 'Menu.show'; // FIX ?
+    return route != 'Subscribe'; // FIX ?
   },
 
   packSpace: ()=> {
@@ -566,13 +589,11 @@ Template.Pack_Editor.events({
     var menu = Session.get('menu');
     
     // if order._id, update instead of insert
-    if (order._id) {
+    if (order._id && order.status === ('pending-sub' || 'skipped')) {
       // replace pack
-      for (var i = order.items.length - 1; i >= 0; i--) {
-        if (order.items[i]._id === pack._id) order.items[i] = pack;
-      };
+      order.items.push(pack);
       // update order
-      const updatedOrder = updateOrder.call(order)
+      const updatedOrder = updatePendingSubOrder.call(order)
       Session.set('Order', updatedOrder);
     } else {
 

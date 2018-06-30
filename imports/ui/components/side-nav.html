@@ -9,8 +9,11 @@
     {{#if currentUser}}
       <nav id="User-Nav">
         <ul>
-          <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-          <!-- <li><a href="/home" class="{{currentPage 'User.home'}}" alt="Home">Home</a></li> -->
+          {{#if notSubscribed}}
+            <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
+          {{else}}
+            <li><a href="/my-account" class="{{currentPage 'User.home'}}" alt="My Account">My Account</a></li>
+          {{/if}}
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
           <li><a href="/market" class="{{currentPage 'Market.show'}}" alt="Market">Market</a></li>
           <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
@@ -39,33 +42,33 @@
     {{else}}
       <nav id="Main-Nav">
         <ul>
-          <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-          <li><a href="/menu" class="shop-menu-link {{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+          {{#transition in="fadeIn" out="fadeOut"}}
+            <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
+            <li><a href="/menu" class="shop-menu-link {{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
+            <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li>
+            {{#if showMarketLinks}}
+              <ul class="menu-link-ul">
+                <li><a href="/menu#Meals" class="{{currentPage 'menu#Meals'}}" alt="Meals">Meals</a></li>
+                <li><a href="/menu#Snacks" class="{{currentPage 'menu#Snacks'}}" alt="Packs">Snacks</a></li>
+                <li><a href="/menu#Drinks" class="{{currentPage 'menu#Drinks'}}" alt="Packs">Drinks</a></li>
+                <li><a href="/menu#Packs" class="{{currentPage 'menu#Packs'}}" alt="Packs">Packs</a></li>
+              </ul>
+            {{/if}}
+            <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
+            <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
+            <li><a href="/about-us" class="about-link {{currentPage 'About.us'}}" alt="About">About Us</a></li>
             <!-- {{#transition in="fadeIn" out="fadeOut"}}
-              {{#if showMenuLinks}}
-                <ul class="menu-link-ul">
-                  <li><a href="/menu#Meals" class="{{currentPage 'menu#Meals'}}" alt="Meals">Meals</a></li>
-                  <li><a href="/menu#Snacks" class="{{currentPage 'menu#Snacks'}}" alt="Packs">Snacks</a></li>
-                  <li><a href="/menu#Drinks" class="{{currentPage 'menu#Drinks'}}" alt="Packs">Drinks</a></li>
-                  <li><a href="/menu#Packs" class="{{currentPage 'menu#Packs'}}" alt="Packs">Packs</a></li>
+              {{#if showAboutLinks}}
+                <ul class="about-link-ul">
+                  <li><a href="/our-story" class="{{currentPage 'About.us'}}" alt="Our Story">Our Story</a></li>
+                  <li><a href="/our-philosophy" class="{{currentPage 'About.Philosophy'}}" alt="Our Philosophy">Our Philosophy</a></li>
+                  <li><a href="/our-menu" class="{{currentPage 'About.Menu'}}" alt="Our Menu">Our Menu</a></li>
+                  <li><a href="/our-partners" class="{{currentPage 'About.Partners'}}" alt="Our Partners">Our Partners</a></li>
                 </ul>
               {{/if}}
             {{/transition}} -->
-          <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
-          <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
-         <!--  <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li> -->
-          <li><a href="/about-us" class="about-link {{currentPage 'About.us'}}" alt="About">About Us</a></li>
-          <!-- {{#transition in="fadeIn" out="fadeOut"}}
-            {{#if showAboutLinks}}
-              <ul class="about-link-ul">
-                <li><a href="/our-story" class="{{currentPage 'About.us'}}" alt="Our Story">Our Story</a></li>
-                <li><a href="/our-philosophy" class="{{currentPage 'About.Philosophy'}}" alt="Our Philosophy">Our Philosophy</a></li>
-                <li><a href="/our-menu" class="{{currentPage 'About.Menu'}}" alt="Our Menu">Our Menu</a></li>
-                <li><a href="/our-partners" class="{{currentPage 'About.Partners'}}" alt="Our Partners">Our Partners</a></li>
-              </ul>
-            {{/if}}
-          {{/transition}} -->
-          <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+            <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
+          {{/transition}}
         </ul>
         <ul class="login-buttons">
           <li><a href="{{pathFor 'signin'}}" class="{{currentPage 'signin'}}" alt="Sign In">Sign In</a></li>

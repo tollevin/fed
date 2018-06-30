@@ -86,9 +86,32 @@ Template.Order_preview.helpers({
     return result;
 	},
 
+	drinkList() {
+  	var drinkList = [];
+		var drinkTally = {};
+
+		var itemList = Template.currentData().items;
+		for (var i = itemList.length - 1; i >= 0; i--) {
+  		if (itemList[i].category === 'Drink') {
+  			drinkList.push(itemList[i].name);
+  		};
+  	};
+
+		for (var i = drinkList.length - 1; i >= 0; i--) {
+			if (drinkList[i] != '' && !drinkTally[drinkList[i]]) {
+				drinkTally[drinkList[i]] = 1;
+			} else if (drinkList[i] != '') {
+				drinkTally[drinkList[i]] += 1;
+			};
+		};
+		var result = [];
+    for (var key in drinkTally) result.push({name:key,value:drinkTally[key]});
+    return result;
+	},
+
 	deliv_day() {
 		var dw_id = Template.currentData().delivery_window_id;
-		const dw = DeliveryWindows.findOne({});
+		const dw = DeliveryWindows.findOne({_id: dw_id});
 		const dday = moment(dw.delivery_start_time).format('dddd');
 		return dday
 	},

@@ -56,7 +56,7 @@ Template.Cart.helpers({
 			subtotal += order.items[i].price_per_unit;
 		};
 
-		return subtotal;
+		return subtotal.toFixed(2);
 	},
 
 	// processing() {

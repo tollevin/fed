@@ -60,7 +60,7 @@ Template.Order_toggle.helpers({
 });
 
 Template.Order_toggle.events({
-	'click .switch'(event, template) {
+	'click .switch, touchstart .switch'(event, template) {
 		event.preventDefault();
 		// const order = Orders.findOne({_id: template._id});
 		const data = {

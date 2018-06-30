@@ -2,7 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Orders } from '../../api/orders/orders.js';
+import moment from 'moment';
+import 'moment-timezone';
 
+// Template
 import './orders-admin.html';
 
 // Components used inside the template
@@ -16,7 +19,8 @@ Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
 
   this.autorun(() => {
     if (Session.get('state') === 'thisWeek') {
-      this.subscribe('thisWeeks.orders');
+      const timestamp = moment().format();
+      this.subscribe('thisWeeks.orders', timestamp);
     } else {
       this.subscribe('some.orders', 100);
     };
@@ -39,8 +43,8 @@ Template.Orders_admin.helpers({
   },
 
   currentOrders() {
-  	const lastSundayAtNoon = moment().day(0).hour(12).minute(1).second(0).toISOString();
-  	return Orders.find({"created_at": { $gte: new Date(lastSundayAtNoon) }}, { sort: { status: -1, id: -1 }});
+  	const lastSunday = moment().tz('America/New_York').startOf('week').toDate();
+  	return Orders.find({week_of: lastSunday}, { sort: { status: -1, created_at: -1 }});
   }
 });
 

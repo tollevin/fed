@@ -9,11 +9,29 @@ import '../components/subscriber-preview.js';
 
 Template.Subscribers_view.onCreated(function subscribersViewOnCreated() {
   this.subscribe('subscriberData');
+  Session.setDefault('substate', 'active');
+  this.autorun(()=> {
+  	if (Session.equals('substate', 'canceled')) {
+  		this.subscribe('unsubscriberData');
+  	};
+  });
 });
 
 Template.Subscribers_view.helpers({
+	active() {
+		return Session.equals('substate', 'active');
+	},
+
+	canceled() {
+		return Session.equals('substate','canceled');
+	},
+
 	subscribers: ()=> {
-		return Meteor.users.find({'subscriptions':{$exists: true}},{ sort: { "createdAt": -1 }});
+		return Meteor.users.find({'subscriptions':{$exists: true}},{ sort: { "subscriptions.created_at": -1 }});
+	},
+
+	unsubscribers: ()=> {
+		return Meteor.users.find({'past_subscriptions.0':{$exists: true}, 'subscriptions.0':{$exists: false}},{ sort: { "subscriptions.created_at": -1 }});
 	},
 });
 

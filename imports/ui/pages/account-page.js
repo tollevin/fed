@@ -16,6 +16,8 @@ import '../components/payment-settings.js';
 import '../components/pack-settings.js';
 
 Template.Account_page.onCreated(function accountPageOnCreated() {
+  Session.set('stage', 0);
+  
 	this.autorun(() => {
     var subs = this.subscribe('thisUserData');
 

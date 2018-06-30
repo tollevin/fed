@@ -11,13 +11,12 @@ import { Items } from '../items/items.js';
 import { Menus } from '../menus/menus.js';
 import { Plans } from '../plans/plans.js';
 
-import { 
-  orderItem
-} from '../items/methods.js';
+// Methods
+import { orderItem } from '../items/methods.js';
+import { getMenuDWs } from '../menus/methods.js';
 
-import { 
-  getMenuDWs
-} from '../menus/methods.js';
+// Zip Codes
+import { zipZones } from '../delivery/zipcodes.js';
 
 // Call from server only
 var ordersLength = Orders.find({status: { $nin: ['pending', 'pending-sub', 'skipped' ] }}).fetch.length;
@@ -63,35 +62,35 @@ export const insertOrder = new ValidatedMethod({
       subtotal += items[i].price_per_unit;
     };   
 
-    // Set Subscription Discounts
-    if (user.subscriptions && user.subscriptions.length > 0) {  // FIX to fix old user.subscriptions
-      const subs = user.subscriptions;
+    // // Set Subscription Discounts
+    // if (user.subscriptions && user.subscriptions.length > 0) {  // FIX to fix old user.subscriptions
+    //   const subs = user.subscriptions;
 
-      // for each subscription
-      for (var i = subs.length - 1; i >= 0; i--) {
-        const subItemId = subs[i].item_id;
+    //   // for each subscription
+    //   for (var i = subs.length - 1; i >= 0; i--) {
+    //     const subItemId = subs[i].item_id;
       
-        // find the subscription item in the items list
-        var subItem = items.find((item)=> {
-          return item._id === subItemId;
-        });
+    //     // find the subscription item in the items list
+    //     var subItem = items.find((item)=> {
+    //       return item._id === subItemId;
+    //     });
 
-        // Only add discount if subItem is in list? What about a general pack discount?
-        if (subItem) {
-          const subscriber_discount = {
-            item_id: subItemId,
-            percent_off: subs[i].percent_off,
-            value: subs[i].percent_off / 100 * subItem.price_per_unit,
-          };
+    //     // Only add discount if subItem is in list? What about a general pack discount?
+    //     if (subItem) {
+    //       const subscriber_discount = {
+    //         item_id: subItemId,
+    //         percent_off: subs[i].percent_off,
+    //         value: subs[i].percent_off / 100 * subItem.price_per_unit,
+    //       };
 
-          // add discount property to item
-          // subItem.discount.subscriber_discount = subs[i].discount;
-          // add discount object to order.discount
-          discount.subscriber_discounts.push(subscriber_discount);
-          discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
-        };
-      };
-    };
+    //       // add discount property to item
+    //       // subItem.discount.subscriber_discount = subs[i].discount;
+    //       // add discount object to order.discount
+    //       discount.subscriber_discounts.push(subscriber_discount);
+    //       discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
+    //     };
+    //   };
+    // };
 
     // Set Pending Subscription Discounts
     if (subscriptions && subscriptions.length > 0) {
@@ -99,27 +98,51 @@ export const insertOrder = new ValidatedMethod({
       // for each subscription
       for (var i = subscriptions.length - 1; i >= 0; i--) {
         const subItemId = subscriptions[i].item_id;
+        const subItemName = subscriptions[i].item_name;
+        const isPackSub = subItemName.split(' ')[1].split('-')[1] === 'Pack';
+        var discountValue = 0;
         // find the subscription item in the items list
-        var subItem = items.find((item)=> {
-          return item._id === subItemId;
-        });
+        
+        if (isPackSub) {
+          for (var j = items.length - 1; j >= 0; j--) {
+            if (items[j].category === 'Meal') {
+              discountValue += (subscriptions[i].percent_off / 100) * items[i].price_per_unit;
+            } else if (items[j].category === 'Pack') {
+              discountValue += (subscriptions[i].percent_off / 100) * items[i].price_per_unit;
+            };
+          };
+        };
 
         const subscriber_discount = {
           item_id: subItemId,
           percent_off: subscriptions[i].percent_off,
-          value: subscriptions[i].percent_off / 100 * subItem.price_per_unit,
+          value: discountValue,
         };
 
         // add discount property to item
         // subItem.discount.subscriber_discount = subs[i].discount;
         // add discount object to order.discount
         discount.subscriber_discounts.push(subscriber_discount);
-        discount.value += (subscriptions[i].percent_off / 100 * subItem.price_per_unit);
+        discount.value += subscriber_discount.value;
       };
     };
 
+    // Set totals
     var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
     var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;
+    let delivery_fee;
+    const zip = user.address_zipcode;
+    const deliveryFees = zipZones[zip].delivery_fees;
+      
+    if (subtotal > 150) {
+      delivery_fee = deliveryFees.tier3;
+    } else {
+      delivery_fee = deliveryFees.tier1;
+    };
+
+    total += delivery_fee;
+
+    // set discount value to 2 decimal
     discount.value = Math.round(discount.value * 100) / 100;
 
     const newOrder = { 
@@ -133,12 +156,14 @@ export const insertOrder = new ValidatedMethod({
       subtotal,
       discount,
       sales_tax,
+      delivery_fee,
       total,
       changes,
       status: 'pending',
     };
 
     const orderId = Orders.insert(newOrder);
+
     const result = Orders.findOne({_id: orderId});
     return result;
   },
@@ -215,13 +240,24 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
 
       switch (user.preferredDelivDay) {
         case 'monday':
-          delivery_window_id = dws[0];
-        case 'sunday':
           delivery_window_id = dws[1];
+        case 'sunday':
+          delivery_window_id = dws[0];
       };
 
       var sales_tax = Math.round(subtotal * .08875 * 100) / 100;
       var total = Math.round((subtotal + sales_tax - discount.value) * 100) / 100;
+      let delivery_fee;
+        const zip = user.address_zipcode;
+        const deliveryFees = zipZones[zip].delivery_fees;
+          
+        if (subtotal > 150) {
+          delivery_fee = deliveryFees.tier3;
+        } else {
+          delivery_fee = deliveryFees.tier1;
+        };
+
+        total += delivery_fee;
       var ready_by = moment(week_of).add(1,'week').add(16,'hours').toDate();
 
       const newOrder = { 
@@ -236,6 +272,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         subtotal,
         discount,
         sales_tax,
+        delivery_fee,
         total,
         changes: {},
         status: 'pending-sub',
@@ -367,7 +404,7 @@ export const processSubscriberOrder = new ValidatedMethod({
   name: 'processSubscriberOrder',
   validate: new SimpleSchema({
     _id: { type: String },
-    created_at: { type: Date},
+    created_at: { type: Date },
     week_of: {type: Date, optional: true },
     status: { type: String },
     user_id: { type: String },
@@ -463,11 +500,11 @@ export const updateOrder = new ValidatedMethod({
     'items.$': { type: Object, blackbox: true, optional: true },
     subscriptions: { type: [ Object ], optional: true },
     'subscriptions.$': { type: Object, blackbox: true, optional: true },
-    subtotal: { type: Number, optional: true },
+    subtotal: { type: Number, decimal: true, optional: true },
     discount: { type: Object, blackbox: true, optional: true },
     delivery_fee: { type: Number, optional: true },
     sales_tax: { type: Number, decimal: true, optional: true },
-    total: { type: Number, optional: true },
+    total: { type: Number, decimal: true, optional: true },
     payment_id: { type: String, optional: true },
     paid_at: { type: Date, optional: true },
     ready_by: { type: Date, optional: true },
@@ -490,7 +527,6 @@ export const updateOrder = new ValidatedMethod({
     Orders.update(_id, {
       $set: { 
         _id: _id,
-        started_at: started_at,
         created_at: created_at,
         id_number: id_number,
         status: status,
@@ -500,6 +536,7 @@ export const updateOrder = new ValidatedMethod({
         recipient: recipient,
         gift: gift,
         items: items,
+        subscriptions: subscriptions,
         subtotal: subtotal,
         discount: discount,
         delivery_fee: delivery_fee,
@@ -513,6 +550,98 @@ export const updateOrder = new ValidatedMethod({
         tracking_code: tracking_code,
         courier: courier,
         delivered_at: delivered_at,
+        notes: notes,
+        changes: changes,
+        auto_correct: auto_correct,
+      },
+    });
+
+    const result = Orders.findOne({_id: _id});
+    return result;
+  },
+});
+
+export const updatePendingSubOrder = new ValidatedMethod({
+  name: 'updatePendingSubOrder',
+  validate: new SimpleSchema({
+    _id: { type: String },
+    created_at: { type: Date, optional: true },
+    id_number: { type: Number, optional: true },
+    status: { type: String },
+    style: { type: String, optional: true },
+    user_id: { type: String, optional: true },
+    menu_id: { type: String, optional: true },
+    week_of: { type: Date, optional: true },
+    recipient: { type: Object, blackbox: true, optional: true },
+    gift: { type: Boolean, optional: true },
+    items: { type: [ Object ], optional: true },
+    'items.$': { type: Object, blackbox: true, optional: true },
+    subscriptions: { type: [ Object ], optional: true },
+    'subscriptions.$': { type: Object, blackbox: true, optional: true },
+    subtotal: { type: Number, decimal: true, optional: true },
+    discount: { type: Object, blackbox: true, optional: true },
+    delivery_fee: { type: Number, optional: true },
+    sales_tax: { type: Number, decimal: true, optional: true },
+    total: { type: Number, decimal: true, optional: true },
+    ready_by: { type: Date, optional: true },
+    delivery_window_id: { type: String, optional: true },
+    delivery_comments: { type: String, optional: true },
+    notes: { type: String, optional: true },
+    changes: { type: Object, blackbox: true, optional: true },
+    auto_correct: { type: Number, optional: true },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ _id, created_at, id_number, status, user_id, menu_id, week_of, recipient, gift, items, subscriptions, subtotal, discount, delivery_fee, sales_tax, total, payment_id, paid_at, ready_by, delivery_window_id, delivery_comments, tracking_code, courier, delivered_at, notes, changes, auto_correct }) {
+
+    // Prep vars
+    var newSubtotal = 0;
+    var user = Meteor.users.findOne({_id: user_id});
+
+    // Calc subtotal, build items list
+    for (var i = items.length - 1; i >= 0; i--) {
+      newSubtotal += items[i].price_per_unit;
+    };
+
+    // discount.value = Math.round(discount.value * 100) / 100;
+
+    // Set totals
+    var newSalesTax = Math.round(newSubtotal * .08875 * 100) / 100;
+    var newTotal = Math.round((newSubtotal + sales_tax - discount.value) * 100) / 100;
+    let newDeliveryFee;
+    const zip = recipient.address_zipcode;
+    const deliveryFees = zipZones[zip].delivery_fees;
+      
+    if (subtotal > 150) {
+      newDeliveryFee = deliveryFees.tier3;
+    } else {
+      newDeliveryFee = deliveryFees.tier1;
+    };
+
+    newTotal += newDeliveryFee;
+
+    Orders.update(_id, {
+      $set: { 
+        _id: _id,
+        created_at: created_at,
+        id_number: id_number,
+        status: status,
+        user_id: user_id,
+        menu_id: menu_id,
+        week_of: week_of,
+        recipient: recipient,
+        gift: gift,
+        items: items,
+        subscriptions: subscriptions,
+        subtotal: newSubtotal,
+        discount: discount,
+        delivery_fee: newDeliveryFee,
+        sales_tax: newSalesTax,
+        total: newTotal,
+        ready_by: ready_by,
+        delivery_window_id: delivery_window_id,
+        delivery_comments: delivery_comments,
         notes: notes,
         changes: changes,
         auto_correct: auto_correct,
@@ -598,12 +727,37 @@ export const toggleSkip = new ValidatedMethod({
   },
 });
 
+export const clearPSOrders = new ValidatedMethod({
+  name: 'Orders.methods.clearPSOrders',
+  validate: null,
+  applyOptions: {
+    noRetry: true,
+  },
+  run() {
+    const PSOrders = Orders.remove({status: 'pending-sub'});
+    return PSOrders;
+  },
+});
+
+export const createPSOrders = new ValidatedMethod({
+  name: 'Orders.methods.createPSOrders',
+  validate: null,
+  applyOptions: {
+    noRetry: true,
+  },
+  run() {
+
+  },
+});
+
 // Get list of all method names on orders
 const Orders_METHODS = _.pluck([
   insertOrder,
   autoinsertSubscriberOrder,
   processOrder,
   updateOrder,
+  updatePendingSubOrder,
+  clearPSOrders,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,

@@ -51,17 +51,18 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
     this.userHasPromo = new ReactiveVar(false);  // toggle promo input
     this.order = new ReactiveVar(order); // base order
     this.order.coupon = new ReactiveVar( false ); // discount.promo.code
-    this.order.total = new ReactiveVar(Session.get('Order').total);  // order.total
-    this.order.subtotal = new ReactiveVar(Session.get('Order').subtotal);  // order.subtotal
-    this.delivFee = new ReactiveVar(0);  // order.delivery_fee
+    this.order.total = new ReactiveVar(order.total);  // order.total
+    this.order.subtotal = new ReactiveVar(order.subtotal);  // order.subtotal
+    this.delivFee = new ReactiveVar(order.delivery_fee);  // order.delivery_fee
     this.sources = new ReactiveVar(false); // stored card IDs
 
     // Discount Vars
-    this.discount = new ReactiveVar(Session.get('Order').discount);  // discount Object
+    this.discount = new ReactiveVar(order.discount);  // discount Object
     this.appliedCredit = new ReactiveVar(0);  // discount.credit
-    this.subscriber_discount = new ReactiveVar(Session.get('Order').discount.subscriber_discount);  // discount.subscriber_discount
+    this.newCredit = new ReactiveVar(false); // new user.credit
+    this.subscriber_discounts = new ReactiveVar(order.discount.subscriber_discounts);  // discount.subscriber_discount
     this.promo = new ReactiveVar(null);  // discount.promo
-    this.discountValue = new ReactiveVar(Session.get('Order').discount.value); // discount.value    
+    this.discountValue = new ReactiveVar(order.discount.value); // discount.value    
 
     // All reactive data for autorun
     this.autorun(() => {
@@ -83,72 +84,6 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
               };
             });
           };
-
-          // // Set Subscription Discounts
-          // if (Meteor.user().subscriptions && Meteor.user().subscriptions.length > 0) {  // FIX to fix old user.subscriptions
-          //   const subs = Meteor.user().subscriptions;
-
-          //   var discount = {
-          //     subscriber_discount: {},
-          //     value : 0
-          //   };
-
-          //   // for each subscription
-          //   for (var i = subs.length - 1; i >= 0; i--) {
-          //     const subItemId = subs[i].item_id;
-            
-          //     // find the subscription item in the items list
-          //     const orderItems = order.items;
-          //     var subItem = orderItems.find((element)=> {
-          //       return element._id === subItemId;
-          //     });
-          //     // add discount property to item
-          //     // subItem.discount.subscriber_discount = subs[i].discount;
-          //     // add discount object to order.discount
-          //     discount.subscriber_discount[subItemId] = subs[i].discount;
-          //     discount.value += (subs[i].discount / 100 * subItem.price_per_unit);
-          //   };
-
-          //   // Update template vars
-          //   this.discount.set(discount);
-          //   this.discountValue.set(discount.value);
-          //   //   this.subscriber_discount.set(subscriber_discount);
-          // };
-
-          // // Set Pending Subscription Discounts
-          // if (order.subscriptions && order.subscriptions.length > 0) {
-          //   const subs = order.subscriptions;
-
-          //   var discount = this.discount.get();
-
-          //   if (!discount) {
-          //     discount = {
-          //       subscriber_discount: {},
-          //       value : 0,
-          //     };
-          //   };
-
-          //   // for each subscription
-          //   for (var i = subs.length - 1; i >= 0; i--) {
-          //     const subItemId = subs[i].item_id;
-            
-          //     // find the subscription item in the items list
-          //     const orderItems = order.items;
-          //     var subItem = orderItems.find((element)=> {
-          //       return element._id === subItemId;
-          //     });
-          //     // add discount property to item
-          //     // subItem.discount.subscriber_discount = subs[i].discount;
-          //     // add discount object to order.discount
-          //     discount.subscriber_discount[subItemId] = subs[i].discount;
-          //     discount.value += (subs[i].discount / 100 * subItem.price_per_unit)
-          //   };
-
-          //   // Update Session Order var
-          //   this.discount.set(discount);
-          //   this.discountValue.set(discount.value);
-          //   // console.log(this.discount.get());
-          // };
 
           // Set if user has a credit on account
           if (Meteor.user().credit > 0) {
@@ -236,19 +171,30 @@ Template.Checkout_page.helpers({
   },
 
   userHasCredit() {
-    if (Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
+    if (Template.instance().order.total.get() > 0 && Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
       return "$" + Template.instance().userHasCredit.get().toFixed(2);
     } else {
       return false;
     }
   },
 
-  hasDiscount() {
-    return Template.instance().discountValue.get();
+  appliedCredit() {
+    const appliedCredit = Template.instance().appliedCredit.get();
+    return appliedCredit && appliedCredit.toFixed(2);
   },
 
-  discount() {
-    return Template.instance().discountValue.get().toFixed(2);
+  subDiscount() {
+    const subDiscounts = Template.instance().subscriber_discounts.get();
+    const couponDiscount = Template.instance().promo.get();
+    const couponValue = couponDiscount && couponDiscount.value || 0;
+    var totalDiscounts = Template.instance().discountValue.get();
+    var appliedCredit = Template.instance().appliedCredit.get();
+    return subDiscounts[0] && (totalDiscounts - couponValue - appliedCredit).toFixed(2);
+  },
+
+  couponDiscount() {
+    const couponDiscount = Template.instance().promo.get();
+    return couponDiscount && couponDiscount.value.toFixed(2);
   },
 
   total() {
@@ -400,36 +346,52 @@ Template.Checkout_page.events({
         
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
-          template.order.coupon.set( false );
         } else if (promo.users[user] === promo.useLimitPerCustomer) {
           sAlert.error('Sorry, that code has already been used.');
-          template.order.coupon.set( false );
         } else if (promo && promo.credit) {
+          // Get existing total
           var total = template.order.total.get();
-          var discount = promo.credit;
-          // template.order.coupon.set( code );
+          // Get existing discount
+          var discount = template.discountValue.get();
 
-          var newTotal = total - discount;
-          if (newTotal < 0) {
-            var newCredit = 0 - newTotal;
-            // FIX if (!Meteor.userId()) {
-            template.newCredit = Math.round(newCredit * 100) / 100;
-            template.discountValue.set( total );
-            // template.appliedCredit.set( total );
-            // FIX Notifications!
-            sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
-          } else {
-            template.discountValue.set( discount );
-            // template.appliedCredit.set( discount );
-            template.newCredit = 0;
-          };
-
-          const discountPromo = {
+          // Ready discount.promo
+          var discountPromo = {
             type: 'credit',
             code: code,
             description: promo.desc,
-            value: template.appliedCredit.get(),
           };
+
+          // Subtract promo.credit from existing total
+          var newTotal = total - promo.credit;
+          
+          if (newTotal < 0) {
+            var newCredit = 0 - newTotal;
+            // FIX if (!Meteor.userId()) for future gifts purchases {
+
+            // Set user credit
+            var origCredit = template.newCredit.get() || template.userHasCredit.get();
+            var newCredit = origCredit + (Math.round(newCredit * 100) / 100);
+            template.newCredit.set(newCredit); 
+            
+            // Set discount.value
+            var newDiscount = discount + total;
+            template.discountValue.set( newDiscount );
+
+            // Set discount.promo.value
+            discountPromo.value = total;
+
+            // FIX Notifications!
+            sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
+          } else {
+            // Set discount.value
+            var newDiscount = discount + promo.credit;
+            template.discountValue.set( newDiscount );
+
+            // Set discount.promo.value
+            discountPromo.value = promo.credit;            
+          };
+          
+          // Set discount.promo
           template.promo.set(discountPromo);
         } else if (promo && promo.percentage) {
           // notify only on subs?
@@ -504,26 +466,29 @@ Template.Checkout_page.events({
     event.preventDefault();
 
 
-    const credit = template.userHasCredit.get();
+    const credit = template.newCredit.get() || template.userHasCredit.get();
     const discount = template.discountValue.get();
     const total = template.order.total.get();
-    var newDiscount = discount + credit;
-    if (total < newDiscount) {
-      const newCredit = newDiscount - total;
-      // template.order.coupon.set( "ACCOUNT CREDIT of" + total );
-      template.discountValue.set( total );
-      template.appliedCredit.set( credit - newCredit );
-      // template.discount.set( template.order.total.get() );
-      sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
-      template.newCredit = new ReactiveVar( newCredit );
-    } else {
-      // template.order.coupon.set( "ACCOUNT CREDIT OF" + credit );
-      template.appliedCredit.set( credit );
-      template.discountValue.set( discount + credit );
-      template.newCredit = new ReactiveVar( 0 );
-      // template.discountValue.set("- $" + credit);
-      // template.discount.set( credit );
-      sAlert.success('$' + credit.toFixed(2) + " worth of FedCred has been applied!");
+
+    if (total > 0) {
+      var newDiscount = discount + credit;
+      if (total < credit) {
+        const newCredit = credit - total;
+        // template.order.coupon.set( "ACCOUNT CREDIT of" + total );
+        template.discountValue.set( total + discount );
+        template.appliedCredit.set( total );
+        // template.discount.set( template.order.total.get() );
+        sAlert.success('You now have a credit of $' + newCredit.toFixed(2) + ".");
+        template.newCredit.set( newCredit );
+      } else {
+        // template.order.coupon.set( "ACCOUNT CREDIT OF" + credit );
+        template.appliedCredit.set( credit );
+        template.discountValue.set( discount + credit );
+        template.newCredit.set( 0 );
+        // template.discountValue.set("- $" + credit);
+        // template.discount.set( credit );
+        sAlert.success('$' + credit.toFixed(2) + " worth of FedCred has been applied!");
+      };
     };
   },
 
@@ -542,8 +507,6 @@ Template.Checkout_page.events({
     var orderToProcess = template.order.get();
     
     orderToProcess.total = template.order.total.get().toFixed(2);
-    // orderToProcess.packName = Session.get('pack').description;
-    orderToProcess.coupon = template.order.coupon.get();
     
     var customer = {
       first_name: template.find('[name="customer.firstName"]').value,
@@ -560,7 +523,7 @@ Template.Checkout_page.events({
     orderToProcess.delivery_comments = template.find('[name="destinationComments"]').value;
 
     let credit;
-    if (template.appliedCredit.get()) {
+    if (template.newCredit.get()) {
       credit = template.newCredit.get();
     } else {
       credit = template.userHasCredit.get();
@@ -583,8 +546,8 @@ Template.Checkout_page.events({
 
     async function processPromo() {
       try {
-        const code = orderToProcess.coupon;
-        var codeCheck = false;
+        const promo = template.promo.get();
+        const code = promo && promo.code.toUpperCase();
         if (code) {
           usePromo.call({
             code: code
@@ -608,7 +571,6 @@ Template.Checkout_page.events({
         var card = childTemplateInstance.card;
         var stripe = childTemplateInstance.stripe;
         const {token, error} = await stripe.createToken(card);
-        // console.log(card, stripe, token);
         return token;
       } catch(error) {
         // Inform the customer that there was an error
@@ -645,6 +607,7 @@ Template.Checkout_page.events({
 
     async function processSingleOrder () {
       try {
+        // if promo used, process
         const codeCheck = await processPromo();
 
         // Make finalPrice in cents as a number from total
@@ -664,7 +627,6 @@ Template.Checkout_page.events({
         // Else if new customer
         } else {
           const token = await createStripeTokenFromElement();
-          // console.log(token);
           const cust = {
             description: "Customer for " + customer.first_name + " " + customer.last_name,
             source: token.id,
@@ -726,24 +688,11 @@ Template.Checkout_page.events({
         
         Meteor.call( 'updateUser', user._id, customer );
 
-        // orderToProcess.readyBy = delivery_window.starts_at;
-        // if (!Meteor.userId()) orderToProcess.customer = {
-        //   first_name: customer.first_name,
-        //   last_name: customer.last_name
-        //   phone: customer.phone
-        //   email: customer.email
-        //   address_line_1: customer.address_line_1
-        //   address_line_2customer.address_line_2 
-        //   customer.address_city
-        //   customer.address_state 
-        //   customer.address_zipcode
-        // }
-
         const order = Session.get('Order');
         order.recipient = customer;
         order.gift = null;
         order.discount = {
-          subscriber_discount: template.subscriber_discount.get(),
+          subscriber_discounts: template.subscriber_discounts.get(),
           promo: template.promo.get(),
           credit: template.appliedCredit.get(),
           value: template.discountValue.get(),
@@ -798,20 +747,7 @@ Template.Checkout_page.events({
       };
     };
 
-    // Stripe.card.createToken({
-    //   number: $('.number').val(),
-    //   cvc: $('.cvc').val(),
-    //   exp_month: $('.exp_month').val(),
-    //   exp_year: $('.exp_year').val(),
-    //   address_zip: customer.address_zipcode,
-    // }, ( status, response ) => {
-    //   if ( response.error ) {
-    //     Session.set('loading', false );
-    //     sAlert.error(response.error.message);
-    //   } else {
     processSingleOrder();
-    //   };
-    // });
   },
 
   // 'submit #insertSubscriberOrderForm'(event, template) {

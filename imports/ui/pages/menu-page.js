@@ -26,6 +26,10 @@ import { cartSlots } from '../lib/helpers.js';
 Template.Menu_page.onCreated(function menuPageOnCreated() {
 	// Session.setDefault('PackSelected', false);
 	// Session.setDefault('filterMenuOpen', false);
+	const afterWednes = moment().day() > 3;
+  const sundayBeforeNoon = moment().day() === 0 && moment().hour() < 12;
+  if (afterWednes || sundayBeforeNoon) Session.set('customizable', false);
+
 	Session.set('processing', false);
 	var filters = {
 		diet: 'Omnivore',
@@ -42,8 +46,35 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 			wheat: false,
 		},
 	};
+
+	// const user = Meteor.user();
+	// if (user && user.restrictions) {
+	// 	for (var i = user.restrictions.length - 1; i >= 0; i--) {
+	// 		filters.restrictions[user.restrictions[i]] = true;
+	// 	};
+	// };
+
 	Session.setDefault('filters', filters);
 	Session.setDefault('selector',{});
+
+	if (Session.get('orderId')) {
+		// if hasItem and isPack
+		var orderId = Session.get('orderId');
+		if (orderId.status === 'pending-sub') {
+			for (var i = orderId.items.length - 1; i >= 0; i--) {
+				if (orderId.items[i].category === 'Pack') {
+					if (orderId.items[i].sub_items.items.length === 0) {
+						orderId.items.splice(i, 1);
+					// } else {
+					// 	orderId.items = orderId.items.concat(orderId.items[i].sub_items.items);
+					// 	orderId.items.splice(i, 1);
+					};
+				};
+			};
+		};
+		orderId.style = 'alacarte';
+		Session.set('Order', orderId);
+	};
 
 	if (!Session.get('Order')) {
 		const order = {
@@ -168,9 +199,9 @@ Template.Menu_page.helpers({
  	//  return Meteor.user() ? '' : 'showModal';
 	// },
 
-	// notCustomizable() {
-	// 	return !(Session.get('customizable'));
-	// },
+	notSubscribed() {
+		return !(Session.get('subscribed'));
+	},
 });
 
 Template.Menu_meals.helpers({
@@ -203,6 +234,32 @@ Template.Menu_drinks.helpers({
 });
 
 Template.Menu_page.events({
+	'click .getPack'(event) {
+		event.preventDefault();
+
+		if (Meteor.user()) {
+			Session.set('overlay', 'packEditor');
+		} else {
+      FlowRouter.go('join');
+    };
+	},
+
+	'click .edit-pack-cta'(event) {
+		event.preventDefault();
+
+		if (Meteor.user()) {
+			Session.set('overlay', 'packEditor');
+		} else {
+      FlowRouter.go('join');
+    };
+	},
+
+	'click .toSubscribe'(event) {
+		event.preventDefault();
+
+		FlowRouter.go('/subscribe');
+	},
+
 	'click .toMarket'(event) {
 		event.preventDefault();
 
@@ -210,25 +267,36 @@ Template.Menu_page.events({
 	},
 
 	'click .toCheckout' (event, template) {
-    Session.set('processing', true);
+    if (Meteor.user()) {
+    	Session.set('processing', true);
 
-  	const order = Session.get('Order');
-  	const menu = Session.get('menu');
+	  	const order = Session.get('Order');
+	  	const menu = Session.get('menu');
 
-		const orderToCreate = {
-    	user_id: Meteor.userId(),
-    	menu_id: menu._id,
-    	style: order.style,
-    	week_of: order.week_of,
-    	items: order.items,
-    	subscriptions: order.subscriptions,
+	  	if (order._id && order.status === ('pending-sub' || 'skipped')) { // FIX Add custom sub
+	      // update order
+	      const updatedOrder = updatePendingSubOrder.call(order)
+	      Session.set('Order', updatedOrder);
+	    } else {
+
+				const orderToCreate = {
+		    	user_id: Meteor.userId(),
+		    	menu_id: menu._id,
+		    	style: order.style,
+		    	week_of: order.week_of,
+		    	items: order.items,
+		    	subscriptions: order.subscriptions,
+		    };
+
+		    const orderId = insertOrder.call(orderToCreate);
+		    Session.set('Order', orderId);
+		  };
+
+			Session.set('cartOpen', false);
+	    FlowRouter.go('/checkout');
+		} else {
+      FlowRouter.go('join');
     };
-
-    const orderId = insertOrder.call(orderToCreate);
-    Session.set('Order', orderId);
-		Session.set('cartOpen', false);
-
-    FlowRouter.go('/checkout');
 	},
 
 	// 'click .diet-filter-button'(event, template) {

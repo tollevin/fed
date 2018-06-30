@@ -28,20 +28,20 @@ export const createDeliveryWindows = new ValidatedMethod({
     ready_by_date: { type: Date },
   }).validator({ clean: true, filter: false }),
   run({ ready_by_date }) {
-    const sundayDeliveryStart = moment(ready_by_date).hour(18).toDate();
-    const sundayDeliveryEnd = moment(ready_by_date).hour(21).toDate();
-    const mondayDeliveryStart = moment(ready_by_date).add(1, 'd').hour(18).toDate();
-    const mondayDeliveryEnd = moment(ready_by_date).add(1, 'd').hour(21).toDate();
+    const sundayDeliveryStart = moment(ready_by_date).hour(18).utc().toDate();
+    const sundayDeliveryEnd = moment(ready_by_date).hour(21).utc().toDate();
+    const mondayDeliveryStart = moment(ready_by_date).add(1, 'd').hour(18).utc().toDate();
+    const mondayDeliveryEnd = moment(ready_by_date).add(1, 'd').hour(21).utc().toDate();
 
     const delivery_window_1 = {
-      created_at: new Date(),
+      created_at: moment.utc().toDate(),
       delivery_start_time: sundayDeliveryStart,
       delivery_end_time: sundayDeliveryEnd,
       delivery_day: 'sunday',
     };
 
     const delivery_window_2 = {
-      created_at: new Date(),
+      created_at: moment.utc().toDate(),
       delivery_start_time: mondayDeliveryStart,
       delivery_end_time: mondayDeliveryEnd,
       delivery_day: 'monday',

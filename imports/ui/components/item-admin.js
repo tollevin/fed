@@ -25,7 +25,29 @@ Template.Item_admin.onCreated(function itemAdminOnCreated() {
 });
 
 Template.Item_admin.helpers({
-  
+  trueWarnings: ()=> {
+    const warnings = Template.currentData().warnings;
+    const warningsKeys = Object.keys(warnings);
+    var trueWarnings = [];
+
+    for (var i = warningsKeys.length - 1; i >= 0; i--) {
+      if (warnings[warningsKeys[i]]) trueWarnings.push(warningsKeys[i])
+    };
+
+    return trueWarnings;
+  },
+
+  trueAttributes: ()=> {
+    const attributes = Template.currentData().attributes;
+    const attributesKeys = Object.keys(attributes);
+    var trueAttributes = [];
+
+    for (var i = attributesKeys.length - 1; i >= 0; i--) {
+      if (attributes[attributesKeys[i]]) trueAttributes.push(attributesKeys[i])
+    };
+
+    return trueAttributes;
+  },
 });
 
 Template.Item_admin.events({

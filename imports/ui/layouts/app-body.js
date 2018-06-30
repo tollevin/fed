@@ -9,6 +9,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
+import 'moment-timezone';
 
 // Collections
 import { Orders } from '../../api/orders/orders.js';
@@ -95,60 +96,55 @@ Template.App_body.onCreated(function appBodyOnCreated() {
       $(window).scrollTop(0);
     });
 
-    if (this.subscriptionsReady()) {      
-
-      // delete?
-      if (Meteor.user() && Meteor.user().last_purchase) {
-        Session.set('newUser', false);
-      } else {
-        Session.set('newUser', true);
-      };
-
+    if (this.subscriptionsReady()) {
       // if a user has subscriptions,
-      if (Meteor.user() && Meteor.user().subscriptions && Meteor.user().subscriptions.length > 0) {
+      const user = Meteor.user();
+      if (user && user.subscriptions && user.subscriptions.length > 0 && user.subscriptions[0].status === 'active' ) {
         // GET ORDER
         // const data = {
         //   user_id: Meteor.userId(),
         //   timestamp
         // };
 
-        var week_of = moment().startOf('week').toDate();
-        var week_two = moment().add(1,'week').startOf('week').toDate();
-        var week_three = moment().add(2,'week').startOf('week').toDate();
-        var weeks = [week_of, week_two, week_three];
+        var week_of = moment().tz('America/New_York').startOf('week').utc().toDate();
+        // var week_two = moment().tz('America/New_York').add(1,'week').startOf('week').utc().toDate();
+        // var week_three = moment().tz('America/New_York').add(2,'week').startOf('week').utc().toDate();
+        // var weeks = [week_of, week_two, week_three];
 
         // find future orders
-        var orders = Orders.find({}, {sort: {ready_by: 1}}).fetch();
+        var order_week_of = Orders.findOne({week_of: week_of});
+        // var order_week_two = Orders.findOne({week_of: week_two});
+        // var order_week_three = Orders.findOne({week_of: week_three});
+        // var orders = [order_week_of, order_week_two, order_week_three];
 
-        // if future orders are les than 3, populate pending-sub orders (DELETE AFTER CRON!)
-        if (orders && orders.length < 3) {
-          let subItems;
-          Meteor.call('getUserSubscriptionItems', Meteor.userId(), ( error, response ) => {
-            if ( error ) {
-              console.log(error + "; error");
-            } else {
-              subItems = response;
-              var menus = Menus.find({}).fetch();
+        // // if future orders are less than 3, populate pending-sub orders (DELETE AFTER CRON!)
+        // let subItems;
+        // Meteor.call('getUserSubscriptionItems', Meteor.userId(), ( error, response ) => {
+        //   if ( error ) {
+        //     console.log(error + "; error");
+        //   } else {
+        //     subItems = response;
 
-              for (var j = orders.length; j < 3; j++) {
-                var menu = menus[j];
+        //     for (var j = orders.length - 1; j >= 0; j--) {
+        //       if (!orders[j]) {
+        //         var menu = Menus.findOne({online_at: weeks[j]});
 
-                var data = {
-                  user_id: Meteor.userId(),
-                  menu_id: menu._id,
-                  week_of: weeks[j],
-                  items: subItems,
-                };
+        //         var data = {
+        //           user_id: Meteor.userId(),
+        //           menu_id: menu._id,
+        //           week_of: weeks[j],
+        //           items: subItems,
+        //         };
 
-                const subOrder = autoinsertSubscriberOrder.call(data);
-                orders.push(subOrder);
-              };
-            };
-          });          
-        };
+        //         const subOrder = autoinsertSubscriberOrder.call(data);
+        //         orders.splice(j, 1, subOrder);
+        //       };
+        //     };
+        //   };
+        // });
 
         // Session.setDefault('Order', orders[0]);
-        Session.setDefault('orderId', orders[0]);
+        if (!Session.get('orderId')) Session.set('orderId', order_week_of);
 
         Session.set('subscribed', true);
       } else {

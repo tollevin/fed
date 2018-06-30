@@ -68,9 +68,16 @@
 							Notes
 						</th>
 					</tr>
-					{{#each subscribers}}
-						{{> Subscriber_preview}}
-					{{/each}}
+					{{#if active}}
+						{{#each subscribers}}
+							{{> Subscriber_preview}}
+						{{/each}}
+					{{/if}}
+					{{#if canceled}}
+						{{#each unsubscribers}}
+							{{> Subscriber_preview}}
+						{{/each}}
+					{{/if}}
 				{{else}}
 					<p>Loading...</p>
 				{{/if}}

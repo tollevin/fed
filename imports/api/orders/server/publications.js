@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import moment from 'moment';
+import 'moment-timezone';
 
 import { Orders } from '../orders.js';
 
@@ -23,40 +24,37 @@ Meteor.publish('single.order', function singleOrder(id) {
   return Orders.find({_id: id});
 });
 
-Meteor.publish('thisWeeks.orders', function thisWeeksOrders() {
-  var now = moment();
-  var isSundayBeforeNoon = (moment().day() === 0) && (moment().hour < 12);
-  let ordersResetTime;
+Meteor.publish('thisWeeks.orders', function thisWeeksOrders(timestamp) {
+  var nowInNY = moment(timestamp).tz('America/New_York');
+  var nyWeekStart = nowInNY.startOf('week').toDate();
 
-  if (isSundayBeforeNoon) {
-    ordersResetTime = moment().day(-7).hour(12).minute(1).second(0).toISOString();
-  } else {
-    ordersResetTime = moment().day(0).hour(12).minute(1).second(0).toISOString();
-  };
+  return Orders.find({ "status": { $in: ['created', 'custom-sub', 'skipped'] }, "week_of": nyWeekStart });
+});
 
-  const options = {
-    sort: {created_at: -1},
-  };
+Meteor.publish('allThisWeeks.orders', function thisWeeksOrders(timestamp) {
+  var nowInNY = moment(timestamp).tz('America/New_York');
+  var nyWeekStart = nowInNY.startOf('week').toDate();
 
-  return Orders.find({"status": { $in: ['created', 'custom-sub'] }, "created_at": { $gte: new Date(ordersResetTime) }}, options);
+  return Orders.find({ "status": { $in: ['created', 'custom-sub', 'skipped', 'pending-sub'] }, "week_of": nyWeekStart });
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
-
+  const time = moment(timestamp).tz('America/New_York').toDate();
   const args = {
     user_id: Meteor.userId(),
-    ready_by: { $gte: timestamp },
-    status: { $nin: ['pending','canceled'] },
+    ready_by: { $gte: time },
+    status: { $nin: ["pending","canceled"] },
   };
   
   return Orders.find(args);
 });
 
 Meteor.publish('Future.orders', function futureOrders(timestamp) {
+  const time = moment.utc(timestamp).toDate();
   const args = {
-    ready_by: { $gte: timestamp },
+    ready_by: { $gte: time },
     status: { $nin: ['pending','canceled'] },
   };
 
   return Orders.find(args);
-})
+});

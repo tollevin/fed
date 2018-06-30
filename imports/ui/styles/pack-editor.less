@@ -18,19 +18,23 @@
         flex-wrap: wrap;
         max-width: 250px;
 
-        select {
-          width: auto;
-          border: none;
-          box-shadow: none;
-          font-family: 'Avenir';
-          font-size: 24px;
-          font-weight: 400;
-          color: @fgreene;
-          height: 40px;
-          margin: 0 10px 0 0;
-          padding: 0;
-          cursor: pointer;
-          background: transparent;
+        .selects-wrapper {
+          width: 100%;
+        
+          select {
+            width: auto;
+            border: none;
+            box-shadow: none;
+            font-family: 'Avenir';
+            font-size: 24px;
+            font-weight: 400;
+            color: @fgreene;
+            height: 40px;
+            margin: 0 10px 0 0;
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+          }
         }
 
         span {
@@ -101,6 +105,11 @@
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 0;
+
+      @media screen and (max-width: 475px) {
+        font-size: 18px;
+        width: fit-content;
+      }
     }
 
     .accordion {

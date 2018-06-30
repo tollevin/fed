@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import moment from 'moment';
+import 'moment-timezone';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 // Template
@@ -61,6 +62,11 @@ Template.Order_detail_panel.helpers({
 
 	active: ()=> {
 		return ['skipped','canceled'].indexOf(Template.instance().status.get()) <= -1;
+	},
+
+	locked: ()=> {
+		const timestamp = moment().tz('America/New_York');
+		return ( timestamp.day() < 4 || ( timestamp.day() === 0 && timestamp.hour() < 12 ) ) && 'locked';
 	},
 
 	status: ()=> {
@@ -126,10 +132,29 @@ Template.Order_detail_panel.events({
 	'click .switch'(event, template) {
 		event.preventDefault();
 
-		const order = Orders.findOne({});
-		const data = {
-			order_id: order._id
-		}
-		toggleSkip.call(data);
+		const timestamp = moment().tz('America/New_York');
+		var able = false;
+
+		if ((timestamp.day() === 0)) {
+			if (timestamp.hour() > 12) {
+				able = true;
+			};
+		} else if (timestamp.day() < 4) {
+			able = true;
+		};
+
+		if (able) {
+			const order = Orders.findOne({});
+			const data = {
+				order_id: order._id
+			}
+			toggleSkip.call(data);
+		};
+	},
+
+	'click .edit-order'(event, template) {
+		event.preventDefault();
+
+		Session.set('overlay', 'packEditor');
 	},
 });

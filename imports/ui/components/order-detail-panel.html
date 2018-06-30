@@ -11,7 +11,7 @@
 				</div>
 			</div>
 			<div class="toggle">
-				<label class="switch">
+				<label class="switch {{locked}}">
 				  <input type="checkbox" id="delivery-day-checkbox" checked={{active}}>
 				  <span class="slider"></span>
 				  <p class="status">{{status}}</p>
@@ -19,20 +19,22 @@
 			</div>
 		</div>
 
-		<div class="order-items-preview">
-			{{#each item in itemsTally}}
-        <p class="item">{{item.value}} {{item.name}}</p>
-        {{#if isPack item}}
-          {{#each subitem in subitems item}}
-            <p class="subitem">{{subitem.value}} {{subitem.name}}</p>
-          {{/each}}
-        {{/if}}
-      {{/each}}
-		</div>
+		<div class="order-preview">
+			<div class="order-items-preview">
+				{{#each item in itemsTally}}
+	        <p class="item">{{item.value}} {{item.name}}</p>
+	        {{#if isPack item}}
+	          {{#each subitem in subitems item}}
+	            <p class="subitem">{{subitem.value}} {{subitem.name}}</p>
+	          {{/each}}
+	        {{/if}}
+	      {{/each}}
+			</div>
 
-		<!-- <div class="buttons-holder">
-			<button class="edit-delivery">Change Delivery</button>
-			<button class="edit-order">Change Order</button>
-		</div> -->
+			<div class="buttons-holder">
+				<button class="edit-order">Edit Order</button>
+				<!-- <button class="edit-delivery">Edit Delivery</button> -->
+			</div>
+		</div>
 	</div>
 </template>

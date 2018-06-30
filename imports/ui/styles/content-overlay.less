@@ -10,6 +10,13 @@
     left: 0;
   }
 
+  .x {
+    float: right;
+    font-size: 50px;
+    margin-top: -42px;
+    color: #FFF;
+  }
+
 
   &.uncustomizable,
   &.capped,
@@ -31,10 +38,10 @@
   &.capped,
   &.closed,
   &.active {
-    top: 85px; /* normally 54px */
+    top: 54px; /* normally 54px */
 
     @media screen and (max-width: 600px) {
-      top: 132px; /* normally 60px */
+      top: 60px; /* normally 60px */
     }
   }
 
@@ -174,7 +181,7 @@
   }
 
   #Pack-Editor {
-    max-height: 90vh;
+    height: 90vh;
 
     .editor-head {
       margin-bottom: 20px;
@@ -184,7 +191,13 @@
       max-width: 400px;
 
       h2 {
-        margin-bottom: 30px !important;
+        margin-bottom: 30px;
+
+        @media screen and (max-width: 475px) {
+          font-size: 24px;
+          margin-bottom: 0;
+          margin-top: 0;
+        }
       }
 
       .pack-info {
@@ -212,6 +225,11 @@
             margin: 0 10px 0 0;
             padding: 0;
             cursor: pointer;
+
+            @media screen and (max-width: 475px) {
+              font-size: 18px;
+              margin: 0;
+            }
           }
 
           span {
@@ -235,6 +253,10 @@
             color: @fgreene;
             letter-spacing: 1px;
             text-align: right;
+
+            @media screen and (max-width: 475px) {
+              font-size: 18px;
+            }
           }
 
           .change {
