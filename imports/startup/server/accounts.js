@@ -5,12 +5,12 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 import { makeGiftCardCode } from '../../utils/codify.js';
 
 // Collections
-import { Items } from '../../api/items/items.js';
-import { Promos } from '../../api/promos/promos.js';
-import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
+import { Items } from '/imports/api/items/items.js';
+import { Promos } from '/imports/api/promos/promos.js';
+import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
 
-import { insertPromo } from '../../api/promos/methods.js';
+import { insertPromo } from '/imports/api/promos/methods.js';
 
 Meteor.methods({
 

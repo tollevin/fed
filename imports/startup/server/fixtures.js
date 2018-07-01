@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Items } from '../../api/items/items.js';
-import { Menus } from '../../api/menus/menus.js';
-import { DeliveryWindows } from '../../api/delivery/delivery-windows.js';
-import { createDeliveryWindows } from '../../api/delivery/methods.js';
+import { Items } from '/imports/api/items/items.js';
+import { Menus } from '/imports/api/menus/menus.js';
+import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import { createDeliveryWindows } from '/imports/api/delivery/methods.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {

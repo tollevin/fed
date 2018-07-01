@@ -4,51 +4,51 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 
 // Import user templates
-import '../../ui/layouts/app-body.js';
-import '../../ui/pages/landing-page.js';
-import '../../ui/pages/user-home.js';
-import '../../ui/pages/menu-page.js';
-import '../../ui/pages/market-page.js';
-import '../../ui/pages/about-page.js';
-import '../../ui/pages/support.js';
-import '../../ui/pages/blog-page.js';
-import '../../ui/components/menu-item.js';
-import '../../ui/pages/item-detail.js';
-import '../../ui/pages/checkout.js';
-import '../../ui/pages/confirmation.js';
-import '../../ui/pages/success.js';
-import '../../ui/pages/account-page.js';
-import '../../ui/pages/subscribe.js';
-import '../../ui/pages/my-subscriptions.js';
-import '../../ui/pages/my-orders.js';
-import '../../ui/pages/packs.js';
-import '../../ui/pages/gift-cards.js';
-import '../../ui/pages/sign-up.js';
-import '../../ui/pages/equinox-join.js';
-import '../../ui/pages/dean-street.js';
-import '../../ui/pages/jobs.js';
-import '../../ui/pages/media.js';
+
+import '/imports/ui/layouts/app-body/app-body.js';
+import '/imports/ui/pages/landing-page/landing-page.js';
+import '/imports/ui/pages/user-home/user-home.js';
+import '/imports/ui/pages/menu-page/menu-page.js';
+import '/imports/ui/pages/market-page/market-page.js';
+import '/imports/ui/pages/about-page/about-page.js';
+import '/imports/ui/pages/support/support.js';
+import '/imports/ui/pages/blog-page/blog-page.js';
+import '/imports/ui/pages/item-detail/item-detail.js';
+import '/imports/ui/pages/checkout-page/checkout-page.js';
+import '/imports/ui/pages/confirmation-page/confirmation-page.js';
+import '/imports/ui/pages/success/success.js';
+import '/imports/ui/pages/account-page/account-page.js';
+import '/imports/ui/pages/subscribe/subscribe.js';
+import '/imports/ui/pages/my-subscriptions/my-subscriptions.js';
+import '/imports/ui/pages/my-orders/my-orders.js';
+import '/imports/ui/pages/packs/packs.js';
+import '/imports/ui/pages/gift-cards/gift-cards.js';
+import '/imports/ui/pages/sign-up/sign-up.js';
+import '/imports/ui/pages/equinox-join/equinox-join.js';
+import '/imports/ui/pages/dean-street/dean-street.js';
+import '/imports/ui/pages/jobs/jobs.js';
+import '/imports/ui/pages/media/media.js';
 
 // Import admin templates
-import '../../ui/layouts/admin-body.js';
-import '../../ui/layouts/admin-layout.js';
-import '../../ui/pages/main-admin.js';
-import '../../ui/pages/menu-admin.js';
-import '../../ui/pages/orders-admin.js';
-import '../../ui/pages/customers-admin.js';
-import '../../ui/pages/customer-detail.js';
-import '../../ui/pages/subscribers-admin.js';
-import '../../ui/pages/promos-admin.js';
+import '/imports/ui/layouts/admin-body/admin-body.js';
+import '/imports/ui/layouts/admin-layout/admin-layout.js';
+import '/imports/ui/pages/main-admin/main-admin.js';
+import '/imports/ui/pages/menu-admin/menu-admin.js';
+import '/imports/ui/pages/orders-admin/orders-admin.js';
+import '/imports/ui/pages/customers-admin/customers-admin.js';
+import '/imports/ui/pages/customer-detail/customer-detail.js';
+import '/imports/ui/pages/subscribers-admin/subscribers-admin.js';
+import '/imports/ui/pages/promos-admin/promos-admin.js';
 
 // Import to override accounts templates
-import '../../ui/accounts/accounts-templates.js';
-import '../../ui/accounts/signup.js';
+import '/imports/ui/accounts/accounts-templates/accounts-templates.js';
+import '/imports/ui/accounts/signup/signup.js';
 
 // Import wiki templates
-import '../../ui/wiki/index.js';
+import '/imports/ui/wiki/index.js';
 
 // Import test template
-import '../../ui/pages/test.js';
+import '/imports/ui/pages/test/test.js';
 
 // we only need to keep history for two paths at once
 // first path is what we need to check always

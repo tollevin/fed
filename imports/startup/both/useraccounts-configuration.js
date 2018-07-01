@@ -1,7 +1,7 @@
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 // Zip Codes
-import { yesZips } from '../../api/delivery/zipcodes.js';
+import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
 AccountsTemplates.configure({
   // Behavior
