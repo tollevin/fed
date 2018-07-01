@@ -17,6 +17,7 @@ import '/imports/ui/components/menu-toolbar/menu-toolbar.js';
 
 import { cartSlots } from '/imports/ui/lib/helpers.js';
 
+import './market-page.less';
 import './market-page.html';
 
 Template.Market_page.onCreated(function marketPageOnCreated() {

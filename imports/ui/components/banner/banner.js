@@ -4,4 +4,5 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 
 // Template
+import './banner.less';
 import './banner.html';

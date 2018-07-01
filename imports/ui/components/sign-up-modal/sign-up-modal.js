@@ -7,6 +7,7 @@ import { Session } from 'meteor/session';
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
 // Template
+import './sign-up-modal.less';
 import './sign-up-modal.html';
 
 Template.signUp_Modal.events({

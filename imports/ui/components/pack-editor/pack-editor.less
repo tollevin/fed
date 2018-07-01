@@ -1,0 +1,190 @@
+@import '{}/imports/ui/styles/utils.less';
+
+.pack-editor {
+
+  .editor-head {
+    
+
+    .pack-info {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .pack-selects {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        flex-wrap: wrap;
+        max-width: 250px;
+
+        .selects-wrapper {
+          width: 100%;
+        
+          select {
+            width: auto;
+            border: none;
+            box-shadow: none;
+            font-family: 'Avenir';
+            font-size: 24px;
+            font-weight: 400;
+            color: @fgreene;
+            height: 40px;
+            margin: 0 10px 0 0;
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+          }
+        }
+
+        span {
+          margin: auto 0;
+          font-size: 15px;
+          font-weight: 200;
+          color: @fgreene;
+          margin-top: -9px;
+          margin-left: 2px;
+        }
+      }
+
+      .pack-price {
+        .price {
+          font-size: 24px;
+          margin: 0;
+          height: 40px;
+          line-height: 40px;
+          font-family: 'Avenir';
+          font-weight: 200;
+          color: @fgreene;
+          letter-spacing: 1px;
+          text-align: right;
+        }
+
+        .change {
+          font-size: 16px;
+          margin: 0;
+          height: 16px;
+          line-height: 16px;
+          font-family: 'Avenir';
+          font-weight: 200;
+          color: @fgreene;
+          letter-spacing: 1px;
+          text-align: right;
+        }
+
+        .plus:before {
+          content: '\02795'; /* Unicode character for "plus" sign (+) */
+          font-size: 9px;
+          color: @fgreene;
+          float: left;
+        }
+
+        .minus:before {
+          content: '\2796'; /* Unicode character for "plus" sign (+) */
+          font-size: 9px;
+          color: @fgreene;
+          float: left;
+        }
+      }
+    }
+  }
+
+  .meal-categories {
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow-y: scroll;
+    max-height: 500px;
+    position: relative;
+    border: 1px solid @fgreene;
+    background-color: #FFF;
+
+    .meal-category {
+      border-bottom: 1px solid;
+      width: 30%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 0;
+
+      @media screen and (max-width: 475px) {
+        font-size: 18px;
+        width: fit-content;
+      }
+    }
+
+    .accordion {
+      background-color: #eee;
+      color: #444;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      transition: 0.4s;
+
+      &:after {
+        content: '\02795'; /* Unicode character for "plus" sign (+) */
+        font-size: 13px;
+        color: #777;
+        float: right;
+        margin-left: 5px;
+      }
+    }
+
+    .open:after {
+        content: "\2796"; /* Unicode character for "minus" sign (-) */
+    }
+
+    .open, .accordion:hover {
+      background-color: #ccc;
+    }
+
+    .meals-panel {
+      padding: 0 18px 10px;
+      overflow-y: scroll;
+      transition: max-height 0.2s ease-out;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .menu-item {
+        margin: 33px 7px 0px;
+        width: 31%;
+        min-width: 250px;
+
+        @media screen and (max-width: 475px) {
+          width: 100%;
+          max-width: 100%;
+          margin: 33px 0px 0px 0px;
+        }
+      }
+    }
+  }
+
+  .editor-foot {
+    padding: 15px;
+    width: 100%;
+
+    .buttons-holder {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+
+      button {
+        color: #fff;
+        background-color: @fgreene;
+        font-size: 18px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        box-shadow: 1px 1px 1px #888;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+}

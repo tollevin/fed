@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
 
+import './menu-item.less';
 import './menu-item.html';
 
 const countInArray = function(array, what) {

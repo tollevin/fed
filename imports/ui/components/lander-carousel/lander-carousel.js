@@ -1,5 +1,6 @@
 import { $ } from 'meteor/jquery';
 
+import './lander-carousel.less';
 import './lander-carousel.html';
 
 // Template.Menu_carousel.onCreated(function menuCarouselOnCreated() {

@@ -31,6 +31,7 @@ import '/imports/ui/components/pack-editor/pack-editor.js';
 import '/imports/ui/components/sign-up-modal/sign-up-modal.js';
 
 // Template
+import './subscribe.less';
 import './subscribe.html';
 
 Template.Subscribe.onCreated(function subscribeOnCreated() {

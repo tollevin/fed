@@ -4,6 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import { callWithPromise } from '/imports/ui/lib/helpers.js';
 
+import './payment-settings.less';
 import './payment-settings.html';
 
 let stripe,

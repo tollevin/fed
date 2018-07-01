@@ -1,0 +1,79 @@
+@import '{}/imports/ui/styles/utils.less';
+
+.payment-settings {
+	.position(relative,0,auto,0,auto,80%,auto);
+	max-width: 600px;
+	min-height: 80%;
+  margin-left: auto;
+  margin-right: auto;
+
+	.user-payment-methods {
+		text-align: left;
+
+		ul {
+			margin-top: 0;
+
+			li {
+				margin: 10px auto 10px 0;
+				text-align: left;
+		    display: flex;
+		    align-items: center;
+		    font-size: 18px;
+	    	cursor: pointer;
+
+		    &#addCard {
+		    	margin-left: 47px;
+		    }
+
+		    &.newDefault {
+		    	border: 1px solid @fgreene;
+		    	border-radius: 5px;
+			    padding-left: 5px;
+		    }
+
+		    img {
+		    	margin-right: 15px;
+		    }
+
+				span {
+					&.defaultSource {
+				    text-transform: uppercase;
+				    font-size: 13px;
+				    font-weight: 500;
+				    color: #505050;
+				    margin-left: 10px;
+					}
+
+					&.backupSource {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+
+	#card-element {
+		margin-bottom: 30px;
+	}
+
+	.button-group {
+		.btn-form {
+			color: @forange;
+			border: 1px solid @forange;
+			background-color: transparent;
+
+			&:hover {
+				background-color: @forange;
+				color: #FFF;
+			}
+		}
+	}
+
+	.default-button {
+		.position(absolute,auto,0,0,0);
+	}
+
+	#stripe-png {
+		.position(absolute, auto, auto, 0, auto, 100%, auto);
+	}
+}

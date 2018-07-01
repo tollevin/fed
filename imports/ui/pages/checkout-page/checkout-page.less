@@ -1,0 +1,414 @@
+@import '{}/imports/ui/styles/utils.less';
+
+#checkout-page{
+
+	h1 {
+		color:#333;
+		text-align: left;
+		color: #FFF;
+		padding-left: 9%;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		margin-top: 0;
+		background: #76b852; /* fallback for old browsers */
+		background: -webkit-linear-gradient(to left, #bde8bd, #8DC26F); 
+		background: linear-gradient(to left, #bde8bd, #8DC26F);
+
+		@media screen and (max-width: 600px) {
+			text-align: center;
+			padding-left: 0;
+		}
+	}
+
+	h2 {
+		color: #fff;
+	}
+
+	.panel-holder {
+/*		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;*/
+
+		.order-report {
+			float: left;
+			width: 50%;
+			height: auto;
+			min-height: 100vh;
+
+			@media screen and (max-width: 600px) {
+	      position: relative;
+	      width: 100%;
+	      text-align: center;
+	      min-height: 80vh;
+	    }
+
+	    .order-report-main {
+	    	height: auto;
+	    	min-height: 60vh;
+	    }
+
+	    p {
+	    	padding-left: 9%;
+
+				@media screen and (max-width: 600px) {
+					padding-left: 0;
+				}
+	    }
+
+	    .pack-desc {
+				// font-family: "CaslonN";
+	    }
+
+	    .ul-wrapper {
+	    	padding-left: 13%;
+	    	text-align: left;
+
+				@media screen and (max-width: 600px) {
+					padding-left: 0;
+					text-align: center;
+				}
+
+				ul {
+					padding: 0;
+					margin-top: 0;
+					text-align: left;
+					display: inline-block;
+
+					li {
+						font-size: 15px;
+						list-style: none;
+						margin-left: 0;
+					}
+				}
+			}
+
+			hr {
+				padding-left: 75px;
+
+				@media screen and (max-width: 600px) {
+		      width: 60%;
+		      margin-left: 0px;
+		    }
+			}
+
+			.pricing-wrapper {
+				padding-left: 9%;
+				padding-right: 9%;
+				margin-top: 30px;
+				text-align: justify;
+				width: 100%;
+
+				@media screen and (max-width: 600px) {
+					text-align: center;
+				}
+
+				div {
+					display: flex;
+					width: 100%;
+					justify-content: space-between;
+
+					p {
+						padding-left: 0;
+						margin: 0;
+						font-weight: 200;
+						font-size: 18px;
+				    line-height: 30px;
+					}
+
+					/*&:after {
+				    display: inline-block;
+				    width: 100%;
+				    content: '';
+					}*/
+
+					/*span {
+						display: block;
+						font-size: 18px;
+					}*/
+
+					/*.num {
+						font-size: 22px;
+						font-weight: 300;
+						width: 92px;
+						text-align: left;
+					}*/
+				}
+			}
+
+			.CTAbuttons {
+				padding-left: 9%;
+				margin-bottom: 30px;
+
+				@media screen and (max-width: 600px) {
+					padding-left: 0;
+				}
+
+				.enterPromo {
+					border: none;
+					color: @forange;
+					font-size: 18px;
+					background-color: transparent;
+					cursor: pointer;
+				}
+			}
+
+			.form-group {
+				padding-left: 9%;
+				text-align: left;
+
+				@media screen and (max-width: 600px) {
+					padding-left: 0;
+					text-align: center;
+				}
+
+				input {
+					padding: 5px 10px;
+					font-size: 17px;
+					border: 2px solid #f5c832;
+					color: #666;
+				}
+
+				#promoSub {
+					border: 4px solid #f5c832;
+					background-color: #f5c832;
+					color: #FFF;
+					font-size: 17px;
+				}
+			}
+
+			.stripe-logo {
+				padding-left: 9%;
+				text-align: left;
+				margin-top: 20px;
+				margin-bottom: 5px;
+
+				@media screen and (max-width: 600px) {
+					padding-left: 0;
+					text-align: center;
+					margin-bottom: 30px;
+				}
+			}
+		}
+
+		.form-shell {
+			width: 50%;
+			max-width: 500px;
+			height: 100%;
+			float: right;
+			background-color: #bde8bd;
+			height: 100%;
+	    min-height: 100vh;
+			padding: 12px 40px;
+
+			@media screen and (max-width: 600px) {
+				display: inline-block;
+				width: 100%;
+				height: auto;
+				max-width: 600px;
+				text-align: center;
+			}
+
+			#insertOrderForm,
+			#insertSubscriberOrderForm {
+				max-width: 500px;
+				display: flex;
+				flex-direction: column;
+
+				@media screen and (max-width: 600px) {
+					height: auto;
+					display: inline-block;
+		    }
+
+		    h2 {
+		    	width: 100%;
+		    	color: #FFF;
+		    	margin-bottom: 10px;
+		    }
+
+				.form-group {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					@media screen and (max-width: 530px) {
+						flex-wrap: wrap;
+					}
+
+					label {
+						font-size: 23px;
+					}
+
+					input {
+						width: 49%;
+						background-color: #FFF;
+					}
+
+					input.error {
+				    background-color:rgb(255, 231, 231);
+					}
+
+					label.error {
+						color: #ff7777;
+						display: block;
+						// font-family: sans-serif;
+						font-size: 12px;
+					}
+				}
+
+				.firstName {
+					float: left;
+				}
+
+				.lastName {
+					float: right;
+				}
+
+				
+
+				#email, #phone {
+					@media screen and (max-width: 530px) {
+						width: 100% !important;
+					}
+				}
+
+				#address-line-1, #address-line-2 {
+					width: 100%;
+				}
+
+				#address-city {
+					width: 58%;
+
+					@media screen and (max-width: 374px) {
+						width: 100% !important;
+					}
+
+					@media screen and (max-width: 414px) {
+						width: 50%;
+					}
+				}
+
+				#address-state {
+					width: 18%;
+
+					@media screen and (max-width: 374px) {
+						width: 49% !important;
+					}
+
+					@media screen and (max-width: 414px) {
+						width: 22%;
+					}
+				}
+
+				#address-zip {
+					width: 20%;
+
+					@media screen and (max-width: 374px) {
+						width: 49% !important;
+					}
+
+					@media screen and (max-width: 414px) {
+						width: 25%;
+					}
+				}
+
+				.delivDate {
+				}
+
+				.comments {
+					width: 100%;
+
+					textarea {
+						height: 78px;
+				    font-weight: 500;
+				    font-size: 16px;
+				    border: 1px solid transparent;
+				    border-radius: 5px;
+				    padding: 10px;
+				    box-shadow: 0 1px 3px 0 #e6ebf1;
+				    color: #034b2c;
+				    width: 100%;
+					}
+				}
+			}
+		
+			#card-element {
+				width: 100%;
+		    margin-left: auto;
+		    margin-right: auto;
+		    margin-bottom: 25px;
+		    height: 37px;
+		    background-color: #fff;
+		    border-radius: 5px;
+		  }
+
+		  #Source {
+				width: 100%;
+		  }
+
+		  .source {
+				float: left;
+			}
+
+			.card {
+				width: 100%;
+			}
+
+			.expMo {
+				width: 25%;
+				min-width: 78px;
+				margin-right: 10px;
+			}
+
+			.expYear {
+				width: 40%;
+				min-width: 100px;
+				margin-right: 10px;
+			}
+
+			.cvc2 {
+				width: 23% !important;
+				min-width: 78px;
+			}
+
+		  .sbmt-button {
+				text-align: center;
+				margin-bottom: 35px;
+				display: inline-block;
+				width: 100%;
+
+				.sbmtOrder {
+					display: inline-block;
+					width: 75%;
+					min-width: 200px;
+
+					&:hover {
+						color: #FFF;
+					}
+				}
+
+				#disabledButton {
+					background-color: rgba(123, 117, 95, 0.8) !important;
+					border: 2px solid rgba(123, 117, 95, 0.8);
+				}
+			}
+		}
+
+		#payment {
+			position: absolute;
+			left: 10%;
+		}
+
+		#cc-formX {
+			width: 312px;
+	    background: #fff;
+	    box-shadow: 0 0 2px 0 rgba(0,0,0,.07),0 3px 8px 0 rgba(0,0,0,.1);
+	    border-radius: 5px;
+	    font-size: 16px;
+	    padding: 2px 12px;
+
+	    .exp_month {
+	    	right: 30px;
+	    }
+		}
+	}
+}

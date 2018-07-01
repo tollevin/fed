@@ -5,8 +5,8 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
+import './dean-street.less';
 import './dean-street.html';
-
 
 Template.DeanStreet.onCreated(function deanStreetOnCreated() {
   Session.set('cartOpen', false);

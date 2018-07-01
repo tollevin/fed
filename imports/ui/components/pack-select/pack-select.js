@@ -8,6 +8,7 @@ import { Items } from '/imports/api/items/items.js';
 
 import { PackSchemas } from '/imports/api/packs/packs.js'
 
+import './pack-select.less';
 import './pack-select.html';
 
 Template.Pack_select.onCreated(function packSelectOnCreated() {

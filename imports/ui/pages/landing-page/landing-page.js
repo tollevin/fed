@@ -12,8 +12,8 @@ import '/imports/ui/components/lander-carousel/lander-carousel.js';
 // Zip Codes
 import { yesZips, MH, MH_20 } from '/imports/api/delivery/zipcodes.js';
 
+import './landing-page.less';
 import './landing-page.html';
-
 
 Template.Landing_page.onCreated(function landingPageOnCreated() {
 	Session.set('cartOpen', false);

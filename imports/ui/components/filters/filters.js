@@ -3,8 +3,8 @@ import { Template } from 'meteor/templating';
 import moment from 'moment';
 import { arrange } from 'isotope-layout';
 
+import './filters.less';
 import './filters.html';
-
 
 Template.Filters.helpers({
 	filterMenuOpen: ()=> {

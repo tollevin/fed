@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 
+import './customer-detail.less';
 import './customer-detail.html';
 
 Template.Customer_detail.onCreated(function customerDetailOnCreated() {

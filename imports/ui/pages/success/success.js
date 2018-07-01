@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { callWithPromise } from '/imports/ui/lib/helpers.js';
 
+import './success.less';
 import './success.html';
 
 Template.Success_page.onCreated(function successPageOnCreated() {

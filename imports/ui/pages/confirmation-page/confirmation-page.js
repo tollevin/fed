@@ -4,15 +4,16 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
 
-// Template
-import './confirmation-page.html';
-
 // Components
 import '/imports/ui/components/footer/footer.js';
 
 // Collections
 // import { Orders } from '/imports/api/orders/orders.js';
 import { DeliveryWindows } from '/imports//api/delivery/delivery-windows.js';
+
+// Template
+import './confirmation-page.less';
+import './confirmation-page.html';
 
 Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!Meteor.userId()) {

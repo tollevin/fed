@@ -15,7 +15,7 @@ session@1.1.7
 # standard libraries
 jquery@1.11.10
 underscore@1.0.10
-less@2.7.11
+less
 
 # ui
 blaze-html-templates@1.0.4

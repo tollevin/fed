@@ -1,0 +1,18 @@
+@import '{}/imports/ui/styles/utils.less';
+
+#banner {
+  position: absolute;
+  z-index: 10;
+  left: 205px;
+  right: 0;
+  text-align: center;
+  font-size: 18px;
+  padding: 5px 10px;
+  background-color: @fgreene;
+  color: #FFF;
+
+  @media screen and (max-width: 600px) {
+	  position: unset;
+	  left: 0;
+  }
+}

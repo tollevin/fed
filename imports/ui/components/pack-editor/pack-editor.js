@@ -5,9 +5,6 @@ import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
 
-// Template
-import './pack-editor.html';
-
 // Components
 import '/imports/ui/components/pack-editor-item/pack-editor-item.js';
 
@@ -21,6 +18,10 @@ import { PackSchemas } from '/imports/api/packs/packs.js';
 // Methods
 import { insertOrder, updatePendingSubOrder } from '/imports/api/orders/methods.js';
 import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/pack_planner.js';
+
+// Template
+import './pack-editor.less';
+import './pack-editor.html';
 
 Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   // if no filters, set defaults

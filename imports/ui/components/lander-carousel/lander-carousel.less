@@ -1,0 +1,74 @@
+@import '{}/imports/ui/styles/utils.less';
+
+#carousel {
+  width: 90%;
+  max-width: 600px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid @forange;
+  padding-top: 30px; 
+
+  .slick-track {
+  	display: flex;
+  	flex-direction: row;
+  	flex-wrap: no-wrap;
+  	min-width: 600% !important;
+  }
+	
+	div {
+		.slick-slide {
+			max-width: 600px;
+			min-width: 16%;
+			margin-left: auto;
+			margin-right: auto;
+
+			i {
+				color: #f5c832;
+			}
+
+			a {
+				text-decoration: none;
+				
+				p {
+					color: #111;
+					width: 80%;
+					margin-left: auto;
+					margin-right: auto;
+					// font-family: "Josefin Sans";
+					line-height: 36px;
+				}
+
+				.author {
+					text-align: right;
+					padding-right: 7%;
+
+					@media screen and (max-width: 600px) {
+	          text-align: center;
+	          padding-right: 0;
+	        }
+				}
+			}
+		}
+	}
+}
+
+#img-carousel {
+	height: auto;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f1f0dc;
+	
+	img {
+		transition: display 500ms;
+	}
+}
+
+#testimonials {
+	padding-bottom: 25px;
+}
+
+.slick-prev:before, .slick-next:before {
+	color:    silver;
+}

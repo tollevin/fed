@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
 
+import './item-detail.less';
 import './item-detail.html';
 
 Template.Item_detail.onCreated(function menuItemOnCreated() {

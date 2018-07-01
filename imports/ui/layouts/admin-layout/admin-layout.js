@@ -1,5 +1,3 @@
-import './admin-layout.html';
-
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
@@ -11,6 +9,9 @@ import { Items } from '/imports/api/items/items.js';
 import { Orders } from '/imports/api/orders/orders.js';
 
 import '/imports/ui/components/loading/loading.js';
+
+import './admin-layout.less';
+import './admin-layout.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 6000;
 

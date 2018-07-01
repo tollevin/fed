@@ -8,6 +8,7 @@ import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
 import '/imports/ui/components/stripe-card-element/stripe-card-element.js';
 
+import './gift-cards.less';
 import './gift-cards.html';
 
 Template.Gift_Cards.onCreated(function giftCardsOnCreated() {

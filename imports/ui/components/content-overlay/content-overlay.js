@@ -3,6 +3,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import '/imports/ui/components/pack-select/pack-select.js';
 import '/imports/ui/components/pack-editor/pack-editor.js';
 
+import './content-overlay.less';
 import './content-overlay.html';
 
 Template.Content_Overlay.onCreated(function menuItemOnCreated() {

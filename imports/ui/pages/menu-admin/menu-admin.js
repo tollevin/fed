@@ -7,6 +7,7 @@ import { Items } from '/imports/api/items/items.js';
 import '/imports/ui/components/new-item/new-item.js';
 import '/imports/ui/components/item-admin/item-admin.js';
 
+import './menu-admin.less';
 import './menu-admin.html';
 
 Template.Menu_admin.onCreated(function menuAdminOnCreated() {

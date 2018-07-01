@@ -7,11 +7,11 @@ import moment from 'moment';
 import { Orders } from '../../../api/orders/orders.js';
 import { updateOrder } from '../../../api/orders/methods.js';
 
-
-import './account-page.html';
-
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/pack-settings/pack-settings.js';
+
+import './account-page.less';
+import './account-page.html';
 
 Template.Account_page.onCreated(function accountPageOnCreated() {
   Session.set('stage', 0);

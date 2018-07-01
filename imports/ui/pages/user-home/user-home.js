@@ -12,6 +12,7 @@ import { Orders } from '/imports/api/orders/orders.js';
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
 // Template
+import './user-home.less';
 import './user-home.html';
 
 Template.User_home.onCreated(function userHomeOnCreated() {

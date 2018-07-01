@@ -20,12 +20,13 @@ import { processOrder } from '/imports/api/orders/methods.js';
 import { usePromo } from '/imports/api/promos/methods.js';
 import { subscribeToPlan } from '/imports/api/plans/methods.js';
 
-// Template
-import './checkout-page.html';
-
 // Components
 import '/imports/ui/components/loader/loader.js';
 import '/imports/ui/components/stripe-card-element/stripe-card-element.js';
+
+// Template
+import './checkout-page.less';
+import './checkout-page.html';
 
 Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
   // Create a handle for subscription to this 'single.order', 'thisUserData'

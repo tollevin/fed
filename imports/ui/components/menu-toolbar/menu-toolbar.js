@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
+import './menu-toolbar.less';
 import './menu-toolbar.html';
 
 Template.Menu_toolbar.onCreated(function menuToolbarOnCreated() {

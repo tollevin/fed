@@ -21,6 +21,7 @@ import { insertOrder } from '/imports/api/orders/methods.js';
 // Helpers
 import { cartSlots } from '/imports/ui/lib/helpers.js';
 
+import './menu-page.less';
 import './menu-page.html';
 
 Template.Menu_page.onCreated(function menuPageOnCreated() {
