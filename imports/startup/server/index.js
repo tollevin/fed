@@ -1,3 +1,5 @@
+import './server-routes';
+
 import './fixtures.js';
 
 // This file configures the Accounts package to define the UI of the reset password email.
@@ -28,3 +30,4 @@ import './google-maps.js'
 import './accounts.js';
 
 import './settings.js';
+

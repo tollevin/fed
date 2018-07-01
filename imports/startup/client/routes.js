@@ -5,6 +5,8 @@ import { lodash } from 'meteor/erasaur:meteor-lodash';
 
 // Import user templates
 
+import { mainRoutes, mainNotFound, adminRoutes } from '/imports/ui/routes.js';
+
 import '/imports/ui/layouts/app-body/app-body.js';
 import '/imports/ui/pages/landing-page/landing-page.js';
 import '/imports/ui/pages/user-home/user-home.js';
@@ -90,162 +92,22 @@ import '/imports/ui/pages/test/test.js';
 // FlowRouter.triggers.exit([saveScrollPosition]);
 // FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
 
-
-FlowRouter.route('/', {
-  name: 'App.home',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Landing_page' });
-  },
-});
-
-FlowRouter.route('/my-account', {
-  name: 'User.home',
-  action() {
-    BlazeLayout.render('App_body', { main: 'User_home' });
-  },
-});
-
-FlowRouter.route('/packs', {
-  name: 'Packs',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Packs' });
-  },
-});
-
-FlowRouter.route('/menu', {
-  name: 'Menu.show',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Menu_page' });
-  },
-});
-
-FlowRouter.route('/market', {
-  name: 'Market',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Market_page' });
-  },
-});
-
-FlowRouter.route('/about-us', {
-  name: 'About.us',
-  action() {
-    BlazeLayout.render('App_body', { main: 'About_page' });
-  },
-});
-
-FlowRouter.route('/confirmation', {
-  name: 'Confirmation',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Confirmation' });
-  },
-});
-
-FlowRouter.route('/settings', {
-  name: 'Account.settings',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Account_page' });
-  },
-});
-
-FlowRouter.route('/subscribe', {
-  name: 'Subscribe',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Subscribe' });
-  },
-});
-
-FlowRouter.route('/subscriptions', {
-  name: 'My.subscriptions',
-  action() {
-    BlazeLayout.render('App_body', { main: 'My_Subscriptions' });
-  },
-});
-
-FlowRouter.route('/orders', {
-  name: 'My.orders',
-  action() {
-    BlazeLayout.render('App_body', { main: 'My_Orders' });
-  },
-});
-
-FlowRouter.route('/gifts', {
-  name: 'Gifts',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Gift_Cards' });
-  },
-});
-
-FlowRouter.route('/blog', {
-  name: 'Blog.roll',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Blog_page' });
-  },
-});
-
-FlowRouter.route('/menu/:_id', {
-  name: 'Item.show',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Item_detail' });
-  },
-});
-
-FlowRouter.route('/support', {
-  name: 'Support',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Support_page' });
-  },
-});
-
-FlowRouter.route('/checkout', {
-  name: 'Checkout',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Checkout_page' });
-  },
-});
-
-FlowRouter.route('/success', {
-  name: 'Success',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Success_page' });
-  },
-});
-
-FlowRouter.route('/redeem', {
-  name: 'redeem',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Success_page' });
-  },
-});
-
-FlowRouter.route('/jobs', {
-  name: 'Jobs',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Jobs' });
-  },
-});
-
-FlowRouter.route('/media', {
-  name: 'Media',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Media' });
-  },
-});
-
-FlowRouter.route('/test', {
-  name: 'Test',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Test' });
-  },
-});
+mainRoutes.map(({route, name, layout, template}) =>
+  FlowRouter.route(route, {
+    name,
+    action() {
+      BlazeLayout.render(layout, { main: template });
+    },
+  }));
 
 // the App_notFound template is used for unknown routes and missing lists
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('App_body', { main: 'App_notFound' });
+    BlazeLayout.render(mainNotFound.layout, { main: mainNotFound.template });
   },
 };
 
-var adminRoutes = FlowRouter.group({
+var flowAdminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',
   // triggersEnter: [function(context, redirect) {
@@ -253,82 +115,13 @@ var adminRoutes = FlowRouter.group({
   // }]
 });
 
-adminRoutes.route('/', {
-  name: 'Main.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Main_admin' });
-  },
-});
-
-adminRoutes.route('/menu', {
-  name: 'Menu.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Menu_admin' });
-  },
-});
-
-adminRoutes.route('/orders', {
-  name: 'Orders.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Orders_admin' });
-  },
-});
-
-adminRoutes.route('/customers', {
-  name: 'Customers.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Customers_admin' });
-  },
-});
-
-adminRoutes.route('/customers/:_id', {
-  name: 'Customer.detail',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Customer_detail' });
-  },
-});
-
-adminRoutes.route('/subscribers', {
-  name: 'Subscribers.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Subscribers_admin' });
-  },
-});
-
-adminRoutes.route('/promos', {
-  name: 'Promos.admin',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Promos_admin' });
-  },
-});
-
-adminRoutes.route('/specs', {
-  name: 'Wiki.Index',
-  action() {
-    BlazeLayout.render('Admin_layout', { main: 'Wiki_index' });
-  },
-});
-
-// FlowRouter.route('/signup', {
-//   name: 'Sign.Up',
-//   action() {
-//     BlazeLayout.render('App_body', { main: 'Sign_up' });
-//   },
-// });
-
-FlowRouter.route('/equinox', {
-  name: 'Equinox.join',
-  action() {
-    BlazeLayout.render('App_body', { main: 'Equinox_join' });
-  },
-});
-
-FlowRouter.route('/deanstreet', {
-  name: 'DeanStreet',
-  action() {
-    BlazeLayout.render('App_body', { main: 'DeanStreet' });
-  },
-});
+adminRoutes.map(({route, name, layout, template}) =>
+  flowAdminRoutes.route(route, {
+    name,
+    action() {
+      BlazeLayout.render(layout, { main: template });
+    },
+  }));
 
 FlowRouter.route( '/verify-email/:token', {
   name: 'verify-email',

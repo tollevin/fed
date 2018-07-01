@@ -124,3 +124,6 @@ nilsdannemann:pdfmake
 promise@0.10.1
 dynamic-import@0.3.0
 markdown@1.0.12
+akryum:vue
+akryum:vue-component
+akryum:vue-blaze-template
