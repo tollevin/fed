@@ -6,7 +6,6 @@ import moment from 'moment';
 import 'moment-timezone';
 
 // Components used inside the template
-import '/imports/ui/components/orders-sidebar/orders-sidebar.js';
 import '/imports/ui/components/order-preview/order-preview.js';
 
 // Template

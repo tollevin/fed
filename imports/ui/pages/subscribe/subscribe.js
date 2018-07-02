@@ -23,7 +23,6 @@ import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from '/
 import { checkForPlan, insertPlan } from '/imports/api/plans/methods.js';
 
 // Components
-import '/imports/ui/components/trial-signup/trial-signup.js';
 import '/imports/ui/components/pack-schemas/pack-schemas.js';
 import '/imports/ui/components/stripe-card-element/stripe-card-element.js';
 import '/imports/ui/components/delivery-day-toggle/delivery-day-toggle.js';

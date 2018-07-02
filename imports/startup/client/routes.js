@@ -25,14 +25,12 @@ import '/imports/ui/pages/my-subscriptions/my-subscriptions.js';
 import '/imports/ui/pages/my-orders/my-orders.js';
 import '/imports/ui/pages/packs/packs.js';
 import '/imports/ui/pages/gift-cards/gift-cards.js';
-import '/imports/ui/pages/sign-up/sign-up.js';
 import '/imports/ui/pages/equinox-join/equinox-join.js';
 import '/imports/ui/pages/dean-street/dean-street.js';
 import '/imports/ui/pages/jobs/jobs.js';
 import '/imports/ui/pages/media/media.js';
 
 // Import admin templates
-import '/imports/ui/layouts/admin-body/admin-body.js';
 import '/imports/ui/layouts/admin-layout/admin-layout.js';
 import '/imports/ui/pages/main-admin/main-admin.js';
 import '/imports/ui/pages/menu-admin/menu-admin.js';

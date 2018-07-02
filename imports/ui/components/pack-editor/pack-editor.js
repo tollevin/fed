@@ -80,7 +80,7 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   if (!order && orderId) order = orderId;
 
   // If order.subscription, set diet and packSize
-  if (order && order.subscriptions.length > 0) {
+  if (order && order.subscriptions && order.subscriptions.length > 0) {
     var packName = order.subscriptions[0].item_name; // FIX
     if (!packName) packName = order.subscriptions.item_name;
     this.diet.set(packName.split(' ')[0]);
