@@ -1,5 +1,6 @@
 import { Accounts } from 'meteor/accounts-base';
 import { $ } from 'meteor/jquery';
+import { signin } from '/imports/ui/lib/auth.js';
 
 // Zip Codes
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
@@ -33,7 +34,7 @@ Template.Trial_signup.events({
         if ( error ) {
           $('#Errors').text(error.reason);
         } else {
-          Meteor.loginWithPassword(user.email, user.password, ( error ) => {
+          signin(user, ( error ) => {
             if (error) {
               $('#Errors').text(error);
             };

@@ -4,6 +4,7 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { signout } from '/imports/ui/lib/auth.js';
 
 import { Items } from '/imports/api/items/items.js';
 import { Orders } from '/imports/api/orders/orders.js';
@@ -137,6 +138,6 @@ Template.Admin_layout.events({
   },
 
   'click .js-logout'() {
-    Meteor.logout();
+    signout();
   },
 });

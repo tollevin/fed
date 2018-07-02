@@ -10,6 +10,8 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Items } from '/imports/api/items/items.js';
 import { Orders } from '/imports/api/orders/orders.js';
 
+import { signout } from '/imports/ui/lib/auth.js';
+
 import '/imports/ui/components/loading/loading.js';
 
 const CONNECTION_ISSUE_TIMEOUT = 6000;
@@ -106,6 +108,6 @@ Template.Admin_body.events({
   },
 
   'click .js-logout'() {
-    Meteor.logout();
+    signout();
   },
 });

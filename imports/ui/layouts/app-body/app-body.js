@@ -9,6 +9,8 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
+// import { Vue } from 'meteor/akryum:vue';
+
 import 'moment-timezone';
 
 // Collections
@@ -34,6 +36,8 @@ const CONNECTION_ISSUE_TIMEOUT = 6000;
 
 // A store which is local to this file?
 const showConnectionIssue = new ReactiveVar(false);
+
+// console.log("ActiveRoute.current()", ActiveRoute.current())
 
 Meteor.startup(() => {
   // Only show the connection error box if it has been 5 seconds since

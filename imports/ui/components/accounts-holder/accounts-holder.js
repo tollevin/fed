@@ -1,5 +1,7 @@
 import './accounts-holder.html';
 
+import { signout } from '/imports/ui/lib/auth.js';
+
 Template.Accounts_Holder.onCreated(function menuItemOnCreated() {
 });
 
@@ -22,6 +24,6 @@ Template.Accounts_Holder.events({
   'click .js-logout'(event) {
     // event.preventDefault();
     // event.stopImmediatePropagation();
-    Meteor.logout();
+    signout();
   },
 });

@@ -153,36 +153,3 @@ AccountsTemplates.configureRoute('resetPwd', {
   name: 'resetPwd',
   path: '/reset-password',
 });
-
-Accounts.onLogin(function(){
-  const route = FlowRouter.current().route.name;
-  var user = Meteor.user();
-  let subs;
-
-  if (user) subs = user.subscriptions;
-
-  // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
-  if (route === 'signin') {
-    FlowRouter.go('Menu.show');
-  } else {
-    if (subs && subs[0].status != 'canceled') {
-      FlowRouter.go('User.home');
-    };
-  };
-});
-
-Accounts.onLogout(function(){
-  Session.set('Order', undefined);
-  Session.set('orderId', undefined);
-  Session.set('newUser', undefined);
-  Session.set('subscribed', undefined);
-  Session.set('pack', undefined);
-  Session.set('stage', undefined);
-  
-  FlowRouter.go('App.home')
-});
-
-// Accounts.onResetPasswordLink(function(token, done) {
-//   Accounts.resetPassword(token, newPassword);
-// })
-

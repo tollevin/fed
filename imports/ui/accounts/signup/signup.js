@@ -1,4 +1,5 @@
 import { Accounts } from 'meteor/accounts-base';
+import { signin } from '/imports/ui/lib/auth.js';
 
 import './signup.html';
 
@@ -30,7 +31,7 @@ Template.SignUp.events({
       if ( error ) {
         console.log(error + "; error");
       } else {
-        Meteor.loginWithPassword(user.email, user.password, ( error ) => {
+        signin(user, ( error ) => {
           if (error) {
             console.log(error);
           };

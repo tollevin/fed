@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
+import { signin } from '/imports/ui/lib/auth.js';
 
 // Zip Codes
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
@@ -67,7 +68,7 @@ Template.signUp_Modal.events({
           Session.set('loading', false);
           $('#SignUpModalForm').find('.signUp-errors').text(error.reason);
         } else {
-          Meteor.loginWithPassword(user.email, user.password, (error) => {
+          signin(user, (error) => {
           	if (error) {
           		sAlert.error('There was an error signing you in.')
           	} else {
