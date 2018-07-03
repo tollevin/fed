@@ -1,6 +1,7 @@
 import { Accounts } from 'meteor/accounts-base';
 import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { signin } from '/imports/ui/lib/auth.js';
 
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
@@ -37,7 +38,7 @@ Template.DeanStreet.events({
         if ( error ) {
           $('#Errors').text(error.reason);
         } else {
-          Meteor.loginWithPassword(user.email, user.password, ( error ) => {
+          signin(user, ( error ) => {
             if (error) {
               $('#Errors').text(error);
             } else {

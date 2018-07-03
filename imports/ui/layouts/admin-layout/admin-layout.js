@@ -1,35 +1,14 @@
 import { Meteor } from 'meteor/meteor';
-import { ReactiveVar } from 'meteor/reactive-var';
-import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
-import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
-import { Items } from '/imports/api/items/items.js';
-import { Orders } from '/imports/api/orders/orders.js';
+import { signout } from '/imports/ui/lib/auth.js';
 
 import '/imports/ui/components/loading/loading.js';
 
 import './admin-layout.less';
 import './admin-layout.html';
 
-const CONNECTION_ISSUE_TIMEOUT = 6000;
-
-// A store which is local to this file?
-const showConnectionIssue = new ReactiveVar(false);
-
-Meteor.startup(() => {
-  // Only show the connection error box if it has been 5 seconds since
-  // the app started
-  setTimeout(() => {
-    // FIXME:
-    // Launch screen handle created in lib/router.js
-    // dataReadyHold.release();
-
-    // Show the connection error box
-    showConnectionIssue.set(true);
-  }, CONNECTION_ISSUE_TIMEOUT);
-});
+import { showConnectionIssue } from "/imports/ui/connectionIssue.js";
 
 Template.Admin_layout.onCreated(function adminLayoutOnCreated() {
   Session.setDefault({
@@ -39,14 +18,6 @@ Template.Admin_layout.onCreated(function adminLayoutOnCreated() {
 });
 
 Template.Admin_layout.onRendered(function adminLayoutOnRendered() {
-  // this.autorun(() => {
-  //   var w = $(window).width();
-  //   if (Session.get('navOpen') && w > 785) {
-  //     const nav = $('.main-nav ul');
-  //     nav.slideToggle();
-  //     Session.set('navOpen', false);
-  //   };
-  // });
 });
 
 Template.Admin_layout.helpers({
@@ -74,12 +45,7 @@ Template.Admin_layout.helpers({
     const email = Meteor.user().emails[0].address;
     return email.substring(0, email.indexOf('@'));
   },
-  // activeMenuClass(menu) {
-  //   const active = ActiveRoute.name('Menus.show')
-  //     && FlowRouter.getParam('_id') === list._id;
 
-  //   return active && 'active';
-  // },
   connected() {
     if (showConnectionIssue.get()) {
       return Meteor.status().connected;
@@ -89,12 +55,7 @@ Template.Admin_layout.helpers({
   },
 
   templateGesturesAdmin: {
-    // 'swipeleft .content-overlay, #sideNav'(event, instance) {
-    //   Session.set('sideNavOpen', false);
-    // },
-    // 'swiperight .content-overlay'(event, instance) {
-    //   Session.set('packEditorOpen', false);
-    // },
+
     'swiperight #container'(event, instance) {
       Session.set('adminMenuOpen', true);
     },
@@ -137,6 +98,6 @@ Template.Admin_layout.events({
   },
 
   'click .js-logout'() {
-    Meteor.logout();
+    signout();
   },
 });

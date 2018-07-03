@@ -2,7 +2,6 @@ import './modals.html';
 
 import '/imports/ui/components/filters/filters.js';
 import '/imports/ui/components/cart/cart.js';
-import '/imports/ui/components/pack-select/pack-select.js';
 
 Template.Modals.onCreated(function menuItemOnCreated() {
 });

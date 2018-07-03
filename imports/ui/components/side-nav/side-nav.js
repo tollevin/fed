@@ -1,5 +1,7 @@
 import './side-nav.html';
 
+import { signout } from '/imports/ui/lib/auth.js';
+
 Template.Side_Nav.onCreated(function menuItemOnCreated() {
   this.showMenuLinks = new ReactiveVar(false);
   this.showAboutLinks = new ReactiveVar(false);
@@ -77,6 +79,6 @@ Template.Side_Nav.events({
   'click #logout'(event) {
     event.preventDefault();
     // event.stopImmediatePropagation();
-    Meteor.logout();
+    signout();
   },
 });
