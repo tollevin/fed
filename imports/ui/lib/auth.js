@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Accounts } from 'meteor/accounts-base';
 import { Session } from 'meteor/session';
 
-const onLoginFunction = () => {
+export const onLoginFunction = () => {
   const route = FlowRouter.current().route.name;
   var user = Meteor.user();
   let subs;
