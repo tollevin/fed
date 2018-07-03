@@ -17,12 +17,10 @@ const handler = (data, promise) => {
       previous_balance = 0;
     };
 
-    if (account_balance) {
-      user.credit = account_balance;
+    user.credit = account_balance;
 
-      const updatedUser = Meteor.call('updateUser', user._id, user);
-      console.log("User " + user._id + " updated: Credit adjusted from $" + previous_balance + " to $" + user.credit);
-    };
+    const updatedUser = Meteor.call('updateUser', user._id, user);
+    console.log("User " + user._id + " updated: Credit adjusted from $" + previous_balance + " to $" + user.credit);
   } catch (error) {
     throw new Meteor.Error(400, `[customerUpdated.handler] ${error} ID: ${data.id}`);
   }

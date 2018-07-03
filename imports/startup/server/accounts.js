@@ -29,14 +29,14 @@ Meteor.methods({
         console.log(creditUpdated);
       };
 
-      // if (creditUpdated) {
-      //   const args = {
-      //     id: user.stripe_id,
-      //     account_balance: data.credit,
-      //   };
+      if (creditUpdated) {
+        const args = {
+          id: user.stripe_id,
+          account_balance: data.credit,
+        };
 
-      //   Meteor.call('updateStripeCredit', args);
-      // };
+        Meteor.call('updateStripeCredit', args);
+      };
 
       return (Meteor.users.findOne({ _id: user_id }));
     } catch (err) {
