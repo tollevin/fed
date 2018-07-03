@@ -127,3 +127,5 @@ akryum:vue
 akryum:vue-component
 akryum:vue-blaze-template
 cultofcoders:persistent-session
+vuejs:blaze-integration
+akryum:vue-ssr

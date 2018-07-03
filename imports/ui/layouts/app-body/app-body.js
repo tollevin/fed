@@ -75,6 +75,9 @@ Template.App_body.onRendered(function appBodyOnRendered() {
 });
 
 Template.App_body.helpers({
+  main() {
+    return this.main
+  },
   notSubscribed() {
     return !Session.get('subscribed');
   },

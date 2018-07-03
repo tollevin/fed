@@ -8,6 +8,7 @@ akryum:vue-blaze-template@0.1.0
 akryum:vue-component@0.14.0
 akryum:vue-component-dev-client@0.4.2
 akryum:vue-component-dev-server@0.1.1
+akryum:vue-ssr@0.2.1
 aldeed:autoform@5.8.1
 aldeed:collection2@2.10.0
 aldeed:collection2-core@1.2.0
@@ -37,6 +38,7 @@ caching-html-compiler@1.1.2
 callback-hook@1.1.0
 check@1.3.1
 chriswessels:hammer@4.0.2
+chuangbo:cookie@1.1.0
 coffeescript@1.0.17
 crosswalk@1.7.1
 cultofcoders:persistent-session@0.4.5
@@ -93,6 +95,7 @@ mdg:validated-method@1.1.0
 mdg:validation-error@0.5.1
 meteor@1.9.0
 meteor-base@1.4.0
+meteorhacks:meteorx@1.4.1
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
 meteortoys:allthings@3.0.0
@@ -132,6 +135,8 @@ oauth@1.2.3
 oauth2@1.2.0
 observe-sequence@1.0.16
 ordered-dict@1.1.0
+peerlibrary:computed-field@0.3.1
+peerlibrary:data-lookup@0.1.0
 percolate:momentum@0.7.2
 percolate:synced-cron@1.3.2
 percolate:velocityjs@1.2.1_1
@@ -168,6 +173,8 @@ spacebars@1.0.15
 spacebars-compiler@1.1.3
 srp@1.0.10
 standard-minifier-js@2.3.4
+staringatlights:fast-render@2.16.5
+staringatlights:inject-data@2.0.5
 templating@1.3.2
 templating-compiler@1.3.3
 templating-runtime@1.3.2
@@ -182,6 +189,7 @@ url@1.2.0
 useraccounts:core@1.14.2
 useraccounts:flow-routing@1.14.2
 useraccounts:unstyled@1.14.2
+vuejs:blaze-integration@0.2.0
 webapp@1.6.2
 webapp-hashing@1.0.9
 webtempest:animate@0.1.9
