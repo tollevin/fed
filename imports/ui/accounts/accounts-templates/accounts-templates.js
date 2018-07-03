@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { onLoginFunction } from '/imports/ui/lib/auth';
 
 import './accounts-templates.less';
 import './accounts-templates.html';
@@ -10,3 +11,9 @@ Template['override-atPwdForm'].replaces('atPwdForm');
 Template['override-atTextInput'].replaces('atTextInput');
 Template['override-atTitle'].replaces('atTitle');
 Template['override-atError'].replaces('atError');
+
+Template.Auth_page.events({
+  'submit form' ( event, template ) {
+    onLoginFunction();
+  },
+});
