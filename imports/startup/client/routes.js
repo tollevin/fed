@@ -159,14 +159,20 @@ FlowRouter.route( '/verify-email/:token', {
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
   path: '/signin',
+  template: 'SignIn'
 });
 
 AccountsTemplates.configureRoute('signUp', {
   name: 'join',
   path: '/join',
+  template: 'SignUp'
 });
 
-AccountsTemplates.configureRoute('forgotPwd');
+AccountsTemplates.configureRoute('forgotPwd', {
+  name: 'forgotPwd',
+  path: '/forgot-password',
+  template: 'Forgot_password',
+});
 
 AccountsTemplates.configureRoute('resetPwd', {
   name: 'resetPwd',

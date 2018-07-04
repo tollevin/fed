@@ -137,6 +137,24 @@ export const mainRoutes = [
     layout: "App_body",
     template: "DeanStreet",
   },
+  {
+    route: "/signin",
+    name: "signIn",
+    layout: "App_body",
+    template: "SignIn",
+  },
+  {
+    route: "/join",
+    name: "signUp",
+    layout: "App_body",
+    template: "SignUp",
+  },
+  {
+    route: "/forgot-password",
+    name: "forgotPwd",
+    layout: "App_body",
+    template: "Forgot_password",
+  },
 ]
 
 export const mainNotFound = {

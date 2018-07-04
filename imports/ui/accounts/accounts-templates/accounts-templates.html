@@ -16,6 +16,42 @@
   </div>
 </template>
 
+<template name="SignIn">
+  <div class="page auth">
+    <nav>
+      <div class="nav-group">
+        <a href="#" class="js-menu nav-item">
+          <span class="icon-list-unordered"></span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="content-scrollable">
+      <div class="wrapper-auth">
+        {{> atForm}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="Forgot_password">
+  <div class="page auth">
+    <nav>
+      <div class="nav-group">
+        <a href="#" class="js-menu nav-item">
+          <span class="icon-list-unordered"></span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="content-scrollable">
+      <div class="wrapper-auth">
+        {{> atForm}}
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="override-atPwdFormBtn">
   <button type="submit" class="btn-primary">
     {{buttonText}}
