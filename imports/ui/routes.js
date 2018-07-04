@@ -1,6 +1,14 @@
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export const Router = FlowRouter;
+export const Router = {
+  go: (route, options) => FlowRouter.go(route, options), //note this uses name as well... kill the name
+  route: (route, options) => FlowRouter.route(route, options),
+  setNotFound: (notFound) => { FlowRouter.notFound = notFound },
+  group: (options) => FlowRouter.group(options),
+  getRouteName: () => FlowRouter.getRouteName(),
+  current: () => FlowRouter.current(),
+  getParam: (param) => FlowRouter.getParam(param),
+};
 
 export const mainRoutes = [
   {

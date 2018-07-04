@@ -86,11 +86,11 @@ mainRoutes.map(({route, name, layout, template}) =>
   }));
 
 // the App_notFound template is used for unknown routes and missing lists
-Router.notFound = {
+Router.setNotFound({
   action() {
     render("blaze", mainNotFound.layout, mainNotFound.template)
   },
-};
+});
 
 var flowAdminRoutes = Router.group({
   prefix: '/admin',
