@@ -1,5 +1,6 @@
 import { Accounts } from 'meteor/accounts-base';
 import { signin } from '/imports/ui/lib/auth.js';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import './signup.html';
 

@@ -1,3 +1,4 @@
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import './side-nav.html';
 
 import { signout } from '/imports/ui/lib/auth.js';

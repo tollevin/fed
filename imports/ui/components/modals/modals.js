@@ -1,3 +1,4 @@
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import './modals.html';
 
 import '/imports/ui/components/filters/filters.js';

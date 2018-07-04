@@ -1,6 +1,7 @@
 import './mobile-nav.html';
 
 import { signout } from '/imports/ui/lib/auth.js';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.Mobile_Nav.onCreated(function menuItemOnCreated() {
 });

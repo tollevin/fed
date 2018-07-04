@@ -1,3 +1,4 @@
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Orders } from '/imports/api/orders/orders.js';
 import { Menus } from '/imports/api/menus/menus.js';
 

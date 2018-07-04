@@ -1,8 +1,5 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-// import { FlowRouter } from 'meteor/kadira:flow-router';
-// import { Session } from 'meteor/session';
-// import { Tracker } from 'meteor/tracker';
 
 import './pack-settings.html';
 
@@ -15,12 +12,6 @@ Template.Pack_settings.onCreated(function packSettingsOnCreated() {
 });
 
 Template.Pack_settings.onRendered(function packSettingsOnRendered() {
-  // var restrictions = template.findAll('.checked');
-  // formdata.restrictions = [];
-  // for (var i = restrictions.length - 1; i >= 0; i--) {
-  //   formdata.restrictions.push(restrictions[i].id);
-  // };
-  // const user = formdata;
 });
 
 Template.Pack_settings.helpers({
