@@ -11,7 +11,7 @@ AccountsTemplates.configure({
   showForgotPasswordLink: true,
   confirmPassword: false,
   defaultTemplate: 'Auth_page',
-  defaultLayout: 'Blaze_base',
+  defaultLayout: 'App_body',
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},
 

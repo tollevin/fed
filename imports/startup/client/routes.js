@@ -7,7 +7,6 @@ import { lodash } from 'meteor/erasaur:meteor-lodash';
 import { mainRoutes, mainNotFound, adminRoutes } from '/imports/ui/routes.js';
 
 import '/imports/ui/layouts/app-body/app-body.js';
-import '/imports/ui/layouts/base-layout/blaze-base.js';
 import '/imports/ui/pages/landing-page/landing-page.js';
 import '/imports/ui/pages/user-home/user-home.js';
 import '/imports/ui/pages/menu-page/menu-page.js';
