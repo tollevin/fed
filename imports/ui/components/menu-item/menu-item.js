@@ -102,8 +102,7 @@ Template.Menu_item.events({
     var routeName = Router.getRouteName();
     Session.set('previousRoute', routeName);
 
-    var newRoute = '/menu/' + Template.currentData()._id;
-    Router.go(newRoute);
+    Router.go(`/menu/${Template.currentData()._id}`);
   },
 
 	'click .add-to-cart'(event, template) {
@@ -136,7 +135,7 @@ Template.Menu_item.events({
       order.items.push(item);
       Session.set('Order', order);
     } else {
-      Router.go('join');
+      Router.go('/join');
     }
 	},
 
@@ -177,7 +176,7 @@ Template.Menu_item.events({
         Session.set('Order', order);
       };
     } else {
-      Router.go('join');
+      Router.go('/join');
     }
   },
 });

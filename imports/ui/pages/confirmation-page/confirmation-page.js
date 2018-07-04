@@ -16,7 +16,7 @@ import './confirmation-page.html';
 
 Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!Meteor.userId()) {
-    Router.go('signin');
+    Router.go('/signin');
   } else {
     this.order = new ReactiveVar();
     this.autorun(()=> {

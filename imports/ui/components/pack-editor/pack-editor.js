@@ -483,7 +483,7 @@ Template.Pack_Editor.events({
       };
     } else {
       Session.set('overlay','pause');
-      Router.go('join');
+      Router.go('/join');
     }
   },
 

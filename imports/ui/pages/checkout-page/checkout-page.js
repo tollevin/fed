@@ -624,7 +624,7 @@ Template.Checkout_page.events({
         });
 
         Session.set('loading', false);
-        Router.go('Confirmation');
+        Router.go('/confirmation');
       } catch(error) {
         console.log(error);
         Session.set('loading', false);

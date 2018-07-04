@@ -108,14 +108,14 @@ adminRoutes.map(({route, name, layout, template}) =>
     },
   }));
 
-Router.route( '/verify-email/:token', {
+Router.route('/verify-email/:token', {
   name: 'verify-email',
   action( params ) {
     Accounts.verifyEmail( params.token, ( error ) =>{
       if ( error ) {
         sAlert.error( error.reason );
       } else {
-        Router.go( '/' );
+        Router.go('/');
         sAlert.success( 'Email verified! Welcome to Fed!');
       }
     });

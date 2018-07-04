@@ -241,7 +241,7 @@ Template.Menu_page.events({
 		if (Meteor.user()) {
 			Session.set('overlay', 'packEditor');
 		} else {
-      Router.go('join');
+      Router.go('/join');
     };
 	},
 
@@ -251,7 +251,7 @@ Template.Menu_page.events({
 		if (Meteor.user()) {
 			Session.set('overlay', 'packEditor');
 		} else {
-      Router.go('join');
+      Router.go('/join');
     };
 	},
 
@@ -296,7 +296,7 @@ Template.Menu_page.events({
 			Session.set('cartOpen', false);
 	    Router.go('/checkout');
 		} else {
-      Router.go('join');
+      Router.go('/join');
     };
 	},
 

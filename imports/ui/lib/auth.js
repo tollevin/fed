@@ -11,13 +11,8 @@ export const onLoginFunction = () => {
   if (user) subs = user.subscriptions;
 
   // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
-  if (route === 'signin') {
-    Router.go('Menu.show');
-  } else {
-    if (subs && subs[0].status != 'canceled') {
-      Router.go('User.home');
-    };
-  };
+  if (route === 'signin') { return Router.go('/menu'); }
+  if (subs && subs[0].status != 'canceled') { return Router.go('/my-account'); }
 };
 
 const onLogoutFunction = () => {
@@ -29,7 +24,7 @@ const onLogoutFunction = () => {
     Session.set('pack', undefined);
     Session.set('stage', undefined);
     
-    Router.go('App.home')
+    Router.go('/');
   });
 };
 

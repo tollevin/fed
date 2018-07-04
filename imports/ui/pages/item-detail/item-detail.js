@@ -63,7 +63,7 @@ Template.Item_detail.events({
     		order.dishes = dishes;
     		Session.set('order', order);
         i = 0;
-        Router.go('Menu.show');
+        Router.go('/menu');
         break;
     	} else {
         continue;

@@ -148,8 +148,7 @@ Template.App_body.events({
     event.preventDefault();
     event.stopImmediatePropagation();
     Session.set('navOpen', false);
-    var page = "/" + event.currentTarget.title;
-    Router.go(page);
+    Router.go(`/${event.currentTarget.title}`);
   },
 
   'click .js-menu'(event, instance) {

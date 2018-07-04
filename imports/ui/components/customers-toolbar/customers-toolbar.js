@@ -43,7 +43,7 @@ Template.Customers_toolbar.helpers({
 
 Template.Customers_toolbar.events({
 	'autocompleteselect input'(event, template, doc) {
-    Router.go('Customer.detail', { _id: doc._id });
+    Router.go(`/customers/${doc._id}`);
   },
 
   'click #generateOrders'(event, template) {

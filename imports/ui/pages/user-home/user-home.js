@@ -17,9 +17,7 @@ import './user-home.html';
 
 Template.User_home.onCreated(function userHomeOnCreated() {
 
-  if (!Meteor.userId()) {
-    Router.go('signin');
-  };
+  if (!Meteor.userId()) { Router.go('/signin'); };
 
   this.nextOrder = new ReactiveVar();
   this.futureOrders = new ReactiveVar();

@@ -32,7 +32,7 @@ Template.Customer_detail.events({
   'click #Back' (event) {
     event.preventDefault();
 
-    Router.go('Customers.admin');
+    Router.go('/customers');
   },
 
   'click #CrEdit' (event, template) {

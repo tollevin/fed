@@ -82,7 +82,6 @@ Template.Pack_Editor_Item.events({
     var routeName = Router.getRouteName();
     Session.set('previousRoute', routeName);
 
-    var newRoute = '/menu/' + Template.currentData()._id;
-    Router.go(newRoute);
+    Router.go(`/menu/${Template.currentData()._id}`);
   },
 });
