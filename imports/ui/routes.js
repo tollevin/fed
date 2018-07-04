@@ -1,226 +1,480 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
+// import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export const Router = {
-  go: (route, options) => FlowRouter.go(route, options), //note this uses name as well... kill the name
-  route: (route, options) => FlowRouter.route(route, options),
-  setNotFound: (notFound) => { FlowRouter.notFound = notFound },
-  group: (options) => FlowRouter.group(options),
-  getRouteName: () => FlowRouter.getRouteName(),
-  current: () => FlowRouter.current(),
-  getParam: (param) => FlowRouter.getParam(param),
-};
+import '/imports/ui/layouts/app-body/app-body.js';
+import '/imports/ui/pages/landing-page/landing-page.js';
+import '/imports/ui/pages/user-home/user-home.js';
+import '/imports/ui/pages/menu-page/menu-page.js';
+import '/imports/ui/pages/market-page/market-page.js';
+import '/imports/ui/pages/about-page/about-page.js';
+import '/imports/ui/pages/support/support.js';
+import '/imports/ui/pages/blog-page/blog-page.js';
+import '/imports/ui/pages/item-detail/item-detail.js';
+import '/imports/ui/pages/checkout-page/checkout-page.js';
+import '/imports/ui/pages/confirmation-page/confirmation-page.js';
+import '/imports/ui/pages/success/success.js';
+import '/imports/ui/pages/account-page/account-page.js';
+import '/imports/ui/pages/subscribe/subscribe.js';
+import '/imports/ui/pages/my-subscriptions/my-subscriptions.js';
+import '/imports/ui/pages/my-orders/my-orders.js';
+import '/imports/ui/pages/packs/packs.js';
+import '/imports/ui/pages/gift-cards/gift-cards.js';
+import '/imports/ui/pages/equinox-join/equinox-join.js';
+import '/imports/ui/pages/dean-street/dean-street.js';
+import '/imports/ui/pages/jobs/jobs.js';
+import '/imports/ui/pages/media/media.js';
 
-export const mainRoutes = [
+// Import admin templates
+import '/imports/ui/layouts/admin-layout/admin-layout.js';
+import '/imports/ui/pages/main-admin/main-admin.js';
+import '/imports/ui/pages/menu-admin/menu-admin.js';
+import '/imports/ui/pages/orders-admin/orders-admin.js';
+import '/imports/ui/pages/customers-admin/customers-admin.js';
+import '/imports/ui/pages/customer-detail/customer-detail.js';
+import '/imports/ui/pages/subscribers-admin/subscribers-admin.js';
+import '/imports/ui/pages/promos-admin/promos-admin.js';
+
+// Import to override accounts templates
+import '/imports/ui/accounts/accounts-templates/accounts-templates.js';
+import '/imports/ui/accounts/signup/signup.js';
+
+// Import wiki templates
+import '/imports/ui/wiki/index.js';
+
+// Import test template
+import '/imports/ui/pages/test/test.js';
+
+import Layout from '/imports/ui/layouts/base-layout/vue-base.vue';
+
+
+
+export default [
   {
-    route: "/",
+    path: "/",
     name: "App.home",
-    layout: "App_body",
-    template: "Landing_page",
+    props: {
+      layout: "App_body",
+      template: "Landing_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/my-account",
+    path: "/my-account",
     name: "User.home",
-    layout: "App_body",
-    template: "User_home",
+    props: {
+      layout: "App_body",
+      template: "User_home",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/packs",
+    path: "/packs",
     name: "Packs",
-    layout: "App_body",
-    template: "Packs",
+    props: {
+      layout: "App_body",
+      template: "Packs",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/menu",
+    path: "/menu",
     name: "Menu.show",
-    layout: "App_body",
-    template: "Menu_page",
+    props: {
+      layout: "App_body",
+      template: "Menu_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/market",
+    path: "/market",
     name: "Market",
-    layout: "App_body",
-    template: "Market_page",
+    props: {
+      layout: "App_body",
+      template: "Market_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/about-us",
+    path: "/about-us",
     name: "About.us",
-    layout: "App_body",
-    template: "About_page",
+    props: {
+      layout: "App_body",
+      template: "About_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/confirmation",
+    path: "/confirmation",
     name: "Confirmation",
-    layout: "App_body",
-    template: "Confirmation",
+    props: {
+      layout: "App_body",
+      template: "Confirmation",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/settings",
+    path: "/settings",
     name: "Account.settings",
-    layout: "App_body",
-    template: "Account_page",
+    props: {
+      layout: "App_body",
+      template: "Account_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/subscribe",
+    path: "/subscribe",
     name: "Subscribe",
-    layout: "App_body",
-    template: "Subscribe",
+    props: {
+      layout: "App_body",
+      template: "Subscribe",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/subscriptions",
+    path: "/subscriptions",
     name: "My.subscriptions",
-    layout: "App_body",
-    template: "My_Subscriptions",
+    props: {
+      layout: "App_body",
+      template: "My_Subscriptions",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/orders",
+    path: "/orders",
     name: "My.orders",
-    layout: "App_body",
-    template: "My_Orders",
+    props: {
+      layout: "App_body",
+      template: "My_Orders",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/gifts",
+    path: "/gifts",
     name: "Gifts",
-    layout: "App_body",
-    template: "Gift_Cards",
+    props: {
+      layout: "App_body",
+      template: "Gift_Cards",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/blog",
+    path: "/blog",
     name: "Blog.roll",
-    layout: "App_body",
-    template: "Blog_page",
+    props: {
+      layout: "App_body",
+      template: "Blog_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/menu/:_id",
+    path: "/menu/:_id",
     name: "Item.show",
-    layout: "App_body",
-    template: "Item_detail",
+    props: {
+      layout: "App_body",
+      template: "Item_detail",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/support",
+    path: "/support",
     name: "Support",
-    layout: "App_body",
-    template: "Support_page",
+    props: {
+      layout: "App_body",
+      template: "Support_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/checkout",
+    path: "/checkout",
     name: "Checkout",
-    layout: "App_body",
-    template: "Checkout_page",
+    props: {
+      layout: "App_body",
+      template: "Checkout_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/success",
+    path: "/success",
     name: "Success",
-    layout: "App_body",
-    template: "Success_page",
+    props: {
+      layout: "App_body",
+      template: "Success_page",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/redeem",
+    path: "/redeem",
     name: "redeem",
-    layout: "App_body",
-    template: "Success_page", // 2 success pages?
+    props: {
+      layout: "App_body",
+      template: "Success_page", // 2 success pages?
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/jobs",
+    path: "/jobs",
     name: "Jobs",
-    layout: "App_body",
-    template: "Jobs",
+    props: {
+      layout: "App_body",
+      template: "Jobs",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/media",
+    path: "/media",
     name: "Media",
-    layout: "App_body",
-    template: "Media",
+    props: {
+      layout: "App_body",
+      template: "Media",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/test",
+    path: "/test",
     name: "Test",
-    layout: "App_body",
-    template: "Test",
+    props: {
+      layout: "App_body",
+      template: "Test",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/equinox",
+    path: "/equinox",
     name: "Equinox.join",
-    layout: "App_body",
-    template: "Equinox_join",
+    props: {
+      layout: "App_body",
+      template: "Equinox_join",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/deanstreet",
+    path: "/deanstreet",
     name: "DeanStreet",
-    layout: "App_body",
-    template: "DeanStreet",
+    props: {
+      layout: "App_body",
+      template: "DeanStreet",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/signin",
+    path: "/signin",
     name: "signIn",
-    layout: "App_body",
-    template: "SignIn",
+    props: {
+      layout: "App_body",
+      template: "SignIn",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/join",
+    path: "/join",
     name: "signUp",
-    layout: "App_body",
-    template: "SignUp",
+    props: {
+      layout: "App_body",
+      template: "SignUp",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/forgot-password",
+    path: "/forgot-password",
     name: "forgotPwd",
-    layout: "App_body",
-    template: "Forgot_password",
+    props: {
+      layout: "App_body",
+      template: "Forgot_password",
+      type: "blaze",
+    },
+    component: Layout
   },
-]
-
-export const mainNotFound = {
-  layout: "App_body",
-  template: "App_notFound",
-};
-
-export const adminRoutes = [
   {
-    route: "/",
+    path: "/admin",
     name: "Main.admin",
-    layout: "Admin_layout",
-    template: "Main_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Main_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/menu",
+    path: "/admin/menu",
     name: "Menu.admin",
-    layout: "Admin_layout",
-    template: "Menu_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Menu_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/orders",
+    path: "/admin/orders",
     name: "Orders.admin",
-    layout: "Admin_layout",
-    template: "Orders_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Orders_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/customers",
+    path: "/admin/customers",
     name: "Customers.admin",
-    layout: "Admin_layout",
-    template: "Customers_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Customers_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/customers/:_id",
+    path: "/admin/customers/:_id",
     name: "Customer.detail",
-    layout: "Admin_layout",
-    template: "Customer_detail",
+    props: {
+      layout: "Admin_layout",
+      template: "Customer_detail",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/subscribers",
+    path: "/admin/subscribers",
     name: "Subscribers.admin",
-    layout: "Admin_layout",
-    template: "Subscribers_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Subscribers_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/promos",
+    path: "/admin/promos",
     name: "Promos.admin",
-    layout: "Admin_layout",
-    template: "Promos_admin",
+    props: {
+      layout: "Admin_layout",
+      template: "Promos_admin",
+      type: "blaze",
+    },
+    component: Layout
   },
   {
-    route: "/specs",
+    path: "/admin/specs",
     name: "Wiki.Index",
-    layout: "Admin_layout",
-    template: "Wiki_index",
+    props: {
+      layout: "Admin_layout",
+      template: "Wiki_index",
+      type: "blaze",
+    },
+    component: Layout
+  },
+  {
+    path: "/verify-email/:token",
+    name: 'verify-email',
+    props: {
+      layout: "Admin_layout",
+      template: "Wiki_index",
+      type: "blaze",
+    },
+    component: Layout
+  },
+  {
+    path: "*",
+    props: {
+      layout: "App_body",
+      template: "App_notFound",
+      type: "blaze",
+    },
+    component: Layout
   },
 ];
+
+export const Router = {
+  go: (path, options) => {
+    return undefined;
+    // return FlowRouter.go(path, options)
+  },
+  path: (path, options) => {
+    return undefined;
+    // return FlowRouter.path(path, options)
+  },
+  setNotFound: (notFound) => {
+    return undefined;
+    // FlowRouter.notFound = notFound
+  },
+  group: (options) => {
+    return undefined;
+    // return FlowRouter.group(options)
+  },
+  getRouteName: () => {
+    return Meteor.router.currentRoute.path;
+    // return FlowRouter.getRouteName()
+  },
+  current: () => {
+    return undefined;
+    // return FlowRouter.current()
+  },
+  getParam: (param) => {
+    return undefined;
+    // return FlowRouter.getParam(param)
+  },
+};
+
+/*
+Router.path('/verify-email/:token', {
+  name: 'verify-email',
+  action( params ) {
+    Accounts.verifyEmail( params.token, ( error ) =>{
+      if ( error ) {
+        sAlert.error( error.reason );
+      } else {
+        Router.go('/');
+        sAlert.success( 'Email verified! Welcome to Fed!');
+      }
+    });
+  }
+});
+*/
+
+// AccountsTemplates.configureRoute('signIn', {
+//   name: 'signin',
+//   path: '/signin',
+//   template: 'SignIn'
+// });
+
+// AccountsTemplates.configureRoute('signUp', {
+//   name: 'join',
+//   path: '/join',
+//   template: 'SignUp'
+// });
+
+// AccountsTemplates.configureRoute('forgotPwd', {
+//   name: 'forgotPwd',
+//   path: '/forgot-password',
+//   template: 'Forgot_password',
+// });
+
+// AccountsTemplates.configureRoute('resetPwd', {
+//   name: 'resetPwd',
+//   path: '/reset-password',
+// });

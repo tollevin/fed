@@ -10,6 +10,7 @@
     "body-parser": "^1.17.0",
     "core-js": "^2.5.3",
     "faker": "^4.1.0",
+    "isomorphic-fetch": "^2.2.1",
     "isotope-layout": "^3.0.5",
     "meteor-node-stubs": "^0.2.3",
     "moment": "^2.17.1",
@@ -19,7 +20,7 @@
     "stripe": "^4.12.0",
     "vue": "^2.5.16",
     "vue-meteor-tracker": "^1.2.0",
-    "vue-router": "^2.3.0"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {}
 }
