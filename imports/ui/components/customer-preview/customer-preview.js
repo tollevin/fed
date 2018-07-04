@@ -2,7 +2,6 @@ import './customer-preview.html';
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 // Template.Customer_preview.onCreated(function customerPreviewOnCreated() {
 

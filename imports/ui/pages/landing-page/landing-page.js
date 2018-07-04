@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Autoform } from 'meteor/aldeed:autoform';
 
 // Components
@@ -21,8 +20,6 @@ Template.Landing_page.onCreated(function landingPageOnCreated() {
 });
 
 Template.Landing_page.onRendered(function landingPageOnRendered() {
-  // if (subscribed) FlowRouter.go('/home');
-
   $(function(){
     $('#Lander-carousel').slick({
       dots: true,

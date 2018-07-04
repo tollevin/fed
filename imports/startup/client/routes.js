@@ -111,9 +111,6 @@ const render = (type, layout, body) => { // In place of BlazeLayout.render
 };
 
 
-// FlowRouter.triggers.exit([saveScrollPosition]);
-// FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
-
 mainRoutes.map(({route, name, layout, template}) =>
   FlowRouter.route(route, {
     name,

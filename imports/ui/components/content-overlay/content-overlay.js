@@ -26,13 +26,6 @@ Template.Content_Overlay.helpers({
     return Session.get('cartOpen') && 'cartOpen';
   },
 
-  // selectPack: ()=> {
-  //   const route = FlowRouter.getRouteName();
-  //   const order = Session.get('Order');
-  //   const packOrder = order && order.style === 'pack';
-  //   return route === 'Menu.show' && packOrder && !order.items && 'selectPack';
-  // },
-
   packEditorOpen: ()=> {
     return Session.equals('overlay', 'packEditor') && 'packEditor';
   },
