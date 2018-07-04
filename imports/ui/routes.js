@@ -1,3 +1,7 @@
+import { FlowRouter } from 'meteor/kadira:flow-router';
+
+export const Router = FlowRouter;
+
 export const mainRoutes = [
   {
     route: "/",

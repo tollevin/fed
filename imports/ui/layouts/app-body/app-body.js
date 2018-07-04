@@ -2,7 +2,7 @@ import './app-body.html';
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
@@ -38,7 +38,6 @@ Template.App_body.onCreated(function appBodyOnCreated() {
   this.subscribe('Menus.toCome');
   
   this.autorun(() => {
-    // var current = FlowRouter.current();
     Tracker.afterFlush(function () {
       $(window).scrollTop(0);
     });
@@ -85,7 +84,7 @@ Template.App_body.helpers({
     return Session.get('sideNavOpen') && 'sideNavOpen';
   },
   packEditorOpen() {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     return route === 'Menu.show' && Session.get('packEditorOpen') && 'packEditorOpen';
   },
   processing() {
@@ -112,7 +111,7 @@ Template.App_body.helpers({
     },
 
     'swiperight #content-container, #cart'(event, instance) {
-      const route = FlowRouter.getRouteName();
+      const route = Router.getRouteName();
       if (Session.get('packEditorOpen')) {
         Session.set('packEditorOpen', false);
       } else {
@@ -120,7 +119,7 @@ Template.App_body.helpers({
       }
     },
     'swipeleft #content-container'(event, instance) {
-      const route = FlowRouter.getRouteName();
+      const route = Router.getRouteName();
       if (route === 'Menu.show') {
         Session.set('packEditorOpen', true);
       };
@@ -150,7 +149,7 @@ Template.App_body.events({
     event.stopImmediatePropagation();
     Session.set('navOpen', false);
     var page = "/" + event.currentTarget.title;
-    FlowRouter.go(page);
+    Router.go(page);
   },
 
   'click .js-menu'(event, instance) {

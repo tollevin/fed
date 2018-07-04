@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import './side-nav.html';
 
 import { signout } from '/imports/ui/lib/auth.js';
@@ -8,7 +8,7 @@ Template.Side_Nav.onCreated(function menuItemOnCreated() {
   this.showAboutLinks = new ReactiveVar(false);
 
   this.autorun(() => {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const isMenuPage = 'Menu' === route.split('.')[0];
     const isAboutPage = 'About' === route.split('.')[0];
     
@@ -36,7 +36,7 @@ Template.Side_Nav.helpers({
   },
 
   currentPage(page) {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const active = page === route;
     return active && 'active';
   },
@@ -64,7 +64,7 @@ Template.Side_Nav.events({
   },
 
   'mouseleave #Main-Nav'() {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const isNotMenuPage = 'Menu' != route.split('.')[0];
     const isNotAboutPage = 'About' != route.split('.')[0];
 

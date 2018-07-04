@@ -1,5 +1,5 @@
 import { ReactiveVar } from 'meteor/reactive-var';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 
 import '/imports/ui/components/pack-editor/pack-editor.js';
 
@@ -32,7 +32,7 @@ Template.Content_Overlay.helpers({
   },
 
   closed() {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const uncustomizable = Session.get('customizable') === false;
     return (route === 'Menu.show' || 'Market') && uncustomizable && 'uncustomizable';
     // return false;
@@ -40,7 +40,7 @@ Template.Content_Overlay.helpers({
   },
 
   capped() {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     return route === 'Menu.show' && Session.get('capped') && !Session.get('subscribed') && 'capped';
   },
 });
@@ -49,8 +49,6 @@ Template.Content_Overlay.events({
   'click .content-overlay'(event) {
     Session.set('filterMenuOpen', false);
     Session.set('cartOpen', false);
-
-    // const route = FlowRouter.getRouteName();
   },
 
   'click .x'(event) {

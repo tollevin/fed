@@ -3,7 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 import { DDP } from 'meteor/ddp-client';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { assert } from 'meteor/practicalmeteor:chai';
 import { Promise } from 'meteor/promise';
 import { $ } from 'meteor/jquery';
@@ -34,7 +34,7 @@ if (Meteor.isClient) {
     //   Then, route the app to the homepage
     beforeEach(() =>
       generateData()
-        .then(() => FlowRouter.go('/'))
+        .then(() => Router.go('/'))
         .then(waitForSubscriptions));
 
     describe('when logged out', () => {
@@ -44,7 +44,7 @@ if (Meteor.isClient) {
 
       it('renders the correct list when routed to', () => {
         const list = Lists.findOne();
-        FlowRouter.go('Lists.show', { _id: list._id });
+        Router.go('Lists.show', { _id: list._id });
 
         return afterFlushPromise()
           .then(waitForSubscriptions)

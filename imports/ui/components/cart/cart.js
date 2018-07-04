@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Session } from 'meteor/session';
 import { Tracker } from 'meteor/tracker';
 
@@ -189,6 +189,6 @@ Template.Cart.events({
     Session.set('Order', orderId);
 		Session.set('cartOpen', false);
 
-    FlowRouter.go('/checkout');
+    Router.go('/checkout');
 	},
 });

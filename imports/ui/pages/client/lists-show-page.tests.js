@@ -9,7 +9,7 @@ import StubCollections from 'meteor/hwillson:stub-collections';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { sinon } from 'meteor/practicalmeteor:sinon';
 
 
@@ -25,7 +25,7 @@ describe('Lists_show_page', function () {
   beforeEach(function () {
     StubCollections.stub([Todos, Lists]);
     Template.registerHelper('_', key => key);
-    sinon.stub(FlowRouter, 'getParam', () => listId);
+    sinon.stub(Router, 'getParam', () => listId);
     sinon.stub(Meteor, 'subscribe', () => ({
       subscriptionId: 0,
       ready: () => true,
@@ -35,7 +35,7 @@ describe('Lists_show_page', function () {
   afterEach(function () {
     StubCollections.restore();
     Template.deregisterHelper('_');
-    FlowRouter.getParam.restore();
+    Router.getParam.restore();
     Meteor.subscribe.restore();
   });
 

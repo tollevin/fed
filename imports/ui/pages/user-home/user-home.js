@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { ReactiveVar } from 'meteor/reactive-var';
 
 // Components
@@ -18,7 +18,7 @@ import './user-home.html';
 Template.User_home.onCreated(function userHomeOnCreated() {
 
   if (!Meteor.userId()) {
-    FlowRouter.go('signin');
+    Router.go('signin');
   };
 
   this.nextOrder = new ReactiveVar();

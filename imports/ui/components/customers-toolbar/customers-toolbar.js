@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Orders } from '/imports/api/orders/orders.js';
 import { Menus } from '/imports/api/menus/menus.js';
 
@@ -43,7 +43,7 @@ Template.Customers_toolbar.helpers({
 
 Template.Customers_toolbar.events({
 	'autocompleteselect input'(event, template, doc) {
-    FlowRouter.go('Customer.detail', { _id: doc._id });
+    Router.go('Customer.detail', { _id: doc._id });
   },
 
   'click #generateOrders'(event, template) {

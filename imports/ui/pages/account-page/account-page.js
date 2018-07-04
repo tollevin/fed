@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
 // import { HTTP } from 'meteor/http';
@@ -20,7 +20,7 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
     var subs = this.subscribe('thisUserData');
 
     if(!Meteor.userId()){
-  		FlowRouter.go('/signin');
+  		Router.go('/signin');
   	} else {
       if (subs.ready()) {
         const stripe_id = Meteor.user().stripe_id;
@@ -321,7 +321,7 @@ Template.Account_page.events({
   'click #Sub' (event) {
     event.preventDefault();
 
-    FlowRouter.go('/subscribe');
+    Router.go('/subscribe');
   },
 
   'click #Pset'(event, template) {
@@ -564,7 +564,7 @@ Template.Account_page.events({
 
         Meteor.call( 'updateUser', Meteor.userId(), user );
         sAlert.success('You have been unsubscribed. We hope to see you again soon!');
-        FlowRouter.go('/');
+        Router.go('/');
       };
     });
   },

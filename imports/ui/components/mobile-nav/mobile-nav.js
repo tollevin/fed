@@ -1,7 +1,7 @@
 import './mobile-nav.html';
 
 import { signout } from '/imports/ui/lib/auth.js';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 
 Template.Mobile_Nav.onCreated(function menuItemOnCreated() {
 });
@@ -9,7 +9,7 @@ Template.Mobile_Nav.onCreated(function menuItemOnCreated() {
 Template.Mobile_Nav.helpers({
 
   currentPage(page) {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const active = page === route;
     return active && 'active';
   },

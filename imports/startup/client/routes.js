@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 
@@ -78,7 +78,7 @@ const render = (type, layout, body) => { // In place of BlazeLayout.render
 
 
 mainRoutes.map(({route, name, layout, template}) =>
-  FlowRouter.route(route, {
+  Router.route(route, {
     name,
     action() {
       render("blaze", layout, template)
@@ -86,13 +86,13 @@ mainRoutes.map(({route, name, layout, template}) =>
   }));
 
 // the App_notFound template is used for unknown routes and missing lists
-FlowRouter.notFound = {
+Router.notFound = {
   action() {
     render("blaze", mainNotFound.layout, mainNotFound.template)
   },
 };
 
-var flowAdminRoutes = FlowRouter.group({
+var flowAdminRoutes = Router.group({
   prefix: '/admin',
   name: 'admin',
   // triggersEnter: [function(context, redirect) {
@@ -108,14 +108,14 @@ adminRoutes.map(({route, name, layout, template}) =>
     },
   }));
 
-FlowRouter.route( '/verify-email/:token', {
+Router.route( '/verify-email/:token', {
   name: 'verify-email',
   action( params ) {
     Accounts.verifyEmail( params.token, ( error ) =>{
       if ( error ) {
         sAlert.error( error.reason );
       } else {
-        FlowRouter.go( '/' );
+        Router.go( '/' );
         sAlert.success( 'Email verified! Welcome to Fed!');
       }
     });

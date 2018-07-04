@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Session } from 'meteor/session';
 import moment from 'moment';
 import Isotope from 'isotope-layout';
@@ -241,7 +241,7 @@ Template.Menu_page.events({
 		if (Meteor.user()) {
 			Session.set('overlay', 'packEditor');
 		} else {
-      FlowRouter.go('join');
+      Router.go('join');
     };
 	},
 
@@ -251,20 +251,20 @@ Template.Menu_page.events({
 		if (Meteor.user()) {
 			Session.set('overlay', 'packEditor');
 		} else {
-      FlowRouter.go('join');
+      Router.go('join');
     };
 	},
 
 	'click .toSubscribe'(event) {
 		event.preventDefault();
 
-		FlowRouter.go('/subscribe');
+		Router.go('/subscribe');
 	},
 
 	'click .toMarket'(event) {
 		event.preventDefault();
 
-		FlowRouter.go('/market');
+		Router.go('/market');
 	},
 
 	'click .toCheckout' (event, template) {
@@ -294,63 +294,11 @@ Template.Menu_page.events({
 		  };
 
 			Session.set('cartOpen', false);
-	    FlowRouter.go('/checkout');
+	    Router.go('/checkout');
 		} else {
-      FlowRouter.go('join');
+      Router.go('join');
     };
 	},
-
-	// 'click .diet-filter-button'(event, template) {
-	// 	event.preventDefault();
-
-	// 	const dietButtons = template.findAll('.diet-filter-button');
-	// 	for (var i = dietButtons.length - 1; i >= 0; i--) {
- //      dietButtons[i].classList.remove('active');
- //    };
-	// 	event.target.classList.add('active');
-
-	// 	const filter = event.target.name.toLowerCase();
-	// 	const existingFilters = Session.get('filters');
-
-	// 	switch (filter) {
- //      case "omnivore":
- //      	existingFilters.diet = false;
-	//       Session.set('filters', existingFilters);
-	//       break;
-	//     case "high protein":
-	// 			existingFilters.diet = "highProtein";
-	// 			Session.set('filters', existingFilters);
-	// 			break;
-	// 		case "pescetarian":
-	// 			template.find('[name="Beef"]').classList.add('active');
-	// 			template.find('[name="Chicken"]').classList.add('active');
-	// 			existingFilters.restrictions.push('beef', 'chicken');
-	// 			Session.set('filters', existingFilters);
-	// 			break;
-	//     default:
-	// 			existingFilters.diet = filter;
-	// 			Session.set('filters', existingFilters);
-	// 			break;
-	// 	};
-	// },
-
-	// 'click .restrictions-filter-button'(event, template) {
-	// 	event.preventDefault();
-
-	// 	const filter = event.target.name.toLowerCase();
-	// 	var existingFilters = Session.get('filters');
-	// 	const filterIndex = existingFilters.restrictions.indexOf(filter);
-
-	// 	if (filterIndex > -1) {
-	// 		event.target.classList.remove('active');
-	// 		existingFilters.restrictions.splice(filterIndex, 1);
-	// 		Session.set('filters', existingFilters);
-	// 	} else {
-	// 		event.target.classList.add('active');
-	// 		existingFilters.restrictions.push(filter);
-	// 		Session.set('filters', existingFilters);
-	// 	};
-	// },
 
 	'click #Menu-overlay'(event) {
 		Session.set('cartOpen', false);

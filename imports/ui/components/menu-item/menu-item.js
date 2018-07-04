@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
@@ -99,11 +99,11 @@ Template.Menu_item.events({
   'click .item-details'(event) {
     event.preventDefault();
 
-    var routeName = FlowRouter.getRouteName();
+    var routeName = Router.getRouteName();
     Session.set('previousRoute', routeName);
 
     var newRoute = '/menu/' + Template.currentData()._id;
-    FlowRouter.go(newRoute);
+    Router.go(newRoute);
   },
 
 	'click .add-to-cart'(event, template) {
@@ -136,7 +136,7 @@ Template.Menu_item.events({
       order.items.push(item);
       Session.set('Order', order);
     } else {
-      FlowRouter.go('join');
+      Router.go('join');
     }
 	},
 
@@ -177,7 +177,7 @@ Template.Menu_item.events({
         Session.set('Order', order);
       };
     } else {
-      FlowRouter.go('join');
+      Router.go('join');
     }
   },
 });
