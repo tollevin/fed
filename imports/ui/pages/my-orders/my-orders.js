@@ -19,7 +19,6 @@ Template.My_Orders.onCreated(function myOrdersOnCreated() {
 });
 
 Template.My_Orders.onRendered(function myOrdersOnRendered() {
-	
 });
 
 Template.My_Orders.helpers({
@@ -33,5 +32,4 @@ Template.My_Orders.helpers({
 });
 
 Template.My_Orders.events({
-
 });

@@ -34,7 +34,3 @@ Template.Subscribers_view.helpers({
 		return Meteor.users.find({'past_subscriptions.0':{$exists: true}, 'subscriptions.0':{$exists: false}},{ sort: { "subscriptions.created_at": -1 }});
 	},
 });
-
-Template.Subscribers_view.events({
-	
-});

@@ -8,11 +8,6 @@ import './jobs.html';
 
 // Components used inside the template
 
-
 Template.Jobs.onCreated(function jobsOnCreated() {
 	Session.set('cartOpen', false);
-});
-
-Template.Jobs.helpers({
-
 });

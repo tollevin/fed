@@ -13,12 +13,6 @@ Template.DeanStreet.onCreated(function deanStreetOnCreated() {
   Session.set('cartOpen', false);
 });
 
-Template.DeanStreet.onRendered(function deanStreetOnRendered() {
-});
-
-Template.DeanStreet.helpers({
-});
-
 Template.DeanStreet.events({
   'submit form' ( event, template ) {
     event.preventDefault();

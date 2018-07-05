@@ -9,37 +9,6 @@ import { getZipZone } from '/imports/api/delivery/methods.js';
 import './subscriber-preview.html';
 
 Template.Subscriber_preview.onCreated(function subscriberPreviewOnCreated() {
-	// this.autorun(() => {
-	// 	if (Template.currentData().coupon) {
-	// 		console.log(Template.currentData().first_name + " " + Template.currentData().coupon);
-	// 	} else {
-	// 		if (Template.currentData().subscriptions.discount) {
-	// 			let data = {
-	// 				"coupon": Template.currentData().subscriptions.discount.coupon.id,
-	// 			};
-
-	// 			let user = Template.currentData()._id;
-
-	// 			Meteor.call( 'updateUser', user, data, ( error, response ) => {
-	//         if ( error ) {
-	//           console.log(error + "; error");
-	//         };
-	//       });
-	// 		} else {
-	// 			let data = {
-	// 				"coupon": "Sub10",
-	// 			};
-
-	// 			let user = Template.currentData()._id;
-
-	// 			Meteor.call( 'updateUser', user, data, ( error, response ) => {
-	//         if ( error ) {
-	//           console.log(error + "; error");
-	//         };
-	//       });
-	// 		};
-	// 	};
-	// });
 });
 
 Template.Subscriber_preview.helpers({
@@ -131,20 +100,6 @@ Template.Subscriber_preview.helpers({
 		const skipping = Template.currentData().skipping;
 		// const now = moment().unix();
 		const nextFri = moment().day(12).unix();
-
-		// let lastOrderReadyBy;
-		// if (Template.currentData().last_purchase) {
-		// 	lastOrderReadyBy = moment(Template.currentData().last_purchase.ready_by).unix();
-		// } else {
-		// 	lastOrderReadyBy = false;
-		// };
-
-		// let lastOrderInFuture;
-		// if (lastOrderReadyBy) {
-		// 	lastOrderInFuture = now < lastOrderReadyBy;
-		// } else {
-		// 	lastOrderInFuture = false;
-		// };
 
 		const customized = Template.currentData().customized;
 

@@ -21,10 +21,6 @@ Template.Landing_page.onCreated(function landingPageOnCreated() {
 });
 
 Template.Landing_page.onRendered(function landingPageOnRendered() {
-  // BlazeLayout.reset(); // this will remove the current template.
-  // BlazeLayout.render(...) // rerender
-
-  // if (subscribed) FlowRouter.go('/home');
 
   $(function(){
     $('#Lander-carousel').slick({
@@ -67,22 +63,7 @@ Template.Landing_page.helpers({
   },
 });
 
-Template.Landing_page.events({
-  // 'click #MainCTA' (event) {
-  //   event.preventDefault();
-
-  //   ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-  //     'id': 'test',
-  //     'affiliation': 'Getfednyc.com',
-  //     'revenue': '85.00',
-  //     'tax': '5.00',
-  //     'shipping': '13.00',
-  //     'coupon': 'TestCoupon'
-  //   });
-
-  //   console.log('sent');
-  // },
-  
+Template.Landing_page.events({  
 	'click #zipSubmit'(event, instance) {
     event.preventDefault();
 

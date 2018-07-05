@@ -6,14 +6,6 @@ import { Tracker } from 'meteor/tracker';
 
 import './cart-item.html';
 
-Template.CartItem.onCreated(function cartItemOnCreated() {
-
-});
-
-Template.CartItem.onRendered(function cartItemOnRendered() {
-
-});
-
 Template.CartItem.helpers({
 	isPack: ()=> {
 		return Template.currentData().item.category === 'Pack';

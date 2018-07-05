@@ -18,12 +18,9 @@ Template.Accounts_Holder.helpers({
 
 Template.Accounts_Holder.events({
 	'click a'() {
-		// Session.set('sideNavOpen', false);
 	},
 
   'click .js-logout'(event) {
-    // event.preventDefault();
-    // event.stopImmediatePropagation();
     signout();
   },
 });

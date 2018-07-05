@@ -75,6 +75,10 @@ Template.Side_Nav.events({
       Template.instance().showAboutLinks.set(false);
     };
   },
+  'click #sideNav span' (event) {
+    event.preventDefault();
+    Session.set('sideNavOpen', false);
+  },
 
   'click #logout'(event) {
     event.preventDefault();

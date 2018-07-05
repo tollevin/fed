@@ -17,21 +17,11 @@
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
           <li><a href="/market" class="{{currentPage 'Market.show'}}" alt="Market">Market</a></li>
           <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
-          <!-- {{#if showMenuLinks}}
-            <ul>
-              <li><a href="/menu#meals" class="{{currentPage 'Menu.meals'}}" alt="Meals">Meals</a></li>
-              <li><a href="/menu#Snacks" class="{{currentPage 'Menu.snacks'}}" alt="Snacks">Snacks</a></li>
-              <li><a href="/menu#Drinks" class="{{currentPage 'Menu.drinks'}}" alt="Drinks">Drinks</a></li>
-              <li><a href="/menu#Packs" class="{{currentPage 'Menu.packs'}}" alt="Packs">Packs</a></li>
-            </ul>
-          {{/if}} -->
           {{#if notSubscribed}}
             <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
           {{else}}
-            <!-- <li><a href="/orders" class="{{currentPage 'My.orders'}}" alt="My Orders">My Orders</a></li>
-            <li><a href="/subscriptions" class="{{currentPage 'My.subscriptions'}}" alt="My Subscriptions">My Subscriptions</a></li> -->
+
           {{/if}}
-          <!-- <li><a href="/credit" class="{{currentPage 'FedCred'}}" alt="My Fed Cred">Fed Cred<span>${{fedCred}}</span></a></li> -->
         </ul>
         <ul class="login-buttons">
           <li><a href="/settings" class="{{currentPage 'Settings'}}" alt="Settings">Settings</a></li>

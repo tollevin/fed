@@ -124,22 +124,6 @@ Template.Packs.events({
 	    const orderId = insertOrder.call(orderToCreate);
 	    Session.set('orderId', orderId);
 	    FlowRouter.go('/checkout');
-	  //   var zip = Meteor.user().address_zipcode;
-
-			// if (!zip) {
-		 //    zip = Meteor.user().profile.zipCode;
-	  //   };
-
-	    // var data = {
-	    // 	customer_zipcode: zip,
-	    // };
-
-	    // Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-	    //   if ( !error ) {
-	    //   	Session.set('delivEstimate', response);
-	    //   	FlowRouter.go('/checkout');
-	    //   };
-	    // });
 
 			Session.set('processing', false);
 		};

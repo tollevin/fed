@@ -12,12 +12,6 @@ Template.Equinox_join.onCreated(function equinoxJoinOnCreated() {
   Session.set('cartOpen', false);
 });
 
-Template.Equinox_join.onRendered(function equinoxJoinOnRendered() {
-});
-
-Template.Equinox_join.helpers({
-});
-
 Template.Equinox_join.events({
   'submit form' ( event, template ) {
     event.preventDefault();

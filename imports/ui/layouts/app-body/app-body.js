@@ -131,32 +131,10 @@ Template.App_body.events({
     Session.set('sideNavOpen', false);
   },
 
-  'click #hamburger-menu' (event,template) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    Session.set('sideNavOpen', !Session.get('sideNavOpen'));
-  },
-
-  'click #sideNav span' (event) {
-    event.preventDefault();
-    Session.set('sideNavOpen', false);
-  },
-
-  'click #menuModal ul li' (event) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    Session.set('navOpen', false);
-    var page = "/" + event.currentTarget.title;
-    FlowRouter.go(page);
-  },
-
   'click .js-menu'(event, instance) {
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
 
-  'click #user-menu a'(event, instance) {
-    instance.state.set('userMenuOpen', !instance.state.get('userMenuOpen'));
-  },
 
   'click .welcome'(event) {
     event.preventDefault();

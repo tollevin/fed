@@ -16,10 +16,6 @@ Template.signUp_Modal.events({
 		Session.set('needsZip', false);
 	},
 
-	// 'click .modal-content' (event) {
- //    event.stopImmediatePropagation();
-	// },
-
 	'change .zip' (event, template) {
 		const zipInput = template.find('.zip');
 		if (yesZips.indexOf(zipInput.value.toString()) < 0 ) {
@@ -32,24 +28,8 @@ Template.signUp_Modal.events({
     };
 	},
 
-	// 'keypress .zip' (event, template) {		
- //    const zipInput = template.find('.zip');
-
- //    if (event.which === 13 || zipInput.value.toString().length === 5) {
-	// 		if (yesZips.indexOf(zipInput.value.toString()) < 0 ) {
-	// 			// alert user they are outside of our delivery range
-	// 			zipInput.style.backgroundColor = 'rgba(255, 102, 102,.4)';
-	//       $('#SignUpModalForm').find('.signUp-errors').text("Sorry, it looks like you're outside our delivery area.");
-	//     };
- //    } else {
- //    	zipInput.style.backgroundColor = '#eee';
- //      $('#SignUpModalForm').find('.signUp-errors').text("");
- //    };
-	// },
-
 	'submit #SignUpModalForm' (event, template) {
 		event.preventDefault();
-    // event.stopImmediatePropagation();
 
     Session.set('processing', true);
     const orderReady = Session.get('pack'); // Will Change when packs become items (FIX)

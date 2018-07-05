@@ -15,13 +15,7 @@ import {
 import './item-admin.html';
 
 Template.Item_admin.onCreated(function itemAdminOnCreated() {
-  this.autorun(() => {
-    // new SimpleSchema({
-    //   item: { type: Items._helpers },
-    //   // editing: { type: Boolean, optional: true },
-    //   // onEditingChange: { type: Function },
-    // }).validate(Template.currentData());
-  });
+  this.autorun(() => {});
 });
 
 Template.Item_admin.helpers({

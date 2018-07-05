@@ -27,8 +27,6 @@ Template.Customer_detail.helpers({
 });
 
 Template.Customer_detail.events({
-  // const context = Template.currentData();
-
   'click #Back' (event) {
     event.preventDefault();
 

@@ -524,11 +524,6 @@ Template.Pack_Editor.events({
   'click .cancel'(event, template) {
     event.preventDefault();
 
-    // If no pack
-    // Set order style to alacarte
-    // var order = Session.get('Order');
-    // order.style = 'alacarte';
-    // Session.set('Order', order);
     Session.set('pack', null);
     Session.set('overlay', false);
 

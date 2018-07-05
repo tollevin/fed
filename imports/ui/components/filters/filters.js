@@ -99,9 +99,6 @@ Template.Filters.events({
 		const filterBool = existingFilters.restrictions[filter];
 
 		existingFilters.restrictions[filter] = !filterBool;
-		// if (existingFilters.restrictions[filter]) {
-
-		// }
 
 		const pescetarian = existingFilters.restrictions.beef && existingFilters.restrictions.chicken;
 		const paleo = existingFilters.restrictions.peanuts && existingFilters.restrictions.soy && existingFilters.restrictions.milk && existingFilters.restrictions.wheat;

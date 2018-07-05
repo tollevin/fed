@@ -25,14 +25,6 @@ Template.Content_Overlay.helpers({
   cartOpen() {
     return Session.get('cartOpen') && 'cartOpen';
   },
-
-  // selectPack: ()=> {
-  //   const route = FlowRouter.getRouteName();
-  //   const order = Session.get('Order');
-  //   const packOrder = order && order.style === 'pack';
-  //   return route === 'Menu.show' && packOrder && !order.items && 'selectPack';
-  // },
-
   packEditorOpen: ()=> {
     return Session.equals('overlay', 'packEditor') && 'packEditor';
   },
@@ -41,8 +33,6 @@ Template.Content_Overlay.helpers({
     const route = FlowRouter.getRouteName();
     const uncustomizable = Session.get('customizable') === false;
     return (route === 'Menu.show' || 'Market') && uncustomizable && 'uncustomizable';
-    // return false;
-    // return route === 'Menu.show' && 'uncustomizable';
   },
 
   capped() {
@@ -55,25 +45,9 @@ Template.Content_Overlay.events({
   'click .content-overlay'(event) {
     Session.set('filterMenuOpen', false);
     Session.set('cartOpen', false);
-
-    // const route = FlowRouter.getRouteName();
   },
 
   'click .x'(event) {
     Session.set('customizable', true);
   },
-
-  // 'click #Filters-panel'(event) {
-  //   event.stopImmediatePropagation();
-  // },
-
-  // 'click #cart'(event) {
-  //   event.stopImmediatePropagation();
-  // },
-
-  // 'click .js-logout'(event) {
-  //   // event.preventDefault();
-  //   // event.stopImmediatePropagation();
-  //   Meteor.logout();
-  // },
 });

@@ -13,7 +13,6 @@ const countInArray = function(array, what) {
 };
 
 Template.Menu_item.onCreated(function menuItemOnCreated() {
-  // this.veganized = new ReactiveVar(false);
 });
 
 Template.Menu_item.helpers({

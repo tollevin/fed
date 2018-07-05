@@ -16,7 +16,3 @@ Template.Customers_view.helpers({
 		return Meteor.users.find({},{ sort: { "createdAt": -1 }, limit: 100});
 	},
 });
-
-Template.Customers_view.events({
-	
-});
