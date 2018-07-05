@@ -19,6 +19,7 @@
     "slideout": "^1.0.1",
     "stripe": "^4.12.0",
     "vue": "^2.5.16",
+    "vue-meta": "^1.5.0",
     "vue-meteor-tracker": "^1.2.0",
     "vue-router": "^3.0.1"
   },

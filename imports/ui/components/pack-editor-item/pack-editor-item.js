@@ -7,10 +7,6 @@ import { Items } from '/imports/api/items/items.js';
 
 import './pack-editor-item.html';
 
-const countInArray = function(array, what) {
-  return array.filter(item => item == what).length;
-};
-
 Template.Pack_Editor_Item.onCreated(function packEditorItemOnCreated() {
 });
 
