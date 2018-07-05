@@ -1,2 +1,2 @@
-import './routes.js';
+import './app.js';
 import './sAlert.js';

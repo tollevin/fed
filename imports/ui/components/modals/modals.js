@@ -1,3 +1,4 @@
+import { Router } from '/imports/ui/routes.js'
 import './modals.html';
 
 import '/imports/ui/components/filters/filters.js';
@@ -28,7 +29,7 @@ Template.Modals.helpers({
   },
 
   closed() {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const uncustomizable = Session.get('customizable') === false;
     return route === 'Menu.show' && uncustomizable && 'uncustomizable';
   },

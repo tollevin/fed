@@ -1,11 +1,12 @@
 import { Accounts } from 'meteor/accounts-base';
 import { signin } from '/imports/ui/lib/auth.js';
+import { Router } from '/imports/ui/routes.js'
 
 import './signup.html';
 
 Template.SignUp.onCreated(function signUpOnCreated() {
   if(Meteor.userId()){
-    FlowRouter.go('/');
+    Router.go('/');
   };
 
   Session.set('cartOpen', false);
@@ -40,34 +41,3 @@ Template.SignUp.events({
     });
   },
 });
-
-// subscribeWithOnError = function () {
-//   check(arguments[0], String);
-//   var subName = arguments[0];
-//   var subParams = [].slice.call(arguments, 1, arguments.length);
-//   var params = [subName].concat(subParams);
-
-//   params.push({
-//     onError: function (e) {
-//       if (e.error === 401) {
-//         if (Meteor.user ()) {
-//           sAlert.error("You are not permitted to view this page");
-//           Router.current().next();
-//         } else {
-//           sAlert.warning("You must be logged in to view this page");
-//           Router.go('Auth.login');
-//         }
-//         // ... etc
-//       } else {
-//         Router.current().render('error', {
-//           data: {
-//             message: "Unknown Error",
-//             error: e
-//           }
-//         });
-//       }
-//     }
-//   });
-
-//   Meteor.subscribe.apply(Meteor, params);
-// }

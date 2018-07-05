@@ -17,3 +17,15 @@ Template.Auth_page.events({
     onLoginFunction();
   },
 });
+
+Template.SignIn.events({
+  'submit form' ( event, template ) {
+    onLoginFunction();
+  },
+});
+
+Template.Forgot_password.events({
+  'submit form' ( event, template ) {
+    onLoginFunction();
+  },
+});

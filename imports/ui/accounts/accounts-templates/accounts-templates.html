@@ -16,6 +16,61 @@
   </div>
 </template>
 
+<template name="SignIn">
+  <div class="page auth">
+    <nav>
+      <div class="nav-group">
+        <a href="#" class="js-menu nav-item">
+          <span class="icon-list-unordered"></span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="content-scrollable">
+      <div class="wrapper-auth">
+        {{> atForm}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="Forgot_password">
+  <div class="page auth" style="display: block; opacity: 1;">
+    <nav>
+      <div class="nav-group">
+        <a href="#" class="js-menu nav-item">
+          <span class="icon-list-unordered"></span>
+        </a>
+      </div>
+    </nav>
+    <div class="content-scrollable">
+      <div class="wrapper-auth">
+        <div class="at-form">
+          <h1 class="title-auth">Reset your password</h1>
+          <p class="subtitle-auth">Your mouth will thank you.</p>
+          <div class="at-pwd-form">
+          <form role="form" id="at-pwd-form" novalidate="" action="#" method="POST">
+            <div class="input">
+              <input type="email" id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off">
+            </div>
+            <button type="submit" class="btn-primary">
+              Email Reset Link
+            </button>
+              
+            </form>
+          </div>
+          <div class="at-signup-link">
+            <p>
+              Don't have an account?
+              <a href="/join" id="at-signUp" class="at-link at-signup">Register</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="override-atPwdFormBtn">
   <button type="submit" class="btn-primary">
     {{buttonText}}

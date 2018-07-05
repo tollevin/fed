@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
 
@@ -8,7 +8,6 @@ import moment from 'moment';
 import '/imports/ui/components/footer/footer.js';
 
 // Collections
-// import { Orders } from '/imports/api/orders/orders.js';
 import { DeliveryWindows } from '/imports//api/delivery/delivery-windows.js';
 
 // Template
@@ -17,7 +16,7 @@ import './confirmation-page.html';
 
 Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!Meteor.userId()) {
-    FlowRouter.go('signin');
+    Router.go('/signin');
   } else {
     this.order = new ReactiveVar();
     this.autorun(()=> {

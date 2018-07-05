@@ -1,8 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-// import { FlowRouter } from 'meteor/kadira:flow-router';
-// import { Session } from 'meteor/session';
-// import { Tracker } from 'meteor/tracker';
+import { Router } from '/imports/ui/routes.js'
 import { callWithPromise } from '/imports/ui/lib/helpers.js';
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
@@ -264,7 +262,7 @@ Template.Gift_Cards.events({
 
         Session.set('giftOrder', giftOrder);
         Session.set('loading', false);
-        FlowRouter.go('/success');
+        Router.go('/success');
       } catch(error) {
         sAlert.error(error.reason);
         Session.set('loading', false);
@@ -275,7 +273,4 @@ Template.Gift_Cards.events({
     processGiftCardOrder();
   },
 
-  // 'click #Guest-Buy'(event, template) {
-  //   console.log(Meteor.user());
-  // },
 });

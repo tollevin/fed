@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { signout } from '/imports/ui/lib/auth.js';
 
 import '/imports/ui/components/loading/loading.js';
@@ -30,7 +30,7 @@ Template.Admin_layout.helpers({
   },
 
   currentAdminPage(page) {
-    const route = FlowRouter.getRouteName();
+    const route = Router.getRouteName();
     const active = page === route;
     return active && 'active';
   },

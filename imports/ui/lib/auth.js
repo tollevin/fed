@@ -1,23 +1,18 @@
 import { Meteor } from 'meteor/meteor';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Accounts } from 'meteor/accounts-base';
 import { Session } from 'meteor/session';
 
 export const onLoginFunction = () => {
-  const route = FlowRouter.current().route.name;
+  const route = Router.current().route.name;
   var user = Meteor.user();
   let subs;
 
   if (user) subs = user.subscriptions;
 
   // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
-  if (route === 'signin') {
-    FlowRouter.go('Menu.show');
-  } else {
-    if (subs && subs[0].status != 'canceled') {
-      FlowRouter.go('User.home');
-    };
-  };
+  if (route === 'signin') { return Router.go('/menu'); }
+  if (subs && subs[0].status != 'canceled') { return Router.go('/my-account'); }
 };
 
 const onLogoutFunction = () => {
@@ -29,7 +24,7 @@ const onLogoutFunction = () => {
     Session.set('pack', undefined);
     Session.set('stage', undefined);
     
-    FlowRouter.go('App.home')
+    Router.go('/');
   });
 };
 

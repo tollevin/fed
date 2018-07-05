@@ -1,20 +1,20 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { $ } from 'meteor/jquery';
 
 import './customer-detail.less';
 import './customer-detail.html';
 
 Template.Customer_detail.onCreated(function customerDetailOnCreated() {
-  const id = FlowRouter.getParam('_id');
+  const id = Router.getParam('_id');
 
   this.subscribe('thisUserData', id);
 });
 
 Template.Customer_detail.helpers({
 	customer() {
-    const id = FlowRouter.getParam('_id');
+    const id = Router.getParam('_id');
     if (id) {
       const customer = Meteor.users.findOne({_id: id});
       return customer;
@@ -32,14 +32,14 @@ Template.Customer_detail.events({
   'click #Back' (event) {
     event.preventDefault();
 
-    FlowRouter.go('Customers.admin');
+    Router.go('/customers');
   },
 
   'click #CrEdit' (event, template) {
     event.preventDefault();
     const newCredit = template.find('[name="currentCredit"]').value;
     if (newCredit) {
-      const user = FlowRouter.getParam('_id');
+      const user = Router.getParam('_id');
       var newCreditToFloat = parseFloat(newCredit);
       const data = {
         credit: newCreditToFloat,

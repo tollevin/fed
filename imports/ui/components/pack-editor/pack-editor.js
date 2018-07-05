@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
@@ -272,7 +272,7 @@ Template.Pack_Editor.helpers({
   },
 
   notSubscribe: ()=> {
-    const route = FlowRouter.current().route.name;
+    const route = Router.current().route.name;
     return route != 'Subscribe'; // FIX ?
   },
 
@@ -483,7 +483,7 @@ Template.Pack_Editor.events({
       };
     } else {
       Session.set('overlay','pause');
-      FlowRouter.go('join');
+      Router.go('/join');
     }
   },
 
@@ -570,7 +570,7 @@ Template.Pack_Editor.events({
 
     Session.set('pack', null);
     Session.set('overlay', null);
-    FlowRouter.go('/market');
+    Router.go('/market');
   },
 
   'click .toCheckout'(event, template) {
@@ -607,6 +607,6 @@ Template.Pack_Editor.events({
 
     Session.set('pack', null);
     Session.set('overlay', null);
-    FlowRouter.go('/checkout');
+    Router.go('/checkout');
   },
 });

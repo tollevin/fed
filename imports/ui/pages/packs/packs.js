@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { Session } from 'meteor/session';
 import { Tracker } from 'meteor/tracker';
 import { $ } from 'meteor/jquery';
@@ -63,7 +63,7 @@ Template.Packs.events({
 
 		if (packSelection === "StarterPack") {
 			Session.set("PackSelected", packSelection);
-			FlowRouter.go("/menu");
+			Router.go("/menu");
 		} else {
 			switch (packSelection) {
 				case "OmnivorePack":
@@ -123,23 +123,7 @@ Template.Packs.events({
 
 	    const orderId = insertOrder.call(orderToCreate);
 	    Session.set('orderId', orderId);
-	    FlowRouter.go('/checkout');
-	  //   var zip = Meteor.user().address_zipcode;
-
-			// if (!zip) {
-		 //    zip = Meteor.user().profile.zipCode;
-	  //   };
-
-	    // var data = {
-	    // 	customer_zipcode: zip,
-	    // };
-
-	    // Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-	    //   if ( !error ) {
-	    //   	Session.set('delivEstimate', response);
-	    //   	FlowRouter.go('/checkout');
-	    //   };
-	    // });
+	    Router.go('/checkout');
 
 			Session.set('processing', false);
 		};

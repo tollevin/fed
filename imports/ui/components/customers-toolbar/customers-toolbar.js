@@ -1,3 +1,4 @@
+import { Router } from '/imports/ui/routes.js'
 import { Orders } from '/imports/api/orders/orders.js';
 import { Menus } from '/imports/api/menus/menus.js';
 
@@ -42,7 +43,7 @@ Template.Customers_toolbar.helpers({
 
 Template.Customers_toolbar.events({
 	'autocompleteselect input'(event, template, doc) {
-    FlowRouter.go('Customer.detail', { _id: doc._id });
+    Router.go(`/customers/${doc._id}`);
   },
 
   'click #generateOrders'(event, template) {
@@ -66,30 +67,27 @@ Template.Customers_toolbar.events({
         console.log(futureOrders.length + " orders");
         let subItems;
         Meteor.call('getUserSubscriptionItems', activeSubscribers[i]._id, ( error, response ) => {
-          if ( error ) {
-            console.log(error + "; error");
-          } else {
-            console.log(2);
-            subItems = response;
-            var menus = Menus.find({}).fetch();
-            console.log(menus.length + " menus");
-            console.log(futureOrders.length + " menus");
+          if ( error ) { return console.log(error + "; error"); }
+          console.log(2);
+          subItems = response;
+          var menus = Menus.find({}).fetch();
+          console.log(menus.length + " menus");
+          console.log(futureOrders.length + " menus");
 
-            for (var j = futureOrders.length; j < 3; j++) {
-              console.log(3);
-              var menu = menus[j];
+          for (var j = futureOrders.length; j < 3; j++) {
+            console.log(3);
+            var menu = menus[j];
 
-              var data = {
-                user_id: activeSubscribers[i]._id,
-                menu_id: menu._id,
-                week_of: weeks[j],
-                items: subItems,
-              };
-
-              const subOrder = autoinsertSubscriberOrder.call(data);
-              console.log(4);
-              futureOrders.push(subOrder);
+            var data = {
+              user_id: activeSubscribers[i]._id,
+              menu_id: menu._id,
+              week_of: weeks[j],
+              items: subItems,
             };
+
+            const subOrder = autoinsertSubscriberOrder.call(data);
+            console.log(4);
+            futureOrders.push(subOrder);
           };
         });          
       };

@@ -10,10 +10,10 @@
           <nav>
             <ul>
               <li class="primary-tab">
-                <a id="Dashboard-tab" href="{{pathFor 'Main.admin'}}" class="{{currentAdminPage 'Main.admin'}}">Dashboard</a>
+                <a id="Dashboard-tab" href="/admin" class="{{currentAdminPage 'Main.admin'}}">Dashboard</a>
               </li>
               <li class="primary-tab">
-                <a id="Orders-tab" href="{{pathFor 'Orders.admin'}}" class="{{currentAdminPage 'Orders.admin'}}">Orders</a>
+                <a id="Orders-tab" href="/admin/orders" class="{{currentAdminPage 'Orders.admin'}}">Orders</a>
               </li>
               {{#if currentAdminPage 'Orders.admin'}}
                 <ul>
@@ -29,10 +29,10 @@
                 </ul>
               {{/if}}
               <li class="primary-tab">
-                <a id="customers-tab" href="{{pathFor 'Customers.admin'}}" class="{{currentAdminPage 'Customers.admin'}}">Customers</a>
+                <a id="customers-tab" href="/admin/customers" class="{{currentAdminPage 'Customers.admin'}}">Customers</a>
               </li>
               <li class="primary-tab">
-                <a id="subscribers-tab" href="{{pathFor 'Subscribers.admin'}}" class="{{currentAdminPage 'Subscribers.admin'}}">Subscribers</a>
+                <a id="subscribers-tab" href="/admin/subscribers" class="{{currentAdminPage 'Subscribers.admin'}}">Subscribers</a>
               </li>
               {{#if currentAdminPage 'Subscribers.admin'}}
                 <ul>
@@ -45,13 +45,13 @@
                 </ul>
               {{/if}}
               <li class="primary-tab">
-                <a id="Menu-tab" href="{{pathFor 'Menu.admin'}}" class="{{currentAdminPage 'Menu.admin'}}">Menu</a>
+                <a id="Menu-tab" href="/admin/menu" class="{{currentAdminPage 'Menu.admin'}}">Menu</a>
               </li>
               <li class="primary-tab">
-                <a id="Promos-tab" href="{{pathFor 'Promos.admin'}}" class="{{currentAdminPage 'Promos.admin'}}">Promos</a>
+                <a id="Promos-tab" href="/admin/promos" class="{{currentAdminPage 'Promos.admin'}}">Promos</a>
               </li>
               <li class="primary-tab">
-                <a id="Specs-tab" href="{{pathFor 'Wiki.Index'}}" class="{{currentAdminPage 'Wiki.Index'}}">Spec</a>
+                <a id="Specs-tab" href="/admin/specs" class="{{currentAdminPage 'Wiki.Index'}}">Spec</a>
               </li>
             </ul>
           </nav>

@@ -1,6 +1,6 @@
 import { Accounts } from 'meteor/accounts-base';
 import { $ } from 'meteor/jquery';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Router } from '/imports/ui/routes.js'
 import { signin } from '/imports/ui/lib/auth.js';
 
 // Zip Codes
@@ -41,7 +41,7 @@ Template.Equinox_join.events({
             if (error) {
               $('#Errors').text(error);
             } else {
-              FlowRouter.go('/');
+              Router.go('/');
             };
           });
         };
