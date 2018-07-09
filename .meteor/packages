@@ -119,11 +119,7 @@ browser-policy@1.1.0
 wylio:mandrill
 # okgrow:router-autoscroll
 facebook-config-ui@1.0.1
-nilsdannemann:pdfmake
 promise@0.11.1
 dynamic-import@0.4.0
 markdown@1.0.12
-akryum:vue
-akryum:vue-component
-akryum:vue-blaze-template
 cultofcoders:persistent-session

@@ -16,9 +16,7 @@
     "moment-timezone": "^0.5.17",
     "prerender-node": "^2.4.0",
     "slideout": "^1.0.1",
-    "stripe": "^4.12.0",
-    "vue": "^2.5.16",
-    "vue-meteor-tracker": "^1.0.3"
+    "stripe": "^4.12.0"
   },
   "devDependencies": {}
 }

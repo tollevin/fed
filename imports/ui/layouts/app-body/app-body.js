@@ -6,7 +6,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import moment from 'moment';
-import { Vue } from 'meteor/akryum:vue';
 
 import 'moment-timezone';
 
@@ -63,6 +62,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
 });
 
 Template.App_body.onRendered(function appBodyOnRendered() {
+  window.prerenderReady = true;
   $(window).scroll(function(){                          
     if ($(this).scrollTop() > 100) {
       $(".navbar-fixed-top").fadeIn(2000, function() {
