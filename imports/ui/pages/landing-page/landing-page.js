@@ -6,7 +6,6 @@ import { Autoform } from 'meteor/aldeed:autoform';
 // Components
 import '/imports/ui/components/footer/footer.js';
 import '/imports/ui/components/testimonials/testimonials.js';
-import '/imports/ui/components/menu-carousel/menu-carousel.js';
 import '/imports/ui/components/lander-carousel/lander-carousel.js';
 
 // Zip Codes

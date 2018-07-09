@@ -1,4 +1,5 @@
 import './side-nav.html';
+import './side-nav.less';
 
 import { signout } from '/imports/ui/lib/auth.js';
 

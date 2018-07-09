@@ -1,4 +1,5 @@
 import './app-body.html';
+import './app-body.less';
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
@@ -63,15 +64,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
 
 Template.App_body.onRendered(function appBodyOnRendered() {
   window.prerenderReady = true;
-  $(window).scroll(function(){                          
-    if ($(this).scrollTop() > 100) {
-      $(".navbar-fixed-top").fadeIn(2000, function() {
-        $('.navbar-fixed-top').addClass('scrolled');
-      });
-    } else {
-      $('.navbar-fixed-top').removeClass('scrolled');
-    };
-  });
+  
 });
 
 Template.App_body.helpers({

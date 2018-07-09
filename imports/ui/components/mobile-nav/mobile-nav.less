@@ -1,4 +1,10 @@
-@import './utils.less';
+@import '{}/imports/ui/styles/utils.less';
+
+#userMenu {
+  .position(absolute, 50px, 0, auto, auto);
+  display: flex;
+  flex-direction: column;
+}
 
 .navbar-fixed-top {
   .position(fixed, 0, 0, auto, 0, @hundred, @nav-height-m);
@@ -42,15 +48,6 @@
       //right: 0;
       //margin: auto;
     }   
-  }
-
-  .accounts-holder {
-    float: right;
-    width: 125px;
-
-    .btns-group {
-      height: 50px;
-    }
   }
 
   #mobile-nav-holder {
@@ -213,10 +210,4 @@
       background: @color-eggplant;
     }
   } 
-}
-
-#userMenu {
-  .position(absolute, 50px, 0, auto, auto);
-  display: flex;
-  flex-direction: column;
 }
