@@ -135,22 +135,4 @@ Template.App_body.events({
     Session.set('userMenuOpen', !Session.get('userMenuOpen'));
     // stop the menu from closing
   },
-
-  'click .main-nav a'(event, instance) {
-    const w = $(window).width();
-    if (w < 785 && Session.get('navOpen')) {
-      const nav = $('.main-nav ul');
-      nav.slideToggle();
-      Session.set('navOpen', false);
-    };
-  },
-
-  'click .btns-group a'() {
-    const w = $(window).width();
-    if (w < 775 && (Session.get('navOpen'))) {
-      const nav = $('.main-nav ul');
-      nav.slideToggle();
-      Session.set('navOpen', false);
-    };
-  },
 });

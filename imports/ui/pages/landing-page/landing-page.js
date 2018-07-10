@@ -19,25 +19,6 @@ Template.Landing_page.onCreated(function landingPageOnCreated() {
   Session.set('userMenuOpen', false);
 });
 
-Template.Landing_page.onRendered(function landingPageOnRendered() {
-
-  $(function(){
-    $('#Lander-carousel').slick({
-      dots: true,
-      arrows: false,
-      draggable: true,
-      pauseOnHover: false,
-      swipe: false,
-      autoplay: true,
-      autoplaySpeed: 15000,
-      infinite: true,
-      speed: 1500,
-      fade: true,
-      cssEase: 'linear',
-    });
-  });
-});
-
 Template.Landing_page.helpers({
   noPurchase() {
     return (Session.get('newUser'));

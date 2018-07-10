@@ -1,6 +1,7 @@
 import { $ } from 'meteor/jquery';
 
 import './testimonials.html';
+import './testimonials.less';
 
 Template.Testimonials.onRendered(function testimonialsOnRendered() {
 

@@ -77,6 +77,64 @@
 			}
 		}
 
+		#Diets {
+			display: flex;
+			flex-direction: column;
+
+			ul {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: space-around;
+				margin-left: auto;
+				margin-right: auto;
+				max-width: 875px;
+				margin-top: 50px;
+			}
+
+			.diet {
+				width: 30%;
+				max-width: 400px;
+				min-width: 135px;
+				margin-left: auto;
+				margin-right: auto;
+
+				@media screen and (max-width: 450px) {
+					width: 48%;
+				}
+
+				label {
+					display: inline-block;
+			    position: relative;
+					width: 100%;
+					height: auto;
+					padding: 20px 0px;
+					margin-bottom: 10px;
+					text-align: center;
+					line-height: 30px;
+					cursor: pointer;
+					background-color: #50b74a;
+					color: #FFF;
+					border-radius: 10px;
+					font-weight: 400;
+					font-size: 1.2em;
+
+					&:hover {
+						background-color: #FFF;
+						color: #366833;
+						border-color: #FFF;
+						transition: background-color 300ms;
+					}
+				}
+
+				.clicked {
+					background-color: #FFF;
+					color: #366833;
+					border-color: #FFF;
+				}
+			}
+		}
+
 		#Diet {
 			display: flex;
 			flex-direction: column;
@@ -346,68 +404,6 @@
 					box-shadow: 2px 2px 2px #9c9c9c;
 				}
 			}
-		}
-
-		#createNewUser {
-	    border: 1px solid #999;
-	    border-radius: 11px;
-	    padding: 0px 30px 20px;
-	    width: 100%;
-			display: flex;
-			flex-direction: column;
-			flex-wrap: nowrap;
-			justify-content: flex-end;
-			margin-top: 10px;
-
-			label {
-				display: inline-table;
-				float: left;
-			}
-
-			input,
-			{
-				width: 100%;
-				padding: 7px 11px;
-				border: none;
-				font-size: 15px
-			}
-		}
-
-		#cc-form {
-			display: inline-block;
-			margin-top: 30px;
-			width: 90%;
-			max-width: 500px;
-	    padding: 2px 12px;
-
-	    div {
-		    margin-bottom: 15px;
-
-		    
-
-	    	input {
-		    	height: 33px;
-	    		padding: 5px;
-	    		width: 100%;
-	    		font-size: 15px;
-	    	}
-
-	    	input[type=text]:focus, 
-				input[type=date]:focus,
-				input[type=datetime]:focus,
-				input[type=number]:focus,
-				input[type=search]:focus,
-				input[type=time]:focus,
-				input[type=url]:focus,
-				input[type=email]:focus,
-				textarea:focus, 
-				select:focus{
-			    -moz-box-shadow: 0 0 8px #88D5E9;
-			    -webkit-box-shadow: 0 0 8px #88D5E9;
-			    box-shadow: 0 0 8px #88D5E9;
-			    border: 1px solid #88D5E9;
-				}	    	
-		  }
 		}
 
 		.promo {

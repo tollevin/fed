@@ -137,25 +137,6 @@ Template.Subscribe.helpers({
 });
 
 Template.Subscribe.events({
-  // 'click #Subscribe-status-bar li'(event, template) {
-  //   var form = event.target.innerText;
-  //   var stage;
-  //   var currentStage = Session.get('stage');
-  //   switch (form) {
-  //     case 'diet':
-  //       stage = '0';
-  //       break;
-  //     case 'plan':
-  //       if (Session.get('filters')) stage = 1;
-  //       break;
-  //     case 'meals':
-  //       // if 
-  //       stage = 2;
-  //       break;
-  //   };
-
-  //   Session.set('stage', stage);
-  // },
 
   'click .diet label, touchstart .diet label'(event, template) {
     event.preventDefault();
