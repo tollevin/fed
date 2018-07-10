@@ -33,10 +33,6 @@ Template.Order_detail_panel.onCreated(function orderDetailPanelOnCreated() {
 	});
 });
 
-Template.Order_detail_panel.onRendered(function orderDetailPanelOnRendered() {
-	
-});
-
 Template.Order_detail_panel.helpers({
 	date: ()=> {
 		const dw = Template.instance().delivery_window.get();

@@ -11,9 +11,6 @@ const countInArray = function(array, what) {
   return array.filter(item => item == what).length;
 };
 
-Template.Menu_item.onCreated(function menuItemOnCreated() {
-});
-
 Template.Menu_item.helpers({
 	attributes: ()=> {
     var att = Template.currentData().attributes;
@@ -47,23 +44,11 @@ Template.Menu_item.helpers({
 
   showFullPrice: ()=> {
     const order = Session.get('Order');
-    if (order) return order.style === 'alacarte';
+    return order && (order.style === 'alacarte');
   },
 
   toFixed: (price)=> {
     return price.toFixed(2);
-  },
-
-  showAddOnPrice: ()=> {
-    const order = Session.get('Order');
-    if (order && order.style === 'pack') {
-      const subcategory = Template.currentData().subcategory;
-      // ...
-    }
-  },
-
-  addOnPrice: ()=> {
-
   },
 
   tally: ()=> {

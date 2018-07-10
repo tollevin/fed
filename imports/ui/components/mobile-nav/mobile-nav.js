@@ -5,9 +5,6 @@ import './mobile-nav.less';
 
 import { signout } from '/imports/ui/lib/auth.js';
 
-Template.Mobile_Nav.onCreated(function menuItemOnCreated() {
-});
-
 Template.Mobile_Nav.helpers({
   currentPage(page) {
     const route = FlowRouter.getRouteName();

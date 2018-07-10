@@ -120,9 +120,6 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   });
 });
 
-Template.Pack_Editor.onRendered(function packEditorOnRendered() {
-});
-
 Template.Pack_Editor.onDestroyed(function packEditorOnDestroyed() {
   Session.set('pack', null);
 });

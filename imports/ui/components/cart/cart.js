@@ -9,11 +9,6 @@ import '/imports/ui/components/cart-item/cart-item.js';
 import './cart.less';
 import './cart.html';
 
-Template.Cart.onCreated(function cartOnCreated() {
-	this.autorun(() => {
-	});
-});
-
 Template.Cart.helpers({
 	cartItems: ()=> {
 		const order = Session.get('Order');

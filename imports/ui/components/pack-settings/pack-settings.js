@@ -9,9 +9,6 @@ Template.Pack_settings.onCreated(function packSettingsOnCreated() {
 	this.deliveryDay = new ReactiveVar(Meteor.user().preferredDelivDay);
 });
 
-Template.Pack_settings.onRendered(function packSettingsOnRendered() {
-});
-
 Template.Pack_settings.helpers({
 	restrictions() {
     const allRestrictions = ['beef','chicken','fish','shellfish','eggs','dairy','nuts','peanuts','soy','gluten'];

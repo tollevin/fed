@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 
 import './lander-carousel.less';
 import './lander-carousel.html';

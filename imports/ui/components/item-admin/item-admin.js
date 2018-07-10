@@ -1,16 +1,8 @@
 import { Template } from 'meteor/templating';
 
-import {
-	toggleActive,
-  toggleInPack,
-	remove,
-} from '/imports/api/items/methods.js';
+import { toggleActive, toggleInPack, remove } from '/imports/api/items/methods.js';
 
 import './item-admin.html';
-
-Template.Item_admin.onCreated(function itemAdminOnCreated() {
-  this.autorun(() => {});
-});
 
 Template.Item_admin.helpers({
   trueWarnings: ()=> {

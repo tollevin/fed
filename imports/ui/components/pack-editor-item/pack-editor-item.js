@@ -43,18 +43,6 @@ Template.Pack_Editor_Item.helpers({
     if (order) return order.style === 'alacarte';
   },
 
-  showAddOnPrice: ()=> {
-    const order = Session.get('Order');
-    if (order && order.style === 'pack') {
-      const subcategory = Template.currentData().subcategory;
-      // ...
-    }
-  },
-
-  addOnPrice: ()=> {
-
-  },
-
   tally: (_id)=> {
     if (Session.get('pack')) {
       var packItems = Session.get('pack').sub_items.items;

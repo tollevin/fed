@@ -24,6 +24,3 @@ Template.CartItem.helpers({
 		};
 	},
 });
-
-Template.CartItem.events({
-});
