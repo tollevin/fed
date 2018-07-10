@@ -1,7 +1,5 @@
-import { Orders } from '/imports/api/orders/orders.js';
-import { Menus } from '/imports/api/menus/menus.js';
-
-import { autoinsertSubscriberOrder } from '/imports/api/orders/methods.js';
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
 
 import './customers-toolbar.html';
 

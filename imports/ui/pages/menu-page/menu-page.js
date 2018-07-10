@@ -3,7 +3,6 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import moment from 'moment';
-import Isotope from 'isotope-layout';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
@@ -18,15 +17,10 @@ import '/imports/ui/components/menu-toolbar/menu-toolbar.js';
 // Methods
 import { insertOrder } from '/imports/api/orders/methods.js';
 
-// Helpers
-import { cartSlots } from '/imports/ui/lib/helpers.js';
-
 import './menu-page.less';
 import './menu-page.html';
 
 Template.Menu_page.onCreated(function menuPageOnCreated() {
-	// Session.setDefault('PackSelected', false);
-	// Session.setDefault('filterMenuOpen', false);
 	const afterWednes = moment().day() > 3;
   const sundayBeforeNoon = moment().day() === 0 && moment().hour() < 12;
   if (afterWednes || sundayBeforeNoon) Session.set('customizable', false);
@@ -114,56 +108,7 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 				Session.set('overlay', 'packEditor');
 			};
 		};
-
-		// this.subscribe('items.active');
-		// var subs = this.subscribe('thisUserData');
-		// if (subs.ready()) {
-		// 	var subscribed = Meteor.user() && Meteor.user().subscriptions;
-
-	    //Set up the number of cart slots depending on pack size
-			// if (!Session.get('Order')) {
-		    
-		 //    if (subscribed) {
-		 //    	const subPack = Meteor.user().subscriptions.plan.id.split('PP')[0] + "-Pack";
-		 //    	Session.set('PackSelected', subPack);
-		 //    } else if (!Meteor.userId()) {
-		 //    	Session.setDefault('PackSelected', '6-Pack');
-		 //    } else {
-		 //    	Session.set('PackSelected', '8-Pack');
-		 //    };
-
-	  //   	cartSlots();
-			// };
-
-			// var thisOrder = Session.get('pack');
-			// var pack = thisOrder.dishes;
-			// var dishesInPack = [];
-			// for (var i = pack.length - 1; i >= 0; i--) {
-			// 	if (pack[i].length > 1) {
-			// 		dishesInPack.push(pack[i]);
-			// 	}
-			// };
-			// var dishesLength = dishesInPack.length;
-
-			// Open cart if cart is full
-			// if (dishesLength === pack.length) {
-			// 	Session.set('packFull', true);
-			// };
-		// };
 	});
-
-	// const today = new moment();
-	// if (today.day() > 3) {
-	// 	Session.set('customizable', false);
-	// } else if (today.day() === 0 && today.hour() < 12) {
-	// 	Session.set('customizable', false);
-	// } else {
-	// 	Session.set('customizable', true);
-	// };
-});
-
-Template.Menu_page.onRendered(function menuPageOnRendered() {
-	
 });
 
 Template.Menu_page.onDestroyed(function menuPageOnDestroyed() {
@@ -195,10 +140,6 @@ Template.Menu_page.helpers({
 	cartOpen() {
 		return Session.get('cartOpen');
 	},
-
-	// showModal: ()=> {
- 	//  return Meteor.user() ? '' : 'showModal';
-	// },
 
 	notSubscribed() {
 		return !(Session.get('subscribed'));

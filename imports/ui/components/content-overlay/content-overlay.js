@@ -1,13 +1,9 @@
-import { ReactiveVar } from 'meteor/reactive-var';
+import { Template } from 'meteor/templating';
 
 import '/imports/ui/components/pack-editor/pack-editor.js';
 
 import './content-overlay.less';
 import './content-overlay.html';
-
-Template.Content_Overlay.onCreated(function menuItemOnCreated() {
-
-});
 
 Template.Content_Overlay.helpers({
   active: ()=> { // for all uses

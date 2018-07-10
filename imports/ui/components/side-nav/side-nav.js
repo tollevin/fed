@@ -1,7 +1,9 @@
-import './side-nav.html';
-import './side-nav.less';
+import { Template } from 'meteor/templating';
 
 import { signout } from '/imports/ui/lib/auth.js';
+
+import './side-nav.html';
+import './side-nav.less';
 
 Template.Side_Nav.onCreated(function menuItemOnCreated() {
   this.showMenuLinks = new ReactiveVar(false);

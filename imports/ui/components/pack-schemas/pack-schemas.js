@@ -1,3 +1,4 @@
+import { Template } from 'meteor/templating';
 import { PackSchemas } from '/imports/api/packs/packs.js'
 
 import './pack-schemas.html';

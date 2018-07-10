@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -14,7 +13,6 @@ import '/imports/ui/components/new-item/new-item.js';
 import '/imports/ui/components/item-admin/item-admin.js';
 
 // Methods
-import { clearPSOrders } from '/imports/api/orders/methods.js';
 import { autoinsertSubscriberOrder } from '/imports/api/orders/methods.js';
 
 // Template

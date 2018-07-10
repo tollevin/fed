@@ -1,15 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
-
 import { getZipZone } from '/imports/api/delivery/methods.js';
 
 import './subscriber-preview.html';
-
-Template.Subscriber_preview.onCreated(function subscriberPreviewOnCreated() {
-});
 
 Template.Subscriber_preview.helpers({
 	subscribedAt() {
@@ -167,10 +162,4 @@ Template.Subscriber_preview.helpers({
 			return false
 		}
 	},
-});
-
-Template.Subscriber_preview.events({
-	'click .customer-notes' (event, template) {
-
-	}
 });

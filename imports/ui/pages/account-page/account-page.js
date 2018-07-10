@@ -1,11 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
+import { Session } from 'meteor/session';
 import moment from 'moment';
-// import { HTTP } from 'meteor/http';
-import { Orders } from '../../../api/orders/orders.js';
-import { updateOrder } from '../../../api/orders/methods.js';
 
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/pack-settings/pack-settings.js';

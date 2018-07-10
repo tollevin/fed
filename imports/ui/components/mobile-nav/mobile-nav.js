@@ -1,3 +1,5 @@
+import { Template } from 'meteor/templating';
+
 import './mobile-nav.html';
 import './mobile-nav.less';
 

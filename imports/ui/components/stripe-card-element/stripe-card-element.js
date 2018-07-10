@@ -1,14 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { ReactiveVar } from 'meteor/reactive-var';
-import { $ } from 'meteor/jquery';
-import moment from 'moment';
 
 import './stripe-card-element.html';
-
-Template.Card_element.onCreated(function cardElementOnCreated() {
-});
 
 Template.Card_element.onRendered(function cardElementOnRendered() {
 	// Set Stripe Public Key

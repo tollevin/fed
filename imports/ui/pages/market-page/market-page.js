@@ -1,9 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import moment from 'moment';
-import Isotope from 'isotope-layout';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
@@ -14,8 +12,6 @@ import '/imports/ui/components/filters/filters.js';
 import '/imports/ui/components/cart/cart.js';
 import '/imports/ui/components/menu-item/menu-item.js';
 import '/imports/ui/components/menu-toolbar/menu-toolbar.js';
-
-import { cartSlots } from '/imports/ui/lib/helpers.js';
 
 import './market-page.less';
 import './market-page.html';

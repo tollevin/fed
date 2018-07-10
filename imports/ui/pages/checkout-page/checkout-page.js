@@ -2,13 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { $ } from 'meteor/jquery';
+import { Session } from 'meteor/session';
 import moment from 'moment';
 // import { HTTP } from 'meteor/http';
 
 // Collections
-import { Items } from '/imports/api/items/items.js';
-import { Orders } from '/imports/api/orders/orders.js';
 import { Promos } from '/imports/api/promos/promos.js';
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
@@ -18,7 +16,6 @@ import { zipZones } from '/imports/api/delivery/zipcodes.js';
 // Methods
 import { processOrder } from '/imports/api/orders/methods.js';
 import { usePromo } from '/imports/api/promos/methods.js';
-import { subscribeToPlan } from '/imports/api/plans/methods.js';
 
 // Components
 import '/imports/ui/components/loader/loader.js';

@@ -2,8 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
-import { Tracker } from 'meteor/tracker';
-import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
 import { insertOrder } from '/imports/api/orders/methods.js';

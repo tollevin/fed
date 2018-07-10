@@ -1,7 +1,7 @@
-import { Accounts } from 'meteor/accounts-base';
-import { $ } from 'meteor/jquery';
+import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { signin } from '/imports/ui/lib/auth.js';
+import { Session } from 'meteor/session';
 
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';

@@ -2,11 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
-import { Tracker } from 'meteor/tracker';
 
-import { Orders } from '/imports/api/orders/orders.js';
 import { insertOrder } from '/imports/api/orders/methods.js';
-import { cartSlots, countInArray } from '/imports/ui/lib/helpers.js';
 import '/imports/ui/components/cart-item/cart-item.js';
 
 import './cart.less';

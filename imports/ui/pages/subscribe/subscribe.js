@@ -1,26 +1,18 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
-import { Accounts } from 'meteor/accounts-base';
 import moment from 'moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
-// import { HTTP } from 'meteor/http';
 
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
-import { Promos } from '/imports/api/promos/promos.js';
 import { Items } from '/imports/api/items/items.js';
-
-import { updateOrder } from '/imports/api/orders/methods.js';
-import { usePromo } from '/imports/api/promos/methods.js';
 
 import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
   from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
 import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from '/imports/ui/lib/pack_picker/pack_planner.js';
 
 // Methods
-import { checkForPlan, insertPlan } from '/imports/api/plans/methods.js';
+import { insertPlan } from '/imports/api/plans/methods.js';
 
 // Components
 import '/imports/ui/components/pack-schemas/pack-schemas.js';

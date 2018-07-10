@@ -1,7 +1,3 @@
-import { Meteor } from 'meteor/meteor';
-import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-
 // Components used inside the template
 import '/imports/ui/components/customers-toolbar/customers-toolbar.js';
 import '/imports/ui/components/customers-view/customers-view.js';

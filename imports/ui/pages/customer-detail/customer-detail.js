@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
+import { Session } from 'meteor/session';
 
 import './customer-detail.less';
 import './customer-detail.html';

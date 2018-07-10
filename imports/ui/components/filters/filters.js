@@ -1,7 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import moment from 'moment';
-import { arrange } from 'isotope-layout';
 
 import './filters.less';
 import './filters.html';

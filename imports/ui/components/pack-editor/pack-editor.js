@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
 
@@ -11,9 +10,6 @@ import '/imports/ui/components/pack-editor-item/pack-editor-item.js';
 // Collections
 import { Menus } from '/imports/api/menus/menus.js';
 import { Items } from '/imports/api/items/items.js';
-
-// Pack schemas
-import { PackSchemas } from '/imports/api/packs/packs.js';
 
 // Methods
 import { insertOrder, updatePendingSubOrder } from '/imports/api/orders/methods.js';

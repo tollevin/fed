@@ -1,13 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import './test.html';
-
-let card;
-
-Template.Test.onCreated(function testPageOnCreated() {
-});
 
 Template.Test.onRendered(function testPageOnRendered() {
 	const stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
@@ -30,11 +23,8 @@ Template.Test.onRendered(function testPageOnRendered() {
 	  },
 	};
 
-	card = elements.create('card', {style});
+	const card = elements.create('card', {style});
 
 	// Add an instance of the card UI component into the `card-element` <div>
 	card.mount('#card-element');
-});
-
-Template.Test.events({
 });

@@ -1,18 +1,11 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
-
-import { Items } from '/imports/api/items/items.js';
 
 import './pack-editor-item.html';
 
 const countInArray = function(array, what) {
   return array.filter(item => item == what).length;
 };
-
-Template.Pack_Editor_Item.onCreated(function packEditorItemOnCreated() {
-});
 
 Template.Pack_Editor_Item.helpers({
 	attributes: ()=> {

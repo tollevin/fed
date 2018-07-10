@@ -1,11 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Autoform } from 'meteor/aldeed:autoform';
 
 import { Items } from '/imports/api/items/items.js';
-import { Menus } from '/imports/api/menus/menus.js';
 
 import { insertItem } from '/imports/api/items/methods.js';
 import { insertMenu } from '/imports/api/menus/methods.js';

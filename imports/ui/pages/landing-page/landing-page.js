@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Autoform } from 'meteor/aldeed:autoform';
+import { Session } from 'meteor/session';
 
 // Components
 import '/imports/ui/components/footer/footer.js';
