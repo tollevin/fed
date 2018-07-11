@@ -16,12 +16,14 @@
 							<p class="subtitle-auth">Setup or change your account settings here</p>
 							<div class="button-holder">
 							{{#if subscribed}}
-								<button id="Pset" class="acct-btn">Pack Settings</button>
-								<button id="Dset" class="acct-btn">Delivery Settings</button>
-								<button id="Payset" class="acct-btn">Payment Settings</button>
+								<button id="diet-settings" class="acct-btn">Diet Settings</button>
+								<button id="manage-subscriptions" class="acct-btn">Manage Subscriptions</button>
+								<button id="delivery-settings" class="acct-btn">Delivery Settings</button>
+								<button id="payment-settings" class="acct-btn">Payment Settings</button>
+								<!-- <button id="skipWeek" class="acct-btn">Skip / Cancel</button> -->
 							{{else}}
-								<button id="Dset" class="acct-btn">Delivery Settings</button>
-								<button id="Payset" class="acct-btn">Payment Settings</button>
+								<button id="delivery-settings" class="acct-btn">Delivery Settings</button>
+								<button id="payment-settings" class="acct-btn">Payment Settings</button>
 								<button id="Sub" class="acct-btn">
 									<span>Subscribe Today</span>
 									<span>and get 5% off</span>
@@ -32,8 +34,8 @@
 						</div>
 					{{/if}}
 					
-					{{#if pack}}
-						{{> Pack_settings}}
+					{{#if diet}}
+						{{> Diet_settings}}
 					{{/if}}
 
 					{{#if delivery}}
