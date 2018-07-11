@@ -13,6 +13,14 @@
             <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
           {{else}}
             <li><a href="/my-account" class="{{currentPage 'User.home'}}" alt="My Account">My Account</a></li>
+            {{#if showAccountLinks}}
+              <ul>
+                <li><a href="/settings" class="{{currentPage 'My.settings'}}" alt="Packs">Packs</a></li>
+                <li><a href="/my-orders" class="{{currentPage 'Menu.meals'}}" alt="Meals">Meals</a></li>
+                <li><a href="/my-subscriptions" class="{{currentPage 'Menu.snacks'}}" alt="Snacks">Snacks</a></li>
+                <li><a href="/my-payments" class="{{currentPage 'Menu.drinks'}}" alt="Drinks">Drinks</a></li> 
+              </ul>
+            {{/if}}
           {{/if}}
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
           <li><a href="/market" class="{{currentPage 'Market.show'}}" alt="Market">Market</a></li>

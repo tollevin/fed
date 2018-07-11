@@ -231,6 +231,10 @@ Template.Subscribe.events({
     for (var i = imgs.length - 1; i >= 0; i--) {
       imgs[i].classList.toggle('fadeIn');
     };
+
+    // if restrictions match a diet != to current diet
+
+    // change diet
   },
 
   'click #next0'(event,template) {

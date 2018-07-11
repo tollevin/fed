@@ -8,7 +8,7 @@ import { Orders } from '../../../api/orders/orders.js';
 import { updateOrder } from '../../../api/orders/methods.js';
 
 import '/imports/ui/components/payment-settings/payment-settings.js';
-import '/imports/ui/components/pack-settings/pack-settings.js';
+import '/imports/ui/components/diet-settings/diet-settings.js';
 
 import './account-page.less';
 import './account-page.html';
@@ -72,7 +72,7 @@ Template.Account_page.helpers({
     return Session.get('stage') === 0;
   },
 
-  pack() {
+  diet() {
     return Session.get('stage') === 1;
   },
 
@@ -200,113 +200,113 @@ Template.Account_page.events({
     event.target.closest( "li" ).style.backgroundColor = "#fff";
   },
 
-  'click .diet label, touchstart .diet label'(event, template) {
-    event.preventDefault();
+  // 'click .diet label, touchstart .diet label'(event, template) {
+  //   event.preventDefault();
 
-    const diets = template.findAll('.diet > label');
-    for (var i = diets.length - 1; i >= 0; i--) {
-      diets[i].classList.remove('clicked')
-    };
+  //   const diets = template.findAll('.diet > label');
+  //   for (var i = diets.length - 1; i >= 0; i--) {
+  //     diets[i].classList.remove('clicked')
+  //   };
 
-    event.currentTarget.classList.add('clicked');
+  //   event.currentTarget.classList.add('clicked');
 
-    switch (event.target.closest("li").id) {
-      case 'Omnivore':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        break;
-      case 'Vegetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken, #fish, #shellfish');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
-        break;
-      case 'Vegan':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
-        break;
-      case 'Pescetarian':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#beef, #chicken');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
-        break;
-      case 'Paleo':
-        var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
-        for (var i = allNos.length - 1; i >= 0; i--) {
-          allNos[i].classList.remove('checked');
-        };
-        var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.remove('fadeIn');
-        };
-        var noNos = template.findAll('#dairy, #soy');
-        for (var i = noNos.length - 1; i >= 0; i--) {
-          noNos[i].classList.add('checked');
-        };
-        var noSigns = template.findAll('.dairy, .soy');
-        for (var i = noSigns.length - 1; i >= 0; i--) {
-          noSigns[i].classList.add('fadeIn');
-        };
-        break;
-    };
-  },
+  //   switch (event.target.closest("li").id) {
+  //     case 'Omnivore':
+  //       var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
+  //       for (var i = allNos.length - 1; i >= 0; i--) {
+  //         allNos[i].classList.remove('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.remove('fadeIn');
+  //       };
+  //       break;
+  //     case 'Vegetarian':
+  //       var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
+  //       for (var i = allNos.length - 1; i >= 0; i--) {
+  //         allNos[i].classList.remove('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.remove('fadeIn');
+  //       };
+  //       var noNos = template.findAll('#beef, #chicken, #fish, #shellfish');
+  //       for (var i = noNos.length - 1; i >= 0; i--) {
+  //         noNos[i].classList.add('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.add('fadeIn');
+  //       };
+  //       break;
+  //     case 'Vegan':
+  //       var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
+  //       for (var i = allNos.length - 1; i >= 0; i--) {
+  //         allNos[i].classList.remove('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.remove('fadeIn');
+  //       };
+  //       var noNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs');
+  //       for (var i = noNos.length - 1; i >= 0; i--) {
+  //         noNos[i].classList.add('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.add('fadeIn');
+  //       };
+  //       break;
+  //     case 'Pescetarian':
+  //       var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
+  //       for (var i = allNos.length - 1; i >= 0; i--) {
+  //         allNos[i].classList.remove('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.remove('fadeIn');
+  //       };
+  //       var noNos = template.findAll('#beef, #chicken');
+  //       for (var i = noNos.length - 1; i >= 0; i--) {
+  //         noNos[i].classList.add('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.add('fadeIn');
+  //       };
+  //       break;
+  //     case 'Paleo':
+  //       var allNos = template.findAll('#beef, #chicken, #fish, #shellfish, #dairy, #eggs, #gluten, #nuts, #peanuts, #soy');
+  //       for (var i = allNos.length - 1; i >= 0; i--) {
+  //         allNos[i].classList.remove('checked');
+  //       };
+  //       var noSigns = template.findAll('.beef, .chicken, .fish, .shellfish, .dairy, .eggs, .gluten, .nuts, .peanuts, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.remove('fadeIn');
+  //       };
+  //       var noNos = template.findAll('#dairy, #soy');
+  //       for (var i = noNos.length - 1; i >= 0; i--) {
+  //         noNos[i].classList.add('checked');
+  //       };
+  //       var noSigns = template.findAll('.dairy, .soy');
+  //       for (var i = noSigns.length - 1; i >= 0; i--) {
+  //         noSigns[i].classList.add('fadeIn');
+  //       };
+  //       break;
+  //   };
+  // },
 
-  'click .restriction'(event, template) {
-    event.preventDefault();
+  // 'click .restriction'(event, template) {
+  //   event.preventDefault();
 
-    event.currentTarget.classList.toggle('checked');
+  //   event.currentTarget.classList.toggle('checked');
 
-    const itemClass = "." + event.currentTarget.id;
-    const imgs = template.findAll(itemClass);
-    for (var i = imgs.length - 1; i >= 0; i--) {
-      imgs[i].classList.toggle('fadeIn');
-    };
-  },
+  //   const itemClass = "." + event.currentTarget.id;
+  //   const imgs = template.findAll(itemClass);
+  //   for (var i = imgs.length - 1; i >= 0; i--) {
+  //     imgs[i].classList.toggle('fadeIn');
+  //   };
+  // },
 
   'click #DeliveryDay li label'(event, template) {
     const delivery = template.findAll("#DeliveryDay li");
@@ -335,15 +335,20 @@ Template.Account_page.events({
     // } else {
     //   diets[1].style.borderColor = "#007444";
     // };
-    Session.set('stage', 1);
+    // Session.set('stage', 1);
   },
     
-  'click #Dset'(event) {
+  'click #diet-settings'(event) {
+    event.preventDefault();
+    Session.set('stage', 1);
+  },
+
+  'click #manage-subscriptions'(event) {
     event.preventDefault();
     Session.set('stage', 2);
   },
     
-  'click #Payset'(event) {
+  'click #payment-settings'(event) {
     event.preventDefault();
     Session.set('stage', 3);
   },

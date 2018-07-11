@@ -1,7 +1,15 @@
 @import '{}/imports/ui/styles/utils.less';
 
 #account-page {
+	text-align: center;
+  background: #fafffa;  /* fallback for old browsers */
 
+  @media screen and (min-width: 40em) {
+    margin: 0 auto;
+    width: 80%;
+    padding-top: 4em;
+  }
+  
 	h1,
 	h2,
 	h3 {
@@ -27,109 +35,74 @@
 		}
 	}
 
-	#Diets {
-		display: flex;
-		flex-direction: column;
+	.title-auth {
+    .font-l1;
+    .type-light;
+    color: @fgreene;
+    margin-bottom: .75rem;
 
-		ul {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: space-around;
-			margin-left: auto;
-			margin-right: auto;
-			max-width: 875px;
-			margin-top: 50px;
-		}
+    @media screen and (max-width: 600px) {
+    	.font-m2;
+    }
+  }
 
-		.diet {
-			width: 30%;
-			max-width: 400px;
-			min-width: 135px;
-			margin-left: auto;
-			margin-right: auto;
+  .subtitle-auth {
+    color: @fgreene;
+    margin: 0 15% 2rem;
+  }
 
-			@media screen and (max-width: 450px) {
-				width: 48%;
-			}
+  .button-holder {
+  	display: flex;
+  	flex-direction: row;
+  	flex-wrap: wrap;
+  	max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  	align-content: space-between;
+  	justify-content: space-between;
 
-			label {
-				display: inline-block;
-		    position: relative;
-				width: 100%;
-				height: auto;
-				padding: 20px 0px;
-				margin-bottom: 10px;
-				text-align: center;
-				line-height: 30px;
-				cursor: pointer;
-				background-color: #50b74a;
-				color: #FFF;
-				border-radius: 10px;
-				font-weight: 400;
-				font-size: 1.2em;
+  	.acct-btn {
+      width: 100%;
+      max-width: 400px;
+  		height: 20vh;
+  		min-height: 70px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 0;
+      color: #FFF;
+      border: 1px solid transparent;
+	    font-size: 23px;
+	    font-weight: 600;
+	    text-transform: uppercase;
+  	}
 
-				&:hover {
-					background-color: #FFF;
-					color: #366833;
-					border-color: #FFF;
-					transition: background-color 300ms;
-				}
-			}
+  	#diet-settings {
+  		background-color: #ff6262;
+  	}
 
-			.clicked {
-				background-color: #FFF;
-				color: #366833;
-				border-color: #FFF;
-			}
-		}
-	}
+  	#manage-subscriptions {
+  		background-color: #ffb53d;
+  	}
 
-	#Restrictions {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-around;
-		margin-top: 50px;
-		margin-left: auto;
-		margin-right: auto;
-		max-width: 1000px;
+  	#delivery-settings {
+  		background-color: #c7d8da;
+  	}
 
-		.restriction {
+  	#payment-settings {
+  		background-color: #89b358;
+  	}
 
-			.restriction-img {
-				position: relative;
-				height: 30vw;
-				max-height: 175px;
-				width: 30vw;
-				max-width: 175px;
-				cursor: pointer;
+  	#Sub {
+  		display: flex;
+  		flex-wrap: wrap;
+  		height: auto;
+  		text-align: center;
 
-				img{
-					position: absolute;
-					left: 0;
-					height: 100%;
-					width: 100%;
-				}
-
-				.no-line,
-				.no-circle {
-					opacity: 0;
-				}
-
-				.fadeOut {
-				  visibility: hidden;
-				  opacity: 0;
-				  transition: visibility 0s linear 300ms, opacity 600ms;
-				}
-
-				.fadeIn {
-				  visibility: visible;
-				  opacity: 1;
-				  transition: visibility 0s linear 0s, opacity 600ms;
-				}
-			}
-		}
-	}
+  		span {
+  			margin: 5px auto;
+  		}
+  	}
+  }
 
 	#wdye {				
 		h1 {
@@ -585,82 +558,6 @@
 
 
 #account-page {
-  text-align: center;
-  background: #fafffa;  /* fallback for old browsers */
-
-  @media screen and (min-width: 40em) {
-    margin: 0 auto;
-    width: 80%;
-    padding-top: 4em;
-  }
-  
-  .title-auth {
-    .font-l1;
-    .type-light;
-    color: @fgreene;
-    margin-bottom: .75rem;
-
-    @media screen and (max-width: 600px) {
-    	.font-m2;
-    }
-  }
-
-  .subtitle-auth {
-    color: @fgreene;
-    margin: 0 15% 2rem;
-  }
-
-  .button-holder {
-  	display: flex;
-  	flex-direction: column;
-  	align-content: space-between;
-  	justify-content: space-between;
-
-  	.acct-btn {
-      margin: 1em 5% 0;
-      width: 90%;
-  		min-height: 70px;
-  		height: 10vh;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #fff;
-      color: @fgreene;
-      border: 3px solid #999;
-	    border-radius: 10px;
-	    font-size: 17px;
-  	}
-
-  	#Sub {
-  		display: flex;
-  		flex-wrap: wrap;
-  		height: auto;
-  		text-align: center;
-
-  		span {
-  			margin: 5px auto;
-  		}
-  	}
-  }
-
-	#Back {
-		border: none;
-		color: @fgreene;
-    background-color: transparent;
-		font-size: 18px;
-		display: block;
-		position: absolute;
-		top: 50px;
-		left: 63px;
-		z-index: 3;
-
-
-		@media screen and (max-width: 475px) {
-      top: 18px;
-      left: 10px;
-    }
-	}
-
 	.panel-body {
 		text-align: center;
 

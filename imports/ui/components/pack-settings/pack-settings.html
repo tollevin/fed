@@ -1,6 +1,7 @@
 <template name="Pack_settings">
-	<h3 class="title-auth">Pack Settings</h3>
-	<div id="Plan" class="form-group" data-required="true">
+	<div id="Pack-Settings">
+		<h3 class="title-auth">Pack Settings</h3>
+<!-- 	<div id="Plan" class="form-group" data-required="true">
 		<h2>Change your plan:</h2> 
 		<br>
 		<ul>
@@ -34,87 +35,88 @@
 			</li>
 		</ul>
 	</div>
+ -->
+		<div id="Diets" class="form-group" data-required="true">
+			<h2>Change your diet:</h2>
+			<ul>
+				<li class="diet" id="Omnivore">
+					<input type="radio" name="diet" id="omnivore" value="Omnivore">
+					<label for="omnivore">
+						Omnivore
+					</label>
+				</li>
+				<li class="diet" id="Vegetarian">
+					<input type="radio" name="diet" id="vegetarian" value="Vegetarian">
+					<label for="vegetarian">
+						Vegetarian
+					</label>
+				</li>
+				<li class="diet" id="Vegan">
+					<input type="radio" name="diet" id="vegan" value="Vegan">
+					<label for="vegan">
+						Vegan
+					</label>
+				</li>
+				<li class="diet" id="Pescetarian">
+					<input type="radio" name="diet" id="pescetarian" value="Pescetarian">
+					<label for="pescetarian">
+						Pescetarian
+					</label>
+				</li>
+				<li class="diet" id="Paleo">
+					<input type="radio" name="diet" id="paleo" value="Paleo">
+					<label for="paleo">
+						Paleo
+					</label>
+				</li>
+				<!-- <li class="diet" id="High_Protein">
+					<input type="radio" name="diet" id="highProtein" value="Protein">
+					<label for="highProtein">
+						High Protein
+					</label>
+				</li> -->
+			</ul>
+		</div>
+		<div id="Restrictions" class="form-group" data-required="true">
+			<h2>Change what you avoid:</h2>
+			<ul id="Restrictions">
+				{{#each restriction in restrictions}}
+				<li id="{{restriction}}" class="restriction">
+					<div class="restriction-img">
+						<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
+						<img src="icons/food/{{restriction}}.gif">
+						<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
+					</div>
+					<p>{{restriction}}</p>
+				</li>
+				{{/each}}
+			</ul>
+		</div>
 
-	<div id="Diets" class="form-group" data-required="true">
-		<h2>Change your diet:</h2>
-		<ul>
-			<li class="diet" id="Omnivore">
-				<input type="radio" name="diet" id="omnivore" value="Omnivore">
-				<label for="omnivore">
-					Omnivore
-				</label>
-			</li>
-			<li class="diet" id="Vegetarian">
-				<input type="radio" name="diet" id="vegetarian" value="Vegetarian">
-				<label for="vegetarian">
-					Vegetarian
-				</label>
-			</li>
-			<li class="diet" id="Vegan">
-				<input type="radio" name="diet" id="vegan" value="Vegan">
-				<label for="vegan">
-					Vegan
-				</label>
-			</li>
-			<li class="diet" id="Pescetarian">
-				<input type="radio" name="diet" id="pescetarian" value="Pescetarian">
-				<label for="pescetarian">
-					Pescetarian
-				</label>
-			</li>
-			<li class="diet" id="Paleo">
-				<input type="radio" name="diet" id="paleo" value="Paleo">
-				<label for="paleo">
-					Paleo
-				</label>
-			</li>
-			<!-- <li class="diet" id="High_Protein">
-				<input type="radio" name="diet" id="highProtein" value="Protein">
-				<label for="highProtein">
-					High Protein
-				</label>
-			</li> -->
-		</ul>
-	</div>
-	<div id="Restrictions" class="form-group" data-required="true">
-		<h2>Change what you avoid:</h2>
-		<ul id="Restrictions">
-			{{#each restriction in restrictions}}
-			<li id="{{restriction}}" class="restriction">
-				<div class="restriction-img">
-					<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
-					<img src="icons/food/{{restriction}}.gif">
-					<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
-				</div>
-				<p>{{restriction}}</p>
-			</li>
-			{{/each}}
-		</ul>
-	</div>
-
-	<div id="DeliveryDay" class="form-group" data-required="true">
-		<h2>Change your preferred delivery date:</h2>
-		<br>
-		<ul>
-			<li id="sunday">
-				<input type="radio" id="Sunday" name="delivery" value="sunday">
-				<label for="Sunday">
-					<span>Sundays</span>
-					<span>6-9pm</span>
-				</label>
-			</li>
-			<li id="monday">
-				<input type="radio" id="Monday" name="delivery" value="monday">
-				<label for="Monday">
-					<span>Mondays</span>
-					<span>6-9pm</span>
-				</label>
-			</li>
-		</ul>
-	</div>
-	<div class="sbmt-button">
-		<button type="submit" class="sbmtPack btn-secondary">
-			Save
-		</button>
+		<div id="DeliveryDay" class="form-group" data-required="true">
+			<h2>Change your preferred delivery date:</h2>
+			<br>
+			<ul>
+				<li id="sunday">
+					<input type="radio" id="Sunday" name="delivery" value="sunday">
+					<label for="Sunday">
+						<span>Sundays</span>
+						<span>6-9pm</span>
+					</label>
+				</li>
+				<li id="monday">
+					<input type="radio" id="Monday" name="delivery" value="monday">
+					<label for="Monday">
+						<span>Mondays</span>
+						<span>6-9pm</span>
+					</label>
+				</li>
+			</ul>
+		</div>
+		<div class="sbmt-button">
+			<button type="submit" class="sbmtPack btn-secondary">
+				Save
+			</button>
+		</div>
 	</div>
 </template>
