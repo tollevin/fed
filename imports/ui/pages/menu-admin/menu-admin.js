@@ -1,6 +1,4 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Items } from '/imports/api/items/items.js';
 
 // Components used inside the template

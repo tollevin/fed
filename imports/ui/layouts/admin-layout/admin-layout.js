@@ -18,6 +18,7 @@ Template.Admin_layout.onCreated(function adminLayoutOnCreated() {
 });
 
 Template.Admin_layout.onRendered(function adminLayoutOnRendered() {
+  window.prerenderReady = true;
 });
 
 Template.Admin_layout.helpers({

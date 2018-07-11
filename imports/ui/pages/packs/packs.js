@@ -2,8 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
-import { Tracker } from 'meteor/tracker';
-import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
 import { insertOrder } from '/imports/api/orders/methods.js';
@@ -124,22 +122,6 @@ Template.Packs.events({
 	    const orderId = insertOrder.call(orderToCreate);
 	    Session.set('orderId', orderId);
 	    FlowRouter.go('/checkout');
-	  //   var zip = Meteor.user().address_zipcode;
-
-			// if (!zip) {
-		 //    zip = Meteor.user().profile.zipCode;
-	  //   };
-
-	    // var data = {
-	    // 	customer_zipcode: zip,
-	    // };
-
-	    // Meteor.call( 'createDelivEstimate', data, ( error, response ) => {
-	    //   if ( !error ) {
-	    //   	Session.set('delivEstimate', response);
-	    //   	FlowRouter.go('/checkout');
-	    //   };
-	    // });
 
 			Session.set('processing', false);
 		};

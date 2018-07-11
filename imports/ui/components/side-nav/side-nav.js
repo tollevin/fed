@@ -1,6 +1,9 @@
-import './side-nav.html';
+import { Template } from 'meteor/templating';
 
 import { signout } from '/imports/ui/lib/auth.js';
+
+import './side-nav.html';
+import './side-nav.less';
 
 Template.Side_Nav.onCreated(function menuItemOnCreated() {
   this.showMenuLinks = new ReactiveVar(false);
@@ -74,6 +77,10 @@ Template.Side_Nav.events({
     if (isNotAboutPage) {
       Template.instance().showAboutLinks.set(false);
     };
+  },
+  'click #sideNav span' (event) {
+    event.preventDefault();
+    Session.set('sideNavOpen', false);
   },
 
   'click #logout'(event) {

@@ -1,0 +1,32 @@
+@import '{}/imports/ui/styles/utils.less';
+
+#content-container {
+  .position(absolute, 0, 0, 0, 0);
+  transition: all 200ms ease-out;
+  transform: translate3d(0, 0, 0);
+  background: none;
+  opacity: 1;
+  overflow-y: visible !important;
+
+  @media screen and (max-width: 600px) {
+    top: 60px;
+  }
+
+  .page {
+    .position(absolute, 0, 0, 0, @side-nav-width); /* top: 31px if banner */
+    background: #fefffa;
+    z-index: 0;
+
+    @media screen and (max-width: 600px) { 
+      /* top: 30px; if banner */
+      left: 0;
+    }
+  }
+
+  .content-scrollable {
+    .position(absolute, 0, 0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

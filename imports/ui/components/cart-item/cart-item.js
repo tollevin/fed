@@ -1,18 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Session } from 'meteor/session';
-import { Tracker } from 'meteor/tracker';
 
 import './cart-item.html';
-
-Template.CartItem.onCreated(function cartItemOnCreated() {
-
-});
-
-Template.CartItem.onRendered(function cartItemOnRendered() {
-
-});
 
 Template.CartItem.helpers({
 	isPack: ()=> {
@@ -35,7 +23,4 @@ Template.CartItem.helpers({
 	    return result;
 		};
 	},
-});
-
-Template.CartItem.events({
 });

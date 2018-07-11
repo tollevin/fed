@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import './menu-toolbar.less';
@@ -18,11 +17,6 @@ Template.Menu_toolbar.helpers({
 		return Session.get('filters').restrictions.length;
 	},
 
-	// goals: ()=> {
-	// 	const goals = ['Weight Loss', 'Weight Gain', 'Low-Carb'];
-	// 	return goals;
-	// },
-
 	filterMenuOpen: ()=> {
 		return Session.get('filterMenuOpen') && 'filterMenuOpen';
 	},
@@ -39,22 +33,6 @@ Template.Menu_toolbar.helpers({
 		const order = Session.get('Order');
 		return order && order.style === 'pack';
 	},
-
-	// packArray: ()=> {
-	// 	const order = Session.get('Order');
-	// 	if (order && order.style === 'pack') {
-	// 		var packs = [];
-	// 		var items = order.items;
-	// 		for (var i = items.length - 1; i >= 0; i--) {
-	// 			if (items[i].category.toLowerCase() === 'pack') {
-	// 				if (items[i].sub_items.schema.total > items[i].sub_items.items.length) {
-	// 					packs.push(items[i]);
-	// 				};
-	// 			};
-	// 		};
-	// 		return packs;
-	// 	};
-	// },
 
 	dishesInPack: ()=> {
 		const order = Session.get('Order');
@@ -94,13 +72,6 @@ Template.Menu_toolbar.helpers({
 });
 
 Template.Menu_toolbar.events({
-	'click #thisPack'(event) {
-		event.preventDefault();
-
-		Session.set('packEditorOpen', !Session.get('packEditorOpen'));
-		Session.set('filterMenuOpen', false);
-	},
-
 	'click #Filter-menu-toggle'(event, template) {
 		event.preventDefault();
 

@@ -1,6 +1,4 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Promos } from '/imports/api/promos/promos.js';
 
 // Components used inside the template

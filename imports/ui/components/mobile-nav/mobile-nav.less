@@ -1,4 +1,10 @@
-@import './utils.less';
+@import '{}/imports/ui/styles/utils.less';
+
+#userMenu {
+  .position(absolute, 50px, 0, auto, auto);
+  display: flex;
+  flex-direction: column;
+}
 
 .navbar-fixed-top {
   .position(fixed, 0, 0, auto, 0, @hundred, @nav-height-m);
@@ -42,15 +48,6 @@
       //right: 0;
       //margin: auto;
     }   
-  }
-
-  .accounts-holder {
-    float: right;
-    width: 125px;
-
-    .btns-group {
-      height: 50px;
-    }
   }
 
   #mobile-nav-holder {
@@ -140,83 +137,4 @@
       }
     }
   }
-}
-
-.main-nav {
-  .position(absolute, 90px, 0, 0, 0, auto, 30px);
-  margin: auto;
-
-  ul {
-    margin-top: 0;
-    margin-right: auto;
-    margin-left: auto;
-    padding-left: 0;
-    display: flex;
-    justify-content: space-between;
-    width: 50%;
-    min-width: 450px;
-    max-width: 560px;
-
-    li {
-      display: inline;
-      
-      a {
-        text-decoration: none;
-        text-transform: UPPERCASE;
-        // font-family: "Josefin Sans";
-        font-weight: 400;
-        color: @fgreene;
-        font-size: 13px;
-
-        &.active {
-          padding-bottom: 2px;
-          border-bottom: 3px solid @forange;
-        }
-      }
-    }
-  }
-}
-
-
-@media screen and (max-width: 600px) {
-  .main-nav {
-    height: auto;
-    border-bottom: 0;
-    
-    ul {
-      display: none;
-      height: auto;
-      top: 80px !important;
-      margin-left: 0;
-    } 
-    
-    li {
-      width: 100%;
-      float: left;
-      background: #fff;
-      position: relative;
-      padding: 10px;
-      text-align: center;
-      list-style-type: none;
-    }
-
-    a {
-      width: 100%;
-      background: #fff;
-      color: #645d66;
-      line-height: 30px;
-      border-bottom: 1px solid #ccc;
-      text-decoration: none;
-    }   
-    
-    a:hover {
-      background: @color-eggplant;
-    }
-  } 
-}
-
-#userMenu {
-  .position(absolute, 50px, 0, auto, auto);
-  display: flex;
-  flex-direction: column;
 }

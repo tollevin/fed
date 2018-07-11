@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Session } from 'meteor/session';
 import { ReactiveVar } from 'meteor/reactive-var';
 import moment from 'moment';
 
@@ -8,7 +9,6 @@ import moment from 'moment';
 import '/imports/ui/components/footer/footer.js';
 
 // Collections
-// import { Orders } from '/imports/api/orders/orders.js';
 import { DeliveryWindows } from '/imports//api/delivery/delivery-windows.js';
 
 // Template
@@ -26,10 +26,6 @@ Template.Confirmation.onCreated(function confirmationOnCreated() {
       this.subscribe('DeliveryWindows.single', Session.get('orderId').delivery_window_id);
     })
   };
-});
-
-Template.Confirmation.onRendered(function confirmationOnRendered() {
-  // if they received a pack, prompt to rate
 });
 
 Template.Confirmation.helpers({
@@ -130,8 +126,4 @@ Template.Confirmation.helpers({
   total: ()=> {
     return Template.instance().order.get() && Template.instance().order.get().total.toFixed(2);
   },
-});
-
-Template.Confirmation.events({
-  
 });

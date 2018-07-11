@@ -1,7 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import moment from 'moment';
-import { arrange } from 'isotope-layout';
 
 import './filters.less';
 import './filters.html';
@@ -99,9 +97,6 @@ Template.Filters.events({
 		const filterBool = existingFilters.restrictions[filter];
 
 		existingFilters.restrictions[filter] = !filterBool;
-		// if (existingFilters.restrictions[filter]) {
-
-		// }
 
 		const pescetarian = existingFilters.restrictions.beef && existingFilters.restrictions.chicken;
 		const paleo = existingFilters.restrictions.peanuts && existingFilters.restrictions.soy && existingFilters.restrictions.milk && existingFilters.restrictions.wheat;

@@ -1,7 +1,6 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
+import { Session } from 'meteor/session';
 
 import { Items } from '/imports/api/items/items.js';
 
@@ -37,20 +36,6 @@ Template.Item_detail.helpers({
       };
     };
     return allergens;
-    // if (thisItem && thisItem.warnings[0]) {
-    //   var warnings = "";
-
-    //   for (var i = 0; i < thisItem.warnings.length; i++) {
-    //     warnings.concat(thisItem.warnings[i] + ", ")
-    //   };
-
-    //   warnings.slice(0, (warnings.length - 1));
-    //   return warnings;
-    // } else {
-    //   const context = Template.currentData();
-    //   console.log(context);
-    //   return false;
-    // };
   },
 
   fromMenu() {
@@ -87,25 +72,6 @@ Template.Item_detail.events({
     	};
 		};
 	},
-
-  // const context = Template.currentData();
-
-  //     order = Session.get('order');
-  //     dishes = order.dishes;
-  //     for (i = 0; i < dishes.length; i++) { 
-  //       if (!dishes[i]) {
-  //         dishes[i] = context.name;
-  //         order.dishes = dishes;
-  //         Session.set('order', order);
-  //         i = 0;
-  //         break;
-  //       } else {
-  //         continue;
-  //         if (i === dishes.length - 1){
-  //         alert('Your pack is full!');
-  //         };
-  //       };
-  //     };
 
   'click #Back' (event) {
     event.preventDefault();

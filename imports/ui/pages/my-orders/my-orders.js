@@ -1,11 +1,4 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Session } from 'meteor/session';
-import moment from 'moment';
-
-// Collections
-import { Orders } from '/imports/api/orders/orders.js';
 
 // Components
 import '/imports/ui/components/order-toggle/order-toggle.js';
@@ -18,10 +11,6 @@ Template.My_Orders.onCreated(function myOrdersOnCreated() {
 	});
 });
 
-Template.My_Orders.onRendered(function myOrdersOnRendered() {
-	
-});
-
 Template.My_Orders.helpers({
 	nextOrder: ()=> {
 
@@ -30,8 +19,4 @@ Template.My_Orders.helpers({
 	futureOrders: ()=> {
 
 	},
-});
-
-Template.My_Orders.events({
-
 });

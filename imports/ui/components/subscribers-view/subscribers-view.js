@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
 // Components used inside the template
 import '/imports/ui/components/subscriber-preview/subscriber-preview.js';
@@ -33,8 +32,4 @@ Template.Subscribers_view.helpers({
 	unsubscribers: ()=> {
 		return Meteor.users.find({'past_subscriptions.0':{$exists: true}, 'subscriptions.0':{$exists: false}},{ sort: { "subscriptions.created_at": -1 }});
 	},
-});
-
-Template.Subscribers_view.events({
-	
 });

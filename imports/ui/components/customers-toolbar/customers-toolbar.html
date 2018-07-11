@@ -1,8 +1,6 @@
 <template name="Customers_toolbar">
 	<div id="customers-toolbar">
 		{{> inputAutocomplete settings=settings id="Customers-Searach" class="input-xlarge" placeholder="Search..."}}
-		<!-- <button id="generateOrders">Generate Orders</button>
-		<button id="chargeOrders">Charge Orders</button> -->
 	</div>
 </template>
 
@@ -10,10 +8,6 @@
 	<div class="user-pill">
 	  {{first_name}} {{last_name}} <small class="muted">({{emails.[0].address}})</small>
 	</div>
-</template>
-
-<template name="clientCollectionPill">
-  {{type}} <small class="muted">({{_id}})</small>
 </template>
 
 <template name="serverNoMatch">

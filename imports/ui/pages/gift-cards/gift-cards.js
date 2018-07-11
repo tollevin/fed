@@ -1,8 +1,8 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-// import { FlowRouter } from 'meteor/kadira:flow-router';
-// import { Session } from 'meteor/session';
-// import { Tracker } from 'meteor/tracker';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Session } from 'meteor/session';
 import { callWithPromise } from '/imports/ui/lib/helpers.js';
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
@@ -12,7 +12,6 @@ import './gift-cards.less';
 import './gift-cards.html';
 
 Template.Gift_Cards.onCreated(function giftCardsOnCreated() {
-  this.giftType = new ReactiveVar(false);
   this.order = new ReactiveVar(false);
   this.stripe_id = new ReactiveVar(false);
   // this.paymentRequest = new ReactiveVar();
@@ -38,14 +37,6 @@ Template.Gift_Cards.helpers({
     return Template.instance().stripe_id.get();
   },
 
-  carePackage() {
-    return Template.instance().giftType.get() === 'cp'; 
-  },
-
-  giftCert() {
-    return Template.instance().giftType.get() === 'gc'; 
-  },
-
   disabled() {
     return Session.get('loading') && "disabled";
   },
@@ -54,11 +45,6 @@ Template.Gift_Cards.helpers({
     var order = Template.instance().order.get();
     return order && (order.price / 100).toFixed(2);
   },
-
-  // discount() {
-  //   return "5%"; // Add built-in discount here. Need to allow for more variables?
-  // },
-
   salePrice() {
     var order = Template.instance().order.get();
     return order && (order.price / 100).toFixed(2); // Add built-in discount here.
@@ -66,18 +52,6 @@ Template.Gift_Cards.helpers({
 });
 
 Template.Gift_Cards.events({
-  'click #cp'(event,template) {
-    event.preventDefault();
-
-    template.giftType.set('cp');
-  },
-
-  'click #gc'(event,template) {
-    event.preventDefault();
-
-    template.giftType.set('gc');
-  },
-
   'click .amount-button'(event, template) {
     event.preventDefault();
     var allValues = template.findAll('.amount-button');
@@ -274,8 +248,4 @@ Template.Gift_Cards.events({
 
     processGiftCardOrder();
   },
-
-  // 'click #Guest-Buy'(event, template) {
-  //   console.log(Meteor.user());
-  // },
 });

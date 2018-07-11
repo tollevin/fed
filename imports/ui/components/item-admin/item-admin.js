@@ -1,28 +1,8 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
-import { _ } from 'meteor/underscore';
 
-import { Items } from '/imports/api/items/items.js';
-
-import {
-	toggleActive,
-  toggleInPack,
-	remove,
-} from '/imports/api/items/methods.js';
+import { toggleActive, toggleInPack, remove } from '/imports/api/items/methods.js';
 
 import './item-admin.html';
-
-Template.Item_admin.onCreated(function itemAdminOnCreated() {
-  this.autorun(() => {
-    // new SimpleSchema({
-    //   item: { type: Items._helpers },
-    //   // editing: { type: Boolean, optional: true },
-    //   // onEditingChange: { type: Function },
-    // }).validate(Template.currentData());
-  });
-});
 
 Template.Item_admin.helpers({
   trueWarnings: ()=> {

@@ -1,11 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
+import { Session } from 'meteor/session';
 import moment from 'moment';
-// import { HTTP } from 'meteor/http';
-import { Orders } from '../../../api/orders/orders.js';
-import { updateOrder } from '../../../api/orders/methods.js';
 
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/diet-settings/diet-settings.js';
@@ -156,17 +153,8 @@ Template.Account_page.helpers({
         var dy = 1;
       };
       const now = new moment();
-      // if (now.day() === 0) {
-      //   if (dy === 0) {
-      //     return "Tonight,";
-      //   } else {
-      //     return "Tomorrow,";
-      //   };
-      // } else if (now.day() === 1 && dy === 1) {
-      //   return "Tonight,";
-      // } else {
-        return now.day(dy + 7).format("dddd, M/D/YY")
-      // };
+
+      return now.day(dy + 7).format("dddd, M/D/YY")
     };
   },
 
@@ -320,24 +308,9 @@ Template.Account_page.events({
 
   'click #Sub' (event) {
     event.preventDefault();
-
     FlowRouter.go('/subscribe');
   },
 
-  'click #Pset'(event, template) {
-    event.preventDefault();
-    // var currentDiet = Meteor.user().diet;
-    // const diets = document.querySelector('#Diet li');
-
-    // console.log(diets);
-    // if (currentDiet === 'omnivore') {
-    //   diets[0].style.borderColor = "#007444";
-    // } else {
-    //   diets[1].style.borderColor = "#007444";
-    // };
-    // Session.set('stage', 1);
-  },
-    
   'click #diet-settings'(event) {
     event.preventDefault();
     Session.set('stage', 1);
@@ -412,79 +385,6 @@ Template.Account_page.events({
       };
     });
     Session.set('loading', false);
-  },
-
-  // 'click .sbmtSource'(event) {
-  //   event.preventDefault();
-  //   Session.set('loading', true);
-
-  //   stripe.card.createToken({
-  //     number: $('#cc').val(),
-  //     cvc: $('.cvc').val(),
-  //     exp_month: $('#expM').val(),
-  //     exp_year: $('#expY').val(),
-  //     address_zip: Meteor.user().address_zipcode,
-  //   }, ( status, response ) => {
-  //     if ( response.error ) {
-  //       $('#cc-form').find('.card-errors').text(response.error.message);
-  //       Session.set('loading', false);
-  //     } else {
-  //       const token = response.id;
-
-  //       if (Meteor.user().stripe_id) {
-  //         const _id = Meteor.user().stripe_id;
-  //         const args = {
-  //           default_source: token
-  //         };
-
-  //         Meteor.call( 'updateCustomer', _id, args, ( error, response ) => {
-  //           if ( error ) {
-  //             console.log(error + "; error");
-  //           } else {
-  //             sAlert.success("Card added!");
-  //           };
-  //         });
-
-  //         Session.set('stage', 0);
-  //         Session.set('loading', false);
-  //       } else {
-  //         var userEmail = "";
-  //         if (Meteor.user().profile) {
-  //           userEmail = Meteor.user().emails[0].address;
-  //         } else {
-  //           userEmail = Meteor.user().email;
-  //         }
-
-  //         const cust = {
-  //           description: "Customer for " + userEmail,
-  //           source: token,
-  //           account_balance: 0
-  //         };
-
-  //         Meteor.call( 'createCustomer', cust, ( error, response ) => {
-  //           if ( error ) {
-  //             console.log(error + "; error");
-  //           } else {
-  //             const user = {
-  //               "stripe_id": response.id,
-  //             };
-
-  //             Meteor.call( 'updateUser', Meteor.userId(), user );
-  //             sAlert.success('Payment settings updated!');
-  //           };
-  //         });
-
-  //         sAlert.success("Card added!");
-  //         Session.set('stage', 0);
-  //         Session.set('loading', false);
-  //       };
-  //     };
-  //   });
-  // },
-
-  'click #skipWeek'(event) {
-    event.preventDefault();
-    Session.set('stage', 4);
   },
 
   'click #skip'(event) {

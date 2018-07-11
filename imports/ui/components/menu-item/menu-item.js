@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
 
 import { Items } from '/imports/api/items/items.js';
 
@@ -11,10 +10,6 @@ import './menu-item.html';
 const countInArray = function(array, what) {
   return array.filter(item => item == what).length;
 };
-
-Template.Menu_item.onCreated(function menuItemOnCreated() {
-  // this.veganized = new ReactiveVar(false);
-});
 
 Template.Menu_item.helpers({
 	attributes: ()=> {
@@ -49,23 +44,11 @@ Template.Menu_item.helpers({
 
   showFullPrice: ()=> {
     const order = Session.get('Order');
-    if (order) return order.style === 'alacarte';
+    return order && (order.style === 'alacarte');
   },
 
   toFixed: (price)=> {
     return price.toFixed(2);
-  },
-
-  showAddOnPrice: ()=> {
-    const order = Session.get('Order');
-    if (order && order.style === 'pack') {
-      const subcategory = Template.currentData().subcategory;
-      // ...
-    }
-  },
-
-  addOnPrice: ()=> {
-
   },
 
   tally: ()=> {

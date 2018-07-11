@@ -1,18 +1,11 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { $ } from 'meteor/jquery';
-
-import { Items } from '/imports/api/items/items.js';
 
 import './pack-editor-item.html';
 
 const countInArray = function(array, what) {
   return array.filter(item => item == what).length;
 };
-
-Template.Pack_Editor_Item.onCreated(function packEditorItemOnCreated() {
-});
 
 Template.Pack_Editor_Item.helpers({
 	attributes: ()=> {
@@ -48,18 +41,6 @@ Template.Pack_Editor_Item.helpers({
   showFullPrice: ()=> {
     const order = Session.get('Order');
     if (order) return order.style === 'alacarte';
-  },
-
-  showAddOnPrice: ()=> {
-    const order = Session.get('Order');
-    if (order && order.style === 'pack') {
-      const subcategory = Template.currentData().subcategory;
-      // ...
-    }
-  },
-
-  addOnPrice: ()=> {
-
   },
 
   tally: (_id)=> {

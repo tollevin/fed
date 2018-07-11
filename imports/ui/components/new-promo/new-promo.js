@@ -1,19 +1,8 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Autoform } from 'meteor/aldeed:autoform';
-
 import { Promos } from '/imports/api/promos/promos.js';
-
 import { insertPromo } from '/imports/api/promos/methods.js';
 
 import './new-promo.html';
-
-Template.NewPromo.onCreated(function newPromoOnCreated() {
-  // let template = this
-  // this.subscribe('items');
-});
 
 Template.NewPromo.helpers({
 	promos: ()=> {

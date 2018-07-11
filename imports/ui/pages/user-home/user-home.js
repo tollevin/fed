@@ -9,7 +9,6 @@ import '/imports/ui/components/order-toggle/order-toggle.js';
 
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
 // Template
 import './user-home.less';
@@ -32,10 +31,6 @@ Template.User_home.onCreated(function userHomeOnCreated() {
     this.nextOrder.set(Session.get('orderId'));
     this.futureOrders.set(orders.slice(1));
   });
-});
-
-Template.User_home.onRendered(function userHomeOnRendered() {
-  // if they received a pack, prompt to rate
 });
 
 Template.User_home.helpers({
@@ -66,7 +61,4 @@ Template.User_home.helpers({
   rate() {
     return false;
   },
-});
-
-Template.User_home.events({
 });

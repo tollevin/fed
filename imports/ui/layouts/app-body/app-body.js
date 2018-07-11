@@ -1,12 +1,11 @@
 import './app-body.html';
+import './app-body.less';
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
-import { $ } from 'meteor/jquery';
 import moment from 'moment';
-import { Vue } from 'meteor/akryum:vue';
 
 import 'moment-timezone';
 
@@ -63,15 +62,8 @@ Template.App_body.onCreated(function appBodyOnCreated() {
 });
 
 Template.App_body.onRendered(function appBodyOnRendered() {
-  $(window).scroll(function(){                          
-    if ($(this).scrollTop() > 100) {
-      $(".navbar-fixed-top").fadeIn(2000, function() {
-        $('.navbar-fixed-top').addClass('scrolled');
-      });
-    } else {
-      $('.navbar-fixed-top').removeClass('scrolled');
-    };
-  });
+  window.prerenderReady = true;
+  
 });
 
 Template.App_body.helpers({
@@ -131,55 +123,15 @@ Template.App_body.events({
     Session.set('sideNavOpen', false);
   },
 
-  'click #hamburger-menu' (event,template) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    Session.set('sideNavOpen', !Session.get('sideNavOpen'));
-  },
-
-  'click #sideNav span' (event) {
-    event.preventDefault();
-    Session.set('sideNavOpen', false);
-  },
-
-  'click #menuModal ul li' (event) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    Session.set('navOpen', false);
-    var page = "/" + event.currentTarget.title;
-    FlowRouter.go(page);
-  },
-
   'click .js-menu'(event, instance) {
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
 
-  'click #user-menu a'(event, instance) {
-    instance.state.set('userMenuOpen', !instance.state.get('userMenuOpen'));
-  },
 
   'click .welcome'(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     Session.set('userMenuOpen', !Session.get('userMenuOpen'));
     // stop the menu from closing
-  },
-
-  'click .main-nav a'(event, instance) {
-    const w = $(window).width();
-    if (w < 785 && Session.get('navOpen')) {
-      const nav = $('.main-nav ul');
-      nav.slideToggle();
-      Session.set('navOpen', false);
-    };
-  },
-
-  'click .btns-group a'() {
-    const w = $(window).width();
-    if (w < 775 && (Session.get('navOpen'))) {
-      const nav = $('.main-nav ul');
-      nav.slideToggle();
-      Session.set('navOpen', false);
-    };
   },
 });

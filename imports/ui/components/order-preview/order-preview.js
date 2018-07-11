@@ -1,11 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Orders } from '/imports/api/orders/orders.js';
-import { Promos } from '/imports/api/promos/promos.js';
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
-import { MH, MH_20 } from '/imports/api/delivery/zipcodes.js';
 import { getZipZone } from '/imports/api/delivery/methods.js';
 
 import './order-preview.html';

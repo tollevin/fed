@@ -1,7 +1,7 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Orders } from '/imports/api/orders/orders.js';
+import { Session } from 'meteor/session';
+
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -45,7 +45,4 @@ Template.Orders_admin.helpers({
   	const lastSunday = moment().tz('America/New_York').startOf('week').toDate();
   	return Orders.find({week_of: lastSunday}, { sort: { status: -1, created_at: -1 }});
   }
-});
-
-Template.Orders_admin.events({
 });

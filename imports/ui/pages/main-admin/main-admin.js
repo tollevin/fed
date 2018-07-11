@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -14,7 +13,6 @@ import '/imports/ui/components/new-item/new-item.js';
 import '/imports/ui/components/item-admin/item-admin.js';
 
 // Methods
-import { clearPSOrders } from '/imports/api/orders/methods.js';
 import { autoinsertSubscriberOrder } from '/imports/api/orders/methods.js';
 
 // Template
@@ -112,10 +110,6 @@ Template.Main_admin.helpers({
   	return Meteor.users.find({'subscriptions.status': {$ne : 'canceled'}}).count();
   },
 
-  // activeSubs: ()=> {
-  // 	return Meteor.users.find({'subscriptions.status': 'active'}).count();
-  // },
-
   customizedSubs: ()=> {
     const thisWeekStart = moment().tz('America/New_York').startOf('week').utc().toDate();
   	return Orders.find({'week_of': thisWeekStart, 'status': 'custom-sub'}).count();
@@ -124,13 +118,6 @@ Template.Main_admin.helpers({
   skippingSubs: ()=> {
     const thisWeekStart = moment().tz('America/New_York').startOf('week').utc().toDate();
     var totalSkippedOrdersThisWeek = Orders.find({'week_of': thisWeekStart, 'status': 'skipped'}).count();
-   //  const thisWeekStart = moment().day(0).hour(0).minute(0).second(0);
-   //  const thisWeeksOrders = Orders.find({}).fetch();
-   //  for (var i = thisWeeksOrders.length - 1; i >= 0; i--) {
-   //    totalSalesThisWeek += (Number(thisWeeksOrders[i].total) * 1.08875);
-   //  };
-   //  return totalSalesThisWeek.toFixed(2);
-  	// return Meteor.users.find({skipping: {$nin : [null, false]}}).count();
     return totalSkippedOrdersThisWeek;
   },
 

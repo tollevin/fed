@@ -25,9 +25,6 @@
 	}
 
 	.panel-holder {
-/*		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;*/
 
 		.order-report {
 			float: left;
@@ -114,24 +111,6 @@
 						font-size: 18px;
 				    line-height: 30px;
 					}
-
-					/*&:after {
-				    display: inline-block;
-				    width: 100%;
-				    content: '';
-					}*/
-
-					/*span {
-						display: block;
-						font-size: 18px;
-					}*/
-
-					/*.num {
-						font-size: 22px;
-						font-weight: 300;
-						width: 92px;
-						text-align: left;
-					}*/
 				}
 			}
 
@@ -208,8 +187,7 @@
 				text-align: center;
 			}
 
-			#insertOrderForm,
-			#insertSubscriberOrderForm {
+			#insertOrderForm {
 				max-width: 500px;
 				display: flex;
 				flex-direction: column;
@@ -262,8 +240,6 @@
 				.lastName {
 					float: right;
 				}
-
-				
 
 				#email, #phone {
 					@media screen and (max-width: 530px) {
@@ -385,30 +361,7 @@
 						color: #FFF;
 					}
 				}
-
-				#disabledButton {
-					background-color: rgba(123, 117, 95, 0.8) !important;
-					border: 2px solid rgba(123, 117, 95, 0.8);
-				}
 			}
-		}
-
-		#payment {
-			position: absolute;
-			left: 10%;
-		}
-
-		#cc-formX {
-			width: 312px;
-	    background: #fff;
-	    box-shadow: 0 0 2px 0 rgba(0,0,0,.07),0 3px 8px 0 rgba(0,0,0,.1);
-	    border-radius: 5px;
-	    font-size: 16px;
-	    padding: 2px 12px;
-
-	    .exp_month {
-	    	right: 30px;
-	    }
 		}
 	}
 }

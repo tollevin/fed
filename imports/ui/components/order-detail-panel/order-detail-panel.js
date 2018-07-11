@@ -1,6 +1,4 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import moment from 'moment';
 import 'moment-timezone';
@@ -33,10 +31,6 @@ Template.Order_detail_panel.onCreated(function orderDetailPanelOnCreated() {
 			this.status.set(order.status);
 		};
 	});
-});
-
-Template.Order_detail_panel.onRendered(function orderDetailPanelOnRendered() {
-	
 });
 
 Template.Order_detail_panel.helpers({

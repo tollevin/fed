@@ -42,7 +42,6 @@ import '/imports/ui/pages/promos-admin/promos-admin.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates/accounts-templates.js';
-import '/imports/ui/accounts/signup/signup.js';
 
 // Import wiki templates
 import '/imports/ui/wiki/index.js';

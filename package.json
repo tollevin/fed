@@ -2,6 +2,8 @@
   "name": "beta",
   "private": true,
   "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint --silent",
     "start": "meteor run"
   },
   "dependencies": {
@@ -17,9 +19,20 @@
     "moment-timezone": "^0.5.21",
     "prerender-node": "^2.4.0",
     "slideout": "^1.0.1",
-    "stripe": "^4.25.0",
-    "vue": "^2.5.16",
-    "vue-meteor-tracker": "^1.0.3"
+    "stripe": "^4.25.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@meteorjs/eslint-config-meteor": "^1.0.5",
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.1.0",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-import-resolver-meteor": "^0.4.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-meteor": "^5.0.0",
+    "eslint-plugin-react": "^7.10.0"
+  },
+  "eslintConfig": {
+    "extends": "@meteorjs/eslint-config-meteor"
+  }
 }

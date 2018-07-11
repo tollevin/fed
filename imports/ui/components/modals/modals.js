@@ -1,3 +1,5 @@
+import { Template } from 'meteor/templating';
+
 import './modals.html';
 
 import '/imports/ui/components/filters/filters.js';

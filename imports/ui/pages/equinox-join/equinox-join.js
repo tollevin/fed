@@ -1,7 +1,7 @@
-import { Accounts } from 'meteor/accounts-base';
-import { $ } from 'meteor/jquery';
+import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { signin } from '/imports/ui/lib/auth.js';
+import { Session } from 'meteor/session';
 
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
@@ -10,12 +10,6 @@ import './equinox-join.html';
 
 Template.Equinox_join.onCreated(function equinoxJoinOnCreated() {
   Session.set('cartOpen', false);
-});
-
-Template.Equinox_join.onRendered(function equinoxJoinOnRendered() {
-});
-
-Template.Equinox_join.helpers({
 });
 
 Template.Equinox_join.events({

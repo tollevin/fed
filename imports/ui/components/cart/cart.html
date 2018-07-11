@@ -12,45 +12,17 @@
 							{{> CartItem}}
 						{{/each}}
 					</ul>
-					<!-- <div class="pack-select">
-						<form>
-							<label>Change your pack</label>
-							<select id="changePack">
-							  <option name="StarterPack" value="6-Pack" selected="{{selected}}">6 Pack</option>
-							  <option name="FedPack" value="8-Pack" selected="{{selected}}">8 Pack</option>
-							  <option name="FedPack" value="10-Pack" selected="{{selected}}">10 Pack</option>
-							  <option name="WellFedPack" value="12-Pack" selected="{{selected}}">12 Pack</option>
-							</select>
-						</form>
-					</div>
-					<div class="cart-items-list">
-						<h3>Dishes <span class="tally">{{dishTally}}</span></h3>
-						{{#each dish in dishes}}
-							<p class="tallied-dish">
-								<span class="dish-tally" name={{@index}}>{{dish.value}}</span>
-								<span class="dish-name" name={{@index}}>{{dish.name}}</span>
-							</p>
-						{{/each}}
-						<h3>Snacks <span class="tally">{{snackTally}}</span></h3>
-						{{#each snack in snacks}}
-							<p class="tallied-snack">
-								<span class="snack-tally" name={{@index}}>{{snack.value}}</span>
-								<span class="snack-name" name={{@index}}>{{snack.name}}</span>
-							</p>
-						{{/each}}
-					</div> -->
 				{{else}}
 					<p>Your cart is empty!</p>
 				{{/if}}
 			</div>
 			<div class="message-bar">
-				{{upsellMessage}}
 			</div>
 			<div class="cart-footer">
 				<div class="cart-subtotal">
 					<p>Subtotal: ${{subtotal}}</p>
 				</div>
-				<button id="checkout" class="btn-checkout {{ready}}">Checkout</button>
+				<button id="checkout" class="btn-checkout ready">Checkout</button>
 			</div>
 		{{/unless}}
 		</div>
