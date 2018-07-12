@@ -7,139 +7,133 @@ import { getZipZone } from '/imports/api/delivery/methods.js';
 import './subscriber-preview.html';
 
 Template.Subscriber_preview.helpers({
-	subscribedAt() {
-		const subDate = new moment(Template.currentData().subscriptions.created * 1000);
-		return subDate.toDate();
-	},
+  subscribedAt() {
+    const subDate = new moment(Template.currentData().subscriptions.created * 1000);
+    return subDate.toDate();
+  },
 
-	emailss() {
-		const emails = Template.currentData().emails;
-		return emails;
-	},
+  emailss() {
+    const emails = Template.currentData().emails;
+    return emails;
+  },
 
-	deliveryFee() {
-		const zip = Template.currentData().address_zipcode;
-		const subtotal = Template.currentData().subtotal;
+  deliveryFee() {
+    const zip = Template.currentData().address_zipcode;
+    const subtotal = Template.currentData().subtotal;
 
     const deliveryFees = zipZones[zip].delivery_fees;
-      
-    if (subtotal > 150) { return  deliveryFees.tier3; }
+
+    if (subtotal > 150) { return deliveryFees.tier3; }
     return deliveryFees.tier1;
-	},
+  },
 
-	subtotal() {
-		const subscriptions = Template.currentData().subscriptions;
-		if (!subscriptions) { return undefined; }
+  subtotal() {
+    const subscriptions = Template.currentData().subscriptions;
+    if (!subscriptions) { return undefined; }
 
-		var subtotal = 0;
-		for (var i = subscriptions.length - 1; i >= 0; i--) {
-			subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
-		};
+    let subtotal = 0;
+    for (let i = subscriptions.length - 1; i >= 0; i--) {
+      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    }
 
-		return subtotal.toFixed(2);
-	},
+    return subtotal.toFixed(2);
+  },
 
-	sales_tax() {
-		const subscriptions = Template.currentData().subscriptions;
-		if (!subscriptions) { return undefined; }
+  sales_tax() {
+    const subscriptions = Template.currentData().subscriptions;
+    if (!subscriptions) { return undefined; }
 
-		var subtotal = 0;
-		for (var i = subscriptions.length - 1; i >= 0; i--) {
-			subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
-		};
+    let subtotal = 0;
+    for (let i = subscriptions.length - 1; i >= 0; i--) {
+      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    }
 
-		const sales_tax = subtotal * .08875;
+    const sales_tax = subtotal * 0.08875;
 
-		return sales_tax.toFixed(2);
-	},
+    return sales_tax.toFixed(2);
+  },
 
-	total() {
-		const subscriptions = Template.currentData().subscriptions;
-		if (!subscriptions) { return undefined; }
+  total() {
+    const subscriptions = Template.currentData().subscriptions;
+    if (!subscriptions) { return undefined; }
 
-		var subtotal = 0;
-		for (var i = subscriptions.length - 1; i >= 0; i--) {
-			subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
-		};
+    let subtotal = 0;
+    for (let i = subscriptions.length - 1; i >= 0; i--) {
+      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    }
 
-		var total = subtotal * 1.08875;
+    let total = subtotal * 1.08875;
 
-		const zip = Template.currentData().address_zipcode;
+    const zip = Template.currentData().address_zipcode;
 
-		let delivery_fee;
+    let delivery_fee;
     const deliveryFees = zipZones[zip].delivery_fees;
-      
+
     if (subtotal > 150) {
       delivery_fee = deliveryFees.tier3;
     } else {
       delivery_fee = deliveryFees.tier1;
-    };
+    }
 
     total += delivery_fee;
 
     return total.toFixed(2);
-	},
+  },
 
-	hasCredit: ()=> {
-		const credit = Template.currentData().credit;
-		return credit;
-	},
+  hasCredit: () => {
+    const credit = Template.currentData().credit;
+    return credit;
+  },
 
-	processStatus(status) {
+  processStatus(status) {
+    const currentData = Template.currentData();
+    if (currentData.skipping) { return 'skipping'; }
+    if (currentData.customized) { return 'customized'; }
 
-		const currentData = Template.currentData();
-		if (currentData.skipping) { return "skipping"; }
-		if (currentData.customized) { return "customized"; }
+    const subscriptions = currentData.subscriptions;
+    const nextFri = moment().day(12).unix();
+    const paused = (subscriptions && (subscriptions.trial_end > nextFri));
 
-		const subscriptions = currentData.subscriptions;
-		const nextFri = moment().day(12).unix();
-		let paused = (subscriptions && (subscriptions.trial_end > nextFri));
+    if (paused) { return 'paused'; }
 
-		if (paused) { return "paused"; }
+    return status;
+  },
 
-		return status;
-	},
+  customed() {
+    const last_purchase = Template.currentData().last_purchase;
+    const ready_by = last_purchase.ready_by;
+    const now = new moment();
+    if (now.isBefore(ready_by)) {
+      const order = Meteor.Orders.findOne({ trackingCode: last_purchase.tracking_code });
+      return order.packDishes;
+    }
+    return false;
+  },
 
-	customed() {
-		const last_purchase = Template.currentData().last_purchase;
-		const ready_by = last_purchase.ready_by;
-		const now = new moment();
-		if (now.isBefore(ready_by)) {
-			var order = Meteor.Orders.findOne({trackingCode: last_purchase.tracking_code});
-			return order.packDishes;
-		} else {
-			return false;
-		};
-	},
+  deliveryZone() {
+    const args = { zip_code: Template.currentData().address_zipcode };
 
-	deliveryZone() {
-		var args = { zip_code: Template.currentData().address_zipcode };
+    const zipZone = getZipZone.call(args);
+    return zipZone;
+  },
 
-		var zipZone = getZipZone.call(args);
-		return zipZone;
-	},
+  subscription: () => Template.currentData().subscriptions && Template.currentData().subscriptions[0],
 
-	subscription: () => {
-		return Template.currentData().subscriptions && Template.currentData().subscriptions[0];
-	},
+  deliv: () => (Template.currentData().preferred_deliv_windows ? Template.currentData().preferred_deliv_windows : Template.currentData().preferredDelivDay),
 
-	deliv: ()=> {
-		return Template.currentData().preferred_deliv_windows ? Template.currentData().preferred_deliv_windows : Template.currentData().preferredDelivDay;
-	},
+  allergies: () => {
+    const restrictions = Template.currentData().restrictions;
+    if (!restrictions) { return false; }
 
-	allergies: ()=> {
-		const restrictions = Template.currentData().restrictions;
-		if (!restrictions) { return false; }
+    const keys = Object.keys(restrictions);
+    const allergies = [];
 
-		const keys = Object.keys(restrictions);
-		var allergies = [];
+    for (let i = keys.length - 1; i >= 0; i--) {
+      if (restrictions[keys[i]]) {
+        allergies.push(keys[i]);
+      }
+    }
 
-		for (var i = keys.length - 1; i >= 0; i--) {
-			if (restrictions[keys[i]]) {
-				allergies.push(keys[i]);
-			};
-		};
-
-		return allergies;
-	},
+    return allergies;
+  },
 });

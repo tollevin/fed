@@ -11,4 +11,4 @@ const handler = (data, promise) => {
   }
 };
 
-export const invoiceCreated = (data) => handler(data);
+export const invoiceCreated = data => handler(data);

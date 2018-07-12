@@ -14,14 +14,14 @@ Template.Mobile_Nav.helpers({
 });
 
 Template.Mobile_Nav.onRendered(() => {
-  $(window).scroll(function(){                          
+  $(window).scroll(function() {
     if ($(this).scrollTop() > 100) {
-      $(".navbar-fixed-top").fadeIn(2000, function() {
+      $('.navbar-fixed-top').fadeIn(2000, function() {
         $('.navbar-fixed-top').addClass('scrolled');
       });
     } else {
       $('.navbar-fixed-top').removeClass('scrolled');
-    };
+    }
   });
 });
 
@@ -31,7 +31,7 @@ Template.Mobile_Nav.events({
     // event.stopImmediatePropagation();
     signout();
   },
-  'click #hamburger-menu' (event,template) {
+  'click #hamburger-menu' (event, template) {
     event.preventDefault();
     event.stopImmediatePropagation();
     Session.set('sideNavOpen', !Session.get('sideNavOpen'));

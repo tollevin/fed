@@ -5,17 +5,13 @@ import { insertPromo } from '/imports/api/promos/methods.js';
 import './new-promo.html';
 
 Template.NewPromo.helpers({
-	promos: ()=> {
-		return Promos;
-	},
+  promos: () => Promos,
 
-	insertPromo: ()=> {
-		return insertPromo;
-	},
+  insertPromo: () => insertPromo,
 });
 
 Template.NewPromo.events({
-	'click .sbmtPromo'(event, template) {
+  'click .sbmtPromo'(event, template) {
 	  event.preventDefault();
 
 	  const codes = template.find('[name="code"]').value.split('","');
@@ -26,26 +22,26 @@ Template.NewPromo.events({
   	const useLimitPerCustomer = template.find('[name="useLimitPerCustomer"]').value;
   	const useLimitTotal = template.find('[name="useLimitTotal"]').value;
   	const timesUsed = 0;
-  	var users = {};
+  	const users = {};
   	const active = template.find('[name="active"]').checked;
 
   	const promo = {
-  		codes: codes,
-  		desc: desc,
-  		credit: credit,
-  		percentage: percentage,
-  		expires: expires,
-  		useLimitPerCustomer: useLimitPerCustomer,
-  		useLimitTotal: useLimitTotal,
-  		timesUsed: timesUsed,
-  		users: users,
-  		active: active,
+  		codes,
+  		desc,
+  		credit,
+  		percentage,
+  		expires,
+  		useLimitPerCustomer,
+  		useLimitTotal,
+  		timesUsed,
+  		users,
+  		active,
   	};
 
-		insertPromo.call(promo, (err) => {
+    insertPromo.call(promo, (err) => {
 	    if (err) {
 	      alert(err); // eslint-disable-line no-alert
 	    }
 	  });
-	},
+  },
 });

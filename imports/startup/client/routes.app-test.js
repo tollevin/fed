@@ -9,13 +9,13 @@ import { Promise } from 'meteor/promise';
 import { $ } from 'meteor/jquery';
 
 import { denodeify } from '../../utils/denodeify';
-import { generateData } from './../../api/generate-data.app-tests.js';
+import { generateData } from '../../api/generate-data.app-tests.js';
 import { Lists } from '/imports/api/lists/lists.js';
 import { Todos } from '/imports/api/todos/todos.js';
 
 
 // Utility -- returns a promise which resolves when all subscriptions are done
-const waitForSubscriptions = () => new Promise(resolve => {
+const waitForSubscriptions = () => new Promise((resolve) => {
   const poll = Meteor.setInterval(() => {
     if (DDP._allSubscriptionsReady()) {
       Meteor.clearInterval(poll);
@@ -32,10 +32,9 @@ if (Meteor.isClient) {
   describe('data available when routed', () => {
     // First, ensure the data that we expect is loaded on the server
     //   Then, route the app to the homepage
-    beforeEach(() =>
-      generateData()
-        .then(() => FlowRouter.go('/'))
-        .then(waitForSubscriptions));
+    beforeEach(() => generateData()
+      .then(() => FlowRouter.go('/'))
+      .then(waitForSubscriptions));
 
     describe('when logged out', () => {
       it('has all public lists at homepage', () => {

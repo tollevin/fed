@@ -10,64 +10,63 @@ import './cart.less';
 import './cart.html';
 
 Template.Cart.helpers({
-	cartItems: ()=> {
-		const order = Session.get('Order');
-		var itemsObj = {};
+  cartItems: () => {
+    const order = Session.get('Order');
+    const itemsObj = {};
 
-		for (var i = order.items.length - 1; i >= 0; i--) {
-			if (itemsObj[order.items[i]._id]) {
-				itemsObj[order.items[i]._id].tally += 1;
-			} else {
-				const itemToAdd = {
-					tally: 1,
-					item: order.items[i],
-				};
+    for (let i = order.items.length - 1; i >= 0; i--) {
+      if (itemsObj[order.items[i]._id]) {
+        itemsObj[order.items[i]._id].tally += 1;
+      } else {
+        const itemToAdd = {
+          tally: 1,
+          item: order.items[i],
+        };
 
-				itemsObj[order.items[i]._id] = itemToAdd;
-			}
-		};
+        itemsObj[order.items[i]._id] = itemToAdd;
+      }
+    }
 
-		return Object.values(itemsObj);
-	},
-	subtotal: ()=> {
-		var subtotal = 0;
-		const order = Session.get('Order');
+    return Object.values(itemsObj);
+  },
+  subtotal: () => {
+    let subtotal = 0;
+    const order = Session.get('Order');
 
-		for (var i = order.items.length - 1; i >= 0; i--) {
-			subtotal += order.items[i].price_per_unit;
-		};
+    for (let i = order.items.length - 1; i >= 0; i--) {
+      subtotal += order.items[i].price_per_unit;
+    }
 
-		return subtotal.toFixed(2);
-	},
+    return subtotal.toFixed(2);
+  },
 });
 
 Template.Cart.events({
 
-	'click .remove-dish'(event, template) {
-		
-		const pack = Session.get('pack');
+  'click .remove-dish'(event, template) {
+    const pack = Session.get('pack');
     const dishes = pack.dishes;
-    const itemName = event.target.parentElement.closest(".dish-name").text;
+    const itemName = event.target.parentElement.closest('.dish-name').text;
     dishes[dishes.indexOf(itemName)] = '';
     pack.dishes = dishes;
     Session.set('pack', pack);
-	},
+  },
 
-	'click .remove-snack'(event, template) {
-		oldPack = Session.get('pack');
-		sncks = oldPack.snacks;
-		sncks[event.target.name] = "";
-		oldPack.snacks = sncks; 
-		Session.set('pack', oldPack);
-	},
+  'click .remove-snack'(event, template) {
+    oldPack = Session.get('pack');
+    sncks = oldPack.snacks;
+    sncks[event.target.name] = '';
+    oldPack.snacks = sncks;
+    Session.set('pack', oldPack);
+  },
 
-	'click .ready' (event, template) {
+  'click .ready' (event, template) {
     Session.set('processing', true);
 
   	const order = Session.get('Order');
   	const menu = Session.get('menu');
 
-		const orderToCreate = {
+    const orderToCreate = {
     	user_id: Meteor.userId(),
     	menu_id: menu._id,
     	style: order.style,
@@ -78,8 +77,8 @@ Template.Cart.events({
 
     const orderId = insertOrder.call(orderToCreate);
     Session.set('Order', orderId);
-		Session.set('cartOpen', false);
+    Session.set('cartOpen', false);
 
     FlowRouter.go('/checkout');
-	},
+  },
 });

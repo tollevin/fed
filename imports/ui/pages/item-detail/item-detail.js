@@ -20,21 +20,21 @@ Template.Item_detail.onCreated(function menuItemOnCreated() {
 });
 
 Template.Item_detail.helpers({
-	item() {
+  item() {
     const id = FlowRouter.getParam('_id');
-		return Items.findOne({_id: id});
-	},
+    return Items.findOne({ _id: id });
+  },
 
   contains() {
     const id = FlowRouter.getParam('_id');
-    const thisItem = Items.findOne({_id: id});
+    const thisItem = Items.findOne({ _id: id });
     const warnings = thisItem.warnings;
-    var allergens = false;
-    for (var i = Object.keys(warnings).length - 1; i >= 0; i--) {
+    let allergens = false;
+    for (let i = Object.keys(warnings).length - 1; i >= 0; i--) {
       if (warnings[i]) {
         allergens = true;
-      };
-    };
+      }
+    }
     return allergens;
   },
 
@@ -48,15 +48,15 @@ Template.Item_detail.helpers({
 });
 
 Template.Item_detail.events({
-	'click .add-to-cart'(event) {
-		event.preventDefault();
+  'click .add-to-cart'(event) {
+    event.preventDefault();
 
     const id = FlowRouter.getParam('_id');
-    const item = Items.findOne({_id: id});
+    const item = Items.findOne({ _id: id });
 
-		var order = Session.get('order');
-		var dishes = order.dishes;
-		for (i = 0; i < dishes.length; i++) { 
+    const order = Session.get('order');
+    const dishes = order.dishes;
+    for (i = 0; i < dishes.length; i++) {
     	if (!dishes[i]) {
     		dishes[i] = item.name;
     		order.dishes = dishes;
@@ -66,18 +66,18 @@ Template.Item_detail.events({
         break;
     	} else {
         continue;
-    		if (i === dishes.length - 1){
+    		if (i === dishes.length - 1) {
       		sAlert.error('Your pack is full!');
-    		};
-    	};
-		};
-	},
+    		}
+    	}
+    }
+  },
 
   'click #Back' (event) {
     event.preventDefault();
 
     if (!Session.get('previousRoute')) {
-      Session.set('previousRoute','Menu.show')
+      Session.set('previousRoute', 'Menu.show');
     }
     FlowRouter.go(Session.get('previousRoute'));
   },

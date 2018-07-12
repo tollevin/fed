@@ -14,7 +14,5 @@ Template.Promos_admin.onCreated(function promosAdminOnCreated() {
 });
 
 Template.Promos_admin.helpers({
-  promos: ()=> {
-  	return Promos.find({}, { sort: { createdAt: -1 } });
-  },
+  promos: () => Promos.find({}, { sort: { createdAt: -1 } }),
 });

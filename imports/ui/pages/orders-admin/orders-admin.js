@@ -12,8 +12,7 @@ import '/imports/ui/components/order-preview/order-preview.js';
 import './orders-admin.html';
 
 Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
-
-	// Set reactive variables for template
+  // Set reactive variables for template
   Session.setDefault('state', 'thisWeeksOrders');
 
   this.autorun(() => {
@@ -22,27 +21,27 @@ Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
       this.subscribe('thisWeeks.orders', timestamp);
     } else {
       this.subscribe('some.orders', 100);
-    };
+    }
 
     this.subscribe('userData');
   });
 });
 
 Template.Orders_admin.helpers({
-	allOrders() {
-		return Session.equals('state', 'allOrders');
-	},
+  allOrders() {
+    return Session.equals('state', 'allOrders');
+  },
 
-	thisWeeksOrders() {
-		return Session.equals('state','thisWeeksOrders');
-	},
+  thisWeeksOrders() {
+    return Session.equals('state', 'thisWeeksOrders');
+  },
 
-	orders() {
-    return Orders.find({}, {sort: {status: 1, id_number: -1}});
+  orders() {
+    return Orders.find({}, { sort: { status: 1, id_number: -1 } });
   },
 
   currentOrders() {
   	const lastSunday = moment().tz('America/New_York').startOf('week').toDate();
-  	return Orders.find({week_of: lastSunday}, { sort: { status: -1, created_at: -1 }});
-  }
+  	return Orders.find({ week_of: lastSunday }, { sort: { status: -1, created_at: -1 } });
+  },
 });

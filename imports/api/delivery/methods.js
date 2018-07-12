@@ -3,12 +3,12 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { 
-	zipZones
+import {
+  zipZones,
 } from './zipcodes.js';
 
 import {
-  DeliveryWindows
+  DeliveryWindows,
 } from './delivery-windows.js';
 
 export const getZipZone = new ValidatedMethod({
@@ -17,8 +17,7 @@ export const getZipZone = new ValidatedMethod({
     zip_code: { type: String },
   }).validator({ clean: true, filter: false }),
   run({ zip_code }) {
-
-		return zipZones.zip_code;
+    return zipZones.zip_code;
   },
 });
 
@@ -30,8 +29,10 @@ export const createDeliveryWindows = new ValidatedMethod({
   run({ ready_by_date }) {
     const sundayDeliveryStart = moment(ready_by_date).hour(18).utc().toDate();
     const sundayDeliveryEnd = moment(ready_by_date).hour(21).utc().toDate();
-    const mondayDeliveryStart = moment(ready_by_date).add(1, 'd').hour(18).utc().toDate();
-    const mondayDeliveryEnd = moment(ready_by_date).add(1, 'd').hour(21).utc().toDate();
+    const mondayDeliveryStart = moment(ready_by_date).add(1, 'd').hour(18).utc()
+      .toDate();
+    const mondayDeliveryEnd = moment(ready_by_date).add(1, 'd').hour(21).utc()
+      .toDate();
 
     const delivery_window_1 = {
       created_at: moment.utc().toDate(),
@@ -50,7 +51,7 @@ export const createDeliveryWindows = new ValidatedMethod({
     const dw1 = DeliveryWindows.insert(delivery_window_1);
     const dw2 = DeliveryWindows.insert(delivery_window_2);
     const results = [dw1, dw2];
-    
+
     return results;
   },
 });

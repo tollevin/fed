@@ -1,43 +1,31 @@
 import { Template } from 'meteor/templating';
-import { PackSchemas } from '/imports/api/packs/packs.js'
+import { PackSchemas } from '/imports/api/packs/packs.js';
 
 import './pack-schemas.html';
 
 Template.Pack_schemas.helpers({
-	packs: ()=> {
-		const diet = Template.currentData().diet.toLowerCase();
-		const packs = Object.values(PackSchemas[diet]);
-		return packs;
-	},
+  packs: () => {
+    const diet = Template.currentData().diet.toLowerCase();
+    const packs = Object.values(PackSchemas[diet]);
+    return packs;
+  },
 });
 
 Template.Pack_schema.helpers({
-	packName: ()=> {
-		return Template.currentData().name;
-	},
+  packName: () => Template.currentData().name,
 
-	packSize: ()=> {
-		return Template.currentData().schema.total;
-	},
+  packSize: () => Template.currentData().schema.total,
 
-	packOriginalPrice: ()=> {
-		return Template.currentData().price;
-	},
+  packOriginalPrice: () => Template.currentData().price,
 
-	packPrice: ()=> {
-		const price = Template.currentData().price * 95 / 100;
-		return price.toFixed(2);
-	},
+  packPrice: () => {
+    const price = Template.currentData().price * 95 / 100;
+    return price.toFixed(2);
+  },
 
-	packSchema: ()=> {
-		return Template.currentData().schema;
-	},
+  packSchema: () => Template.currentData().schema,
 
-	greaterThanZero: (plate)=> {
-		return (plate > 0);
-	},
+  greaterThanZero: plate => (plate > 0),
 
-	greaterThanOne: (plate)=> {
-		return (plate > 1) && 's';
-	},
+  greaterThanOne: plate => (plate > 1) && 's',
 });

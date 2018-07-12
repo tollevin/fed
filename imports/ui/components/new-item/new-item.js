@@ -8,22 +8,18 @@ import { insertMenu } from '/imports/api/menus/methods.js';
 import './new-item.html';
 
 Template.NewItem.onCreated(function newItemOnCreated() {
-  let template = this
+  const template = this;
   // this.subscribe('items');
 });
 
 Template.NewItem.helpers({
-	items: ()=> {
-		return Items
-	},
+  items: () => Items,
 
-	insert: ()=> {
-		return insertItem
-	}, 
+  insert: () => insertItem,
 });
 
 Template.NewItem.events({
-	'click .sbmtItem'(event, template) {
+  'click .sbmtItem'(event, template) {
 	  event.preventDefault();
 
 	  const formName = template.find('[name="name"]').value;
@@ -32,9 +28,9 @@ Template.NewItem.events({
 	  const formExp = template.find('[name="good_for_days"]').value;
 	  const ingredients = template.findAll('[name^="ingredients"]');
 	  const formIngredients = [];
-	  for (var i = ingredients.length - 1; i >= 0; i--) {
+	  for (let i = ingredients.length - 1; i >= 0; i--) {
 	  	formIngredients[i] = ingredients[i].value;
-	  };
+	  }
 	  const formNFSS = template.find('[name="nutrition_facts.servingSize"]').value;
 	  const formNFCal = template.find('[name="nutrition_facts.calories"]').value;
 	  const formNFTF = template.find('[name="nutrition_facts.totalFat"]').value;
@@ -94,7 +90,7 @@ Template.NewItem.events({
       		vitaminC: formNFPDVvC,
       		calcium: formNFPDVC,
       		iron: formNFPDVI,
-      	}
+      	},
       },
       attributes: {
       	dairyFree: formADF,
@@ -127,12 +123,12 @@ Template.NewItem.events({
 	      alert(err); // eslint-disable-line no-alert
 	    }
 	  });
-	},
+  },
 
-	'click #newMenu'(event, template) {
-		event.preventDefault();
+  'click #newMenu'(event, template) {
+    event.preventDefault();
 
-		const nextReadyBy = moment().startOf('week').add(3, 'week').toDate();
+    const nextReadyBy = moment().startOf('week').add(3, 'week').toDate();
 
     const menu = {
       name: 'test',
@@ -144,5 +140,5 @@ Template.NewItem.events({
 	      alert(err); // eslint-disable-line no-alert
 	    }
 	  });
-	},
+  },
 });

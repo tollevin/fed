@@ -11,53 +11,53 @@ import './sign-up-modal.less';
 import './sign-up-modal.html';
 
 Template.signUp_Modal.events({
-	'click .close, click .modal-background' (event, template) {
-		Session.set('needsZip', false);
-	},
+  'click .close, click .modal-background' (event, template) {
+    Session.set('needsZip', false);
+  },
 
-	'change .zip' (event, template) {
-		const zipInput = template.find('.zip');
-		if (yesZips.indexOf(zipInput.value.toString()) < 0 ) {
-			// alert user they are outside of our delivery range
-			zipInput.style.backgroundColor = 'rgba(255, 102, 102,.4)';
+  'change .zip' (event, template) {
+    const zipInput = template.find('.zip');
+    if (yesZips.indexOf(zipInput.value.toString()) < 0) {
+      // alert user they are outside of our delivery range
+      zipInput.style.backgroundColor = 'rgba(255, 102, 102,.4)';
       $('#SignUpModalForm').find('.signUp-errors').text("Sorry, it looks like you're outside our delivery area.");
     } else {
     	zipInput.style.backgroundColor = '#eee';
-      $('#SignUpModalForm').find('.signUp-errors').text("");
-    };
-	},
+      $('#SignUpModalForm').find('.signUp-errors').text('');
+    }
+  },
 
-	'submit #SignUpModalForm' (event, template) {
-		event.preventDefault();
+  'submit #SignUpModalForm' (event, template) {
+    event.preventDefault();
 
     Session.set('processing', true);
     const orderReady = Session.get('pack'); // Will Change when packs become items (FIX)
 
-		const user = {
+    const user = {
       email: $('.userEmail').val(),
       password: $('.pw').val(),
       zipCode: $('.zip').val(),
     };
 
-    if (yesZips.indexOf(user.zipCode) < 0 ) {
+    if (yesZips.indexOf(user.zipCode) < 0) {
       $('#SignUpModalForm').find('.signUp-errors').text("Sorry, it looks like you're outside our delivery area.");
   	} else {
-      Meteor.call( 'createSubscriber', user, (error, response) => {
+      Meteor.call('createSubscriber', user, (error, response) => {
         if (error) {
           Session.set('loading', false);
           $('#SignUpModalForm').find('.signUp-errors').text(error.reason);
         } else {
           signin(user, (error) => {
           	if (error) {
-          		sAlert.error('There was an error signing you in.')
+          		sAlert.error('There was an error signing you in.');
           	} else {
           		$('.content-scrollable').scrollTop(0, 2000);
-							Session.set('stage', 1);
-							Session.set('signIn', false);
-          	};
+              Session.set('stage', 1);
+              Session.set('signIn', false);
+          	}
           });
-        };
+        }
       });
-    };
-	},
+    }
+  },
 });

@@ -17,11 +17,11 @@ Template.Gift_Cards.onCreated(function giftCardsOnCreated() {
   // this.paymentRequest = new ReactiveVar();
 
   this.autorun(() => {
-    var subs = this.subscribe('thisUserData');
+    const subs = this.subscribe('thisUserData');
 
     if (subs.ready()) {
       if (Meteor.userId()) this.stripe_id.set(Meteor.user().stripe_id);
-    };
+    }
   });
 });
 
@@ -38,15 +38,15 @@ Template.Gift_Cards.helpers({
   },
 
   disabled() {
-    return Session.get('loading') && "disabled";
+    return Session.get('loading') && 'disabled';
   },
 
   price() {
-    var order = Template.instance().order.get();
+    const order = Template.instance().order.get();
     return order && (order.price / 100).toFixed(2);
   },
   salePrice() {
-    var order = Template.instance().order.get();
+    const order = Template.instance().order.get();
     return order && (order.price / 100).toFixed(2); // Add built-in discount here.
   },
 });
@@ -54,18 +54,18 @@ Template.Gift_Cards.helpers({
 Template.Gift_Cards.events({
   'click .amount-button'(event, template) {
     event.preventDefault();
-    var allValues = template.findAll('.amount-button');
-    for (var i = allValues.length - 1; i >= 0; i--) {
+    const allValues = template.findAll('.amount-button');
+    for (let i = allValues.length - 1; i >= 0; i--) {
       allValues[i].classList.remove('active');
-    };
-    var customAmountElement = document.getElementById('custom-amount');
+    }
+    const customAmountElement = document.getElementById('custom-amount');
     customAmountElement.value = null;
     event.currentTarget.classList.add('active');
 
     const value = parseInt(event.currentTarget.id) * 100;
     const item = {
       type: 'giftCard',
-      description: 'Fed $' + event.currentTarget.id + ' Gift Card',
+      description: `Fed $${event.currentTarget.id} Gift Card`,
       price: value,
     };
 
@@ -73,10 +73,10 @@ Template.Gift_Cards.events({
   },
 
   'click #custom-amount, change #custom-amount'(event, template) {
-    var allValues = template.findAll('.amount-button');
-    for (var i = allValues.length - 1; i >= 0; i--) {
+    const allValues = template.findAll('.amount-button');
+    for (let i = allValues.length - 1; i >= 0; i--) {
       allValues[i].classList.remove('active');
-    };
+    }
 
     event.currentTarget.classList.add('active');
     const value = event.currentTarget.value;
@@ -86,12 +86,12 @@ Template.Gift_Cards.events({
       const valueInCents = parseFloat(value) * 100;
       const item = {
         type: 'giftCard',
-        description: 'Fed $' + event.currentTarget.id + ' Gift Card',
+        description: `Fed $${event.currentTarget.id} Gift Card`,
         price: valueInCents,
       };
 
       template.order.set(item);
-    };
+    }
   },
 
   'blur #custom-amount'(event, template) {
@@ -102,7 +102,7 @@ Template.Gift_Cards.events({
       const valueInCents = parseFloat(value) * 100;
       const item = {
         type: 'giftCard',
-        description: 'Fed $' + event.currentTarget.id + ' Gift Card',
+        description: `Fed $${event.currentTarget.id} Gift Card`,
         price: valueInCents,
       };
 
@@ -115,7 +115,7 @@ Template.Gift_Cards.events({
     if (yesZips.indexOf(value) < 0) {
       const errorElement = document.getElementById('zip-errors');
       errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
-    };
+    }
   },
 
   'submit #Gift-Card-Form'(event, template) {
@@ -128,109 +128,109 @@ Template.Gift_Cards.events({
       if (!zipInRange) {
         const errorElement = document.getElementById('zip-errors');
         errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
-        throw new Meteor.Error(412,'Zip code out of range');
-      };
+        throw new Meteor.Error(412, 'Zip code out of range');
+      }
       return zipInRange;
-    };
+    }
 
     async function checkGiftCardValue() {
       try {
         const giftCardValue = template.find('.active').value;
         return parseInt(giftCardValue) * 100;
-      } catch(error) {
+      } catch (error) {
         const errorElement = document.getElementById('gift-button-errors');
         errorElement.textContent = 'Please choose a gift card value';
         Session.set('loading', false);
-      };
-    };
+      }
+    }
 
     async function createStripeToken() {
       try {
-       var childView = Blaze.getView(template.find('#card-element'));
-        var childTemplateInstance = childView._templateInstance;
-        var card = childTemplateInstance.card;
-        var stripe = childTemplateInstance.stripe;
-        const {token, error} = await stripe.createToken(card);
+        const childView = Blaze.getView(template.find('#card-element'));
+        const childTemplateInstance = childView._templateInstance;
+        const card = childTemplateInstance.card;
+        const stripe = childTemplateInstance.stripe;
+        const { token, error } = await stripe.createToken(card);
         return token;
-      } catch(error) {
+      } catch (error) {
         // Inform the customer that there was an error
         console.log(error);
         const errorElement = document.getElementById('payment-errors');
         errorElement.textContent = error.message;
         Session.set('loading', false);
-      };
-    };
+      }
+    }
 
     async function createStripeCustomer(cust) {
       try {
-        const newStripeCustomer = await callWithPromise('createCustomer', cust );
+        const newStripeCustomer = await callWithPromise('createCustomer', cust);
         return newStripeCustomer;
-      } catch(error) {
+      } catch (error) {
         console.log(error);
-        throw new Meteor.Error(411,'Something went wrong with Stripe. Please try again');
+        throw new Meteor.Error(411, 'Something went wrong with Stripe. Please try again');
       }
-    };
+    }
 
     async function chargeStripe(charge) {
       try {
-        const newCharge = await callWithPromise( 'processPayment', charge );
+        const newCharge = await callWithPromise('processPayment', charge);
         return newCharge;
-      } catch(error) {
+      } catch (error) {
         sAlert.error(error.reason);
         throw new Meteor.Error(401, 'Something went wrong with Stripe. Please try again');
-      };
-    };
+      }
+    }
 
     async function processGiftCardOrder() {
       try {
         const zipInRange = checkZipInRange();
         const giftCardValue = await checkGiftCardValue();
         const giftCardPrice = giftCardValue; // Add discount here
-        var customer = {};
+        const customer = {};
         customer.first_name = template.find('[name="customer.first_name"]').value;
         customer.last_name = template.find('[name="customer.last_name"]').value;
         customer.email = template.find('[name="customer.email"]').value;
-        var recipient = {};
+        const recipient = {};
         recipient.first_name = template.find('[name="recipient.first_name"]').value;
         recipient.last_name = template.find('[name="recipient.last_name"]').value;
         recipient.email = template.find('[name="recipient.email"]').value;
         recipient.address_zipcode = template.find('[name="recipient.address_zipcode"]').value;
-        var message = template.find('[name="message"]').value;
-        var stripe_id = false;
+        const message = template.find('[name="message"]').value;
+        let stripe_id = false;
 
         if (Meteor.userId() && Meteor.user().stripe_id) {
           stripe_id = Meteor.user().stripe_id;
         } else {
           const token = await createStripeToken();
           const newCustomer = {
-            description: "Guest Customer for " + customer.first_name + " " + customer.last_name,
+            description: `Guest Customer for ${customer.first_name} ${customer.last_name}`,
             source: token.id,
             account_balance: 0,
-            email: customer.email
+            email: customer.email,
           };
 
-          const newStripeCustomer = await createStripeCustomer( newCustomer );
-          stripe_id = newStripeCustomer.id
+          const newStripeCustomer = await createStripeCustomer(newCustomer);
+          stripe_id = newStripeCustomer.id;
           if (Meteor.userId()) {
             // Update the Meteor.user() with the stripe_id
-          };
-        };
+          }
+        }
 
-        const charge  = {
+        const charge = {
           amount: giftCardPrice,
           currency: 'usd',
           customer: stripe_id,
-          description: 'Fed $' + (giftCardValue/100).toFixed(2) + ' Gift Card',
-          receipt_email: customer.email
+          description: `Fed $${(giftCardValue / 100).toFixed(2)} Gift Card`,
+          receipt_email: customer.email,
         };
 
-        const newCharge = await chargeStripe( charge );
-        
+        const newCharge = await chargeStripe(charge);
+
         // Give customer, recipient, and charge info to email
         const giftOrder = {
-          customer: customer,
-          recipient: recipient,
-          message: message,
+          customer,
+          recipient,
+          message,
           charge: newCharge,
           value: giftCardValue,
           status: 'paid',
@@ -239,12 +239,12 @@ Template.Gift_Cards.events({
         Session.set('giftOrder', giftOrder);
         Session.set('loading', false);
         FlowRouter.go('/success');
-      } catch(error) {
+      } catch (error) {
         sAlert.error(error.reason);
         Session.set('loading', false);
         throw new Meteor.Error(401, 'Something went wrong. Please try again');
       }
-    };
+    }
 
     processGiftCardOrder();
   },

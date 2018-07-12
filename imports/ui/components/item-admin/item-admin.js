@@ -5,26 +5,26 @@ import { toggleActive, toggleInPack, remove } from '/imports/api/items/methods.j
 import './item-admin.html';
 
 Template.Item_admin.helpers({
-  trueWarnings: ()=> {
+  trueWarnings: () => {
     const warnings = Template.currentData().warnings;
     const warningsKeys = Object.keys(warnings);
-    var trueWarnings = [];
+    const trueWarnings = [];
 
-    for (var i = warningsKeys.length - 1; i >= 0; i--) {
-      if (warnings[warningsKeys[i]]) trueWarnings.push(warningsKeys[i])
-    };
+    for (let i = warningsKeys.length - 1; i >= 0; i--) {
+      if (warnings[warningsKeys[i]]) trueWarnings.push(warningsKeys[i]);
+    }
 
     return trueWarnings;
   },
 
-  trueAttributes: ()=> {
+  trueAttributes: () => {
     const attributes = Template.currentData().attributes;
     const attributesKeys = Object.keys(attributes);
-    var trueAttributes = [];
+    const trueAttributes = [];
 
-    for (var i = attributesKeys.length - 1; i >= 0; i--) {
-      if (attributes[attributesKeys[i]]) trueAttributes.push(attributesKeys[i])
-    };
+    for (let i = attributesKeys.length - 1; i >= 0; i--) {
+      if (attributes[attributesKeys[i]]) trueAttributes.push(attributesKeys[i]);
+    }
 
     return trueAttributes;
   },
@@ -66,11 +66,11 @@ Template.Item_admin.events({
     });
   },
 
-  'click #Remove'(event){
+  'click #Remove'(event) {
     event.preventDefault();
 
     remove.call({
       _id: Template.currentData()._id,
     });
-  }
+  },
 });

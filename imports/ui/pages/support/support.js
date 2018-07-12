@@ -8,5 +8,5 @@ import './support.html';
 // Components used inside the template
 
 Template.Support_page.onCreated(function supportOnCreated() {
-	Session.set('cartOpen', false);
+  Session.set('cartOpen', false);
 });

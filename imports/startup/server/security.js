@@ -5,16 +5,16 @@ import { BrowserPolicy } from 'meteor/browser-policy-common';
 
 BrowserPolicy.content.allowSameOriginForAll();
 BrowserPolicy.content.allowDataUrlForAll();
-BrowserPolicy.content.allowOriginForAll( '*.stripe.com' );
-BrowserPolicy.content.allowOriginForAll( 'https://getfednyc.com' );
-BrowserPolicy.content.allowOriginForAll( '*.google.com' );
-BrowserPolicy.content.allowOriginForAll( '*.google-analytics.com' );
-BrowserPolicy.content.allowOriginForAll( '*.googletagmanager.com' );
-BrowserPolicy.content.allowOriginForAll( '*.optimizely.com' );
-BrowserPolicy.content.allowOriginForAll( '*.doubleclick.net' );
-BrowserPolicy.content.allowOriginForAll( '*.facebook.net' );
-BrowserPolicy.content.allowOriginForAll( '*.facebook.com' );
-BrowserPolicy.content.allowOriginForAll( '*.segment.com' );
+BrowserPolicy.content.allowOriginForAll('*.stripe.com');
+BrowserPolicy.content.allowOriginForAll('https://getfednyc.com');
+BrowserPolicy.content.allowOriginForAll('*.google.com');
+BrowserPolicy.content.allowOriginForAll('*.google-analytics.com');
+BrowserPolicy.content.allowOriginForAll('*.googletagmanager.com');
+BrowserPolicy.content.allowOriginForAll('*.optimizely.com');
+BrowserPolicy.content.allowOriginForAll('*.doubleclick.net');
+BrowserPolicy.content.allowOriginForAll('*.facebook.net');
+BrowserPolicy.content.allowOriginForAll('*.facebook.com');
+BrowserPolicy.content.allowOriginForAll('*.segment.com');
 
 // Don't let people write arbitrary data to their 'profile' field from the client
 Meteor.users.deny({

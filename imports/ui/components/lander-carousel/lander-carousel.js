@@ -5,11 +5,11 @@ import './lander-carousel.less';
 import './lander-carousel.html';
 
 Template.Lander_carousel.onDestroyed(function landerCarouselOnDestroyed() {
-  $('#Lander-carousel').slick("unslick");
+  $('#Lander-carousel').slick('unslick');
 });
 
 Template.Lander_carousel.onRendered(function landingCarouselOnRendered() {
-  $(function(){
+  $(function() {
     $('#Lander-carousel').slick({
       dots: true,
       arrows: false,

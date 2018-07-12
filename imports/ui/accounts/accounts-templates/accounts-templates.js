@@ -13,7 +13,7 @@ Template['override-atTitle'].replaces('atTitle');
 Template['override-atError'].replaces('atError');
 
 Template.Auth_page.events({
-  'submit form' ( event, template ) {
+  'submit form' (event, template) {
     onLoginFunction();
   },
 });

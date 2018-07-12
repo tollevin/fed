@@ -9,13 +9,9 @@ Template.Modals.onCreated(function menuItemOnCreated() {
 });
 
 Template.Modals.helpers({
-  loading: ()=> {
-    return Session.get('loading') && 'loading';
-  },
+  loading: () => Session.get('loading') && 'loading',
 
-  filterMenuOpen: ()=> {
-    return Session.get('filterMenuOpen') && 'filterMenuOpen';
-  },
+  filterMenuOpen: () => Session.get('filterMenuOpen') && 'filterMenuOpen',
 
   packEditorOpen() {
     return Session.get('packEditorOpen');
@@ -25,9 +21,7 @@ Template.Modals.helpers({
     return Session.get('cartOpen') && 'cartOpen';
   },
 
-  selectPack: ()=> {
-    return !Session.get('Order');
-  },
+  selectPack: () => !Session.get('Order'),
 
   closed() {
     const route = FlowRouter.getRouteName();

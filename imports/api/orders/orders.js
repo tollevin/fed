@@ -4,8 +4,8 @@ import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { 
-  Items
+import {
+  Items,
 } from '../items/items.js';
 
 // SimpleSchema.debug = true;
@@ -17,12 +17,13 @@ class OrdersCollection extends Mongo.Collection {
     const result = super.insert(ourOrder, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
   // No remove -- Orders should only be updated
-};
+}
 
 export const Orders = new OrdersCollection('Orders');
 
@@ -36,26 +37,26 @@ Orders.deny({
 Recipient = new SimpleSchema({
   first_name: { type: String },
   last_name: { type: String },
-  phone: { 
+  phone: {
     type: String,
     // regEx: "\b\d{3}[-.]?\d{3}[-.]?\d{4}\b",
     autoform: {
       afFieldInput: {
-        type: "tel"
-      }
-    }
+        type: 'tel',
+      },
+    },
   },
   email: {
     type: String,
     regEx: SimpleSchema.RegEx.Email,
-    label: "Email address"
+    label: 'Email address',
   },
   address_line_1: {
     type: String,
   },
   address_line_2: {
     type: String,
-    optional: true
+    optional: true,
   },
   address_city: {
     type: String,
@@ -63,7 +64,7 @@ Recipient = new SimpleSchema({
   address_state: {
     type: String,
     // regEx: "[A-Za-z]{2}",
-    allowedValues: [ "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FM", "FL", "GA", "GU", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MH", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY" ],
+    allowedValues: ['AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY'],
   },
   address_zipcode: {
     type: String,
@@ -76,13 +77,13 @@ Orders.schema = new SimpleSchema({
     label: '_id',
     regEx: SimpleSchema.RegEx.Id,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
   },
   created_at: {
     type: Date,
-    label: "Created at",
-    optional: true
+    label: 'Created at',
+    optional: true,
   },
   id_number: {
     type: Number,
@@ -91,35 +92,35 @@ Orders.schema = new SimpleSchema({
   },
   week_of: {
     type: Date,
-    label: "Week of",
+    label: 'Week of',
   },
   status: {
     type: String,
-    label: "Status",
+    label: 'Status',
     allowedValues: ['skipped', 'pending', 'pending-sub', 'custom-sub', 'created', 'canceled', 'assigned', 'in_transit', 'delivered', 'rejected', 'returned', 'lost'],
   },
-  style: { 
+  style: {
     type: String,
     label: 'Style',
-    optional: true
+    optional: true,
   },
   user_id: {
     type: String,
     label: 'User ID',
     regEx: SimpleSchema.RegEx.Id,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
-    optional: true
+    optional: true,
   },
   menu_id: {
     type: String,
     label: 'Menu ID',
     regEx: SimpleSchema.RegEx.Id,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
-    optional: true
+    optional: true,
   },
   recipient: {
     type: Recipient,
@@ -130,31 +131,31 @@ Orders.schema = new SimpleSchema({
     optional: true,
   },
   items: {
-    type: [ Object ],
-    label: "Order Items",
+    type: [Object],
+    label: 'Order Items',
     optional: true,
   },
   'items.$': {
     type: Object,
-    label: "Order Item",
+    label: 'Order Item',
     blackbox: true,
     optional: true,
   },
   subscriptions: {
-    type: [ Object ],
-    label: "Order Subscriptions",
+    type: [Object],
+    label: 'Order Subscriptions',
     optional: true,
   },
   'subscriptions.$': {
     type: Object,
-    label: "Order Subscription",
+    label: 'Order Subscription',
     blackbox: true,
     optional: true,
   },
   subtotal: {
     type: Number,
     decimal: true,
-    label: "Subtotal",
+    label: 'Subtotal',
     optional: true,
   },
   discount: {
@@ -162,64 +163,64 @@ Orders.schema = new SimpleSchema({
     label: 'Discount',
     optional: true,
   },
-  "discount.subscriber_discounts": {
-    type: [ Object ],
+  'discount.subscriber_discounts': {
+    type: [Object],
     label: 'Subscriber Discounts',
     optional: true,
   },
-  "discount.subscriber_discounts.$": {
+  'discount.subscriber_discounts.$': {
     type: Object,
     label: 'Subscriber Discount Code',
     optional: true,
   },
-  "discount.subscriber_discounts.$.item_id": {
+  'discount.subscriber_discounts.$.item_id': {
     type: String,
     label: 'Subscription Item',
     optional: true,
   },
-  "discount.subscriber_discounts.$.percent_off": {
+  'discount.subscriber_discounts.$.percent_off': {
     type: String,
     label: 'Subscription Item',
     optional: true,
   },
-  "discount.subscriber_discounts.$.value": {
+  'discount.subscriber_discounts.$.value': {
     type: String,
     label: 'Subscription Item',
     optional: true,
   },
-  "discount.promo": {
+  'discount.promo': {
     type: Object,
     label: 'Promotion',
     optional: true,
   },
-  "discount.promo.type": {
+  'discount.promo.type': {
     type: String,
     label: 'Promotion Type',
     optional: true,
   },
-  "discount.promo.code": {
+  'discount.promo.code': {
     type: String,
     label: 'Promotion Code',
     optional: true,
   },
-  "discount.promo.description": {
+  'discount.promo.description': {
     type: String,
     label: 'Promotion Description',
     optional: true,
   },
-  "discount.promo.value": {
+  'discount.promo.value': {
     type: Number,
     decimal: true,
     label: 'Promotion Discount Value',
     optional: true,
   },
-  "discount.credit": {
+  'discount.credit': {
     type: Number,
     decimal: true,
     label: 'Account Credit Used',
     optional: true,
   },
-  "discount.value": {
+  'discount.value': {
     type: Number,
     decimal: true,
     label: 'Discount Value',
@@ -240,7 +241,7 @@ Orders.schema = new SimpleSchema({
   total: {
     type: Number,
     decimal: true,
-    label: "Total Price",
+    label: 'Total Price',
     optional: true,
   },
   payment_id: {
@@ -249,28 +250,28 @@ Orders.schema = new SimpleSchema({
   },
   paid_at: {
     type: Date,
-    label: "Paid at",
-    optional: true
+    label: 'Paid at',
+    optional: true,
   },
   ready_by: {
     type: Date,
-    label: "Ready By",
-    optional: true
+    label: 'Ready By',
+    optional: true,
   },
   delivery_window_id: {
     type: String,
-    label: "Delivery Window",
-    optional: true
+    label: 'Delivery Window',
+    optional: true,
   },
   delivery_comments: {
     type: String,
-    label: "Comments for delivery",
-    optional: true
+    label: 'Comments for delivery',
+    optional: true,
   },
   tracking_code: {
     type: String,
-    label: "Tracking Code",
-    optional: true
+    label: 'Tracking Code',
+    optional: true,
   },
   courier: {
     type: String,
@@ -279,8 +280,8 @@ Orders.schema = new SimpleSchema({
   },
   delivered_at: {
     type: Date,
-    label: "Delivered at",
-    optional: true
+    label: 'Delivered at',
+    optional: true,
   },
   notes: {
     type: String,
@@ -291,15 +292,15 @@ Orders.schema = new SimpleSchema({
     type: Object,
     label: 'Changes Made',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
   'changes.removed': {
-    type: [ String ],
+    type: [String],
     label: 'Items Removed',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
@@ -307,15 +308,15 @@ Orders.schema = new SimpleSchema({
     type: String,
     label: 'Removed Item',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
   'changes.added': {
-    type: [ String ],
+    type: [String],
     label: 'Items Added',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
@@ -323,7 +324,7 @@ Orders.schema = new SimpleSchema({
     type: String,
     label: 'Added Item',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
@@ -331,7 +332,7 @@ Orders.schema = new SimpleSchema({
     type: Number,
     label: 'Automation Score',
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
@@ -384,7 +385,7 @@ Orders.helpers({
 
 // for testing
 // import { resetDatabase } from 'meteor/xolvio:cleaner';
-// 
+//
 // describe('my module', function () {
 //   beforeEach(function () {
 //     resetDatabase();

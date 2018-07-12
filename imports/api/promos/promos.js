@@ -10,16 +10,18 @@ class PromosCollection extends Mongo.Collection {
     const result = super.insert(ourPromo, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
+
   remove(selector) {
     const promos = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
-};
+}
 
 export const Promos = new PromosCollection('Promos');
 
@@ -37,20 +39,20 @@ Promos.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   createdAt: {
     type: Date,
-    label: "Created at",
+    label: 'Created at',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   code: {
     type: String,
-    label: "code"
+    label: 'code',
   },
   // type: {
   //   type: String,
@@ -58,27 +60,27 @@ Promos.schema = new SimpleSchema({
   // },
   desc: {
     type: String,
-    label: "Description"
+    label: 'Description',
   },
   credit: {
     type: Number,
-    label: "Credit ($)",
-    optional: true
+    label: 'Credit ($)',
+    optional: true,
   },
   percentage: {
     type: Number,
-    label: "Percent Off",
-    optional: true
+    label: 'Percent Off',
+    optional: true,
   },
   function: {
     type: Function,
-    label: "Function",
-    optional: true
+    label: 'Function',
+    optional: true,
   },
   expires: {
     type: String,
     label: 'Expires At',
-    optional: true
+    optional: true,
   },
   useLimitPerCustomer: {
     type: Number,
@@ -89,37 +91,37 @@ Promos.schema = new SimpleSchema({
     type: Number,
     label: 'Number of allowed uses in total',
     defaultValue: 1,
-    optional: true,  
+    optional: true,
   },
   timesUsed: {
     type: Number,
     label: 'Number of times used',
     defaultValue: 0,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   users: {
     type: Object,
-    label: "Users",
+    label: 'Users',
     blackbox: true,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   orders: {
     type: Object,
-    label: "Orders",
+    label: 'Orders',
     blackbox: true,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   active: {
     type: Boolean,
-    label: "Active",
+    label: 'Active',
     defaultValue: true,
   },
 });

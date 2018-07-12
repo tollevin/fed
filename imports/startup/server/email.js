@@ -3,29 +3,29 @@ import { Accounts } from 'meteor/accounts-base';
 
 Meteor.startup(function () {
   smtp = {
-    username: 'postmaster@mg.getfednyc.com',   // eg: server@gentlenode.com
-    password: '8336f45b7a0d32864255c4622040e419',   // eg: 3eeP1gtizk5eziohfervU
-    server:   'smtp.mailgun.org',  // eg: mail.gandi.net
-    port: 587
-  }
+    username: 'postmaster@mg.getfednyc.com', // eg: server@gentlenode.com
+    password: '8336f45b7a0d32864255c4622040e419', // eg: 3eeP1gtizk5eziohfervU
+    server: 'smtp.mailgun.org', // eg: mail.gandi.net
+    port: 587,
+  };
   process.env.ROOT_URL = 'https://getfednyc.com';
-  process.env.MAIL_URL = 'smtp://' + encodeURIComponent(smtp.username) + ':' + encodeURIComponent(smtp.password) + '@' + encodeURIComponent(smtp.server) + ':' + smtp.port;
+  process.env.MAIL_URL = `smtp://${encodeURIComponent(smtp.username)}:${encodeURIComponent(smtp.password)}@${encodeURIComponent(smtp.server)}:${smtp.port}`;
 
-  Meteor.absoluteUrl.defaultOptions.rootUrl = "https://getfednyc.com";
+  Meteor.absoluteUrl.defaultOptions.rootUrl = 'https://getfednyc.com';
 
   // Configures "reset password account" email link
-  Accounts.urls.resetPassword = function(token){
-      return Meteor.absoluteUrl("reset-password/" + token);
+  Accounts.urls.resetPassword = function(token) {
+    return Meteor.absoluteUrl(`reset-password/${token}`);
   };
 
   // Configures "enroll account" email link
-  Accounts.urls.enrollAccount = function(token){
-      return Meteor.absoluteUrl("enroll-account/" + token);
+  Accounts.urls.enrollAccount = function(token) {
+    return Meteor.absoluteUrl(`enroll-account/${token}`);
   };
 
   // Configures "verify email" email link
-  Accounts.urls.verifyEmail = function(token){
-      return Meteor.absoluteUrl("verify-email/" + token);
+  Accounts.urls.verifyEmail = function(token) {
+    return Meteor.absoluteUrl(`verify-email/${token}`);
   };
 });
 

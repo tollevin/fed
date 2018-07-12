@@ -18,10 +18,10 @@ const handler = ({ provider, request }, promise) => {
 };
 
 export const handleWebhook = async (options) => {
-	try {
-		const webhook = await handler(options);
-		return webhook;
-	} catch(error) {
+  try {
+    const webhook = await handler(options);
+    return webhook;
+  } catch (error) {
     throw new Meteor.Error(error);
-	};
+  }
 };

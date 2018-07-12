@@ -4,8 +4,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Check } from 'meteor/check';
-import { 
-  Items
+import {
+  Items,
 } from './items.js';
 
 export const insertItem = new ValidatedMethod({
@@ -16,7 +16,7 @@ export const insertItem = new ValidatedMethod({
     subcategory: { type: String, optional: true },
     photo: { type: String, optional: true },
     description: { type: String, optional: true },
-    ingredients: { type: [ String ], optional: true },
+    ingredients: { type: [String], optional: true },
     'ingredients.$': { type: String, optional: true },
     warnings: { type: Object, optional: true },
     'warnings.peanuts': { type: Boolean, optional: true },
@@ -61,7 +61,7 @@ export const insertItem = new ValidatedMethod({
     cost_per_unit: { type: Number, decimal: true, optional: true },
     price_per_unit: { type: Number, decimal: true, optional: true },
     unit: { type: String, optional: true },
-    sub_items: { type: [ String ], optional: true },
+    sub_items: { type: [String], optional: true },
     'sub_items.$': { type: String, optional: true },
     inventory: { type: Number, optional: true },
     rank: { type: Number, optional: true },
@@ -69,8 +69,9 @@ export const insertItem = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ name, category, subcategory, photo, description, ingredients, warnings, nutrition_facts, good_for_days, active, attributes, weight, dimensions, producer, cost_per_unit, price_per_unit, unit, sub_items, inventory, rank }) {
-
+  run({
+    name, category, subcategory, photo, description, ingredients, warnings, nutrition_facts, good_for_days, active, attributes, weight, dimensions, producer, cost_per_unit, price_per_unit, unit, sub_items, inventory, rank,
+  }) {
     const item = {
       user_id: Meteor.userId(),
       created_at: new Date(),
@@ -95,7 +96,7 @@ export const insertItem = new ValidatedMethod({
       unit,
       sub_items,
       inventory,
-      rank
+      rank,
     };
 
     Items.insert(item);
@@ -166,7 +167,7 @@ export const insertItem = new ValidatedMethod({
 //     const item = Items.findOne({name: name});
 
 //     const ordersThisWeek = item.ordersThisWeek + 1;
-//     const ordersTotal = item.ordersTotal + 1;    
+//     const ordersTotal = item.ordersTotal + 1;
 
 //     Items.update(item._id, { $set: {
 //       ordersThisWeek: ordersThisWeek,
@@ -178,7 +179,7 @@ export const insertItem = new ValidatedMethod({
 // export const toggleInPack = new ValidatedMethod({
 //   name: 'Items.methods.toggleInPack',
 //   validate: new SimpleSchema({
-//     itemId: Items.simpleSchema().schema('_id'), 
+//     itemId: Items.simpleSchema().schema('_id'),
 //     pack: { type: String },
 //   }).validator({ clean: true, filter: false }),
 //   run({ itemId, pack }) {

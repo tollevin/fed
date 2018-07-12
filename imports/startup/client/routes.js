@@ -89,13 +89,14 @@ import '/imports/ui/pages/test/test.js';
 // FlowRouter.triggers.exit([saveScrollPosition]);
 // FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
 
-mainRoutes.map(({route, name, layout, template}) =>
-  FlowRouter.route(route, {
-    name,
-    action() {
-      BlazeLayout.render(layout, { main: template });
-    },
-  }));
+mainRoutes.map(({
+  route, name, layout, template,
+}) => FlowRouter.route(route, {
+  name,
+  action() {
+    BlazeLayout.render(layout, { main: template });
+  },
+}));
 
 // the App_notFound template is used for unknown routes and missing lists
 FlowRouter.notFound = {
@@ -104,7 +105,7 @@ FlowRouter.notFound = {
   },
 };
 
-var flowAdminRoutes = FlowRouter.group({
+const flowAdminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',
   // triggersEnter: [function(context, redirect) {
@@ -112,26 +113,27 @@ var flowAdminRoutes = FlowRouter.group({
   // }]
 });
 
-adminRoutes.map(({route, name, layout, template}) =>
-  flowAdminRoutes.route(route, {
-    name,
-    action() {
-      BlazeLayout.render(layout, { main: template });
-    },
-  }));
+adminRoutes.map(({
+  route, name, layout, template,
+}) => flowAdminRoutes.route(route, {
+  name,
+  action() {
+    BlazeLayout.render(layout, { main: template });
+  },
+}));
 
-FlowRouter.route( '/verify-email/:token', {
+FlowRouter.route('/verify-email/:token', {
   name: 'verify-email',
-  action( params ) {
-    Accounts.verifyEmail( params.token, ( error ) =>{
-      if ( error ) {
-        sAlert.error( error.reason );
+  action(params) {
+    Accounts.verifyEmail(params.token, (error) => {
+      if (error) {
+        sAlert.error(error.reason);
       } else {
-        FlowRouter.go( '/' );
-        sAlert.success( 'Email verified! Welcome to Fed!');
+        FlowRouter.go('/');
+        sAlert.success('Email verified! Welcome to Fed!');
       }
     });
-  }
+  },
 });
 
 AccountsTemplates.configureRoute('signIn', {
