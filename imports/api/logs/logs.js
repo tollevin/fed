@@ -1,49 +1,49 @@
-Logs = new Mongo.Collection( 'logs' );
+Logs = new Mongo.Collection('logs');
 
-if ( Meteor.isServer ) {
-  Logs._ensureIndex( { 'date': 1 }, { expireAfterSeconds: 86400 } );
+if (Meteor.isServer) {
+  Logs._ensureIndex({ date: 1 }, { expireAfterSeconds: 86400 });
 }
 
 Logs.allow({
   insert: () => false,
   update: () => false,
-  remove: () => false
+  remove: () => false,
 });
 
 Logs.deny({
   insert: () => true,
   update: () => true,
-  remove: () => true
+  remove: () => true,
 });
 
-let LogsSchema = new SimpleSchema({
-  'applicationId': {
+const LogsSchema = new SimpleSchema({
+  applicationId: {
     type: String,
-    label: 'The ID of the application this log item belongs to.'
+    label: 'The ID of the application this log item belongs to.',
   },
-  'date': {
+  date: {
     type: Date,
-    label: 'The date and time when this log item occurred.'
+    label: 'The date and time when this log item occurred.',
   },
-  'type': {
+  type: {
     type: String,
-    allowedValues: [ 'danger', 'warning', 'info', 'success' ],
-    label: 'The type of this log message.'
+    allowedValues: ['danger', 'warning', 'info', 'success'],
+    label: 'The type of this log message.',
   },
-  'title': {
+  title: {
     type: String,
-    label: 'The title of this log message.'
+    label: 'The title of this log message.',
   },
-  'message': {
+  message: {
     type: String,
-    label: 'The contents of this log message.'
+    label: 'The contents of this log message.',
   },
-  'payload': {
+  payload: {
     type: Object,
     label: 'Additional content passed with the log message.',
     optional: true,
-    blackbox: true
-  }
+    blackbox: true,
+  },
 });
 
-Logs.attachSchema( LogsSchema );
+Logs.attachSchema(LogsSchema);

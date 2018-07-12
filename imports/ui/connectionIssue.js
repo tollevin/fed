@@ -7,12 +7,11 @@ export const showConnectionIssue = new ReactiveVar(false);
 
 Meteor.startup(function () {
   setTimeout(() => {
-      // FIXME:
-      // Launch screen handle created in lib/router.js
-      // dataReadyHold.release();
+    // FIXME:
+    // Launch screen handle created in lib/router.js
+    // dataReadyHold.release();
 
-      // Show the connection error box
-      showConnectionIssue.set(true);
-    }, CONNECTION_ISSUE_TIMEOUT);
+    // Show the connection error box
+    showConnectionIssue.set(true);
+  }, CONNECTION_ISSUE_TIMEOUT);
 });
-

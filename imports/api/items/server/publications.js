@@ -26,20 +26,20 @@ Meteor.publish('items.all', function itemsAll() {
 
 Meteor.publish('singleItem', function singleItem(id) {
   check(id, String);
-  return Items.find({_id: id});
+  return Items.find({ _id: id });
 });
 
 Meteor.publish('Items.packs', function itemsPacks() {
-	const options = {
-		fields: {
-			_id: 1,
-			name: 1,
-			category: 1,
-			description: 1,
-			price_per_unit: 1,
-			sub_items: 1,
-		}
-	};
-	
-  return Items.find({category: 'Pack'}, options);
+  const options = {
+    fields: {
+      _id: 1,
+      name: 1,
+      category: 1,
+      description: 1,
+      price_per_unit: 1,
+      sub_items: 1,
+    },
+  };
+
+  return Items.find({ category: 'Pack' }, options);
 });

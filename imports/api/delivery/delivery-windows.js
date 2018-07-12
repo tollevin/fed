@@ -12,16 +12,18 @@ class DeliveryWindowsCollection extends Mongo.Collection {
     const result = super.insert(delivery_window, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
+
   remove(selector) {
     const windows = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
-};
+}
 
 export const DeliveryWindows = new DeliveryWindowsCollection('DeliveryWindows');
 
@@ -39,8 +41,8 @@ DeliveryWindows.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   created_at: {
     type: Date,
@@ -50,8 +52,8 @@ DeliveryWindows.schema = new SimpleSchema({
     // },
     denyUpdate: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   delivery_start_time: {
     type: Date,
@@ -64,7 +66,7 @@ DeliveryWindows.schema = new SimpleSchema({
   delivery_day: {
     type: String,
     label: 'Delivery Day',
-  }
+  },
 });
 
 DeliveryWindows.attachSchema(DeliveryWindows.schema);

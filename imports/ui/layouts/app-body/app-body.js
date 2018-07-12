@@ -21,7 +21,7 @@ import '/imports/ui/components/banner/banner.js';
 import '/imports/ui/components/content-overlay/content-overlay.js';
 import '/imports/ui/components/footer/footer.js';
 
-import { showConnectionIssue } from "/imports/ui/connectionIssue.js";
+import { showConnectionIssue } from '/imports/ui/connectionIssue.js';
 
 Template.App_body.onCreated(function appBodyOnCreated() {
   Session.setDefault({
@@ -35,7 +35,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
   this.subscribe('thisUserData');
   this.subscribe('thisUsersFuture.orders', timestamp);
   this.subscribe('Menus.toCome');
-  
+
   this.autorun(() => {
     // var current = FlowRouter.current();
     Tracker.afterFlush(function () {
@@ -45,25 +45,24 @@ Template.App_body.onCreated(function appBodyOnCreated() {
     if (this.subscriptionsReady()) {
       // if a user has subscriptions,
       const user = Meteor.user();
-      if (user && user.subscriptions && user.subscriptions.length > 0 && user.subscriptions[0].status === 'active' ) {
+      if (user && user.subscriptions && user.subscriptions.length > 0 && user.subscriptions[0].status === 'active') {
+        const week_of = moment().tz('America/New_York').startOf('week').utc()
+          .toDate();
 
-        var week_of = moment().tz('America/New_York').startOf('week').utc().toDate();
-
-        var order_week_of = Orders.findOne({week_of: week_of});
+        const order_week_of = Orders.findOne({ week_of });
 
         if (!Session.get('orderId')) Session.set('orderId', order_week_of);
 
         Session.set('subscribed', true);
       } else {
         Session.set('subscribed', false);
-      };
-    };
+      }
+    }
   });
 });
 
 Template.App_body.onRendered(function appBodyOnRendered() {
   window.prerenderReady = true;
-  
 });
 
 Template.App_body.helpers({
@@ -87,7 +86,7 @@ Template.App_body.helpers({
     return Session.get('userMenuOpen');
   },
   connected() {
-    console.log("showConnectionIssue.get() = %j", showConnectionIssue.get());
+    console.log('showConnectionIssue.get() = %j', showConnectionIssue.get());
     if (showConnectionIssue.get()) {
       return Meteor.status().connected;
     }
@@ -112,7 +111,7 @@ Template.App_body.helpers({
       const route = FlowRouter.getRouteName();
       if (route === 'Menu.show') {
         Session.set('packEditorOpen', true);
-      };
+      }
     },
   },
 });

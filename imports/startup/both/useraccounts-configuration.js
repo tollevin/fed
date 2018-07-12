@@ -18,7 +18,7 @@ AccountsTemplates.configure({
   // Texts
   texts: {
     button: {
-      signUp: "Get fed!",
+      signUp: 'Get fed!',
     },
     errors: {
       loginForbidden: 'Incorrect username or password',
@@ -38,21 +38,21 @@ AccountsTemplates.configure({
   homeRoutePath: '/',
 
   // Hooks
-  postSignUpHook: function(userId) {
+  postSignUpHook(userId) {
     const user = Meteor.users.findOne(userId);
     const address_zipcode = user.profile.zipCode;
     const amount_spent = 0;
-    const data = { 
+    const data = {
       address_zipcode,
       amount_spent,
     };
 
-    Meteor.call( 'updateUser', user._id, data, ( error, response ) => {
-      if ( error ) {
-        console.log(error + ": error");
+    Meteor.call('updateUser', user._id, data, (error, response) => {
+      if (error) {
+        console.log(`${error}: error`);
       } else {
         console.log(response);
-      };
+      }
     });
 
     // createCustomer.call(customer, (error, response) => {
@@ -89,15 +89,14 @@ AccountsTemplates.addFields([
     type: 'text',
     displayName: 'Where do you live?',
     placeholder: {
-      signUp:'Enter your zip code'
+      signUp: 'Enter your zip code',
     },
     required: true,
-    func: function (value) {
-      if (yesZips.indexOf(value) >= 0){
+    func (value) {
+      if (yesZips.indexOf(value) >= 0) {
         return false; // meaning no error!
-      } else {
+      }
       return true; // Validation error!
-      };
     },
     errStr: "Sorry. It looks like we don't deliver to your area yet.",
   },

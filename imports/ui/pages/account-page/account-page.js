@@ -12,52 +12,50 @@ import './account-page.html';
 
 Template.Account_page.onCreated(function accountPageOnCreated() {
   Session.set('stage', 0);
-  
-	this.autorun(() => {
-    var subs = this.subscribe('thisUserData');
 
-    if(!Meteor.userId()){
+  this.autorun(() => {
+    const subs = this.subscribe('thisUserData');
+
+    if (!Meteor.userId()) {
   		FlowRouter.go('/signin');
-  	} else {
-      if (subs.ready()) {
-        const stripe_id = Meteor.user().stripe_id;
-        //If user has a stripe_id, retrieve their customer info from Stripe
-        if (stripe_id) {
-          Meteor.call( 'retrieveCustomer', stripe_id, (err, response) => {
-            if ( err ) {
-              console.log(err);
-            } else {
-              //Set stripe_customer info to a Session var
-              Session.setDefault("stripe_customer", response);
-              //Figure out if a user is currently skipping (REDUNDANT post cron)
-              if (Meteor.user().skipping) {
-                var skippingTil = Meteor.user().skipping.slice(6,);
-                if (moment().unix() > moment(skippingTil, "MM-DD-YYYY").subtract(7, 'd').unix()) {
-                  var skipping = false;
-                  Meteor.user().skipping = false;
-                } else {
-                  var skipping = true;
-                }
-              } else {
+  	} else if (subs.ready()) {
+      const stripe_id = Meteor.user().stripe_id;
+      // If user has a stripe_id, retrieve their customer info from Stripe
+      if (stripe_id) {
+        Meteor.call('retrieveCustomer', stripe_id, (err, response) => {
+          if (err) {
+            console.log(err);
+          } else {
+            // Set stripe_customer info to a Session var
+            Session.setDefault('stripe_customer', response);
+            // Figure out if a user is currently skipping (REDUNDANT post cron)
+            if (Meteor.user().skipping) {
+              const skippingTil = Meteor.user().skipping.slice(6);
+              if (moment().unix() > moment(skippingTil, 'MM-DD-YYYY').subtract(7, 'd').unix()) {
                 var skipping = false;
-              };
-              Session.setDefault('skipping', skipping);
-              //If user's subscription start matches the start of their current billing period, set them as 'trialing' (new customer)
-              if (response.subscriptions.data.created === response.subscriptions.data.current_period_start) {
-                Session.set('trial', true);
-              };
-            };
-          });
-        };
-      };
-    };
+                Meteor.user().skipping = false;
+              } else {
+                var skipping = true;
+              }
+            } else {
+              var skipping = false;
+            }
+            Session.setDefault('skipping', skipping);
+            // If user's subscription start matches the start of their current billing period, set them as 'trialing' (new customer)
+            if (response.subscriptions.data.created === response.subscriptions.data.current_period_start) {
+              Session.set('trial', true);
+            }
+          }
+        });
+      }
+    }
   });
 
-	Session.set('cartOpen', false);
+  Session.set('cartOpen', false);
 });
 
 Template.Account_page.onRendered(function accountPageOnRendered() {
-  
+
 });
 
 Template.Account_page.helpers({
@@ -120,7 +118,7 @@ Template.Account_page.helpers({
   city() {
     return Meteor.user().address_city;
   },
-  
+
   zip() {
     return Meteor.user().address_zipcode;
   },
@@ -130,32 +128,32 @@ Template.Account_page.helpers({
   },
 
   cardNo() {
-    return "************" + Session.get('stripe_customer').sources.data[0].last4;
+    return `************${Session.get('stripe_customer').sources.data[0].last4}`;
   },
 
   nextDeliv() {
-    if (Meteor.user().subscriptions.status === "trialing") {
+    if (Meteor.user().subscriptions.status === 'trialing') {
       const trial_end = Meteor.user().subscriptions.trial_end;
       const delDay = Meteor.user().preferredDelivDay;
-      if (delDay === "sunday") {
+      if (delDay === 'sunday') {
         var toAdd = 3;
       } else {
         var toAdd = 4;
-      };
-      var nextDelivTime = (trial_end * 1000) + (toAdd * 24 * 60 * 60 * 1000);
-      var nextDeliv = new Date(nextDelivTime).toLocaleDateString();
-      return delDay.charAt(0).toUpperCase() + delDay.slice(1) + ", " + nextDeliv;
-    } else if (Meteor.user().subscriptions.status === "active") {
+      }
+      const nextDelivTime = (trial_end * 1000) + (toAdd * 24 * 60 * 60 * 1000);
+      const nextDeliv = new Date(nextDelivTime).toLocaleDateString();
+      return `${delDay.charAt(0).toUpperCase() + delDay.slice(1)}, ${nextDeliv}`;
+    } if (Meteor.user().subscriptions.status === 'active') {
       const delDay = Meteor.user().preferredDelivDay;
-      if (delDay === "sunday") {
+      if (delDay === 'sunday') {
         var dy = 0;
       } else {
         var dy = 1;
-      };
+      }
       const now = new moment();
 
-      return now.day(dy + 7).format("dddd, M/D/YY")
-    };
+      return now.day(dy + 7).format('dddd, M/D/YY');
+    }
   },
 
   skipping() {
@@ -166,26 +164,24 @@ Template.Account_page.helpers({
     const now = moment();
     if (now.day() < 4) {
       return true;
-    } else {
-      return false;
-    };
+    }
+    return false;
   },
 });
 
 Template.Account_page.events({
   'click #Plan li label'(event, template) {
-
-    const plans = template.findAll("#Plan li");
-    plans[0].style.borderColor = "#034b2c";
-    plans[1].style.borderColor = "#034b2c";
-    plans[2].style.borderColor = "#034b2c";
-    plans[3].style.borderColor = "#034b2c";
-    plans[0].style.backgroundColor = "transparent";
-    plans[1].style.backgroundColor = "transparent";
-    plans[2].style.backgroundColor = "transparent";
-    plans[3].style.backgroundColor = "transparent";
-    event.target.closest( "li" ).style.borderColor = "#fff";
-    event.target.closest( "li" ).style.backgroundColor = "#fff";
+    const plans = template.findAll('#Plan li');
+    plans[0].style.borderColor = '#034b2c';
+    plans[1].style.borderColor = '#034b2c';
+    plans[2].style.borderColor = '#034b2c';
+    plans[3].style.borderColor = '#034b2c';
+    plans[0].style.backgroundColor = 'transparent';
+    plans[1].style.backgroundColor = 'transparent';
+    plans[2].style.backgroundColor = 'transparent';
+    plans[3].style.backgroundColor = 'transparent';
+    event.target.closest('li').style.borderColor = '#fff';
+    event.target.closest('li').style.backgroundColor = '#fff';
   },
 
   // 'click .diet label, touchstart .diet label'(event, template) {
@@ -297,13 +293,13 @@ Template.Account_page.events({
   // },
 
   'click #DeliveryDay li label'(event, template) {
-    const delivery = template.findAll("#DeliveryDay li");
-    delivery[0].style.borderColor = "#034b2c";
-    delivery[1].style.borderColor = "#034b2c";
-    delivery[0].style.backgroundColor = "transparent";
-    delivery[1].style.backgroundColor = "transparent";
-    event.target.closest( "li" ).style.borderColor = "#fff";
-    event.target.closest( "li" ).style.backgroundColor = "#fff";
+    const delivery = template.findAll('#DeliveryDay li');
+    delivery[0].style.borderColor = '#034b2c';
+    delivery[1].style.borderColor = '#034b2c';
+    delivery[0].style.backgroundColor = 'transparent';
+    delivery[1].style.backgroundColor = 'transparent';
+    event.target.closest('li').style.borderColor = '#fff';
+    event.target.closest('li').style.backgroundColor = '#fff';
   },
 
   'click #Sub' (event) {
@@ -320,7 +316,7 @@ Template.Account_page.events({
     event.preventDefault();
     Session.set('stage', 2);
   },
-    
+
   'click #payment-settings'(event) {
     event.preventDefault();
     Session.set('stage', 3);
@@ -330,40 +326,39 @@ Template.Account_page.events({
     event.preventDefault();
     Session.set('stage', 0);
   },
-    
+
   'click .sbmtPack'(event) {
     event.preventDefault();
     Session.set('loading', true);
 
-    var formdata = {};
+    const formdata = {};
     if (document.querySelector('input[name="plan"]:checked').value) formdata.plan = document.querySelector('input[name="plan"]:checked').value;
     if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
     if (document.querySelector('input[name="delivery"]:checked').value) formdata.preferredDelivDay = document.querySelector('input[name="delivery"]:checked').value;
-    var restrictions = template.findAll('.checked');
-      formdata.restrictions = [];
-      for (var i = restrictions.length - 1; i >= 0; i--) {
-        formdata.restrictions.push(restrictions[i].id);
-      };
+    const restrictions = template.findAll('.checked');
+    formdata.restrictions = [];
+    for (let i = restrictions.length - 1; i >= 0; i--) {
+      formdata.restrictions.push(restrictions[i].id);
+    }
     const user = formdata;
 
-    Meteor.call( 'updateUser', Meteor.userId(), user, ( error, response ) => {
-      if ( error ) {
-        console.log(error + "; error");
+    Meteor.call('updateUser', Meteor.userId(), user, (error, response) => {
+      if (error) {
+        console.log(`${error}; error`);
       } else {
         console.log(response);
-      };
+      }
     });
-    sAlert.success("Settings saved!");
+    sAlert.success('Settings saved!');
     Session.set('stage', 0);
     Session.set('loading', false);
-
   },
 
   'submit #DeliveryForm'(event, template) {
     event.preventDefault();
     Session.set('loading', true);
 
-    var formdata = {};
+    const formdata = {};
     if (template.find('[name="customer.firstName"]').value) formdata.first_name = template.find('[name="customer.firstName"]').value;
     if (template.find('[name="customer.lastName"]').value) formdata.last_name = template.find('[name="customer.lastName"]').value;
     if (template.find('[name="customer.phone"]').value) formdata.phone = template.find('[name="customer.phone"]').value;
@@ -376,13 +371,13 @@ Template.Account_page.events({
     if (template.find('[name="destinationComments"]').value) formdata.comments = template.find('[name="destinationComments"]').value;
     const user = formdata;
 
-    Meteor.call( 'updateUser', Meteor.userId(), user, ( error, response ) => {
-      if ( error ) {
-        console.log(error + "; error");
+    Meteor.call('updateUser', Meteor.userId(), user, (error, response) => {
+      if (error) {
+        console.log(`${error}; error`);
       } else {
         sAlert.success('Delivery settings updated!');
         Session.set('stage', 0);
-      };
+      }
     });
     Session.set('loading', false);
   },
@@ -392,11 +387,15 @@ Template.Account_page.events({
 
     const subscriptionId = Meteor.user().subscriptions.id;
 
-    var now = moment().unix();
-    var thisThursdayTime = moment().day(4).hours(0).minutes(0).seconds(0).unix();
+    const now = moment().unix();
+    const thisThursdayTime = moment().day(4).hours(0).minutes(0)
+      .seconds(0)
+      .unix();
     if (now < thisThursdayTime) {
-      var nextThursdayTime = moment().day(11).hours(0).minutes(0).seconds(0).unix();
-    };
+      var nextThursdayTime = moment().day(11).hours(0).minutes(0)
+        .seconds(0)
+        .unix();
+    }
 
     const args = {
       subscription_id: subscriptionId,
@@ -404,16 +403,16 @@ Template.Account_page.events({
       prorate: false,
     };
 
-    Meteor.call( 'updateSubscription', args, ( error, response ) => {
-      if ( error ) {
-        console.log(error + "; error");
+    Meteor.call('updateSubscription', args, (error, response) => {
+      if (error) {
+        console.log(`${error}; error`);
       } else {
         const user = Meteor.user();
         user.subscriptions = response;
-        user.skipping = "Until " + new moment(nextThursdayTime * 1000).format("MM/DD/YY");
-        Meteor.call( 'updateUser', Meteor.userId(), user );
+        user.skipping = `Until ${new moment(nextThursdayTime * 1000).format('MM/DD/YY')}`;
+        Meteor.call('updateUser', Meteor.userId(), user);
         Session.set('skipping', true);
-      };
+      }
     });
   },
 
@@ -422,11 +421,15 @@ Template.Account_page.events({
 
     const subscriptionId = Meteor.user().subscriptions.id;
 
-    var now = moment().unix();
-    var thisThursdayTime = moment().day(4).hours(0).minutes(0).seconds(0).unix();
+    const now = moment().unix();
+    const thisThursdayTime = moment().day(4).hours(0).minutes(0)
+      .seconds(0)
+      .unix();
     if (now < thisThursdayTime) {
-      var comingThursdayTime = moment().day(4).hours(0).minutes(0).seconds(0).unix();
-    }; // } else {
+      var comingThursdayTime = moment().day(4).hours(0).minutes(0)
+        .seconds(0)
+        .unix();
+    } // } else {
     //   var comingThursdayTime = moment().day(4 + 7).hours(0).minutes(0).seconds(0).unix();
     // };
 
@@ -436,17 +439,17 @@ Template.Account_page.events({
       prorate: false,
     };
 
-    Meteor.call( 'updateSubscription', args, ( error, response ) => {
-      if ( error ) {
-        console.log(error + "; error");
+    Meteor.call('updateSubscription', args, (error, response) => {
+      if (error) {
+        console.log(`${error}; error`);
       } else {
         const user = Meteor.user();
         user.subscriptions = response;
         user.skipping = false;
 
-        Meteor.call( 'updateUser', Meteor.userId(), user );
-        Session.set('skipping', false)
-      };
+        Meteor.call('updateUser', Meteor.userId(), user);
+        Session.set('skipping', false);
+      }
     });
   },
 
@@ -460,17 +463,17 @@ Template.Account_page.events({
     const customerId = Meteor.user().stripe_id;
     const subscriptionId = Meteor.user().subscriptions.id;
 
-    Meteor.call( 'cancelSubscription', subscriptionId, ( error, response ) => {
-      if ( error ) {
-        console.log(error + "; error");
+    Meteor.call('cancelSubscription', subscriptionId, (error, response) => {
+      if (error) {
+        console.log(`${error}; error`);
       } else {
         const user = Meteor.user();
         user.subscriptions = response;
 
-        Meteor.call( 'updateUser', Meteor.userId(), user );
+        Meteor.call('updateUser', Meteor.userId(), user);
         sAlert.success('You have been unsubscribed. We hope to see you again soon!');
         FlowRouter.go('/');
-      };
+      }
     });
   },
 });

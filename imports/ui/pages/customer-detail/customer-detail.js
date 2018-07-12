@@ -13,13 +13,13 @@ Template.Customer_detail.onCreated(function customerDetailOnCreated() {
 });
 
 Template.Customer_detail.helpers({
-	customer() {
+  customer() {
     const id = FlowRouter.getParam('_id');
     if (id) {
-      const customer = Meteor.users.findOne({_id: id});
+      const customer = Meteor.users.findOne({ _id: id });
       return customer;
-    };
-	},
+    }
+  },
 
   Back() {
     return Session.get('previousRoute');
@@ -38,21 +38,21 @@ Template.Customer_detail.events({
     const newCredit = template.find('[name="currentCredit"]').value;
     if (newCredit) {
       const user = FlowRouter.getParam('_id');
-      var newCreditToFloat = parseFloat(newCredit);
+      const newCreditToFloat = parseFloat(newCredit);
       const data = {
         credit: newCreditToFloat,
       };
 
-      Meteor.call( 'updateUser', user, data, ( error, response ) => {
-        if ( error ) {
-          console.log(error + ": error");
+      Meteor.call('updateUser', user, data, (error, response) => {
+        if (error) {
+          console.log(`${error}: error`);
         } else {
           console.log(response);
-        };
+        }
       });
     } else {
       const errorElement = template.find('[name="currentCredit"]');
-      errorElement.classList.add('StripeElement--invalid');;
+      errorElement.classList.add('StripeElement--invalid');
     }
   },
 });

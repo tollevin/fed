@@ -6,12 +6,12 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Check } from 'meteor/check';
 import moment from 'moment';
 
-import { 
-  Plans
+import {
+  Plans,
 } from './plans.js';
 
-import { 
-  Items
+import {
+  Items,
 } from '../items/items.js';
 
 
@@ -19,7 +19,7 @@ import {
 
 // Call from client
 export const insertPlan = new ValidatedMethod({
-	name: 'Plans.insert',
+  name: 'Plans.insert',
   validate: new SimpleSchema({
     item_id: { type: String },
     item_name: { type: String, optional: true },
@@ -32,9 +32,10 @@ export const insertPlan = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ item_id, item_name, price, percent_off, quantity, frequency, tax_percent }) {
-
-  	const newPlan = { 
+  run({
+    item_id, item_name, price, percent_off, quantity, frequency, tax_percent,
+  }) {
+  	const newPlan = {
 		  item_id,
       item_name,
       price,
@@ -47,7 +48,7 @@ export const insertPlan = new ValidatedMethod({
     };
 
     const planId = Plans.insert(newPlan);
-    var result = Plans.findOne({_id: planId});
+    const result = Plans.findOne({ _id: planId });
     result.status = 'pending';
 
     return result;
@@ -64,31 +65,30 @@ export const subscribeToPlan = new ValidatedMethod({
     noRetry: true,
   },
   run({ plan_id, user_id }) {
-
-    const user = Meteor.users.findOne({ _id: user_id});
-    var plan = Plans.findOne({_id: plan_id});
+    const user = Meteor.users.findOne({ _id: user_id });
+    const plan = Plans.findOne({ _id: plan_id });
 
     plan.status = 'active';
     plan.subscribed_at = new Date();
 
-    var subscriptions = user.subscriptions;
+    let subscriptions = user.subscriptions;
 
     if (subscriptions) {
       subscriptions.push(plan);
     } else {
       subscriptions = [plan];
-    };
+    }
 
     Meteor.users.update(user_id, {
       $set: {
-        subscriptions: subscriptions
-      }
+        subscriptions,
+      },
     });
   },
 });
 
 export const checkForPlan = new ValidatedMethod({
-	name: 'Plans.check',
+  name: 'Plans.check',
   validate: new SimpleSchema({
 	  item_id: { type: String },
 	  // discount: { type: Number, optional: true },
@@ -99,15 +99,17 @@ export const checkForPlan = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ item_id, discount, quantity, frequency }) {
+  run({
+    item_id, discount, quantity, frequency,
+  }) {
     const selector = {
-      "item_id": item_id,
-      "quantity": quantity,
-      "frequency": frequency,
+      item_id,
+      quantity,
+      frequency,
     };
 
-    console.log( selector );
-  	var planExists = Plans.find(selector).fetch();
+    console.log(selector);
+  	const planExists = Plans.find(selector).fetch();
 
   	return planExists;
   },

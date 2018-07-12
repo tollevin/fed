@@ -11,4 +11,4 @@ const handler = (data, promise) => {
   }
 };
 
-export const chargeSucceeded = (data) => handler(data);
+export const chargeSucceeded = data => handler(data);

@@ -5,7 +5,7 @@ import { Session } from 'meteor/session';
 
 export const onLoginFunction = () => {
   const route = FlowRouter.current().route.name;
-  var user = Meteor.user();
+  const user = Meteor.user();
   let subs;
 
   if (user) subs = user.subscriptions;
@@ -13,34 +13,30 @@ export const onLoginFunction = () => {
   // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
   if (route === 'signin') {
     FlowRouter.go('Menu.show');
-  } else {
-    if (subs && subs[0].status != 'canceled') {
-      FlowRouter.go('User.home');
-    };
-  };
+  } else if (subs && subs[0].status != 'canceled') {
+    FlowRouter.go('User.home');
+  }
 };
 
 const onLogoutFunction = () => {
-  Accounts.onLogout(function(){
+  Accounts.onLogout(function() {
     Session.set('Order', undefined);
     Session.set('orderId', undefined);
     Session.set('newUser', undefined);
     Session.set('subscribed', undefined);
     Session.set('pack', undefined);
     Session.set('stage', undefined);
-    
-    FlowRouter.go('App.home')
+
+    FlowRouter.go('App.home');
   });
 };
 
-export const signin = ({email, password}, callback) =>
-  Meteor.loginWithPassword(email, password, ( error ) => {
-    if (callback) { callback(error); }
-    if(!error) { onLoginFunction(); }
-  });
+export const signin = ({ email, password }, callback) => Meteor.loginWithPassword(email, password, (error) => {
+  if (callback) { callback(error); }
+  if (!error) { onLoginFunction(); }
+});
 
-export const signout = (callback) =>
-  Meteor.logout((error) => {
-    if(callback) { callback(error); }
-    if(!error) { onLogoutFunction(); }
-  });
+export const signout = callback => Meteor.logout((error) => {
+  if (callback) { callback(error); }
+  if (!error) { onLogoutFunction(); }
+});

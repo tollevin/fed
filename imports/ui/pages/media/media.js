@@ -7,5 +7,5 @@ import './media.html';
 
 // Components used inside the template
 Template.Media.onCreated(function mediaOnCreated() {
-	Session.set('cartOpen', false);
+  Session.set('cartOpen', false);
 });

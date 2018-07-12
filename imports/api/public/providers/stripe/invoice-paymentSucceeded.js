@@ -20,4 +20,4 @@ const handler = (data, promise) => {
   }
 };
 
-export const invoicePaymentSucceeded = (data) => handler(data);
+export const invoicePaymentSucceeded = data => handler(data);

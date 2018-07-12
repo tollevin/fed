@@ -15,7 +15,5 @@ Template.Menu_admin.onCreated(function menuAdminOnCreated() {
 });
 
 Template.Menu_admin.helpers({
-  items: ()=> {
-  	return Items.find({});
-  },
+  items: () => Items.find({}),
 });

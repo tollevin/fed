@@ -8,7 +8,7 @@ import '/imports/ui/components/loading/loading.js';
 import './admin-layout.less';
 import './admin-layout.html';
 
-import { showConnectionIssue } from "/imports/ui/connectionIssue.js";
+import { showConnectionIssue } from '/imports/ui/connectionIssue.js';
 
 Template.Admin_layout.onCreated(function adminLayoutOnCreated() {
   Session.setDefault({
@@ -23,7 +23,7 @@ Template.Admin_layout.onRendered(function adminLayoutOnRendered() {
 
 Template.Admin_layout.helpers({
   isAdmin () {
-    return Meteor.user() && Meteor.user().emails[0].address.slice(-14) === "@getfednyc.com" && Meteor.user().emails[0].verified;
+    return Meteor.user() && Meteor.user().emails[0].address.slice(-14) === '@getfednyc.com' && Meteor.user().emails[0].verified;
   },
 
   adminMenuOpen() {
@@ -72,7 +72,7 @@ Template.Admin_layout.events({
   },
 
   'click #ThisWeeksOrders-tab'(event, template) {
-    Session.set('state','thisWeeksOrders');
+    Session.set('state', 'thisWeeksOrders');
   },
 
   'click #Active-Subs'(event, template) {

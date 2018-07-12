@@ -15,19 +15,18 @@ import './user-home.less';
 import './user-home.html';
 
 Template.User_home.onCreated(function userHomeOnCreated() {
-
   if (!Meteor.userId()) {
     FlowRouter.go('signin');
-  };
+  }
 
   this.nextOrder = new ReactiveVar();
   this.futureOrders = new ReactiveVar();
 
   this.autorun(() => {
-    const orders = Orders.find({status:{$nin: ['pending', 'canceled']}}, {sort: {ready_by: 1}}).fetch();
+    const orders = Orders.find({ status: { $nin: ['pending', 'canceled'] } }, { sort: { ready_by: 1 } }).fetch();
     if (!Session.get('orderId')) {
       Session.set('orderId', orders[0]);
-    };
+    }
     this.nextOrder.set(Session.get('orderId'));
     this.futureOrders.set(orders.slice(1));
   });
@@ -52,9 +51,9 @@ Template.User_home.helpers({
   creditCents() {
     if (Meteor.user()) {
       const credit = Math.round(Meteor.user().credit * 100) / 100;
-      const dollars =  Math.floor(credit);
-      var cents = Math.round((credit - dollars) * 100);
-      return cents < 10 ? '0' + cents : cents;
+      const dollars = Math.floor(credit);
+      const cents = Math.round((credit - dollars) * 100);
+      return cents < 10 ? `0${cents}` : cents;
     }
   },
 

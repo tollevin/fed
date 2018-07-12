@@ -1,35 +1,36 @@
 import stripePackage from 'stripe';
-const Stripe = stripePackage("sk_test_w4ls8BFupkyDG8WQ4F5fB7VZ" ); 
+
+const Stripe = stripePackage('sk_test_w4ls8BFupkyDG8WQ4F5fB7VZ');
 
 Meteor.methods({
 
   // Charges
 
-  async processPayment( charge ) {
-    check( charge, {
+  async processPayment(charge) {
+    check(charge, {
       amount: Number,
       currency: String,
       customer: Match.Maybe(String),
       capture: Match.Maybe(Boolean),
       source: Match.Maybe(String),
       description: String,
-      receipt_email: String
+      receipt_email: String,
     });
 
     try {
-      let payment = await Stripe.charges.create( charge );
-    
+      const payment = await Stripe.charges.create(charge);
+
       return payment;
     } catch (err) {
       console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
-    };
+    }
   },
 
   // Customers
-   
-  async createCustomer( cust ) {
-    check( cust, {
+
+  async createCustomer(cust) {
+    check(cust, {
       description: String,
       source: String,
       account_balance: Number,
@@ -37,46 +38,46 @@ Meteor.methods({
     });
 
     try {
-      let customer = await Stripe.customers.create( cust );
+      const customer = await Stripe.customers.create(cust);
 
       Meteor.users.update(Meteor.user(), {
         $set: {
-          stripe_id: customer.id
-        }
+          stripe_id: customer.id,
+        },
       });
 
       return customer;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async createTrialCustomer( cust, email, password ) {
-    check( cust, {
+  async createTrialCustomer(cust, email, password) {
+    check(cust, {
       description: String,
       source: String,
-      account_balance: Number
+      account_balance: Number,
     });
 
     try {
-      let customer = await Stripe.customers.create( cust );
+      const customer = await Stripe.customers.create(cust);
 
-      const _id = Accounts.createUser({email: email, password: password});
+      const _id = Accounts.createUser({ email, password });
 
       return customer;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async retrieveCustomer( id ) {
+  async retrieveCustomer(id) {
     try {
-      let customer = await Stripe.customers.retrieve( id );
+      const customer = await Stripe.customers.retrieve(id);
 
       return customer;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
@@ -84,18 +85,18 @@ Meteor.methods({
 
   // Credit
 
-  async updateStripeCredit( args ) {
-    check( args, {
+  async updateStripeCredit(args) {
+    check(args, {
       id: String,
       account_balance: Number,
     });
 
-    var credit = 0 - Math.round(args.account_balance * 100);
+    const credit = 0 - Math.round(args.account_balance * 100);
 
     try {
-      let customer = await Stripe.customers.update( args.id, { account_balance: credit } );
+      const customer = await Stripe.customers.update(args.id, { account_balance: credit });
       return customer;
-    } catch(err) {
+    } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
       console.log('error: updateStripeCredit');
     }
@@ -103,30 +104,30 @@ Meteor.methods({
 
   // Sources
 
-  async updateDefaultSource( args ) {
-    check( args, {
+  async updateDefaultSource(args) {
+    check(args, {
       id: String,
       default_source: String,
     });
 
     try {
-      let customer = await Stripe.customers.update( args.id, { default_source: args.default_source} );
+      const customer = await Stripe.customers.update(args.id, { default_source: args.default_source });
       return customer;
-    } catch(err) {
+    } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async addPaymentSource( args ) {
-    check( args, {
+  async addPaymentSource(args) {
+    check(args, {
       id: String,
-      source: String
+      source: String,
     });
 
     try {
-      let newSource = await Stripe.customers.createSource(args.id, { source: args.source });
+      const newSource = await Stripe.customers.createSource(args.id, { source: args.source });
       return newSource;
-    } catch(err) {
+    } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
@@ -165,7 +166,7 @@ Meteor.methods({
   //         };
 
   //         const updatedCustomer = await Meteor.call('updateUser', customerExists._id, data);
-          
+
   //         console.log(updatedCustomer.emails[0].address + " " + updatedCustomer.stripe_id)
   //       } else {
   //         console.log("XXX - " + allSubscriptionsList[i].customer + " IS A BIIIITCH!")
@@ -192,7 +193,7 @@ Meteor.methods({
   //           console.log("Customer " + customerExists.emails[0].address + "is inactive")
   //         } else {
   //           const pausedSubscription = await Stripe.subscriptions.update(allSubscriptionsList[i].id, data);
-            
+
   //           console.log("OK " + customerExists.emails[0].address + " " + pausedSubscription.id + " PAUSED");
   //           updatedTally += 1;
   //         };

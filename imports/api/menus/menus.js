@@ -5,7 +5,7 @@ import faker from 'faker';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import {
-  Items
+  Items,
 } from '../items/items.js';
 
 // SimpleSchema.debug = true;
@@ -16,16 +16,18 @@ class MenusCollection extends Mongo.Collection {
     const result = super.insert(ourMenu, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
+
   remove(selector) {
     const menus = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
-};
+}
 
 export const Menus = new MenusCollection('Menus');
 
@@ -43,15 +45,15 @@ Menus.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   user_id: {
     type: String,
     label: 'User ID',
     regEx: SimpleSchema.RegEx.Id,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
     optional: true,
   },
@@ -63,19 +65,19 @@ Menus.schema = new SimpleSchema({
     // },
     denyUpdate: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   id_number: {
     type: Number,
-    label: "ID"
+    label: 'ID',
   },
   name: {
     type: String,
-    label: "Name",
+    label: 'Name',
   },
   items: {
-    type: [ Items ],
+    type: [Items],
     label: 'Items',
     optional: true,
   },
@@ -172,25 +174,25 @@ Menus.schema = new SimpleSchema({
   online_at: {
     type: Date,
     label: 'Online At',
-    optional: true
+    optional: true,
   },
   custom_until: {
     type: Date,
     label: 'Customizable Until',
-    optional: true
+    optional: true,
   },
   offline_at: {
     type: Date,
     label: 'Offline At',
-    optional: true
+    optional: true,
   },
   ready_by: {
     type: Date,
     label: 'Ready By',
-    optional: true
+    optional: true,
   },
   delivery_windows: {
-    type: [ String ],
+    type: [String],
     label: 'Delivery Windows',
     optional: true,
   },
@@ -198,7 +200,7 @@ Menus.schema = new SimpleSchema({
     type: Boolean,
     label: 'Active',
     optional: true,
-  }
+  },
 });
 
 Menus.attachSchema(Menus.schema);
@@ -219,7 +221,5 @@ Menus.publicFields = {
 };
 
 Menus.helpers({
-  items: ()=> {
-    return Items.find({_id: {$in: this.items}});
-  }
+  items: () => Items.find({ _id: { $in: this.items } }),
 });

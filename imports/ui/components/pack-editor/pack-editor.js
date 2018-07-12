@@ -23,8 +23,8 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   // if no filters, set defaults
   if (!Session.get('filters')) {
     const user = Meteor.user();
-    var diet = 'Omnivore';
-    var restrictions = {
+    let diet = 'Omnivore';
+    const restrictions = {
       peanuts: false,
       treenuts: false,
       soy: false,
@@ -39,49 +39,49 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
 
     if (user) {
       diet = user.diet;
-      var restrictionsArray = [];
+      const restrictionsArray = [];
       for (var i = user.restrictions.length - 1; i >= 0; i--) {
         restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[user.restrictions[i]]);
-      };
+      }
 
       for (var i = restrictionsArray.length - 1; i >= 0; i--) {
         restrictions[restrictionsArray[i]] = true;
-      };
-    };
+      }
+    }
 
-    var filters = {
-      diet: diet,
-      restrictions: restrictions,
+    const filters = {
+      diet,
+      restrictions,
     };
 
     Session.set('filters', filters);
-  };
+  }
 
   this.diet = new ReactiveVar(Session.get('filters').diet);
   this.packSize = new ReactiveVar(6);
   this.priceChange = new ReactiveVar(0);
   this.schema = new ReactiveVar({
-    protein:0,
-    vegetable:0,
-    grain:0,
-    salad:0,
-    soup:0,
-    total:0
+    protein: 0,
+    vegetable: 0,
+    grain: 0,
+    salad: 0,
+    soup: 0,
+    total: 0,
   });
   this.order = new ReactiveVar(Session.get('Order'));
-  var order = this.order.get();
+  let order = this.order.get();
 
   // If they have an order for this week (pending-sub order / created), open that pack to edit ??
-  var orderId = Session.get('orderId');
+  const orderId = Session.get('orderId');
   if (!order && orderId) order = orderId;
 
   // If order.subscription, set diet and packSize
   if (order && order.subscriptions && order.subscriptions.length > 0) {
-    var packName = order.subscriptions[0].item_name; // FIX
+    let packName = order.subscriptions[0].item_name; // FIX
     if (!packName) packName = order.subscriptions.item_name;
     this.diet.set(packName.split(' ')[0]);
     this.packSize.set(parseInt(packName.split(' ')[1].split('-')[0]));
-  };
+  }
 
   // If they have a pack in their order, open that pack to edit
   if (order && order.items && order.items.length > 0) {
@@ -91,9 +91,9 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
         this.diet.set(order.items[i].name.split(' ')[0]);
         this.packSize.set(order.items[i].sub_items.schema.total);
         order.items.splice(i, 1);
-      };
-    };
-  };
+      }
+    }
+  }
 
   this.order.set(order);
   const thisWeeksStart = moment().startOf('week').utc().toDate();
@@ -103,20 +103,20 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     this.subscribe('Items.packs');
 
     if (this.subscriptionsReady()) {
-      var diet = this.diet.get();
-      var packSize = this.packSize.get();
-      var packName = diet + ' ' + packSize + '-Pack';
-      var pack = Items.findOne({name: packName});
-      Session.set('pack', pack); 
+      const diet = this.diet.get();
+      const packSize = this.packSize.get();
+      const packName = `${diet} ${packSize}-Pack`;
+      const pack = Items.findOne({ name: packName });
+      Session.set('pack', pack);
 
-      var menu = Menus.findOne({active: true});
-      var data = {
+      const menu = Menus.findOne({ active: true });
+      const data = {
         _id: menu._id,
         ready_by: menu.ready_by,
-        delivery_windows: menu.delivery_windows
+        delivery_windows: menu.delivery_windows,
       };
       Session.setDefault('menu', data);
-    };
+    }
   });
 });
 
@@ -125,200 +125,198 @@ Template.Pack_Editor.onDestroyed(function packEditorOnDestroyed() {
 });
 
 Template.Pack_Editor.helpers({
-  selectedDiet: (diet)=> {
+  selectedDiet: (diet) => {
     if (diet === Template.instance().diet.get()) {
       return 'selected';
-    };
+    }
   },
 
-  selectedNumber: (packSize)=> {
+  selectedNumber: (packSize) => {
     if (packSize === Template.instance().packSize.get()) {
       return 'selected';
-    };
+    }
   },
 
-  packPrice: ()=> {
-    return Session.get('pack') && Session.get('pack').price_per_unit;
-  },
+  packPrice: () => Session.get('pack') && Session.get('pack').price_per_unit,
 
-  changePrice: ()=> {
+  changePrice: () => {
     if (Template.instance().priceChange.get() !== 0) {
       return Template.instance().priceChange.get() > 0 ? 'plus' : 'minus';
-    };
+    }
   },
 
-  priceChange: ()=> {
+  priceChange: () => {
     if (Template.instance().priceChange.get() !== 0) {
       return Template.instance().priceChange.get() > 0 ? Template.instance().priceChange.get().toFixed(2) : (0 - Template.instance().priceChange.get()).toFixed(2);
-    };
+    }
   },
 
-  schema: (category)=> {
+  schema: (category) => {
     if (Session.get('pack')) {
       let subcatArray;
       category === 'Protein' ? subcatArray = ['Beef', 'Chicken', 'Fish', 'Soy'] : subcatArray = [category];
 
       const packItems = Session.get('pack').sub_items.items;
-      var categoryInPack = 0;
-      
-      for (var i = packItems.length - 1; i >= 0; i--) {
-        const item = Items.findOne({_id: packItems[i]._id});
+      let categoryInPack = 0;
+
+      for (let i = packItems.length - 1; i >= 0; i--) {
+        const item = Items.findOne({ _id: packItems[i]._id });
 
         if (item && subcatArray.indexOf(item.subcategory) > -1) categoryInPack += 1;
-      };
+      }
 
       const schema = Session.get('pack').sub_items.schema;
-      return categoryInPack + ' / ' + schema[category.toLowerCase()];
-    };
+      return `${categoryInPack} / ${schema[category.toLowerCase()]}`;
+    }
   },
 
-  price: ()=> {
+  price: () => {
 
   },
 
-  proteins: ()=> {
-    var selector = {
-      "category": "Meal",
-      "subcategory": {$in: ['Beef','Chicken','Fish','Soy']},
+  proteins: () => {
+    const selector = {
+      category: 'Meal',
+      subcategory: { $in: ['Beef', 'Chicken', 'Fish', 'Soy'] },
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (var i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i--) {
       if (filtersObject[restrictions[i]]) {
-        selector["warnings." + restrictions[i]] = false;
+        selector[`warnings.${restrictions[i]}`] = false;
       }
-    };
+    }
 
-    return Items.find(selector, { sort: { rank: -1 }});
+    return Items.find(selector, { sort: { rank: -1 } });
   },
 
-  vegetables: ()=> {
-    var selector = {
-      "category": "Meal",
-      "subcategory": "Vegetable",
+  vegetables: () => {
+    const selector = {
+      category: 'Meal',
+      subcategory: 'Vegetable',
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (var i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i--) {
       if (filtersObject[restrictions[i]]) {
-        selector["warnings." + restrictions[i]] = false;
+        selector[`warnings.${restrictions[i]}`] = false;
       }
-    };
+    }
 
-    return Items.find(selector, { sort: { rank: -1 }});
+    return Items.find(selector, { sort: { rank: -1 } });
   },
 
-  grains: ()=> {
-    var selector = {
-      "category": "Meal",
-      "subcategory": "Grain",
+  grains: () => {
+    const selector = {
+      category: 'Meal',
+      subcategory: 'Grain',
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (var i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i--) {
       if (filtersObject[restrictions[i]]) {
-        selector["warnings." + restrictions[i]] = false;
+        selector[`warnings.${restrictions[i]}`] = false;
       }
-    };
+    }
 
-    return Items.find(selector, { sort: { rank: -1 }});
+    return Items.find(selector, { sort: { rank: -1 } });
   },
 
-  soups: ()=> {
-    var selector = {
-      "category": "Meal",
-      "subcategory": "Soup",
+  soups: () => {
+    const selector = {
+      category: 'Meal',
+      subcategory: 'Soup',
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (var i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i--) {
       if (filtersObject[restrictions[i]]) {
-        selector["warnings." + restrictions[i]] = false;
+        selector[`warnings.${restrictions[i]}`] = false;
       }
-    };
+    }
 
-    return Items.find(selector, { sort: { rank: -1 }});
+    return Items.find(selector, { sort: { rank: -1 } });
   },
 
-  salads: ()=> {
-    var selector = {
-      "category": "Meal",
-      "subcategory": "Salad",
+  salads: () => {
+    const selector = {
+      category: 'Meal',
+      subcategory: 'Salad',
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (var i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i--) {
       if (filtersObject[restrictions[i]]) {
-        selector["warnings." + restrictions[i]] = false;
+        selector[`warnings.${restrictions[i]}`] = false;
       }
-    };
+    }
 
-    return Items.find(selector, { sort: { rank: -1 }});
+    return Items.find(selector, { sort: { rank: -1 } });
   },
 
-  ready: ()=> {
+  ready: () => {
     if (Session.get('pack')) {
-      var itemTotal = Session.get('pack').sub_items.items.length;
-      var schemaTotal = Session.get('pack').sub_items.schema.total;
+      const itemTotal = Session.get('pack').sub_items.items.length;
+      const schemaTotal = Session.get('pack').sub_items.schema.total;
       return itemTotal === schemaTotal && 'pack-ready';
-    };
+    }
   },
 
-  notSubscribe: ()=> {
+  notSubscribe: () => {
     const route = FlowRouter.current().route.name;
     return route != 'Subscribe'; // FIX ?
   },
 
-  packSpace: ()=> {
+  packSpace: () => {
     if (Session.get('pack')) {
-      var itemTotal = Session.get('pack').sub_items.items.length;
-      var schemaTotal = Session.get('pack').sub_items.schema.total;
-      return itemTotal + '/' + schemaTotal;
-    };
+      const itemTotal = Session.get('pack').sub_items.items.length;
+      const schemaTotal = Session.get('pack').sub_items.schema.total;
+      return `${itemTotal}/${schemaTotal}`;
+    }
   },
 });
 
 Template.Pack_Editor.events({
   'change .diet'(event, template) {
     // set diet to filters.diet
-    // add basic restrictions   
+    // add basic restrictions
     const filter = event.currentTarget.value;
-    var existingFilters = Session.get('filters');
+    const existingFilters = Session.get('filters');
     // existingFilters.iso = '';
     existingFilters.restrictions = {
-      "peanuts": false,
-      "treenuts": false,
-      "soy": false,
-      "beef": false,
-      "chicken": false,
-      "fish": false,
-      "shellfish": false,
-      "milk": false,
-      "eggs": false,
-      "wheat": false,
+      peanuts: false,
+      treenuts: false,
+      soy: false,
+      beef: false,
+      chicken: false,
+      fish: false,
+      shellfish: false,
+      milk: false,
+      eggs: false,
+      wheat: false,
     };
 
     switch (filter) {
-      case "Pescetarian":
+      case 'Pescetarian':
         existingFilters.restrictions.beef = true;
         existingFilters.restrictions.chicken = true;
         // existingFilters.iso.concat("':not(.beef), :not(.chicken)'");
         break;
-      case "Paleo":
+      case 'Paleo':
         existingFilters.restrictions.peanuts = true;
         existingFilters.restrictions.soy = true;
         existingFilters.restrictions.milk = true;
         existingFilters.restrictions.wheat = true;
         // existingFilters.iso.concat("':not(.peanuts), :not(.soy), :not(.milk), :not(wheat)'");
         break;
-      case "Vegetarian":
+      case 'Vegetarian':
         existingFilters.restrictions.beef = true;
         existingFilters.restrictions.chicken = true;
         existingFilters.restrictions.fish = true;
         existingFilters.restrictions.shellfish = true;
         // existingFilters.iso.concat("':not(.beef), :not(.chicken), :not(.fish), :not(.shellfish)'");
         break;
-      case "Vegan":
+      case 'Vegan':
         existingFilters.restrictions.beef = true;
         existingFilters.restrictions.chicken = true;
         existingFilters.restrictions.fish = true;
@@ -327,15 +325,15 @@ Template.Pack_Editor.events({
         existingFilters.restrictions.eggs = true;
         // existingFilters.iso.concat("':not(.beef), :not(.chicken), :not(.fish), :not(.shellfish), :not(.milk), :not(.eggs)'");
         break;
-    };
+    }
 
     existingFilters.diet = filter;
     Session.set('filters', existingFilters);
 
     Template.instance().diet.set(filter);
-    var packSize = Template.instance().packSize.get();
-    var packName = filter + ' ' + packSize + '-Pack';
-    var pack = Items.findOne({name: packName});
+    const packSize = Template.instance().packSize.get();
+    const packName = `${filter} ${packSize}-Pack`;
+    const pack = Items.findOne({ name: packName });
     Session.set('pack', pack);
   },
 
@@ -344,31 +342,31 @@ Template.Pack_Editor.events({
     const name = event.target.name;
     template[name].set(input);
 
-    var diet = Template.instance().diet.get();
-    var packName = diet + ' ' + input + '-Pack';
-    var pack = Items.findOne({name: packName});
+    const diet = Template.instance().diet.get();
+    const packName = `${diet} ${input}-Pack`;
+    const pack = Items.findOne({ name: packName });
     Session.set('pack', pack);
   },
 
   'click .accordion'(event, template) {
     event.preventDefault();
 
-    var accordions = template.findAll('.accordion');
-    var panels = template.findAll('.panel');
-    var panel = event.currentTarget.nextElementSibling;
+    const accordions = template.findAll('.accordion');
+    const panels = template.findAll('.panel');
+    const panel = event.currentTarget.nextElementSibling;
 
-    if (panel.style.maxHeight){
+    if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
       event.currentTarget.classList.remove('open');
     } else {
-      for (var i = panels.length - 1; i >= 0; i--) {
+      for (let i = panels.length - 1; i >= 0; i--) {
         panels[i].style.maxHeight = null;
         accordions[i].classList.remove('open');
-      };
+      }
       event.currentTarget.classList.add('open');
       // panel.style.maxHeight = panel.scrollHeight + "px";
-      panel.style.maxHeight = "375px";
-    };
+      panel.style.maxHeight = '375px';
+    }
   },
 
   'click .add-to-pack'(event, template) {
@@ -384,14 +382,14 @@ Template.Pack_Editor.events({
           description: 1,
           price_per_unit: 1,
           photo: 1,
-        }
+        },
       };
 
-      var item = Items.findOne({_id: event.currentTarget.name}, options);
-      (['Beef','Chicken','Fish','Soy'].indexOf(item.subcategory) > -1) ? item.subcategory = 'protein' : item.subcategory = item.subcategory.toLowerCase();
-      var pack = Session.get('pack');
-      var packItems = pack.sub_items.items;
-      var packSchema = pack.sub_items.schema;
+      const item = Items.findOne({ _id: event.currentTarget.name }, options);
+      (['Beef', 'Chicken', 'Fish', 'Soy'].indexOf(item.subcategory) > -1) ? item.subcategory = 'protein' : item.subcategory = item.subcategory.toLowerCase();
+      const pack = Session.get('pack');
+      const packItems = pack.sub_items.items;
+      const packSchema = pack.sub_items.schema;
 
       // Ping here (GA)
       // Possibly Ping here if adding to an empty cart (GA)
@@ -404,17 +402,17 @@ Template.Pack_Editor.events({
         packItems.push(item);
 
         // Add to template schema
-        var schema = Template.instance().schema.get();
+        const schema = Template.instance().schema.get();
         if (schema[item.subcategory]) {
           schema[item.subcategory] += 1;
         } else {
           schema[item.subcategory] = 1;
-        };
+        }
         schema.total += 1;
 
         Template.instance().schema.set(schema);
 
-        // if pack is full, 
+        // if pack is full,
         if (schema.total === packSchema.total) {
           var accordions = template.findAll('.accordion');
           var panels = template.findAll('.panel');
@@ -424,29 +422,29 @@ Template.Pack_Editor.events({
             // close current panel, restyle
             panels[i].style.maxHeight = null;
             accordions[i].classList.remove('open');
-          };
+          }
 
-          var schemaKeys = Object.keys(schema);
-          var differences = {};
-          var different = false;
+          const schemaKeys = Object.keys(schema);
+          const differences = {};
+          let different = false;
 
           for (var i = schemaKeys.length - 1; i >= 0; i--) {
-            var difference = schema[schemaKeys[i]] - packSchema[schemaKeys[i]];
+            const difference = schema[schemaKeys[i]] - packSchema[schemaKeys[i]];
             differences[schemaKeys[i]] = difference;
             if (difference !== 0) different = true;
-          };
+          }
 
           // if schema != packSchema, change pack price, add price differences to accordions
-          if (different) {            
-            //change pack price
-            var newPrice = 0;
+          if (different) {
+            // change pack price
+            let newPrice = 0;
             for (var i = packItems.length - 1; i >= 0; i--) {
               newPrice += packItems[i].price_per_unit;
-            };
+            }
 
             template.priceChange.set(newPrice - pack.price_per_unit);
             pack.price_per_unit = newPrice;
-          };
+          }
         } else {
           template.priceChange.set(0);
           // if schema[subcategory] === numInPack, close panel and open next
@@ -463,19 +461,19 @@ Template.Pack_Editor.events({
 
                 // open next panel
                 if (i + 1 < panels.length) {
-                  panels[i + 1].style.maxHeight = "375px";
+                  panels[i + 1].style.maxHeight = '375px';
                   accordions[i + 1].classList.add('open');
-                };
-              };
-            };
-          };
-        };
+                }
+              }
+            }
+          }
+        }
         // Update Session pack var
         pack.sub_items.items = packItems;
         Session.set('pack', pack);
-      };
+      }
     } else {
-      Session.set('overlay','pause');
+      Session.set('overlay', 'pause');
       FlowRouter.go('join');
     }
   },
@@ -483,25 +481,25 @@ Template.Pack_Editor.events({
   'click .remove-from-pack'(event, template) {
     event.preventDefault();
 
-    var pack = Session.get('pack');
-    var packItems = pack.sub_items.items;
+    const pack = Session.get('pack');
+    const packItems = pack.sub_items.items;
 
     // Ping here (GA)
     // Possibly Ping here if adding to an empty cart (GA)
-    
-    let item;
-    var itemInPack = -1;
 
-    for (var i = packItems.length - 1; i >= 0; i--) {
+    let item;
+    let itemInPack = -1;
+
+    for (let i = packItems.length - 1; i >= 0; i--) {
       if (packItems[i]._id === event.currentTarget.name) {
         itemInPack = i;
         item = packItems[i];
       }
-    };
+    }
 
     if (itemInPack >= 0) {
       // Remove from template schema
-      var schema = Template.instance().schema.get();
+      const schema = Template.instance().schema.get();
       schema[item.category] -= 1;
       schema.total -= 1;
 
@@ -511,7 +509,7 @@ Template.Pack_Editor.events({
       // Update Session pack var
       pack.sub_items.items = packItems;
       Session.set('pack', pack);
-    };
+    }
   },
 
   'click .cancel'(event, template) {
@@ -519,28 +517,26 @@ Template.Pack_Editor.events({
 
     Session.set('pack', null);
     Session.set('overlay', false);
-
   },
 
   'click .toMarket'(event, template) {
     event.preventDefault();
     Session.set('overlay', 'loading');
 
-    var pack = Session.get('pack');
-    var order = Template.instance().order.get();
-    var menu = Session.get('menu');
-    
+    const pack = Session.get('pack');
+    const order = Template.instance().order.get();
+    const menu = Session.get('menu');
+
     // if order._id, update instead of insert
     if (order._id) {
       // replace pack
-      for (var i = order.items.length - 1; i >= 0; i--) {
+      for (let i = order.items.length - 1; i >= 0; i--) {
         if (order.items[i]._id === pack._id) order.items[i] = pack;
-      };
+      }
       // update order
-      const updatedOrder = updateOrder.call(order)
+      const updatedOrder = updateOrder.call(order);
       Session.set('Order', updatedOrder);
     } else {
-
       order.items.push(pack);
 
       const orderToCreate = {
@@ -554,7 +550,7 @@ Template.Pack_Editor.events({
 
       const orderId = insertOrder.call(orderToCreate);
       Session.set('Order', orderId);
-    };
+    }
 
     Session.set('pack', null);
     Session.set('overlay', null);
@@ -565,19 +561,18 @@ Template.Pack_Editor.events({
     event.preventDefault();
     Session.set('overlay', 'loading');
 
-    var pack = Session.get('pack');
-    var order = Template.instance().order.get();
-    var menu = Session.get('menu');
-    
+    const pack = Session.get('pack');
+    const order = Template.instance().order.get();
+    const menu = Session.get('menu');
+
     // if order._id, update instead of insert
     if (order._id && order.status === ('pending-sub' || 'skipped')) {
       // replace pack
       order.items.push(pack);
       // update order
-      const updatedOrder = updatePendingSubOrder.call(order)
+      const updatedOrder = updatePendingSubOrder.call(order);
       Session.set('Order', updatedOrder);
     } else {
-
       order.items.push(pack);
 
       const orderToCreate = {
@@ -591,7 +586,7 @@ Template.Pack_Editor.events({
 
       const orderId = insertOrder.call(orderToCreate);
       Session.set('Order', orderId);
-    };
+    }
 
     Session.set('pack', null);
     Session.set('overlay', null);

@@ -8,51 +8,51 @@ const countInArray = function(array, what) {
 };
 
 Template.Pack_Editor_Item.helpers({
-	attributes: ()=> {
-    var att = Template.currentData().attributes;
+  attributes: () => {
+    const att = Template.currentData().attributes;
     if (att) {
-      var keys = Object.keys(att);
-      var filtered = keys.filter(function(key) {
-          return att[key];
+      const keys = Object.keys(att);
+      const filtered = keys.filter(function(key) {
+        return att[key];
       });
-      var classes = '';
-      for (var i = filtered.length - 1; i >= 0; i--) {
-        classes+= filtered[i] + ' ';
+      let classes = '';
+      for (let i = filtered.length - 1; i >= 0; i--) {
+        classes += `${filtered[i]} `;
       }
   		return classes;
     }
-	},
+  },
 
-  restrictions: ()=> {
-    var restrictions = Template.currentData().warnings;
+  restrictions: () => {
+    const restrictions = Template.currentData().warnings;
     if (restrictions) {
-      var keys = Object.keys(restrictions);
-      var filtered = keys.filter(function(key) {
-          return restrictions[key];
+      const keys = Object.keys(restrictions);
+      const filtered = keys.filter(function(key) {
+        return restrictions[key];
       });
-      var classes = '';
-      for (var i = filtered.length - 1; i >= 0; i--) {
-        classes+= filtered[i] + ' ';
+      let classes = '';
+      for (let i = filtered.length - 1; i >= 0; i--) {
+        classes += `${filtered[i]} `;
       }
       return classes;
     }
   },
 
-  showFullPrice: ()=> {
+  showFullPrice: () => {
     const order = Session.get('Order');
     if (order) return order.style === 'alacarte';
   },
 
-  tally: (_id)=> {
+  tally: (_id) => {
     if (Session.get('pack')) {
-      var packItems = Session.get('pack').sub_items.items;
-      var tally = 0;
+      const packItems = Session.get('pack').sub_items.items;
+      let tally = 0;
 
-      for (var i = packItems.length - 1; i >= 0; i--) {
+      for (let i = packItems.length - 1; i >= 0; i--) {
         if (packItems[i]._id === _id) tally += 1;
-      };
+      }
       return tally;
-    };
+    }
   },
 });
 
@@ -60,10 +60,10 @@ Template.Pack_Editor_Item.events({
   'click .item-details'(event) {
     event.preventDefault();
 
-    var routeName = FlowRouter.getRouteName();
+    const routeName = FlowRouter.getRouteName();
     Session.set('previousRoute', routeName);
 
-    var newRoute = '/menu/' + Template.currentData()._id;
+    const newRoute = `/menu/${Template.currentData()._id}`;
     FlowRouter.go(newRoute);
   },
 });

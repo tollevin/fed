@@ -6,24 +6,16 @@ import './content-overlay.less';
 import './content-overlay.html';
 
 Template.Content_Overlay.helpers({
-  active: ()=> { // for all uses
-    return Session.get('overlay') && 'active';
-  },
+  active: () => Session.get('overlay') && 'active',
 
-	loading: ()=> {
-    return Session.get('loading') && 'loading';
-  },
+  loading: () => Session.get('loading') && 'loading',
 
-  filterMenuOpen: ()=> {
-    return Session.get('filterMenuOpen') && 'filterMenuOpen';
-  },
+  filterMenuOpen: () => Session.get('filterMenuOpen') && 'filterMenuOpen',
 
   cartOpen() {
     return Session.get('cartOpen') && 'cartOpen';
   },
-  packEditorOpen: ()=> {
-    return Session.equals('overlay', 'packEditor') && 'packEditor';
-  },
+  packEditorOpen: () => Session.equals('overlay', 'packEditor') && 'packEditor',
 
   closed() {
     const route = FlowRouter.getRouteName();

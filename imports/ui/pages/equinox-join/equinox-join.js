@@ -13,35 +13,35 @@ Template.Equinox_join.onCreated(function equinoxJoinOnCreated() {
 });
 
 Template.Equinox_join.events({
-  'submit form' ( event, template ) {
+  'submit form' (event, template) {
     event.preventDefault();
-    
-    const zip = template.find( '[name="zipCode"]' ).value.toString();
+
+    const zip = template.find('[name="zipCode"]').value.toString();
     const zipInRange = zipZones[zip];
-    
-    if (zipInRange){
+
+    if (zipInRange) {
       const user = {
-        email: template.find( '[name="emailAddress"]' ).value,
-        password: template.find( '[name="password"]' ).value,
+        email: template.find('[name="emailAddress"]').value,
+        password: template.find('[name="password"]').value,
         zipCode: zip,
-        referrer: "Equinox",
+        referrer: 'Equinox',
       };
 
-      Meteor.call('referUser', user, ( error, response ) => {
-        if ( error ) {
+      Meteor.call('referUser', user, (error, response) => {
+        if (error) {
           $('#Errors').text(error.reason);
         } else {
-          signin(user, ( error ) => {
+          signin(user, (error) => {
             if (error) {
               $('#Errors').text(error);
             } else {
               FlowRouter.go('/');
-            };
+            }
           });
-        };
+        }
       });
     } else {
       $('#Errors').text("Sorry. It looks like we don't deliver to your area yet."); // Validation error!
-    };
+    }
   },
 });

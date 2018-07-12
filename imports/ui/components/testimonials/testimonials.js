@@ -4,7 +4,6 @@ import './testimonials.html';
 import './testimonials.less';
 
 Template.Testimonials.onRendered(function testimonialsOnRendered() {
-
   $('#carousel').slick({
     dots: false,
     arrows: false,

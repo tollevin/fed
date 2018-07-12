@@ -5,5 +5,5 @@ import './about-page.less';
 import './about-page.html';
 
 Template.About_page.onCreated(function landingPageOnCreated() {
-	Session.set('cartOpen', false);
+  Session.set('cartOpen', false);
 });

@@ -13,16 +13,18 @@ class PlansCollection extends Mongo.Collection {
     const result = super.insert(ourPlan, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
+
   remove(selector) {
     const Plans = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
-};
+}
 
 export const Plans = new PlansCollection('Plans');
 
@@ -31,15 +33,15 @@ Plans.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },
-});            
+});
 
 Plans.schema = new SimpleSchema({
   _id: {
     type: String,
-    label: "ID",
+    label: 'ID',
     optional: true,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
   },
   // id: {
@@ -96,24 +98,24 @@ Plans.schema = new SimpleSchema({
     label: 'Canceled At',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   created_at: {
     type: Date,
     label: 'Created At',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   subscribed_at: {
     type: Date,
     label: 'Subscribed At',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   // current_period_end: {
   //   type: Number,
@@ -151,8 +153,8 @@ Plans.schema = new SimpleSchema({
     label: 'Discount Percent',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   // ended_at: {
   //   type: Number,
@@ -167,8 +169,8 @@ Plans.schema = new SimpleSchema({
     label: 'Item ID',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   item_name: {
     type: String,
@@ -197,16 +199,16 @@ Plans.schema = new SimpleSchema({
     label: 'Quantity',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   status: {
     type: String,
     label: 'Status',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   tax_percent: {
     type: Number,
@@ -284,7 +286,7 @@ Plans.helpers({
 
 // for testing
 // import { resetDatabase } from 'meteor/xolvio:cleaner';
-// 
+//
 // describe('my module', function () {
 //   beforeEach(function () {
 //     resetDatabase();

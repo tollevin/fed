@@ -5,14 +5,14 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Check } from 'meteor/check';
 
-import { 
-  Promos
+import {
+  Promos,
 } from './promos.js';
 
 export const insertPromo = new ValidatedMethod({
   name: 'Meteor.insertPromo',
   validate: new SimpleSchema({
-    codes: { type: [ String ] },
+    codes: { type: [String] },
     desc: { type: String },
     credit: { type: Number, optional: true },
     percentage: { type: Number, optional: true },
@@ -26,9 +26,11 @@ export const insertPromo = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ codes, desc, credit, percentage, expires, useLimitPerCustomer, useLimitTotal, timesUsed, users, active }) {
-    var promos = [];
-    for (var i = 0; i < codes.length; i++) {
+  run({
+    codes, desc, credit, percentage, expires, useLimitPerCustomer, useLimitTotal, timesUsed, users, active,
+  }) {
+    const promos = [];
+    for (let i = 0; i < codes.length; i++) {
       const code = codes[i];
 
       const promo = {
@@ -44,12 +46,12 @@ export const insertPromo = new ValidatedMethod({
         users: {},
         active: true,
       };
-    
+
       const promoId = Promos.insert(promo);
-      const result = Promos.findOne({_id: promoId});
+      const result = Promos.findOne({ _id: promoId });
       promos.push(result);
     }
-    
+
     return promos;
   },
 });
@@ -80,7 +82,7 @@ export const retrievePromo = new ValidatedMethod({
     code: { type: String },
   }).validator(),
   run({ code }) {
-    var promo = Promos.findOne({code: code});
+    const promo = Promos.findOne({ code });
     console.log(promo);
     return promo;
   },
@@ -92,27 +94,27 @@ export const usePromo = new ValidatedMethod({
     code: { type: String },
   }).validator(),
   run({ code }) {
-    var promo = Promos.findOne({code: code});
+    const promo = Promos.findOne({ code });
     const user = Meteor.userId();
 
-    //In the case where a promo can be used by many users, more than once,
-    //if a user has reached useLimitPerCustomer, return an Error (FIX!)
+    // In the case where a promo can be used by many users, more than once,
+    // if a user has reached useLimitPerCustomer, return an Error (FIX!)
     if (!promo.users[user]) {
       promo.users[user] = 1;
     } else {
       promo.users[user] += 1;
-    };
+    }
 
-    promo.timesUsed += 1; //Add a new time used
+    promo.timesUsed += 1; // Add a new time used
 
-    //If the promo has now reached useLimitTotal, deactivate
+    // If the promo has now reached useLimitTotal, deactivate
     if (promo.timesUsed === promo.useLimitTotal) {
       promo.active = false;
-    };
+    }
 
-    //Update promo
+    // Update promo
     const updatedPromo = Promos.update(promo._id, {
-      $set: promo
+      $set: promo,
     });
 
     return updatedPromo;

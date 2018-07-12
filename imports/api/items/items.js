@@ -15,16 +15,18 @@ class ItemsCollection extends Mongo.Collection {
     const result = super.insert(ourItem, callback);
     return result;
   }
+
   update(selector, modifier) {
     const result = super.update(selector, modifier);
     return result;
   }
+
   remove(selector) {
     const items = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
-};
+}
 
 export const Items = new ItemsCollection('Items');
 
@@ -43,7 +45,7 @@ Ingredient = new SimpleSchema({
   // amountUnit: { type: String, optional: true },
   // supplier: { type: String, optional: true },
   // allergen: { type: String, optional: true },
-})
+});
 
 Items.schema = new SimpleSchema({
   _id: {
@@ -52,8 +54,8 @@ Items.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   created_at: {
     type: Date,
@@ -63,21 +65,21 @@ Items.schema = new SimpleSchema({
     // },
     denyUpdate: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   name: {
     type: String,
-    label: "Name"
+    label: 'Name',
   },
   category: {
     type: String,
-    label: "Category",
-    allowedValues: ['Meal','Plate','Breakfast','Snack','Drink','Grocery','Condiment','Pack','Miscellaneous'],
+    label: 'Category',
+    allowedValues: ['Meal', 'Plate', 'Breakfast', 'Snack', 'Drink', 'Grocery', 'Condiment', 'Pack', 'Miscellaneous'],
   },
   subcategory: {
     type: String,
-    label: "Subcategory",
+    label: 'Subcategory',
     optional: true,
   },
   photo: {
@@ -86,9 +88,9 @@ Items.schema = new SimpleSchema({
     optional: true,
     autoform: {
       afFieldInput: {
-        type: "url"
-      }
-    } 
+        type: 'url',
+      },
+    },
   },
   user_id: {
     type: String,
@@ -96,8 +98,8 @@ Items.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   sku: {
     type: String,
@@ -111,77 +113,77 @@ Items.schema = new SimpleSchema({
     blackbox: true,
     autoform: {
       autoform: {
-        type: "hidden"
-      }
+        type: 'hidden',
+      },
     },
   },
   description: {
     type: String,
-    label: "Description",
+    label: 'Description',
     autoform: {
       afFieldInput: {
-        type: "textarea",
+        type: 'textarea',
         rows: 2,
-        class: "text-input"
-      }
-    }
+        class: 'text-input',
+      },
+    },
   },
   ingredients: {
-    type: [ String ],
+    type: [String],
     label: 'Ingredients',
-    optional: true
+    optional: true,
   },
   warnings: {
     type: Object,
     label: 'Contains',
-    optional: true
+    optional: true,
   },
-  "warnings.milk": {
+  'warnings.milk': {
     type: Boolean,
     label: 'Milk',
     optional: true,
   },
-  "warnings.peanuts": {
+  'warnings.peanuts': {
     type: Boolean,
     label: 'Peanuts',
     optional: true,
   },
-  "warnings.treenuts": {
+  'warnings.treenuts': {
     type: Boolean,
     label: 'Tree Nuts',
     optional: true,
   },
-  "warnings.fish": {
+  'warnings.fish': {
     type: Boolean,
     label: 'Fish',
     optional: true,
   },
-  "warnings.shellfish": {
+  'warnings.shellfish': {
     type: Boolean,
     label: 'Shellfish',
     optional: true,
   },
-  "warnings.eggs": {
+  'warnings.eggs': {
     type: Boolean,
     label: 'Eggs',
     optional: true,
   },
-  "warnings.beef": {
+  'warnings.beef': {
     type: Boolean,
     label: 'Beef',
     optional: true,
   },
-  "warnings.chicken": {
+  'warnings.chicken': {
     type: Boolean,
     label: 'Chicken',
     optional: true,
   },
-  "warnings.soy": {
+  'warnings.soy': {
     type: Boolean,
     label: 'Soy',
     optional: true,
   },
-  "warnings.wheat": {
+  'warnings.wheat': {
     type: Boolean,
     label: 'Wheat',
     optional: true,
@@ -189,7 +191,7 @@ Items.schema = new SimpleSchema({
   good_for_days: {
     type: Number,
     label: 'Good for X days',
-    optional: true
+    optional: true,
   },
   active: {
     type: Boolean,
@@ -201,82 +203,82 @@ Items.schema = new SimpleSchema({
     label: 'Nutrition Facts',
     optional: true,
   },
-  "nutrition_facts.servingSize": {
+  'nutrition_facts.servingSize': {
     type: String,
     label: 'Serving Size (g)',
     optional: true,
   },
-  "nutrition_facts.calories": {
+  'nutrition_facts.calories': {
     type: String,
     label: 'Calories',
     optional: true,
   },
-  "nutrition_facts.totalFat": {
+  'nutrition_facts.totalFat': {
     type: String,
     label: 'Total Fat (g)',
     optional: true,
   },
-  "nutrition_facts.saturatedFat": {
+  'nutrition_facts.saturatedFat': {
     type: String,
     label: 'Saturated Fat (g)',
     optional: true,
   },
-  "nutrition_facts.transFat": {
+  'nutrition_facts.transFat': {
     type: String,
     label: 'Trans Fat (g)',
     optional: true,
   },
-  "nutrition_facts.cholesterol": {
+  'nutrition_facts.cholesterol': {
     type: String,
     label: 'Cholesterol (mg)',
     optional: true,
   },
-  "nutrition_facts.sodium": {
+  'nutrition_facts.sodium': {
     type: String,
     label: 'Sodium (mg)',
     optional: true,
   },
-  "nutrition_facts.protein": {
+  'nutrition_facts.protein': {
     type: String,
     label: 'Protein (g)',
     optional: true,
   },
-  "nutrition_facts.totalCarb": {
+  'nutrition_facts.totalCarb': {
     type: String,
     label: 'Total Carbs (g)',
     optional: true,
   },
-  "nutrition_facts.dietaryFiber": {
+  'nutrition_facts.dietaryFiber': {
     type: String,
     label: 'Dietary Fiber (g)',
     optional: true,
   },
-  "nutrition_facts.sugars": {
+  'nutrition_facts.sugars': {
     type: String,
     label: 'Sugars (g)',
     optional: true,
   },
-  "nutrition_facts.PDV": {
+  'nutrition_facts.PDV': {
     type: Object,
     label: 'PDVs',
     optional: true,
   },
-  "nutrition_facts.PDV.vitaminA": {
+  'nutrition_facts.PDV.vitaminA': {
     type: String,
     label: 'Vitamin A (%DV)',
     optional: true,
   },
-  "nutrition_facts.PDV.vitaminC": {
+  'nutrition_facts.PDV.vitaminC': {
     type: String,
     label: 'Vitamin C (%DV)',
     optional: true,
   },
-  "nutrition_facts.PDV.calcium": {
+  'nutrition_facts.PDV.calcium': {
     type: String,
     label: 'Calcium (%DV)',
     optional: true,
   },
-  "nutrition_facts.PDV.iron": {
+  'nutrition_facts.PDV.iron': {
     type: String,
     label: 'Iron (%DV)',
     optional: true,
@@ -286,12 +288,12 @@ Items.schema = new SimpleSchema({
     label: 'Attributes',
     optional: true,
   },
-  "attributes.dairyFree": {
+  'attributes.dairyFree': {
     type: Boolean,
     label: 'Dairy Free',
     optional: true,
   },
-  "attributes.glutenFree": {
+  'attributes.glutenFree': {
     type: Boolean,
     label: 'Gluten Free',
     optional: true,
@@ -301,97 +303,97 @@ Items.schema = new SimpleSchema({
   //   label: 'High Protein',
   //   optional: true,
   // },
-  "attributes.paleo": {
+  'attributes.paleo': {
     type: Boolean,
     label: 'Paleo',
     optional: true,
   },
-  "attributes.vegan": {
+  'attributes.vegan': {
     type: Boolean,
     label: 'Vegan',
     optional: true,
   },
-  "attributes.vegetarian": {
+  'attributes.vegetarian': {
     type: Boolean,
     label: 'Vegetarian',
     optional: true,
   },
   comments: {
     type: Object,
-    label: "Comments",
+    label: 'Comments',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   ratings: {
     type: Object,
-    label: "Ratings",
+    label: 'Ratings',
     optional: true,
     autoform: {
-      type: "hidden"
-    }
+      type: 'hidden',
+    },
   },
   weight: {
     type: Number,
     decimal: true,
-    label: "Weight in Lbs",
+    label: 'Weight in Lbs',
     optional: true,
   },
   dimensions: {
     type: String,
-    label: "Dimensions",
+    label: 'Dimensions',
     optional: true,
   },
   producer: {
     type: String,
-    label: "Producer",
+    label: 'Producer',
     optional: true,
   },
   cost_per_unit: {
     type: Number,
     decimal: true,
-    label: "Cost per unit",
+    label: 'Cost per unit',
     optional: true,
   },
   price_per_unit: {
     type: Number,
     decimal: true,
-    label: "Price per unit",
+    label: 'Price per unit',
     optional: true,
   },
   unit: {
     type: String,
-    label: "Unit",
+    label: 'Unit',
     optional: true,
   },
   sub_items: {
     type: Object,
-    label: "Sub-Items",
+    label: 'Sub-Items',
     optional: true,
   },
-  "sub_items.schema": {
+  'sub_items.schema': {
     type: Object,
-    label: "Sub-Items Schema",
+    label: 'Sub-Items Schema',
     optional: true,
     blackbox: true,
     autoform: {
-      type: "hidden"
+      type: 'hidden',
     },
   },
-  "sub_items.items": {
-    type: [ String ],
-    label: "Sub-Items Items",
+  'sub_items.items': {
+    type: [String],
+    label: 'Sub-Items Items',
     optional: true,
   },
   inventory: {
     type: Number,
-    label: "Inventory",
+    label: 'Inventory',
     optional: true,
   },
   rank: {
     type: Number,
-    label: "Menu Rank",
+    label: 'Menu Rank',
     optional: true,
   },
 });
@@ -439,13 +441,13 @@ Factory.define('item', Items, {
 
 Items.helpers({
   plans(data) {
-    return Plans.findOne({item_id: data.item_id, frequency: data.frequency, quantity: data.quantity});
+    return Plans.findOne({ item_id: data.item_id, frequency: data.frequency, quantity: data.quantity });
   },
 });
 
 // for testing
 // import { resetDatabase } from 'meteor/xolvio:cleaner';
-// 
+//
 // describe('my module', function () {
 //   beforeEach(function () {
 //     resetDatabase();

@@ -14,7 +14,7 @@ import './landing-page.less';
 import './landing-page.html';
 
 Template.Landing_page.onCreated(function landingPageOnCreated() {
-	Session.set('cartOpen', false);
+  Session.set('cartOpen', false);
   Session.set('userMenuOpen', false);
 });
 
@@ -36,24 +36,23 @@ Template.Landing_page.helpers({
     const join = '/join';
     if (Meteor.userId()) {
       return menu;
-    } else {
-      return join;
-    };
+    }
+    return join;
   },
 });
 
-Template.Landing_page.events({  
-	'click #zipSubmit'(event, instance) {
+Template.Landing_page.events({
+  'click #zipSubmit'(event, instance) {
     event.preventDefault();
 
-    const zipInput = document.getElementById("zip").value.trim();
+    const zipInput = document.getElementById('zip').value.trim();
 
-    if (yesZips.indexOf(zipInput) > -1 ) {
-      Session.set('zipOk', true); 
+    if (yesZips.indexOf(zipInput) > -1) {
+      Session.set('zipOk', true);
       Session.set('zipNotYet', false);
     } else {
     	Session.set('zipNotYet', true);
-    	Session.set('zipOk', false); 
-    };
+    	Session.set('zipOk', false);
+    }
   },
 });

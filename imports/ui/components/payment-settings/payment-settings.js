@@ -7,22 +7,26 @@ import { callWithPromise } from '/imports/ui/lib/helpers.js';
 import './payment-settings.less';
 import './payment-settings.html';
 
-let stripe,
-		elements,
-		card;
+let stripe;
+
+
+let elements;
+
+
+let card;
 
 Template.PaymentSettings.onCreated(function paymentSettingsOnCreated() {
   this.showCardElement = new ReactiveVar(false);
   this.cardElementChange = new ReactiveVar(false);
-  this.userInfoChange = new ReactiveVar(false);  
+  this.userInfoChange = new ReactiveVar(false);
   this.editDefaultSource = new ReactiveVar(false);
   this.newDefault = new ReactiveVar(false);
 });
 
 Template.PaymentSettings.onRendered(function paymentSettingsOnRendered() {
-	// stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  // stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
   stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
-	// Set Stripe Elements to element var
+  // Set Stripe Elements to element var
   elements = stripe.elements();
   // Create an instance of the card Element
   // Custom styling can be passed to options when creating an Element.
@@ -32,26 +36,26 @@ Template.PaymentSettings.onRendered(function paymentSettingsOnRendered() {
       fontSize: '16px',
     },
   };
-  card = elements.create('card', {style});
+  card = elements.create('card', { style });
 });
 
 Template.PaymentSettings.helpers({
-	sources() {
-		return Session.get("stripe_customer").sources;
-	},
+  sources() {
+    return Session.get('stripe_customer').sources;
+  },
 
-	showCardElement() {
-		return Template.instance().showCardElement.get();
-	},
+  showCardElement() {
+    return Template.instance().showCardElement.get();
+  },
 
-	checkDefault(id) {
-		return (id === Session.get("stripe_customer").default_source) ? "defaultSource" : "backupSource";
-	},
+  checkDefault(id) {
+    return (id === Session.get('stripe_customer').default_source) ? 'defaultSource' : 'backupSource';
+  },
 
-	sourceType(brand) {
-		var brandString = brand.replace(/\s+/g, '');
-		return brandString.toLowerCase();
-	},
+  sourceType(brand) {
+    const brandString = brand.replace(/\s+/g, '');
+    return brandString.toLowerCase();
+  },
 
   editDefaultMode() {
     return Template.instance().editDefaultSource.get() && 'editDefaultMode';
@@ -59,7 +63,7 @@ Template.PaymentSettings.helpers({
 });
 
 Template.PaymentSettings.events({
-	'click #addCard'(event, template) {
+  'click #addCard'(event, template) {
     template.showCardElement.set(true);
 
 	  // Add an instance of the card Element into the `card-element` <div>
@@ -83,99 +87,99 @@ Template.PaymentSettings.events({
 
     async function createStripeToken() {
       try {
-        const {token, error} = await stripe.createToken(card);
+        const { token, error } = await stripe.createToken(card);
         return token;
-      } catch(error) {
+      } catch (error) {
         // Inform the customer that there was an error
         console.log(error);
 	      const errorElement = document.getElementById('card-errors');
 	      errorElement.textContent = error.message;
 	      Session.set('loading', false);
-      };
-    };
+      }
+    }
 
     async function createNewStripeUser(token) {
     	try {
 	      const userEmail = Meteor.user().emails[0].address;
 
 	      const cust = {
-	        description: "Customer for " + userEmail,
+	        description: `Customer for ${userEmail}`,
 	        source: token,
 	        account_balance: 0,
 	        email: userEmail,
 	      };
 
-	      const stripe_id = await callWithPromise( 'createCustomer', cust);
+	      const stripe_id = await callWithPromise('createCustomer', cust);
 
 	      return stripe_id;
-	    } catch(error) {
+	    } catch (error) {
 	    	throw new Meteor.Error(error.reason);
-	    };
-		};
+	    }
+    }
 
-    async function addStripePaymentSource( args ) {
+    async function addStripePaymentSource(args) {
     	try {
-    		const newSource = await callWithPromise( 'addPaymentSource', args );
+    		const newSource = await callWithPromise('addPaymentSource', args);
     		return newSource;
-    	} catch(error) {
+    	} catch (error) {
     		console.log(error.reason);
     		throw new Meteor.Error(error.reason);
-    	};
-    };
+    	}
+    }
 
     async function retrieveStripeCustomer() {
     	try {
-    		//Const the Session var of a user's Stripe user info
+    		// Const the Session var of a user's Stripe user info
     		const stripe_id = Session.get('stripe_customer').id;
     		//
-    		const updatedCustomer = await callWithPromise( 'retrieveCustomer', stripe_id );
+    		const updatedCustomer = await callWithPromise('retrieveCustomer', stripe_id);
     		return updatedCustomer;
-    	} catch(error) {
-    		throw new Meteor.Error("retrieveStripeCustomer " + Meteor.userId() + " " + error.reason);
-    	};
-    };
+    	} catch (error) {
+    		throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
+    	}
+    }
 
     async function processNewPaymentSource() {
     	try {
-    		//Make a token for the source
+    		// Make a token for the source
 	    	const newSourceToken = await createStripeToken();
-	    	//Make a blank args object for all arguments for Meteor.call
+	    	// Make a blank args object for all arguments for Meteor.call
 	    	const args = {};
 
-	    	//If the user has Stripe userID -> a payment source logged with Stripe
+	    	// If the user has Stripe userID -> a payment source logged with Stripe
 		    if (Meteor.user().stripe_id) {
-		    	//use their saved stripe_id and the token_id of the new source 
-		    	//to send the info to Stripe, and save it in a constant (FIX? use of newSource?)
+		    	// use their saved stripe_id and the token_id of the new source
+		    	// to send the info to Stripe, and save it in a constant (FIX? use of newSource?)
 		    	args.id = Meteor.user().stripe_id;
 		    	args.source = newSourceToken.id;
 		    	const newSource = await addStripePaymentSource(args);
-		    //If the user doesn't have a Stripe userID
+		    // If the user doesn't have a Stripe userID
 		    } else {
-		    	//make a new Stripe user with the source token, which will become their default source
+		    	// make a new Stripe user with the source token, which will become their default source
 		    	const newUser = await createNewStripeUser(newSourceToken.id);
 		    	// FIX
-		    };
+		    }
 
 		    const updatedCustomer = await retrieveStripeCustomer();
     		Session.set('stripe_customer', updatedCustomer);
-		    sAlert.success("Card added!");
+		    sAlert.success('Card added!');
 		    template.showCardElement.set(false);
 		    card.unmount();
-		  } catch(error) {
+		  } catch (error) {
 	    	sAlert.error('Something went wrong. Please try again.');
 		  	throw new Meteor.Error(error);
-		  };
-    };
+		  }
+    }
 
     processNewPaymentSource();
     Session.set('loading', false);
   },
 
-  'click .change-default'(event,template) {
+  'click .change-default'(event, template) {
     template.editDefaultSource.set(true);
   },
 
-  'click .cancel-edit-default'(event,template) {
+  'click .cancel-edit-default'(event, template) {
     event.preventDefault();
 
     template.editDefaultSource.set(false);
@@ -185,9 +189,9 @@ Template.PaymentSettings.events({
     event.preventDefault();
 
     const lis = template.findAll('.editDefaultMode');
-    for (var i = lis.length - 1; i >= 0; i--) {
+    for (let i = lis.length - 1; i >= 0; i--) {
       lis[i].classList.remove('newDefault');
-    };
+    }
 
     const li = event.currentTarget;
     const newDefault = li.id;
@@ -200,15 +204,15 @@ Template.PaymentSettings.events({
 
     async function retrieveStripeCustomer() {
       try {
-        //Const the Session var of a user's Stripe user info
+        // Const the Session var of a user's Stripe user info
         const stripe_id = Session.get('stripe_customer').id;
         //
-        const updatedCustomer = await callWithPromise( 'retrieveCustomer', stripe_id );
+        const updatedCustomer = await callWithPromise('retrieveCustomer', stripe_id);
         return updatedCustomer;
-      } catch(error) {
-        throw new Meteor.Error("retrieveStripeCustomer " + Meteor.userId() + " " + error.reason);
-      };
-    };
+      } catch (error) {
+        throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
+      }
+    }
 
     async function updateDefaultSource() {
       try {
@@ -218,22 +222,21 @@ Template.PaymentSettings.events({
           default_source: template.newDefault.get(),
         };
 
-        const updatedSource = await callWithPromise( 'updateDefaultSource', args );
+        const updatedSource = await callWithPromise('updateDefaultSource', args);
         const updatedCustomer = await retrieveStripeCustomer();
         Session.set('stripe_customer', updatedCustomer);
-        sAlert.success("Settings saved");
+        sAlert.success('Settings saved');
         template.editDefaultSource.set(false);
-      } catch(error) {
-        throw new Meteor.Error("updateDefaultSource " + Meteor.userId() + " " + error);
-      };
-    };
+      } catch (error) {
+        throw new Meteor.Error(`updateDefaultSource ${Meteor.userId()} ${error}`);
+      }
+    }
 
-    const resetListItemStyle = ()=> {
+    const resetListItemStyle = () => {
       const li = template.find('.newDefault');
       li.classList.remove('newDefault');
     };
 
     updateDefaultSource();
-
   },
 });

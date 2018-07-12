@@ -11,21 +11,21 @@ Template.Side_Nav.onCreated(function menuItemOnCreated() {
 
   this.autorun(() => {
     const route = FlowRouter.getRouteName();
-    const isMenuPage = 'Menu' === route.split('.')[0];
-    const isAboutPage = 'About' === route.split('.')[0];
-    
+    const isMenuPage = route.split('.')[0] === 'Menu';
+    const isAboutPage = route.split('.')[0] === 'About';
+
     if (isMenuPage) {
       this.showMenuLinks.set(true);
-    };
+    }
 
     if (isAboutPage) {
       this.showAboutLinks.set(true);
-    };
+    }
   });
 });
 
 Template.Side_Nav.helpers({
-	sideNavOpen() {
+  sideNavOpen() {
     return Session.get('sideNavOpen') && 'sideNavOpen';
   },
 
@@ -53,9 +53,9 @@ Template.Side_Nav.helpers({
 });
 
 Template.Side_Nav.events({
-	'click a'() {
-		Session.set('sideNavOpen', false);
-	},
+  'click a'() {
+    Session.set('sideNavOpen', false);
+  },
 
   'mouseenter .shop-menu-link, .menu-link-ul'() {
     Template.instance().showMenuLinks.set(true);
@@ -67,16 +67,16 @@ Template.Side_Nav.events({
 
   'mouseleave #Main-Nav'() {
     const route = FlowRouter.getRouteName();
-    const isNotMenuPage = 'Menu' != route.split('.')[0];
-    const isNotAboutPage = 'About' != route.split('.')[0];
+    const isNotMenuPage = route.split('.')[0] != 'Menu';
+    const isNotAboutPage = route.split('.')[0] != 'About';
 
     if (isNotMenuPage) {
       Template.instance().showMenuLinks.set(false);
-    };
+    }
 
     if (isNotAboutPage) {
       Template.instance().showAboutLinks.set(false);
-    };
+    }
   },
   'click #sideNav span' (event) {
     event.preventDefault();
