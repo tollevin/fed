@@ -1,28 +1,4 @@
-import { ALL_FOODS } from './diet_food_restrictions.js';
-
-export const RESTRICTION_TO_ITEM_RESTRICTION = {
-  beef: "beef",
-  chicken: "chicken",
-  fish: "fish",
-  shellfish: "shellfish",
-  dairy: "milk",
-  eggs: "eggs",
-  gluten: "wheat",
-  nuts: "treenuts",
-  peanuts: "peanuts",
-  soy: "soy"
-};
-
-const CATEGORY_TO_PLATE = {
-  beef: "protein",
-  chicken: "protein",
-  fish: "protein",
-  soy: "protein",
-  vegetable: "vegetable",
-  grain: "grain",
-  salad: "salad",
-  soup: "soup",
-};
+import { ALL_FOODS, RESTRICTION_TO_ITEM_RESTRICTION, CATEGORY_TO_PLATE } from './diet_food_restrictions.js';
 
 const pickPlateIds = (plateTypeDishIds, numPlate) => {
   const totalDishes = plateTypeDishIds.length;

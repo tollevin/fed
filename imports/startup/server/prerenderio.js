@@ -1,4 +1,5 @@
-// import prerender from 'prerender-node';
+import prerenderIO from 'prerender-node';
+// var settings = Meteor.settings.PrerenderIO;
 
 // Meteor.startup(() => {
 
@@ -14,16 +15,29 @@
 // });
 
 Meteor.startup(() => {
+  // if (!__meteor_runtime_config__.ROOT_URL.match(/www|stg|app/)) return;
+  // prerenderIO.set('prerenderToken', settings.token);
+  console.log("prerender setup");
+  prerenderIO.set('prerenderToken', 'Ew27iYLQaGXbOOKSJIOy');
+  prerenderIO.crawlerUserAgents = ["Mozilla"];
 
-    const prerenderio = Npm.require('prerender-node');
-//     const settings = Meteor.settings.PrerenderIO;
+  prerenderIO.set('beforeRender', function(req, done) {
+    console.log('\nprerender before', req.headers, '\n\n');
+    done();
+  });
+  prerenderIO.set('afterRender', function afterRender(err, req, prerender_res) {
+    if (err) {
+      console.log('prerenderio error', err); 
+      return;
+    }
+    console.log('prerender after', req.url, '\nheaders:', req.headers, '\nres complete:', prerender_res.complete, prerender_res.statusCode, prerender_res.statusMessage , '\nres headers:', prerender_res.headers, '\nres body', prerender_res);
+  });
 
-//     if (settings && settings.token && settings.host) {
-        prerenderio.set('prerenderToken', 'Ew27iYLQaGXbOOKSJIOy');
-//         prerenderio.set('host', settings.host);
-//         prerenderio.set('protocol', 'https');
-        WebApp.rawConnectHandlers.use(prerenderio);
-//     }
+  
+  // console.log('\nprerender service:', settings);
+
+  
+  WebApp.rawConnectHandlers.use(prerenderIO);
 
 });
 

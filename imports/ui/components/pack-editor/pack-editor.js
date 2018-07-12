@@ -13,7 +13,7 @@ import { Items } from '/imports/api/items/items.js';
 
 // Methods
 import { insertOrder, updatePendingSubOrder } from '/imports/api/orders/methods.js';
-import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/pack_planner.js';
+import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
 
 // Template
 import './pack-editor.less';

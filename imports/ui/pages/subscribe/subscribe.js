@@ -7,9 +7,9 @@ import { lodash } from 'meteor/erasaur:meteor-lodash';
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 import { Items } from '/imports/api/items/items.js';
 
-import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS }
+import { ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS, RESTRICTION_TO_ITEM_RESTRICTION }
   from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
-import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from '/imports/ui/lib/pack_picker/pack_planner.js';
+import { generateDefaultPack, getPack } from '/imports/ui/lib/pack_picker/pack_planner.js';
 
 // Methods
 import { insertPlan } from '/imports/api/plans/methods.js';

@@ -41,16 +41,16 @@ Template.Filters.events({
 		var existingFilters = Session.get('filters');
 		// existingFilters.iso = '';
 		existingFilters.restrictions = {
-			"peanuts": false,
-			"treenuts": false,
-			"soy": false,
-			"beef": false,
-			"chicken": false,
-			"fish": false,
-			"shellfish": false,
-			"milk": false,
-			"eggs": false,
-			"wheat": false,
+			peanuts: false,
+			treenuts: false,
+			soy: false,
+			beef: false,
+			chicken: false,
+			fish: false,
+			shellfish: false,
+			milk: false,
+			eggs: false,
+			wheat: false,
 		};
 
 		switch (filter) {

@@ -1,3 +1,6 @@
+// Prerender.io Settings
+import './prerenderio.js';
+
 import './server-routes';
 
 import './fixtures.js';
@@ -15,8 +18,7 @@ import './register-api.js';
 // Sitemap
 import './sitemaps.js';
 
-// Prerender.io Settings
-import './prerenderio.js';
+
 
 // Get custom Stripe payment method
 import './stripe.js';

@@ -12,39 +12,22 @@ import './cart.html';
 Template.Cart.helpers({
 	cartItems: ()=> {
 		const order = Session.get('Order');
-		var itemsObj = {};
-
-		for (var i = order.items.length - 1; i >= 0; i--) {
-			if (itemsObj[order.items[i]._id]) {
-				itemsObj[order.items[i]._id].tally += 1;
-			} else {
-				const itemToAdd = {
-					tally: 1,
-					item: order.items[i],
-				};
-
-				itemsObj[order.items[i]._id] = itemToAdd;
-			}
-		};
+		var itemsObj =
+      order.items.reduce((memo, item) => {
+        let foundItem = memo[item._id] || {};
+        return ({...memo, [item._id]: {tally: (foundItem.tally || 0) + 1, item}})
+      }, {})
 
 		return Object.values(itemsObj);
 	},
 	subtotal: ()=> {
-		var subtotal = 0;
 		const order = Session.get('Order');
-
-		for (var i = order.items.length - 1; i >= 0; i--) {
-			subtotal += order.items[i].price_per_unit;
-		};
-
-		return subtotal.toFixed(2);
+		return order.items.reduce((memo, item) => memo + item.price_per_unit, 0).toFixed(2);
 	},
 });
 
 Template.Cart.events({
-
 	'click .remove-dish'(event, template) {
-		
 		const pack = Session.get('pack');
     const dishes = pack.dishes;
     const itemName = event.target.parentElement.closest(".dish-name").text;
@@ -64,16 +47,16 @@ Template.Cart.events({
 	'click .ready' (event, template) {
     Session.set('processing', true);
 
-  	const order = Session.get('Order');
+  	const {style, week_of, items, subscriptions} = Session.get('Order');
   	const menu = Session.get('menu');
 
 		const orderToCreate = {
     	user_id: Meteor.userId(),
     	menu_id: menu._id,
-    	style: order.style,
-    	week_of: order.week_of,
-    	items: order.items,
-    	subscriptions: order.subscriptions,
+    	style,
+      week_of,
+      items,
+      subscriptions,
     };
 
     const orderId = insertOrder.call(orderToCreate);
