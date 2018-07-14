@@ -8,7 +8,7 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { Promise } from 'meteor/promise';
 import { $ } from 'meteor/jquery';
 
-import { denodeify } from '../../utils/denodeify';
+import denodeify from '/imports/utils/denodeify';
 import { generateData } from '../../api/generate-data.app-tests.js';
 import { Lists } from '/imports/api/lists/lists.js';
 import { Todos } from '/imports/api/todos/todos.js';

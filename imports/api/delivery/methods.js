@@ -10,9 +10,7 @@ import {
   zipZones,
 } from './zipcodes.js';
 
-import {
-  DeliveryWindows,
-} from './delivery-windows.js';
+import DeliveryWindows from './delivery-windows.js';
 
 export const getZipZone = new ValidatedMethod({
   name: 'delivery.getZone',

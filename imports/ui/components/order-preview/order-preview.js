@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 import { getZipZone } from '/imports/api/delivery/methods.js';
 

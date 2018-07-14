@@ -3,15 +3,17 @@ import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
+import { Session } from 'meteor/session';
+import { $ } from 'meteor/jquery';
 
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { Items } from '/imports/api/items/items.js';
 
 import {
   ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS,
 }
   from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
-import { RESTRICTION_TO_ITEM_RESTRICTION, generateDefaultPack, getPack } from '/imports/ui/lib/pack_picker/pack_planner.js';
+import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/pack_planner.js';
 
 // Methods
 import { insertPlan } from '/imports/api/plans/methods.js';
@@ -58,28 +60,32 @@ Template.Subscribe.helpers({
   },
 
   currentForm(thisForm) {
-    var cf;
+    let cf;
     switch (Session.get('stage')) {
       case undefined:
-        var cf = 'diet';
+        cf = 'diet';
         break;
       case 0:
-        var cf = 'diet';
+        cf = 'diet';
         break;
       case 1:
-        var cf = 'plan';
+        cf = 'plan';
         break;
       case 2:
-        var cf = 'meals';
+        cf = 'meals';
         break;
       case 3:
-        var cf = 'delivery';
+        cf = 'delivery';
+        break;
+      default:
+        cf = undefined;
         break;
     }
 
     if (cf === thisForm) {
       return 'currentForm';
     }
+    return undefined;
   },
 
   diet() {
@@ -108,15 +114,14 @@ Template.Subscribe.helpers({
 
   thisWeek: () => {
     const skipping = Template.instance().skip_first_delivery.get();
-    if (!skipping) {
-      const preferredDelivDay = Template.instance().preferredDelivDay.get();
-      const deliveries = DeliveryWindows.find({ delivery_day: preferredDelivDay }).fetch();
-      const delivery = deliveries[0];
-      const date = moment(delivery.delivery_start_time);
-      const endDate = moment(date).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
-      const dateToString = `${date.format('dddd, MMMM Do, h')}-${endDate.format('ha')}`;
-      return dateToString;
-    }
+    if (skipping) { return undefined; }
+    const preferredDelivDay = Template.instance().preferredDelivDay.get();
+    const deliveries = DeliveryWindows.find({ delivery_day: preferredDelivDay }).fetch();
+    const delivery = deliveries[0];
+    const date = moment(delivery.delivery_start_time);
+    const endDate = moment(date).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
+    const dateToString = `${date.format('dddd, MMMM Do, h')}-${endDate.format('ha')}`;
+    return dateToString;
   },
 
   nextWeek: () => {
@@ -132,11 +137,11 @@ Template.Subscribe.helpers({
 
 Template.Subscribe.events({
 
-  'click .diet label, touchstart .diet label'(event, template) {
+  'click .diet label, touchstart .diet label'(event, templateInstance) {
     event.preventDefault();
 
-    const diets = template.findAll('.diet > label');
-    for (let i = diets.length - 1; i >= 0; i--) {
+    const diets = templateInstance.findAll('.diet > label');
+    for (let i = diets.length - 1; i >= 0; i -= 1) {
       diets[i].classList.remove('clicked');
     }
 
@@ -147,19 +152,19 @@ Template.Subscribe.events({
     const notEatenFoods = foodList => lodash.difference(ALL_FOODS, foodList);
 
     const selectRelevantFoods = (foodList) => {
-      template
+      templateInstance
         .findAll(foodNamesToIds(ALL_FOODS))
         .forEach(element => element.classList.remove('checked'));
 
-      template
+      templateInstance
         .findAll(foodNamesToClasses(ALL_FOODS))
         .forEach(element => element.classList.remove('fadeIn'));
 
-      template
+      templateInstance
         .findAll(foodNamesToIds(notEatenFoods(foodList)))
         .forEach(element => element.classList.add('checked'));
 
-      template
+      templateInstance
         .findAll(foodNamesToClasses(notEatenFoods(foodList)))
         .forEach(element => element.classList.add('fadeIn'));
     };
@@ -196,14 +201,14 @@ Template.Subscribe.events({
     selectRelevantFoods(foodTypeArray);
   },
 
-  'click .restriction'(event, template) {
+  'click .restriction'(event, templateInstance) {
     event.preventDefault();
 
     event.currentTarget.classList.toggle('checked');
 
     const itemClass = `.${event.currentTarget.id}`;
-    const imgs = template.findAll(itemClass);
-    for (let i = imgs.length - 1; i >= 0; i--) {
+    const imgs = templateInstance.findAll(itemClass);
+    for (let i = imgs.length - 1; i >= 0; i -= 1) {
       imgs[i].classList.toggle('fadeIn');
     }
 
@@ -212,19 +217,19 @@ Template.Subscribe.events({
     // change diet
   },
 
-  'click #next0'(event, template) {
+  'click #next0'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
 
-    const diet = template.find('.clicked');
+    const diet = templateInstance.find('.clicked');
 
     if (!diet) {
       sAlert.error('Please choose a diet.');
       Session.set('loading', false);
     } else {
-      const restrictions = template.findAll('.checked');
+      const restrictions = templateInstance.findAll('.checked');
       const restrictionsArray = [];
-      for (var i = restrictions.length - 1; i >= 0; i--) {
+      for (let i = restrictions.length - 1; i >= 0; i -= 1) {
         restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[restrictions[i].id]);
       }
 
@@ -242,7 +247,7 @@ Template.Subscribe.events({
         wheat: false,
       };
 
-      for (var i = restrictionsArray.length - 1; i >= 0; i--) {
+      for (let i = restrictionsArray.length - 1; i >= 0; i -= 1) {
         restrictionsObject[restrictionsArray[i]] = true;
       }
 
@@ -252,7 +257,7 @@ Template.Subscribe.events({
       };
 
       Session.set('filters', filters);
-      template.diet.set(dietToUpperCase);
+      templateInstance.diet.set(dietToUpperCase);
 
       Session.set('loading', false);
       if (!Meteor.userId()) {
@@ -264,37 +269,36 @@ Template.Subscribe.events({
     }
   },
 
-  'click #Plan li label'(event, template) {
-    const plans = template.findAll('#Plan li label');
-    for (let i = plans.length - 1; i >= 0; i--) {
+  'click #Plan li label'(event, templateInstance) {
+    const plans = templateInstance.findAll('#Plan li label');
+    for (let i = plans.length - 1; i >= 0; i -= 1) {
       plans[i].classList.remove('chosen');
     }
     event.currentTarget.classList.add('chosen');
-    const checked = event.currentTarget.firstElementChild.checked;
     event.currentTarget.firstElementChild.checked = true;
   },
 
-  'change #delivery-day-checkbox'(event, template) {
+  'change #delivery-day-checkbox'(event, templateInstance) {
     if (document.getElementById('delivery-day-checkbox').checked) {
-      template.preferredDelivDay.set('monday');
+      templateInstance.preferredDelivDay.set('monday');
     } else {
-      template.preferredDelivDay.set('sunday');
+      templateInstance.preferredDelivDay.set('sunday');
     }
   },
 
-  'click #skip-first-delivery'(event, template) {
+  'click #skip-first-delivery'(event, templateInstance) {
     event.preventDefault();
 
-    template.skip_first_delivery.set(true);
+    templateInstance.skip_first_delivery.set(true);
   },
 
-  'click #unskip-first-delivery'(event, template) {
+  'click #unskip-first-delivery'(event, templateInstance) {
     event.preventDefault();
 
-    template.skip_first_delivery.set(false);
+    templateInstance.skip_first_delivery.set(false);
   },
 
-  'click #next1'(event, template) {
+  'click #next1'(event, templateInstance) {
     event.preventDefault();
 
     const packSelected = document.querySelector('input[name="plan"]:checked');
@@ -303,9 +307,9 @@ Template.Subscribe.events({
       Session.set('loading', true);
 
       const packName = document.querySelector('input[name="plan"]:checked').value;
-      const deliveryDay = template.preferredDelivDay.get();
-      const skipping = template.skip_first_delivery.get();
-      const week_of = skipping ? moment().add(1, 'week').startOf('week').toDate() : moment().startOf('week').toDate();
+      const deliveryDay = templateInstance.preferredDelivDay.get();
+      const skipping = templateInstance.skip_first_delivery.get();
+      const weekOf = skipping ? moment().add(1, 'week').startOf('week').toDate() : moment().startOf('week').toDate();
       const pack = Items.findOne({ name: packName });
 
       // check if plan exists FIX
@@ -317,7 +321,6 @@ Template.Subscribe.events({
       };
 
       let planExists = pack.plans(data); // FIX!!
-      console.log(planExists);
 
       // if !plan, insert plan
       if (!planExists) {
@@ -332,17 +335,16 @@ Template.Subscribe.events({
         order.style = 'pack';
 
         // Check to see if pack subscription exists, 'Add another?/Edit' prompt
-        order.items ? order.items.push(pack) : order.items = [pack];
 
-        if (order.subscriptions) {
-          order.subscriptions.push(planExists);
-        } else {
-          order.subscriptions = [planExists];
-        }
+        if (!order.items) { order.items = []; }
+        order.items.push(pack);
+
+        if (!order.subscriptions) { order.subscriptions = []; }
+        order.subscriptions.push(planExists);
       } else {
         order = {
           user_id: Meteor.userId(),
-          week_of,
+          week_of: weekOf,
           items: [
             pack,
           ],
@@ -357,11 +359,11 @@ Template.Subscribe.events({
       Session.set('stage', 2);
 
       const filters = Session.get('filters');
-      const restrictions = filters.restrictions;
+      const { restrictions } = filters;
       const restrictionsArray = [];
       const restrictionsKeys = Object.keys(restrictions);
 
-      for (let i = restrictionsKeys.length - 1; i >= 0; i--) {
+      for (let i = restrictionsKeys.length - 1; i >= 0; i -= 1) {
         if (restrictions[restrictionsKeys[i]]) restrictionsArray.push(restrictionsKeys[i]);
       }
 

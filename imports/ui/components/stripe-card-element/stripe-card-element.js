@@ -5,7 +5,6 @@ import './stripe-card-element.html';
 Template.Card_element.onRendered(function cardElementOnRendered() {
   // Set Stripe Public Key
   this.stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
-  // this.stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
 
   // Set Stripe Elements to element var
   elements = this.stripe.elements();

@@ -40,15 +40,13 @@ Template.Market_page.onCreated(function marketPageOnCreated() {
     const order = {
       user_id: Meteor.userId(),
       style: 'alacarte',
-	    items: [],
-	    week_of: moment().startOf('week').toDate(),
-	    created_at: moment().toDate(),
+      items: [],
+      week_of: moment().startOf('week').toDate(),
+      created_at: moment().toDate(),
     };
 
     Session.set('Order', order);
   }
-
-  const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
   this.autorun(() => {
     const handle = this.subscribe('Menus.active');
@@ -87,7 +85,7 @@ Template.Market_meals.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }

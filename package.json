@@ -32,6 +32,10 @@
     "eslint-plugin-react": "^7.10.0"
   },
   "eslintConfig": {
-    "extends": "@meteorjs/eslint-config-meteor"
+    "extends": "@meteorjs/eslint-config-meteor",
+    "rules": {
+      "meteor/template-names": [2, "snake-case"],
+      "meteor/no-session": [0]
+    }
   }
 }

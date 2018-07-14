@@ -6,7 +6,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
 import { toggleSkip } from '/imports/api/orders/methods.js';

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { Session } from 'meteor/session';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 // Components
@@ -42,19 +43,18 @@ Template.User_home.helpers({
   },
 
   creditDollars() {
-    if (Meteor.user()) {
-      const credit = Meteor.user().credit;
-      return Math.floor(credit);
-    }
+    const user = Meteor.user();
+    if (!user) { return undefined; }
+    return Math.floor(user.credit);
   },
 
   creditCents() {
-    if (Meteor.user()) {
-      const credit = Math.round(Meteor.user().credit * 100) / 100;
-      const dollars = Math.floor(credit);
-      const cents = Math.round((credit - dollars) * 100);
-      return cents < 10 ? `0${cents}` : cents;
-    }
+    const user = Meteor.user();
+    if (!user) { return undefined; }
+    const credit = Math.round(user.credit * 100) / 100;
+    const dollars = Math.floor(credit);
+    const cents = Math.round((credit - dollars) * 100);
+    return cents < 10 ? `0${cents}` : cents;
   },
 
   rate() {

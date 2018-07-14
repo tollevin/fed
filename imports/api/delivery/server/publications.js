@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
-import { DeliveryWindows } from '../delivery-windows.js';
+import DeliveryWindows from '../delivery-windows.js';
 import { Menus } from '../../menus/menus.js';
 
 Meteor.publish('DeliveryWindows.nextTwoWeeks', function nextFourDeliveryWindows(timestamp) {

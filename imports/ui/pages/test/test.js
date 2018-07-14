@@ -6,21 +6,21 @@ Template.Test.onRendered(function testPageOnRendered() {
   const stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
   const elements = stripe.elements();
   const style = {
-	  base: {
-	    color: '#303238',
-	    fontSize: '16px',
-	    lineHeight: '48px',
-	    fontSmoothing: 'antialiased',
-	    '::placeholder': {
-	      color: '#ccc',
-	    },
-	  },
-	  invalid: {
-	    color: '#e5424d',
-	    ':focus': {
-	      color: '#303238',
-	    },
-	  },
+    base: {
+      color: '#303238',
+      fontSize: '16px',
+      lineHeight: '48px',
+      fontSmoothing: 'antialiased',
+      '::placeholder': {
+        color: '#ccc',
+      },
+    },
+    invalid: {
+      color: '#e5424d',
+      ':focus': {
+        color: '#303238',
+      },
+    },
   };
 
   const card = elements.create('card', { style });

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 // Collections
@@ -37,11 +38,7 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
         item.count = 0;
         itemTallies.push(item);
       });
-      const lastSundayAtNoon = toNewYorkTimezone(moment()).day(0).hour(12)
-        .minute(1)
-        .second(0)
-        .utc()
-        .toDate();
+
       const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
         .toDate();
       const ordersThisWeek = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }, { fields: { items: 1 } });
@@ -51,8 +48,8 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
       ordersThisWeek.forEach((order) => {
         order.items.forEach((item) => {
           if (item.category === 'Pack') {
-            item.sub_items.items.forEach((sub_item) => {
-              orderedItems.push(sub_item);
+            item.sub_items.items.forEach((subItem) => {
+              orderedItems.push(subItem);
             });
           } else {
             orderedItems.push(item);
@@ -60,7 +57,7 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
         });
       });
       itemTallies.forEach((item) => {
-        for (let i = orderedItems.length - 1; i >= 0; i--) {
+        for (let i = orderedItems.length - 1; i >= 0; i -= 1) {
           if (item._id === orderedItems[i]._id) {
             item.count += 1;
           }
@@ -80,35 +77,35 @@ Template.Main_admin.helpers({
   },
 
   ordersToday: () => {
-  	const todayStart = moment().startOf('day').toDate();
-  	return Orders.find({ paid_at: { $gte: todayStart } }).count();
+    const todayStart = moment().startOf('day').toDate();
+    return Orders.find({ paid_at: { $gte: todayStart } }).count();
   },
 
   ordersThisWeek: () => {
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
-  	return Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).count();
+    return Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).count();
   },
 
   salesToday: () => {
-  	let totalSalesToday = 0;
-  	const todayStart = moment().startOf('day').toDate();
-  	const todaysOrders = Orders.find({ paid_at: { $gte: todayStart } }).fetch();
-  	for (let i = todaysOrders.length - 1; i >= 0; i--) {
-  		totalSalesToday += (Number(todaysOrders[i].total));
-  	}
-  	return totalSalesToday.toFixed(2);
+    let totalSalesToday = 0;
+    const todayStart = moment().startOf('day').toDate();
+    const todaysOrders = Orders.find({ paid_at: { $gte: todayStart } }).fetch();
+    for (let i = todaysOrders.length - 1; i >= 0; i -= 1) {
+      totalSalesToday += (Number(todaysOrders[i].total));
+    }
+    return totalSalesToday.toFixed(2);
   },
 
   salesThisWeek: () => {
   	let totalSalesThisWeek = 0;
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
-  	const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).fetch();
-  	for (let i = thisWeeksOrders.length - 1; i >= 0; i--) {
-  		totalSalesThisWeek += (Number(thisWeeksOrders[i].total) * 1.08875);
-  	}
-  	return totalSalesThisWeek.toFixed(2);
+    const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).fetch();
+    for (let i = thisWeeksOrders.length - 1; i >= 0; i -= 1) {
+      totalSalesThisWeek += (Number(thisWeeksOrders[i].total) * 1.08875);
+    }
+    return totalSalesThisWeek.toFixed(2);
   },
 
   totalSubs: () => Meteor.users.find({ 'subscriptions.status': { $ne: 'canceled' } }).count(),
@@ -116,7 +113,7 @@ Template.Main_admin.helpers({
   customizedSubs: () => {
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
-  	return Orders.find({ week_of: thisWeekStart, status: 'custom-sub' }).count();
+    return Orders.find({ week_of: thisWeekStart, status: 'custom-sub' }).count();
   },
 
   skippingSubs: () => {
@@ -129,13 +126,13 @@ Template.Main_admin.helpers({
   newSubs: () => {
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
-  	return Meteor.users.find({ 'subscriptions.created_at': { $gte: thisWeekStart } }).count();
+    return Meteor.users.find({ 'subscriptions.created_at': { $gte: thisWeekStart } }).count();
   },
 
   canceledSubs: () => {
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
-  	return Meteor.users.find({ 'subscriptions.canceled_at': { $gte: thisWeekStart } }).count();
+    return Meteor.users.find({ 'subscriptions.canceled_at': { $gte: thisWeekStart } }).count();
   },
 
   estimatedSubPlates: () => {
@@ -143,10 +140,9 @@ Template.Main_admin.helpers({
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     // Get all pending-sub orders
-  	const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
-  	// Add the default number of dishes for each to total
-    for (let i = pendingSubOrders.length - 1; i >= 0; i--) {
-  		const plateCount = 0;
+    const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
+    // Add the default number of dishes for each to total
+    for (let i = pendingSubOrders.length - 1; i >= 0; i -= 1) {
       pendingSubOrders[i].items.forEach((item) => {
         if (item.category === 'Pack') {
           estimatedPlates += item.sub_items.schema.total;
@@ -154,14 +150,14 @@ Template.Main_admin.helpers({
           estimatedPlates += 1;
         }
       });
-  	}
-  	return estimatedPlates;
+    }
+    return estimatedPlates;
   },
 
   customPlates: () => {
     const items = Template.instance().itemInfo.get();
     let customDishCount = 0;
-    for (let i = items.length - 1; i >= 0; i--) {
+    for (let i = items.length - 1; i >= 0; i -= 1) {
       if (items[i].category === 'Meal') {
         customDishCount += items[i].count;
       }
@@ -176,12 +172,13 @@ Template.Main_admin.helpers({
     // Get all pending-sub orders
     const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
     // Add the default number of dishes for each to total
-    for (var i = pendingSubOrders.length - 1; i >= 0; i--) {
-      const plateCount = 0;
+    for (let i = pendingSubOrders.length - 1; i >= 0; i -= 1) {
       pendingSubOrders[i].items.forEach((item) => {
         if (item.category === 'Pack') {
           estimatedPlates += item.sub_items.schema.total;
-        } else if (item.category === 'Meal') {
+          return;
+        }
+        if (item.category === 'Meal') {
           estimatedPlates += 1;
         }
       });
@@ -189,7 +186,7 @@ Template.Main_admin.helpers({
 
     const items = Template.instance().itemInfo.get();
     let customDishCount = 0;
-    for (var i = items.length - 1; i >= 0; i--) {
+    for (let i = items.length - 1; i >= 0; i -= 1) {
       if (items[i].category === 'Meal') {
         customDishCount += items[i].count;
       }
@@ -208,14 +205,10 @@ Template.Main_admin.events({
     const allSubs = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
 
     // if sub status is canceled, -> cancelSubscription FIX DELETE
-    for (var j = allSubs.length - 1; j >= 0; j--) {
-      for (let k = allSubs[j].subscriptions.length - 1; k >= 0; k--) {
+    for (let j = allSubs.length - 1; j >= 0; j -= 1) {
+      for (let k = allSubs[j].subscriptions.length - 1; k >= 0; k -= 1) {
         if (allSubs[j].subscriptions[k].status === 'canceled') {
-          Meteor.call('cancelSubscription', allSubs[j]._id, allSubs[j].subscriptions[k]._id, (error, response) => {
-            if (error) {
-              console.log(`${error}; error :${allSubs[j]._id}`);
-            }
-          });
+          Meteor.call('cancelSubscription', allSubs[j]._id, allSubs[j].subscriptions[k]._id, () => {});
         }
       }
     }
@@ -223,9 +216,7 @@ Template.Main_admin.events({
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
-    console.log(updatedSubUsers.length);
     const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'skipped', 'created'] } }).fetch();
-    console.log(thisWeeksOrders.length);
 
     const menu = Menus.findOne({ online_at: thisWeekStart });
 
@@ -239,46 +230,35 @@ Template.Main_admin.events({
     };
 
     // for each user
-    for (var i = updatedSubUsers.length - 1; i >= 0; i--) {
-      const user_id = updatedSubUsers[i]._id;
+    for (let i = updatedSubUsers.length - 1; i >= 0; i -= 1) {
+      const userId = updatedSubUsers[i]._id;
 
       // find user's orders
-      const ordersThisWeek = Orders.find({ user_id, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
+      const ordersThisWeek = Orders.find({ user_id: userId, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
 
       // if no order, create a pending-sub order for them
       if (ordersThisWeek.length < 1) {
         let subItems;
-        Meteor.call('getUserSubscriptionItems', user_id, (error, response) => {
-          if (error) {
-            console.log(`${error}; error :${user_id}`);
-          } else {
-            subItems = response;
+        Meteor.call('getUserSubscriptionItems', userId, (error, response) => {
+          if (error) { return; }
+          subItems = response;
 
-            if (!menu) console.log('NO MENU!'); // FIX DELETE
+          const data = {
+            user_id: userId,
+            menu_id: menu._id,
+            week_of: thisWeekStart,
+            items: subItems,
+          };
 
-            const data = {
-              user_id,
-              menu_id: menu._id,
-              week_of: thisWeekStart,
-              items: subItems,
-            };
-
-            const subOrder = autoinsertSubscriberOrder.call(data);
-            console.log(`pending-sub order created for ${user_id}`);
-          }
+          autoinsertSubscriberOrder.call(data);
         });
-      }
-
-      // if more than one order this week, alert!
-      if (ordersThisWeek.length > 1) {
-        console.log(`Alert! ${user_id} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
       }
     }
 
     const skippers = [];
 
     // for each order
-    for (var i = thisWeeksOrders.length - 1; i >= 0; i--) {
+    for (let i = thisWeeksOrders.length - 1; i >= 0; i -= 1) {
       subscribers[thisWeeksOrders[i].status] += 1;
       subscribers.all += 1;
 
@@ -286,9 +266,6 @@ Template.Main_admin.events({
         skippers.push(thisWeeksOrders[i].recipient.email);
       }
     }
-
-    console.log(skippers);
-    console.log(subscribers);
   },
 
   'click #checkUsers2'(event) {
@@ -298,9 +275,7 @@ Template.Main_admin.events({
       .utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
-    console.log(updatedSubUsers.length);
     const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'skipped', 'created'] } }).fetch();
-    console.log(thisWeeksOrders.length);
 
     const menu = Menus.findOne({ online_at: thisWeekStart });
 
@@ -316,44 +291,33 @@ Template.Main_admin.events({
     const skippers = [];
 
     // for each user
-    for (var i = updatedSubUsers.length - 1; i >= 0; i--) {
-      const user_id = updatedSubUsers[i]._id;
+    for (let i = updatedSubUsers.length - 1; i >= 0; i -= 1) {
+      const userId = updatedSubUsers[i]._id;
 
       // find user's orders
-      const ordersThisWeek = Orders.find({ user_id, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
+      const ordersThisWeek = Orders.find({ user_id: userId, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
 
       // if no order, create a pending-sub order for them
       if (ordersThisWeek.length < 1) {
         let subItems;
-        Meteor.call('getUserSubscriptionItems', user_id, (error, response) => {
-          if (error) {
-            console.log(`${error}; error :${user_id}`);
-          } else {
-            subItems = response;
+        Meteor.call('getUserSubscriptionItems', userId, (error, response) => {
+          if (error) { return; }
+          subItems = response;
 
-            if (!menu) console.log('NO MENU!'); // FIX DELETE
+          const data = {
+            user_id: userId,
+            menu_id: menu._id,
+            week_of: thisWeekStart,
+            items: subItems,
+          };
 
-            const data = {
-              user_id,
-              menu_id: menu._id,
-              week_of: thisWeekStart,
-              items: subItems,
-            };
-
-            const subOrder = autoinsertSubscriberOrder.call(data);
-            console.log(`pending-sub order created for ${user_id}`);
-          }
+          autoinsertSubscriberOrder.call(data);
         });
-      }
-
-      // if more than one order this week, alert!
-      if (ordersThisWeek.length > 1) {
-        console.log(`Alert! ${user_id} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
       }
     }
 
     // for each order
-    for (var i = thisWeeksOrders.length - 1; i >= 0; i--) {
+    for (let i = thisWeeksOrders.length - 1; i >= 0; i -= 1) {
       subscribers[thisWeeksOrders[i].status] += 1;
       subscribers.all += 1;
 
@@ -361,9 +325,6 @@ Template.Main_admin.events({
         skippers.push(thisWeeksOrders[i].recipient.email);
       }
     }
-
-    console.log(skippers);
-    console.log(subscribers);
   },
 
   'click #checkUsers3'(event) {
@@ -373,9 +334,7 @@ Template.Main_admin.events({
       .utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
-    console.log(updatedSubUsers.length);
     const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
-    console.log(thisWeeksOrders.length);
 
     const menu = Menus.findOne({ online_at: thisWeekStart });
 
@@ -389,46 +348,35 @@ Template.Main_admin.events({
     };
 
     // for each user
-    for (var i = updatedSubUsers.length - 1; i >= 0; i--) {
-      const user_id = updatedSubUsers[i]._id;
+    for (let i = updatedSubUsers.length - 1; i >= 0; i -= 1) {
+      const userId = updatedSubUsers[i]._id;
 
       // find user's orders
-      const ordersThisWeek = Orders.find({ user_id, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
+      const ordersThisWeek = Orders.find({ user_id: userId, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
 
       // if no order, create a pending-sub order for them
       if (ordersThisWeek.length < 1) {
         let subItems;
-        Meteor.call('getUserSubscriptionItems', user_id, (error, response) => {
-          if (error) {
-            console.log(`${error}; error :${user_id}`);
-          } else {
-            subItems = response;
+        Meteor.call('getUserSubscriptionItems', userId, (error, response) => {
+          if (error) { return; }
+          subItems = response;
 
-            if (!menu) console.log('NO MENU!'); // FIX DELETE
+          const data = {
+            user_id: userId,
+            menu_id: menu._id,
+            week_of: thisWeekStart,
+            items: subItems,
+          };
 
-            const data = {
-              user_id,
-              menu_id: menu._id,
-              week_of: thisWeekStart,
-              items: subItems,
-            };
-
-            const subOrder = autoinsertSubscriberOrder.call(data);
-            console.log(`pending-sub order created for ${user_id}`);
-          }
+          autoinsertSubscriberOrder.call(data);
         });
-      }
-
-      // if more than one order this week, alert!
-      if (ordersThisWeek.length > 1) {
-        console.log(`Alert! ${user_id} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
       }
     }
 
     const skippers = [];
 
     // for each order
-    for (var i = thisWeeksOrders.length - 1; i >= 0; i--) {
+    for (let i = thisWeeksOrders.length - 1; i >= 0; i -= 1) {
       subscribers[thisWeeksOrders[i].status] += 1;
       subscribers.all += 1;
 
@@ -436,8 +384,5 @@ Template.Main_admin.events({
         skippers.push(thisWeeksOrders[i].recipient.email);
       }
     }
-
-    console.log(skippers);
-    console.log(subscribers);
   },
 });

@@ -3,13 +3,12 @@ import { Email } from 'meteor/email';
 import { SSR } from 'meteor/meteorhacks:ssr';
 
 import { moment } from 'meteor/momentjs:moment';
-
-import { makeGiftCardCode } from '../../utils/codify.js';
+import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
 import { Promos } from '/imports/api/promos/promos.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 
 import { insertPromo } from '/imports/api/promos/methods.js';

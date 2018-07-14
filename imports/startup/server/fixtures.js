@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Items } from '/imports/api/items/items.js';
 import { Menus } from '/imports/api/menus/menus.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { createDeliveryWindows } from '/imports/api/delivery/methods.js';
 
 import { moment } from 'meteor/momentjs:moment';

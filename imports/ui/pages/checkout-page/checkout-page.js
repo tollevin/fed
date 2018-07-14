@@ -4,11 +4,12 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
+import { $ } from 'meteor/jquery';
 // import { HTTP } from 'meteor/http';
 
 // Collections
 import { Promos } from '/imports/api/promos/promos.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
@@ -66,10 +67,10 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
       if (isReady && thisUserData.ready()) {
         if (Meteor.userId()) {
           // If the customer has a Stripe ID, we attach it to the template and call a list of their payment sources
-          if (!this.stripe_id && Meteor.user().stripe_id) {
-            this.stripe_id = Meteor.user().stripe_id;
+          if (!this.stripeId && Meteor.user().stripe_id) {
+            this.stripeId = Meteor.user().stripe_id;
             // Call stripe user info
-            Meteor.call('retrieveCustomer', this.stripe_id, (error, response) => {
+            Meteor.call('retrieveCustomer', this.stripeId, (error, response) => {
               if (error) {
                 console.log(error);
               } else {
@@ -178,7 +179,7 @@ Template.Checkout_page.helpers({
   subDiscount() {
     const subDiscounts = Template.instance().subscriber_discounts.get();
     const couponDiscount = Template.instance().promo.get();
-    const couponValue = couponDiscount && couponDiscount.value || 0;
+    const couponValue = (couponDiscount && couponDiscount.value) || 0;
     const totalDiscounts = Template.instance().discountValue.get();
     const appliedCredit = Template.instance().appliedCredit.get();
     return subDiscounts[0] && (totalDiscounts - couponValue - appliedCredit).toFixed(2);
@@ -234,9 +235,9 @@ Template.Checkout_page.helpers({
   },
 
   deliv() {
-    if (Meteor.user().preferredDelivDay) {
-      return Meteor.user().preferredDelivDay;
-    }
+    const preferredDelivDay = Meteor.user().preferredDelivDay;
+    if (!preferredDelivDay) { return undefined; }
+    return preferredDelivDay;
   },
 
   deliveryWindows() {
@@ -262,7 +263,7 @@ Template.Checkout_page.helpers({
   },
 
   formSubmitButtonText() {
-    if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status != 'canceled')) {
+    if (Meteor.userId() && Meteor.user().subscriptions && (Meteor.user().subscriptions.status !== 'canceled')) {
       return 'Save';
     }
     return 'Buy';
@@ -280,35 +281,37 @@ Template.Checkout_page.events({
     Template.instance().userHasPromo.set(true);
   },
 
-  'change #r6HB6YfaegNsAKBTS'(event, template) {
+  'change #r6HB6YfaegNsAKBTS'(event, templateInstance) {
     event.preventDefault();
 
     const newZip = event.target.value;
-    template.zipField.set(newZip);
+    templateInstance.zipField.set(newZip);
   },
 
-  'click #promoSub'(event, template) {
+  'click #promoSub'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
 
-    const code = template.find('[id="promo"]').value.toUpperCase();
+    const code = templateInstance.find('[id="promo"]').value.toUpperCase();
     const user = Meteor.userId();
-    template.subscribe('single.promo', code, {
+    templateInstance.subscribe('single.promo', code, {
       onReady () {
         Session.set('newUser', false);
 
         const promo = Promos.findOne({ code });
-        const origPriceWTax = Math.round(template.price * 108.875) / 100;
 
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
-        } else if (promo && promo.users[user] === promo.useLimitPerCustomer) {
+        }
+        if (promo && promo.users[user] === promo.useLimitPerCustomer) {
           sAlert.error('Sorry, that code has already been used.');
-        } else if (promo && promo.credit) {
+          return;
+        }
+        if (promo && promo.credit) {
           // Get existing total
-          const total = template.order.total.get();
+          const total = templateInstance.order.total.get();
           // Get existing discount
-          const discount = template.discountValue.get();
+          const discount = templateInstance.discountValue.get();
 
           // Ready discount.promo
           const discountPromo = {
@@ -321,17 +324,17 @@ Template.Checkout_page.events({
           const newTotal = total - promo.credit;
 
           if (newTotal < 0) {
-            var newCredit = 0 - newTotal;
+            let newCredit = 0 - newTotal;
             // FIX if (!Meteor.userId()) for future gifts purchases {
 
             // Set user credit
-            const origCredit = template.newCredit.get() || template.userHasCredit.get();
-            var newCredit = origCredit + (Math.round(newCredit * 100) / 100);
-            template.newCredit.set(newCredit);
+            const origCredit = templateInstance.newCredit.get() || templateInstance.userHasCredit.get();
+            newCredit = origCredit + (Math.round(newCredit * 100) / 100);
+            templateInstance.newCredit.set(newCredit);
 
             // Set discount.value
-            var newDiscount = discount + total;
-            template.discountValue.set(newDiscount);
+            const newDiscount = discount + total;
+            templateInstance.discountValue.set(newDiscount);
 
             // Set discount.promo.value
             discountPromo.value = total;
@@ -340,20 +343,19 @@ Template.Checkout_page.events({
             sAlert.success(`You now have a credit of $${newCredit.toFixed(2)}.`);
           } else {
             // Set discount.value
-            var newDiscount = discount + promo.credit;
-            template.discountValue.set(newDiscount);
+            const newDiscount = discount + promo.credit;
+            templateInstance.discountValue.set(newDiscount);
 
             // Set discount.promo.value
             discountPromo.value = promo.credit;
           }
 
           // Set discount.promo
-          template.promo.set(discountPromo);
-        } else if (promo && promo.percentage) {
-
-        } else {
-          sAlert.error("Sorry, that code isn't recognized");
+          templateInstance.promo.set(discountPromo);
+          return;
         }
+        if (promo && promo.percentage) { return; }
+        sAlert.error("Sorry, that code isn't recognized");
       },
       onError () {
         sAlert.error("Sorry, that code isn't recognized");
@@ -361,77 +363,70 @@ Template.Checkout_page.events({
     });
 
     Session.set('loading', false);
-    template.userHasPromo.set(false);
+    templateInstance.userHasPromo.set(false);
   },
 
-  'click #applyCredit'(event, template) {
+  'click #applyCredit'(event, templateInstance) {
     event.preventDefault();
 
+    const credit = templateInstance.newCredit.get() || templateInstance.userHasCredit.get();
+    const discount = templateInstance.discountValue.get();
+    const total = templateInstance.order.total.get();
 
-    const credit = template.newCredit.get() || template.userHasCredit.get();
-    const discount = template.discountValue.get();
-    const total = template.order.total.get();
-
-    if (total > 0) {
-      const newDiscount = discount + credit;
-      if (total < credit) {
-        const newCredit = credit - total;
-        // template.order.coupon.set( "ACCOUNT CREDIT of" + total );
-        template.discountValue.set(total + discount);
-        template.appliedCredit.set(total);
-        // template.discount.set( template.order.total.get() );
-        sAlert.success(`You now have a credit of $${newCredit.toFixed(2)}.`);
-        template.newCredit.set(newCredit);
-      } else {
-        // template.order.coupon.set( "ACCOUNT CREDIT OF" + credit );
-        template.appliedCredit.set(credit);
-        template.discountValue.set(discount + credit);
-        template.newCredit.set(0);
-        // template.discountValue.set("- $" + credit);
-        // template.discount.set( credit );
-        sAlert.success(`$${credit.toFixed(2)} worth of FedCred has been applied!`);
-      }
+    if (total <= 0) { return undefined; }
+    if (total < credit) {
+      const newCredit = credit - total;
+      templateInstance.discountValue.set(total + discount);
+      templateInstance.appliedCredit.set(total);
+      sAlert.success(`You now have a credit of $${newCredit.toFixed(2)}.`);
+      templateInstance.newCredit.set(newCredit);
+    } else {
+      templateInstance.appliedCredit.set(credit);
+      templateInstance.discountValue.set(discount + credit);
+      templateInstance.newCredit.set(0);
+      sAlert.success(`$${credit.toFixed(2)} worth of FedCred has been applied!`);
     }
+    return undefined;
   },
 
-  'blur #address-zip'(event, template) {
-    const value = event.currentTarget.value;
+  'blur #address-zip'(event) {
+    const { value } = event.currentTarget;
     if (!zipZones[value]) {
       const errorElement = document.getElementById('zip-errors');
       errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
     }
   },
 
-  'submit #insertOrderForm'(event, template) {
+  'submit #insertOrderForm'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
 
-    const orderToProcess = template.order.get();
+    const orderToProcess = templateInstance.order.get();
 
-    orderToProcess.total = template.order.total.get().toFixed(2);
+    orderToProcess.total = templateInstance.order.total.get().toFixed(2);
 
     const customer = {
-      first_name: template.find('[name="customer.firstName"]').value,
-      last_name: template.find('[name="customer.lastName"]').value,
-      phone: template.find('[name="customer.phone"]').value,
-      email: template.find('[name="customer.email"]').value,
-      address_line_1: template.find('[name="customer.address.line1"]').value,
-      address_line_2: template.find('[name="customer.address.line2"]').value,
-      address_city: template.find('[name="customer.address.city"]').value,
-      address_state: template.find('[name="customer.address.state"]').value,
-      address_zipcode: template.find('[name="customer.address.zipCode"]').value,
+      first_name: templateInstance.find('[name="customer.firstName"]').value,
+      last_name: templateInstance.find('[name="customer.lastName"]').value,
+      phone: templateInstance.find('[name="customer.phone"]').value,
+      email: templateInstance.find('[name="customer.email"]').value,
+      address_line_1: templateInstance.find('[name="customer.address.line1"]').value,
+      address_line_2: templateInstance.find('[name="customer.address.line2"]').value,
+      address_city: templateInstance.find('[name="customer.address.city"]').value,
+      address_state: templateInstance.find('[name="customer.address.state"]').value,
+      address_zipcode: templateInstance.find('[name="customer.address.zipCode"]').value,
     };
     orderToProcess.recipient = customer;
-    orderToProcess.delivery_comments = template.find('[name="destinationComments"]').value;
+    orderToProcess.delivery_comments = templateInstance.find('[name="destinationComments"]').value;
 
     let credit;
-    if (template.newCredit.get()) {
-      credit = template.newCredit.get();
+    if (templateInstance.newCredit.get()) {
+      credit = templateInstance.newCredit.get();
     } else {
-      credit = template.userHasCredit.get();
+      credit = templateInstance.userHasCredit.get();
     }
 
-    let stripe_id = template.stripe_id;
+    let { stripeId } = templateInstance;
 
     const finalPrice = Math.round(Number(orderToProcess.total) * 100);
 
@@ -446,7 +441,7 @@ Template.Checkout_page.events({
 
     async function processPromo() {
       try {
-        const promo = template.promo.get();
+        const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
         if (code) {
           usePromo.call({
@@ -465,19 +460,18 @@ Template.Checkout_page.events({
 
     async function createStripeTokenFromElement() {
       try {
-        const childView = Blaze.getView(template.find('#card-element'));
+        const childView = Blaze.getView(templateInstance.find('#card-element'));
         const childTemplateInstance = childView._templateInstance;
-        const card = childTemplateInstance.card;
-        const stripe = childTemplateInstance.stripe;
-        const { token, error } = await stripe.createToken(card);
+        const { card, stripe } = childTemplateInstance;
+        const { token } = await stripe.createToken(card);
         return token;
       } catch (error) {
         // Inform the customer that there was an error
-        console.log(error);
         const errorElement = document.getElementById('payment-errors');
         errorElement.textContent = error.message;
         Session.set('loading', false);
       }
+      return undefined;
     }
 
     async function createStripeCustomer(cust) {
@@ -490,35 +484,36 @@ Template.Checkout_page.events({
         errorElement.textContent = error.message;
         Session.set('loading', false);
       }
+      return undefined;
     }
 
     async function chargeStripe(charge) {
       try {
-        const newCharge = await callWithPromise('processPayment', charge);
-        return newCharge;
+        return await callWithPromise('processPayment', charge);
       } catch (error) {
         // Inform the customer that there was an error
         const errorElement = document.getElementById('payment-errors');
         errorElement.textContent = error.message;
         Session.set('loading', false);
       }
+      return undefined;
     }
 
     async function processSingleOrder () {
       try {
         // if promo used, process
-        const codeCheck = await processPromo();
+        await processPromo();
 
         // Make finalPrice in cents as a number from total
         let charge;
 
         // If user already has a Stripe customer ID
-        if (stripe_id) {
-          const source = template.find('[id="Source"]').value;
+        if (stripeId) {
+          const source = templateInstance.find('[id="Source"]').value;
           charge = {
             amount: finalPrice,
             currency: 'usd',
-            customer: stripe_id,
+            customer: stripeId,
             source,
             description: `Order for ${customer.first_name} ${customer.last_name}`,
             receipt_email: customer.email,
@@ -535,11 +530,11 @@ Template.Checkout_page.events({
 
           const newStripeCustomer = await createStripeCustomer(cust);
           // console.log(newStripeCustomer);
-          stripe_id = newStripeCustomer.id;
+          stripeId = newStripeCustomer.id;
           charge = {
             amount: finalPrice,
             currency: 'usd',
-            customer: stripe_id,
+            customer: stripeId,
             description: `Order for ${customer.first_name} ${customer.last_name}`,
             receipt_email: customer.email,
           };
@@ -561,7 +556,7 @@ Template.Checkout_page.events({
         const delDay = $('[name="deliveryWindow"]').val();
 
         customer.amount_spent = orderToProcess.total;
-        customer.stripe_id = stripe_id;
+        customer.stripe_id = stripeId;
         customer.credit = Math.round(credit * 100) / 100;
         const user = Meteor.user();
 
@@ -571,42 +566,36 @@ Template.Checkout_page.events({
         order.recipient = customer;
         order.gift = null;
         order.discount = {
-          subscriber_discounts: template.subscriber_discounts.get(),
-          promo: template.promo.get(),
-          credit: template.appliedCredit.get(),
-          value: template.discountValue.get(),
+          subscriber_discounts: templateInstance.subscriber_discounts.get(),
+          promo: templateInstance.promo.get(),
+          credit: templateInstance.appliedCredit.get(),
+          value: templateInstance.discountValue.get(),
         };
-        order.delivery_fee = template.delivFee.get();
-        order.subtotal = template.order.subtotal.get();
-        order.total = Math.round(template.order.total.get() * 100) / 100;
+        order.delivery_fee = templateInstance.delivFee.get();
+        order.subtotal = templateInstance.order.subtotal.get();
+        order.total = Math.round(templateInstance.order.total.get() * 100) / 100;
         order.payment_id = orderToProcess.payment_id;
         order.paid_at = orderToProcess.paid_at;
         order.ready_by = Session.get('menu').ready_by;
         order.delivery_window_id = delDay;
         order.delivery_comments = orderToProcess.delivery_comments;
 
-        const processedOrder = processOrder.call(order, (error, response) => {
+        processOrder.call(order, (error, response) => {
           if (error) {
-            console.log(error);
-            throw new Meteor.Error(404, error);
             sAlert.error(error);
             Session.set('loading', false);
+            throw new Meteor.Error(404, error);
           } else {
             Session.set('Order', null);
             Session.set('orderId', response);
 
-            Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, (error, response) => {
-              if (error) {
-                console.log(error);
-              }
-            });
+            Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => {});
           }
         });
 
         Session.set('loading', false);
         FlowRouter.go('Confirmation');
       } catch (error) {
-        console.log(error);
         Session.set('loading', false);
         throw new Meteor.Error(401, error);
       }
