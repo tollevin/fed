@@ -12,8 +12,11 @@ Template['override-atTextInput'].replaces('atTextInput');
 Template['override-atTitle'].replaces('atTitle');
 Template['override-atError'].replaces('atError');
 
-Template.Auth_page.events({
-  'submit form' (event, template) {
-    onLoginFunction();
-  },
-});
+// Template.Auth_page.events({
+//   'submit form' (event, template) {
+//     event.preventDefault();
+//     console.log("event = %j", event);
+//     console.log("template = %j", template);
+//     onLoginFunction();
+//   },
+// });
