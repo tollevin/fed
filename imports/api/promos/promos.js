@@ -146,12 +146,6 @@ Promos.publicFields = {
   active: 1,
 };
 
-// Factory.define('promo', Promos, {
-//   name: () => faker.lorem.words(),
-//   photo: () => faker.image.food(),
-//   description: () => faker.lorem.sentences(),
-// });
-
 Promos.helpers({
 
 });

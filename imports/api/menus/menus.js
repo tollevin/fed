@@ -1,6 +1,4 @@
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/factory';
-import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 

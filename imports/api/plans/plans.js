@@ -1,6 +1,4 @@
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/factory';
-import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
@@ -283,15 +281,3 @@ Plans.publicFields = {
 Plans.helpers({
 
 });
-
-// for testing
-// import { resetDatabase } from 'meteor/xolvio:cleaner';
-//
-// describe('my module', function () {
-//   beforeEach(function () {
-//     resetDatabase();
-//   });
-// });
-// const chicken = Factory.create('Plan');
-// const cheese = Factory.create('Plan');
-// const chai = Factory.create('Plan');

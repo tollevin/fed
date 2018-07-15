@@ -1,12 +1,8 @@
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/factory';
-import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import {
-  Items,
-} from '../items/items.js';
+import { Items } from '../items/items.js';
 
 // SimpleSchema.debug = true;
 
@@ -373,21 +369,6 @@ Orders.publicFields = {
   auto_correct: 1,
 };
 
-// Factory.define('order', Orders, {
-//   name: () => faker.lorem.words(),
-//   photo: () => faker.image.food(),
-//   description: () => faker.lorem.sentences(),
-// });
-
 Orders.helpers({
 
 });
-
-// for testing
-// import { resetDatabase } from 'meteor/xolvio:cleaner';
-//
-// describe('my module', function () {
-//   beforeEach(function () {
-//     resetDatabase();
-//   });
-// });

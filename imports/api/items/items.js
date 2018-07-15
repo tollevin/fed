@@ -1,6 +1,4 @@
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/factory';
-import faker from 'faker';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
@@ -433,26 +431,8 @@ Items.publicFields = {
   rank: 1,
 };
 
-Factory.define('item', Items, {
-  name: () => faker.lorem.words(),
-  photo: () => faker.image.food(),
-  description: () => faker.lorem.sentences(),
-});
-
 Items.helpers({
   plans(data) {
     return Plans.findOne({ item_id: data.item_id, frequency: data.frequency, quantity: data.quantity });
   },
 });
-
-// for testing
-// import { resetDatabase } from 'meteor/xolvio:cleaner';
-//
-// describe('my module', function () {
-//   beforeEach(function () {
-//     resetDatabase();
-//   });
-// });
-// const chicken = Factory.create('item');
-// const cheese = Factory.create('item');
-// const chai = Factory.create('item');

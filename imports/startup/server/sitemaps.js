@@ -28,6 +28,11 @@ sitemaps.add('/sitemap.xml', function(req) {
       changefreq: 'weekly',
     },
     {
+      page: `${host}market`,
+      lastmod: moment().day(0).hour(12).toString(),
+      changefreq: 'weekly',
+    },
+    {
       page: `${host}packs`,
       lastmod: moment().day(0).hour(12).toString(),
       changefreq: 'weekly',
@@ -48,3 +53,5 @@ sitemaps.add('/sitemap.xml', function(req) {
     },
   ];
 });
+
+sitemaps.config('gzip', true);
