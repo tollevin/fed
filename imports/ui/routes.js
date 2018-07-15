@@ -12,12 +12,6 @@ export const mainRoutes = [
     template: 'User_home',
   },
   {
-    route: '/packs',
-    name: 'Packs',
-    layout: 'App_body',
-    template: 'Packs',
-  },
-  {
     route: '/menu',
     name: 'Menu.show',
     layout: 'App_body',

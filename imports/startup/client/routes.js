@@ -23,7 +23,6 @@ import '/imports/ui/pages/account-page/account-page.js';
 import '/imports/ui/pages/subscribe/subscribe.js';
 import '/imports/ui/pages/my-subscriptions/my-subscriptions.js';
 import '/imports/ui/pages/my-orders/my-orders.js';
-import '/imports/ui/pages/packs/packs.js';
 import '/imports/ui/pages/gift-cards/gift-cards.js';
 import '/imports/ui/pages/equinox-join/equinox-join.js';
 import '/imports/ui/pages/dean-street/dean-street.js';
