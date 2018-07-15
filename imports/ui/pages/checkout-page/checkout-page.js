@@ -302,7 +302,7 @@ Template.Checkout_page.events({
 
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
-        } else if (promo.users[user] === promo.useLimitPerCustomer) {
+        } else if (promo && promo.users[user] === promo.useLimitPerCustomer) {
           sAlert.error('Sorry, that code has already been used.');
         } else if (promo && promo.credit) {
           // Get existing total

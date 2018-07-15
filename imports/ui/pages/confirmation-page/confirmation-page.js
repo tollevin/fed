@@ -19,11 +19,11 @@ Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!Meteor.userId()) {
     FlowRouter.go('signin');
   } else {
-    this.order = new ReactiveVar();
+    const order = Session.get('orderId');
+    this.order = new ReactiveVar(order);
+
     this.autorun(() => {
-      const order = Session.get('orderId');
-      this.order.set(order);
-      this.subscribe('DeliveryWindows.single', Session.get('orderId').delivery_window_id);
+      this.subscribe('DeliveryWindows.single', order.delivery_window_id);
     });
   }
 });

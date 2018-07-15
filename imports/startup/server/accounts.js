@@ -24,7 +24,7 @@ Meteor.methods({
         $set: data,
       });
 
-      const creditUpdated = (user.credit != data.credit) && (`Updating stripe credit for ${user.first_name} ${user.last_name}: $${user.credit} to $${data.credit}`);
+      const creditUpdated = (user.credit != data.credit) && (`Updating stripe credit for ${user_id}: ${user.first_name} ${user.last_name}: $${user.credit} to $${data.credit}`);
       if (creditUpdated) {
         console.log(creditUpdated);
       }
