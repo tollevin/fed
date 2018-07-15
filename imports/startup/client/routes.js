@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
@@ -8,45 +8,11 @@ import { lodash } from 'meteor/erasaur:meteor-lodash';
 import { mainRoutes, mainNotFound, adminRoutes } from '/imports/ui/routes.js';
 
 import '/imports/ui/layouts/app-body/app-body.js';
-import '/imports/ui/pages/landing-page/landing-page.js';
-import '/imports/ui/pages/user-home/user-home.js';
-import '/imports/ui/pages/menu-page/menu-page.js';
-import '/imports/ui/pages/market-page/market-page.js';
-import '/imports/ui/pages/about-page/about-page.js';
-import '/imports/ui/pages/support/support.js';
-import '/imports/ui/pages/blog-page/blog-page.js';
-import '/imports/ui/pages/item-detail/item-detail.js';
-import '/imports/ui/pages/checkout-page/checkout-page.js';
-import '/imports/ui/pages/confirmation-page/confirmation-page.js';
-import '/imports/ui/pages/success/success.js';
-import '/imports/ui/pages/account-page/account-page.js';
-import '/imports/ui/pages/subscribe/subscribe.js';
-import '/imports/ui/pages/my-subscriptions/my-subscriptions.js';
-import '/imports/ui/pages/my-orders/my-orders.js';
-import '/imports/ui/pages/gift-cards/gift-cards.js';
-import '/imports/ui/pages/equinox-join/equinox-join.js';
-import '/imports/ui/pages/dean-street/dean-street.js';
-import '/imports/ui/pages/jobs/jobs.js';
-import '/imports/ui/pages/media/media.js';
-
-// Import admin templates
 import '/imports/ui/layouts/admin-layout/admin-layout.js';
-import '/imports/ui/pages/main-admin/main-admin.js';
-import '/imports/ui/pages/menu-admin/menu-admin.js';
-import '/imports/ui/pages/orders-admin/orders-admin.js';
-import '/imports/ui/pages/customers-admin/customers-admin.js';
-import '/imports/ui/pages/customer-detail/customer-detail.js';
-import '/imports/ui/pages/subscribers-admin/subscribers-admin.js';
-import '/imports/ui/pages/promos-admin/promos-admin.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates/accounts-templates.js';
 
-// Import wiki templates
-import '/imports/ui/wiki/index.js';
-
-// Import test template
-import '/imports/ui/pages/test/test.js';
 
 // we only need to keep history for two paths at once
 // first path is what we need to check always
@@ -89,9 +55,13 @@ import '/imports/ui/pages/test/test.js';
 // FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
 
 mainRoutes.map(({
-  route, name, layout, template,
+  route, name, layout, template, importStr
 }) => FlowRouter.route(route, {
   name,
+  waitOn: () => {
+    console.log("importStr = %j", importStr);
+    return importStr ? import(importStr) : undefined;
+  },
   action() {
     BlazeLayout.render(layout, { main: template });
   },
@@ -113,9 +83,13 @@ const flowAdminRoutes = FlowRouter.group({
 });
 
 adminRoutes.map(({
-  route, name, layout, template,
+  route, name, layout, template, importStr,
 }) => flowAdminRoutes.route(route, {
   name,
+  waitOn: () => {
+    console.log("importStr = %j", importStr);
+    return importStr ? import(importStr) : undefined;
+  },
   action() {
     BlazeLayout.render(layout, { main: template });
   },

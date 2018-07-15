@@ -25,7 +25,6 @@ aldeed:template-extension
 percolate:momentum
 fortawesome:fontawesome
 sacha:spin
-momentjs:moment
 juliancwirko:s-alert
 juliancwirko:s-alert-stackslide
 webtempest:animate
@@ -123,3 +122,5 @@ promise@0.11.1
 dynamic-import@0.4.0
 markdown@1.0.12
 cultofcoders:persistent-session
+bundle-visualizer
+ostrio:flow-router-extra
