@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { DocHead } from 'meteor/kadira:dochead';
 
 // Components
 import '/imports/ui/components/footer/footer.js';
@@ -16,6 +17,15 @@ import './landing-page.html';
 Template.Landing_page.onCreated(function landingPageOnCreated() {
   Session.set('cartOpen', false);
   Session.set('userMenuOpen', false);
+
+  // note if using Dochead.  Need to remove some tags from client/head.html
+  // Will encapsulate the following into a library function
+  DocHead.removeDocHeadAddedTags();
+  console.log("DocHead.getTitle() = %j", DocHead.getTitle());
+  DocHead.setTitle("poop");
+  var metaInfo = {name: "description", content: "Description poop"};
+  DocHead.addMeta(metaInfo);
+  // end here
 });
 
 Template.Landing_page.helpers({
