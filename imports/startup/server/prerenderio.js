@@ -15,12 +15,10 @@
 
 Meteor.startup(() => {
   const prerenderio = Npm.require('prerender-node');
-  //     const settings = Meteor.settings.PrerenderIO;
-
-  //     if (settings && settings.token && settings.host) {
   prerenderio.set('prerenderToken', 'Ew27iYLQaGXbOOKSJIOy');
-  //         prerenderio.set('host', settings.host);
-  //         prerenderio.set('protocol', 'https');
+	prerenderio.crawlerUserAgents.push('googlebot');
+	prerenderio.crawlerUserAgents.push('bingbot');
+	prerenderio.crawlerUserAgents.push('yandex');
   WebApp.rawConnectHandlers.use(prerenderio);
 //     }
 });
