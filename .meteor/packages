@@ -43,10 +43,7 @@ mizzao:autocomplete
 themeteorchef:jquery-validation
 
 # routing
-kadira:flow-router@2.11.0
 kadira:blaze-layout
-arillo:flow-router-helpers
-zimme:active-route
 
 # i18n
 # tap:i18n
@@ -57,7 +54,6 @@ accounts-facebook@1.3.1
 # accounts-google@1.0.10
 useraccounts:core
 useraccounts:unstyled
-useraccounts:flow-routing
 # softwarerero:accounts-t9n
 
 # payments
@@ -122,5 +118,5 @@ promise@0.11.1
 dynamic-import@0.4.0
 markdown@1.0.12
 cultofcoders:persistent-session
-bundle-visualizer
 ostrio:flow-router-extra
+mealsunite:flow-routing-extra
