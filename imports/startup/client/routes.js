@@ -1,7 +1,8 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-import { lodash } from 'meteor/erasaur:meteor-lodash';
+import { Accounts } from 'meteor/accounts-base';
+import { sAlert } from 'meteor/juliancwirko:s-alert';
 
 // Import user templates
 
