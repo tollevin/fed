@@ -13,8 +13,11 @@ Meteor.publishComposite('Menus.thisWeek', function(timestamp) {
 
   return {
     find() {
-      const thisWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').toDate();
-      const lastWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').subtract(1, 'week').toDate();
+      const thisWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').utc()
+        .toDate();
+      const lastWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').subtract(1, 'week')
+        .utc()
+        .toDate();
 
       let menu = Menus.find({ online_at: thisWeeksStart });
       if (!menu) menu = Menus.find({ online_at: lastWeeksStart });
