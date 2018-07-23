@@ -18,7 +18,6 @@ import '/imports/ui/components/side-nav/side-nav.js';
 import '/imports/ui/components/mobile-nav/mobile-nav.js';
 import '/imports/ui/components/modals/modals.js';
 import '/imports/ui/components/content-overlay/content-overlay.js';
-import '/imports/ui/components/footer/footer.js';
 
 import { showConnectionIssue } from '/imports/ui/connectionIssue.js';
 
