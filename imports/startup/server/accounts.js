@@ -2,6 +2,8 @@ import { Accounts } from 'meteor/accounts-base';
 import { Email } from 'meteor/email';
 import { SSR } from 'meteor/meteorhacks:ssr';
 
+import moment from 'moment';
+
 import { makeGiftCardCode } from '../../utils/codify.js';
 
 // Collections

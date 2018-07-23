@@ -5,6 +5,8 @@ import { Items } from '/imports/api/items/items.js';
 import { insertItem } from '/imports/api/items/methods.js';
 import { insertMenu } from '/imports/api/menus/methods.js';
 
+import moment from 'moment';
+
 import './new-item.html';
 
 Template.NewItem.onCreated(function newItemOnCreated() {

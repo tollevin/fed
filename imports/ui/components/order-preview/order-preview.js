@@ -4,6 +4,8 @@ import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 
 import { getZipZone } from '/imports/api/delivery/methods.js';
 
+import moment from 'moment';
+
 import './order-preview.html';
 
 Template.Order_preview.onCreated(function orderPreviewOnCreated() {

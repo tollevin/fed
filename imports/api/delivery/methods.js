@@ -3,6 +3,9 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+
+import moment from 'moment';
+
 import {
   zipZones,
 } from './zipcodes.js';
