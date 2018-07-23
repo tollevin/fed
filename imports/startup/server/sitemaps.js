@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 sitemaps.add('/sitemap.xml', function(req) {
   let host = Meteor.absoluteUrl();
   if (req && req.headers && req.headers.host) {
