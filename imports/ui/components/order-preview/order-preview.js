@@ -1,13 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 import { getZipZone } from '/imports/api/delivery/methods.js';
-
-import { moment } from 'meteor/momentjs:moment';
 
 import './order-preview.html';
 
