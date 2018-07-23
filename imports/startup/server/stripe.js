@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import stripePackage from 'stripe';
 
 const Stripe = stripePackage('sk_live_KmzNeLrpctp1iT9Eo8n6qWoO');

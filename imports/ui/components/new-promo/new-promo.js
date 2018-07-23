@@ -11,19 +11,19 @@ Template.NewPromo.helpers({
 });
 
 Template.NewPromo.events({
-  'click .sbmtPromo'(event, template) {
+  'click .sbmtPromo'(event, templateInstance) {
     event.preventDefault();
 
-    const codes = template.find('[name="code"]').value.split('","');
-    const desc = template.find('[name="desc"]').value;
-    const credit = template.find('[name="credit"]').value;
-    const percentage = template.find('[name="percentage"]').value;
-    const expires = template.find('[name="expires"]').value;
-    const useLimitPerCustomer = template.find('[name="useLimitPerCustomer"]').value;
-    const useLimitTotal = template.find('[name="useLimitTotal"]').value;
+    const codes = templateInstance.find('[name="code"]').value.split('","');
+    const desc = templateInstance.find('[name="desc"]').value;
+    const credit = templateInstance.find('[name="credit"]').value;
+    const percentage = templateInstance.find('[name="percentage"]').value;
+    const expires = templateInstance.find('[name="expires"]').value;
+    const useLimitPerCustomer = templateInstance.find('[name="useLimitPerCustomer"]').value;
+    const useLimitTotal = templateInstance.find('[name="useLimitTotal"]').value;
     const timesUsed = 0;
     const users = {};
-    const active = template.find('[name="active"]').checked;
+    const active = templateInstance.find('[name="active"]').checked;
 
     const promo = {
       codes,

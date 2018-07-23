@@ -1,5 +1,7 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { Session } from 'meteor/session';
+import { $ } from 'meteor/jquery';
 
 import './mobile-nav.html';
 import './mobile-nav.less';
@@ -32,7 +34,7 @@ Template.Mobile_Nav.events({
     // event.stopImmediatePropagation();
     signout();
   },
-  'click #hamburger-menu' (event, template) {
+  'click #hamburger-menu' (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     Session.set('sideNavOpen', !Session.get('sideNavOpen'));

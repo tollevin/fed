@@ -1,6 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { Session } from 'meteor/session';
+
+import moment from 'moment';
 
 import { Items } from '/imports/api/items/items.js';
 
@@ -10,38 +13,37 @@ import './menu-item.less';
 import './menu-item.html';
 
 const countInArray = function(array, what) {
-  return array.filter(item => item == what).length;
+  return array.filter(item => item === what).length;
 };
 
 Template.Menu_item.helpers({
   attributes: () => {
     const att = Template.currentData().attributes;
-    if (att) {
-      const keys = Object.keys(att);
-      const filtered = keys.filter(function(key) {
-        return att[key];
-      });
-      let classes = '';
-      for (let i = filtered.length - 1; i >= 0; i--) {
-        classes += `${filtered[i]} `;
-      }
-      return classes;
+    if (!att) { return undefined; }
+
+    const keys = Object.keys(att);
+    const filtered = keys.filter(function(key) {
+      return att[key];
+    });
+    let classes = '';
+    for (let i = filtered.length - 1; i >= 0; i -= 1) {
+      classes += `${filtered[i]} `;
     }
+    return classes;
   },
 
   restrictions: () => {
     const restrictions = Template.currentData().warnings;
-    if (restrictions) {
-      const keys = Object.keys(restrictions);
-      const filtered = keys.filter(function(key) {
-        return restrictions[key];
-      });
-      let classes = '';
-      for (let i = filtered.length - 1; i >= 0; i--) {
-        classes += `${filtered[i]} `;
-      }
-      return classes;
+    if (!restrictions) { return undefined; }
+    const keys = Object.keys(restrictions);
+    const filtered = keys.filter(function(key) {
+      return restrictions[key];
+    });
+    let classes = '';
+    for (let i = filtered.length - 1; i >= 0; i -= 1) {
+      classes += `${filtered[i]} `;
     }
+    return classes;
   },
 
   showFullPrice: () => {
@@ -52,29 +54,29 @@ Template.Menu_item.helpers({
   toFixed: price => price.toFixed(2),
 
   tally: () => {
-    if (Session.get('Order') && Session.get('Order').items) {
-      const itemList = Session.get('Order').items;
-      const itemName = Template.currentData().name;
-      const packItems = [];
-      const packItemNames = [];
-      const cartItemNames = [];
-      for (var i = itemList.length - 1; i >= 0; i--) {
-        if (itemList[i].category === 'Pack') {
-          for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
-            packItems.push(itemList[i].sub_items.items[j]);
-          }
-        } else {
-          cartItemNames.push(itemList[i].name);
-        }
-      }
-      for (var i = packItems.length - 1; i >= 0; i--) {
-        packItemNames.push(packItems[i].name);
-      }
+    if (!(Session.get('Order') && Session.get('Order').items)) { return undefined; }
 
-      const countInPacks = countInArray(packItemNames, itemName);
-      const countInCart = countInArray(cartItemNames, itemName);
-      return countInPacks + countInCart;
+    const itemList = Session.get('Order').items;
+    const itemName = Template.currentData().name;
+    const packItems = [];
+    const packItemNames = [];
+    const cartItemNames = [];
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
+      if (itemList[i].category === 'Pack') {
+        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j -= 1) {
+          packItems.push(itemList[i].sub_items.items[j]);
+        }
+      } else {
+        cartItemNames.push(itemList[i].name);
+      }
     }
+    for (let i = packItems.length - 1; i >= 0; i -= 1) {
+      packItemNames.push(packItems[i].name);
+    }
+
+    const countInPacks = countInArray(packItemNames, itemName);
+    const countInCart = countInArray(cartItemNames, itemName);
+    return countInPacks + countInCart;
   },
 });
 
@@ -89,7 +91,7 @@ Template.Menu_item.events({
     FlowRouter.go(newRoute);
   },
 
-  'click .add-to-cart'(event, template) {
+  'click .add-to-cart'(event) {
     event.preventDefault();
 
     const afterWednes = moment().day() > 3;
@@ -123,7 +125,7 @@ Template.Menu_item.events({
     }
   },
 
-  'click .remove-from-cart'(event, template) {
+  'click .remove-from-cart'(event) {
     event.preventDefault();
 
     const afterWednes = moment().day() > 3;
@@ -147,7 +149,7 @@ Template.Menu_item.events({
       // Possibly Ping here if adding to an empty cart (GA)
       let itemInCart;
       // let packWithItem;
-      for (let i = order.items.length - 1; i >= 0; i--) {
+      for (let i = order.items.length - 1; i >= 0; i -= 1) {
         if (order.items[i]._id === item._id) {
           itemInCart = {
             index: i,

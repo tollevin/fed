@@ -24,10 +24,10 @@ export const insertPlan = new ValidatedMethod({
     item_id: { type: String },
     item_name: { type: String, optional: true },
     price: { type: Number, decimal: true, optional: true },
-	  percent_off: { type: Number, optional: true },
-	  quantity: { type: Number, optional: true },
-	  frequency: { type: Number, optional: true },
-	  tax_percent: { type: Number, decimal: true, optional: true },
+    percent_off: { type: Number, optional: true },
+    quantity: { type: Number, optional: true },
+    frequency: { type: Number, optional: true },
+    tax_percent: { type: Number, decimal: true, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -35,16 +35,16 @@ export const insertPlan = new ValidatedMethod({
   run({
     item_id, item_name, price, percent_off, quantity, frequency, tax_percent,
   }) {
-  	const newPlan = {
-		  item_id,
+    const newPlan = {
+      item_id,
       item_name,
       price,
-		  created_at: new Date(),
-		  canceled_at: null,
-		  percent_off: percent_off || 5,
-		  quantity: quantity || 1,
-		  frequency: frequency || 7,
-		  tax_percent: tax_percent || 8.875,
+      created_at: new Date(),
+      canceled_at: null,
+      percent_off: percent_off || 5,
+      quantity: quantity || 1,
+      frequency: frequency || 7,
+      tax_percent: tax_percent || 8.875,
     };
 
     const planId = Plans.insert(newPlan);
@@ -90,11 +90,11 @@ export const subscribeToPlan = new ValidatedMethod({
 export const checkForPlan = new ValidatedMethod({
   name: 'Plans.check',
   validate: new SimpleSchema({
-	  item_id: { type: String },
-	  // discount: { type: Number, optional: true },
-	  quantity: { type: Number },
-	  frequency: { type: Number },
-	  // tax_percent: { type: Number, optional: true },
+    item_id: { type: String },
+    // discount: { type: Number, optional: true },
+    quantity: { type: Number },
+    frequency: { type: Number },
+    // tax_percent: { type: Number, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -109,9 +109,9 @@ export const checkForPlan = new ValidatedMethod({
     };
 
     console.log(selector);
-  	const planExists = Plans.find(selector).fetch();
+    const planExists = Plans.find(selector).fetch();
 
-  	return planExists;
+    return planExists;
   },
 });
 

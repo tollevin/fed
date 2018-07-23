@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 
 import { toggleActive, toggleInPack, remove } from '/imports/api/items/methods.js';
 

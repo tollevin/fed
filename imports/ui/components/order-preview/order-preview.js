@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+
+import moment from 'moment';
+
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 import { getZipZone } from '/imports/api/delivery/methods.js';
@@ -27,9 +30,9 @@ Template.Order_preview.helpers({
     const dishTally = {};
 
     const itemList = Template.currentData().items;
-    for (var i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (itemList[i].category === 'Pack') {
-        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j -= 1) {
           dishList.push(itemList[i].sub_items.items[j].name);
         }
       } else if (itemList[i].category === 'Meal') {
@@ -37,17 +40,15 @@ Template.Order_preview.helpers({
       }
     }
 
-    for (var i = dishList.length - 1; i >= 0; i--) {
-      if (dishList[i] != '' && !dishTally[dishList[i]]) {
+    for (let i = dishList.length - 1; i >= 0; i -= 1) {
+      if (dishList[i] !== '' && !dishTally[dishList[i]]) {
         dishTally[dishList[i]] = 1;
-      } else if (dishList[i] != '') {
+      } else if (dishList[i] !== '') {
         dishTally[dishList[i]] += 1;
       }
     }
 
-    const result = [];
-    for (const key in dishTally) result.push({ name: key, value: dishTally[key] });
-    return result;
+    return Object.entries(dishTally).map(([name, value]) => ({ name, value }));
   },
 
   snackList() {
@@ -55,22 +56,20 @@ Template.Order_preview.helpers({
     const snackTally = {};
 
     const itemList = Template.currentData().items;
-    for (var i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (itemList[i].category === 'Snack') {
         snackList.push(itemList[i].name);
       }
     }
 
-    for (var i = snackList.length - 1; i >= 0; i--) {
-      if (snackList[i] != '' && !snackTally[snackList[i]]) {
+    for (let i = snackList.length - 1; i >= 0; i -= 1) {
+      if (snackList[i] !== '' && !snackTally[snackList[i]]) {
         snackTally[snackList[i]] = 1;
-      } else if (snackList[i] != '') {
+      } else if (snackList[i] !== '') {
         snackTally[snackList[i]] += 1;
       }
     }
-    const result = [];
-    for (const key in snackTally) result.push({ name: key, value: snackTally[key] });
-    return result;
+    return Object.entries(snackTally).map(([name, value]) => ({ name, value }));
   },
 
   drinkList() {
@@ -78,44 +77,41 @@ Template.Order_preview.helpers({
     const drinkTally = {};
 
     const itemList = Template.currentData().items;
-    for (var i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (itemList[i].category === 'Drink') {
         drinkList.push(itemList[i].name);
       }
     }
 
-    for (var i = drinkList.length - 1; i >= 0; i--) {
-      if (drinkList[i] != '' && !drinkTally[drinkList[i]]) {
+    for (let i = drinkList.length - 1; i >= 0; i -= 1) {
+      if (drinkList[i] !== '' && !drinkTally[drinkList[i]]) {
         drinkTally[drinkList[i]] = 1;
-      } else if (drinkList[i] != '') {
+      } else if (drinkList[i] !== '') {
         drinkTally[drinkList[i]] += 1;
       }
     }
-    const result = [];
-    for (const key in drinkTally) result.push({ name: key, value: drinkTally[key] });
-    return result;
+    return Object.entries(drinkTally).map(([name, value]) => ({ name, value }));
   },
 
   deliv_day() {
-    const dw_id = Template.currentData().delivery_window_id;
-    const dw = DeliveryWindows.findOne({ _id: dw_id });
+    const dwId = Template.currentData().delivery_window_id;
+    const dw = DeliveryWindows.findOne({ _id: dwId });
     const dday = moment(dw.delivery_start_time).format('dddd');
     return dday;
   },
 
   deliveryZone() {
-    let customer = Template.currentData().customer;
+    let { customer } = Template.currentData();
     if (!customer) {
       customer = Meteor.users.findOne({ _id: Template.currentData().userId });
+      return undefined;
     } // This should be an attribute of orders themselves (FIX)
-    if (customer) {
-      const args = {
-        zip_code: customer.address_zipcode,
-      };
+    const args = {
+      zip_code: customer.address_zipcode,
+    };
 
-      const zipZone = getZipZone.call(args);
-      return zipZone;
-    }
+    const zipZone = getZipZone.call(args);
+    return zipZone;
   },
 
   packPriceToDecimal() {

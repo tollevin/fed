@@ -381,20 +381,19 @@ Template.Checkout_page.events({
     const discount = templateInstance.discountValue.get();
     const total = templateInstance.order.total.get();
 
-    if (total <= 0) { return undefined; }
+    if (total <= 0) { return; }
     if (total < credit) {
       const newCredit = credit - total;
       templateInstance.discountValue.set(total + discount);
       templateInstance.appliedCredit.set(total);
       sAlert.success(`You now have a credit of $${newCredit.toFixed(2)}.`);
       templateInstance.newCredit.set(newCredit);
-    } else {
-      templateInstance.appliedCredit.set(credit);
-      templateInstance.discountValue.set(discount + credit);
-      templateInstance.newCredit.set(0);
-      sAlert.success(`$${credit.toFixed(2)} worth of FedCred has been applied!`);
+      return;
     }
-    return undefined;
+    templateInstance.appliedCredit.set(credit);
+    templateInstance.discountValue.set(discount + credit);
+    templateInstance.newCredit.set(0);
+    sAlert.success(`$${credit.toFixed(2)} worth of FedCred has been applied!`);
   },
 
   'blur #address-zip'(event) {

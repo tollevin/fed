@@ -17,15 +17,15 @@ Meteor.publish('DeliveryWindows.nextTwoWeeks', function nextFourDeliveryWindows(
     $and: [
       {
         delivery_start_time: {
-			  	$gte: now,
-			  },
+          $gte: now,
+        },
       },
 
-		  {
+      {
         delivery_start_time: {
-			  	$lte: endOfTwoWeeksFromNow,
-			  },
-		  },
+          $lte: endOfTwoWeeksFromNow,
+        },
+      },
     ],
   };
 

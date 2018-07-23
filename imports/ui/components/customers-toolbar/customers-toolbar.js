@@ -28,7 +28,7 @@ Template.Customers_toolbar.helpers({
         template: Template.userPill,
       },
       {
-        	token: ':',
+        token: ':',
         collection: Meteor.users,
         field: 'first_name',
         matchAll: true,
