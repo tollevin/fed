@@ -3,14 +3,14 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import moment from 'moment';
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { DeliveryWindows } from '../delivery-windows.js';
 import { Menus } from '../../menus/menus.js';
 
 Meteor.publish('DeliveryWindows.nextTwoWeeks', function nextFourDeliveryWindows(timestamp) {
   const now = moment.utc(timestamp).toDate();
-  const endOfTwoWeeksFromNow = new moment(timestamp).tz('America/New_York').endOf('week').add(2, 'week')
+  const endOfTwoWeeksFromNow = toNewYorkTimezone(new moment(timestamp)).endOf('week').add(2, 'week')
     .utc()
     .toDate();
   const mongoSelector = {

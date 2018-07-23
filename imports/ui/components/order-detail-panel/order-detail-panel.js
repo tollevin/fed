@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import moment from 'moment';
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 // Collections
@@ -51,7 +51,7 @@ Template.Order_detail_panel.helpers({
   active: () => ['skipped', 'canceled'].indexOf(Template.instance().status.get()) <= -1,
 
   locked: () => {
-    const timestamp = moment().tz('America/New_York');
+    const timestamp = toNewYorkTimezone(moment());
     return (timestamp.day() < 4 || (timestamp.day() === 0 && timestamp.hour() < 12)) && 'locked';
   },
 
@@ -116,7 +116,7 @@ Template.Order_detail_panel.events({
   'click .switch'(event, template) {
     event.preventDefault();
 
-    const timestamp = moment().tz('America/New_York');
+    const timestamp = toNewYorkTimezone(moment());
     let able = false;
 
     if ((timestamp.day() === 0)) {

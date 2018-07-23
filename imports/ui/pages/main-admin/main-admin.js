@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import moment from 'moment';
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
@@ -37,12 +37,12 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
         item.count = 0;
         itemTallies.push(item);
       });
-      const lastSundayAtNoon = moment().tz('America/New_York').day(0).hour(12)
+      const lastSundayAtNoon = toNewYorkTimezone(moment()).day(0).hour(12)
         .minute(1)
         .second(0)
         .utc()
         .toDate();
-      const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+      const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
         .toDate();
       const ordersThisWeek = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }, { fields: { items: 1 } });
 
@@ -85,7 +85,7 @@ Template.Main_admin.helpers({
   },
 
   ordersThisWeek: () => {
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
   	return Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).count();
   },
@@ -102,7 +102,7 @@ Template.Main_admin.helpers({
 
   salesThisWeek: () => {
   	let totalSalesThisWeek = 0;
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
   	const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).fetch();
   	for (let i = thisWeeksOrders.length - 1; i >= 0; i--) {
@@ -114,33 +114,33 @@ Template.Main_admin.helpers({
   totalSubs: () => Meteor.users.find({ 'subscriptions.status': { $ne: 'canceled' } }).count(),
 
   customizedSubs: () => {
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
   	return Orders.find({ week_of: thisWeekStart, status: 'custom-sub' }).count();
   },
 
   skippingSubs: () => {
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     const totalSkippedOrdersThisWeek = Orders.find({ week_of: thisWeekStart, status: 'skipped' }).count();
     return totalSkippedOrdersThisWeek;
   },
 
   newSubs: () => {
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
   	return Meteor.users.find({ 'subscriptions.created_at': { $gte: thisWeekStart } }).count();
   },
 
   canceledSubs: () => {
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
   	return Meteor.users.find({ 'subscriptions.canceled_at': { $gte: thisWeekStart } }).count();
   },
 
   estimatedSubPlates: () => {
   	let estimatedPlates = 0;
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     // Get all pending-sub orders
   	const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
@@ -171,7 +171,7 @@ Template.Main_admin.helpers({
 
   estimatedTotalPlates: () => {
     let estimatedPlates = 0;
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     // Get all pending-sub orders
     const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
@@ -220,7 +220,7 @@ Template.Main_admin.events({
       }
     }
 
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').utc()
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
     console.log(updatedSubUsers.length);
@@ -294,7 +294,7 @@ Template.Main_admin.events({
   'click #checkUsers2'(event) {
     event.preventDefault();
 
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').add(1, 'w')
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(1, 'w')
       .utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();
@@ -369,7 +369,7 @@ Template.Main_admin.events({
   'click #checkUsers3'(event) {
     event.preventDefault();
 
-    const thisWeekStart = moment().tz('America/New_York').startOf('week').add(2, 'w')
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(2, 'w')
       .utc()
       .toDate();
     const updatedSubUsers = Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }).fetch();

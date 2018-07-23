@@ -7,7 +7,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 import moment from 'moment';
 
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
@@ -46,8 +46,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
       // if a user has subscriptions,
       const user = Meteor.user();
       if (user && user.subscriptions && user.subscriptions.length > 0 && user.subscriptions[0].status === 'active') {
-        const week_of = moment().tz('America/New_York').startOf('week').utc()
-          .toDate();
+        const week_of = toNewYorkTimezone(moment()).startOf('week').utc().toDate();
 
         const order_week_of = Orders.findOne({ week_of });
 

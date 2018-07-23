@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import moment from 'moment';
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { Orders } from '../orders.js';
 
@@ -25,21 +25,21 @@ Meteor.publish('single.order', function singleOrder(id) {
 });
 
 Meteor.publish('thisWeeks.orders', function thisWeeksOrders(timestamp) {
-  const nowInNY = moment(timestamp).tz('America/New_York');
+  const nowInNY = toNewYorkTimezone(moment(timestamp));
   const nyWeekStart = nowInNY.startOf('week').toDate();
 
   return Orders.find({ status: { $in: ['created', 'custom-sub', 'skipped'] }, week_of: nyWeekStart });
 });
 
 Meteor.publish('allThisWeeks.orders', function thisWeeksOrders(timestamp) {
-  const nowInNY = moment(timestamp).tz('America/New_York');
+  const nowInNY = toNewYorkTimezone(moment(timestamp));
   const nyWeekStart = nowInNY.startOf('week').toDate();
 
   return Orders.find({ status: { $in: ['created', 'custom-sub', 'skipped', 'pending-sub'] }, week_of: nyWeekStart });
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {
-  const time = moment(timestamp).tz('America/New_York').toDate();
+  const time = toNewYorkTimezone(moment(timestamp)).toDate();
   const args = {
     user_id: Meteor.userId(),
     ready_by: { $gte: time },
