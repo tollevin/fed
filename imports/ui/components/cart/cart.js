@@ -63,16 +63,16 @@ Template.Cart.events({
   'click .ready' (event, template) {
     Session.set('processing', true);
 
-  	const order = Session.get('Order');
-  	const menu = Session.get('menu');
+    const order = Session.get('Order');
+    const menu = Session.get('menu');
 
     const orderToCreate = {
-    	user_id: Meteor.userId(),
-    	menu_id: menu._id,
-    	style: order.style,
-    	week_of: order.week_of,
-    	items: order.items,
-    	subscriptions: order.subscriptions,
+      user_id: Meteor.userId(),
+      menu_id: menu._id,
+      style: order.style,
+      week_of: order.week_of,
+      items: order.items,
+      subscriptions: order.subscriptions,
     };
 
     const orderId = insertOrder.call(orderToCreate);

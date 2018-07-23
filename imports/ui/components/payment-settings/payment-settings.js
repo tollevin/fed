@@ -66,18 +66,18 @@ Template.PaymentSettings.events({
   'click #addCard'(event, template) {
     template.showCardElement.set(true);
 
-	  // Add an instance of the card Element into the `card-element` <div>
-	  card.mount('#card-element');
+    // Add an instance of the card Element into the `card-element` <div>
+    card.mount('#card-element');
   },
 
   'change [name="cardnumber"]'(event, template) {
-  	console.log(event);
+    console.log(event);
   },
 
   'click .cancelCardInput'(event, template) {
-  	event.preventDefault();
+    event.preventDefault();
 
-  	template.showCardElement.set(false);
+    template.showCardElement.set(false);
     card.unmount();
   },
 
@@ -92,83 +92,83 @@ Template.PaymentSettings.events({
       } catch (error) {
         // Inform the customer that there was an error
         console.log(error);
-	      const errorElement = document.getElementById('card-errors');
-	      errorElement.textContent = error.message;
-	      Session.set('loading', false);
+        const errorElement = document.getElementById('card-errors');
+        errorElement.textContent = error.message;
+        Session.set('loading', false);
       }
     }
 
     async function createNewStripeUser(token) {
-    	try {
-	      const userEmail = Meteor.user().emails[0].address;
+      try {
+        const userEmail = Meteor.user().emails[0].address;
 
-	      const cust = {
-	        description: `Customer for ${userEmail}`,
-	        source: token,
-	        account_balance: 0,
-	        email: userEmail,
-	      };
+        const cust = {
+          description: `Customer for ${userEmail}`,
+          source: token,
+          account_balance: 0,
+          email: userEmail,
+        };
 
-	      const stripe_id = await callWithPromise('createCustomer', cust);
+        const stripe_id = await callWithPromise('createCustomer', cust);
 
-	      return stripe_id;
-	    } catch (error) {
-	    	throw new Meteor.Error(error.reason);
-	    }
+        return stripe_id;
+      } catch (error) {
+        throw new Meteor.Error(error.reason);
+      }
     }
 
     async function addStripePaymentSource(args) {
-    	try {
-    		const newSource = await callWithPromise('addPaymentSource', args);
-    		return newSource;
-    	} catch (error) {
-    		console.log(error.reason);
-    		throw new Meteor.Error(error.reason);
-    	}
+      try {
+        const newSource = await callWithPromise('addPaymentSource', args);
+        return newSource;
+      } catch (error) {
+        console.log(error.reason);
+        throw new Meteor.Error(error.reason);
+      }
     }
 
     async function retrieveStripeCustomer() {
-    	try {
-    		// Const the Session var of a user's Stripe user info
-    		const stripe_id = Session.get('stripe_customer').id;
-    		//
-    		const updatedCustomer = await callWithPromise('retrieveCustomer', stripe_id);
-    		return updatedCustomer;
-    	} catch (error) {
-    		throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
-    	}
+      try {
+        // Const the Session var of a user's Stripe user info
+        const stripe_id = Session.get('stripe_customer').id;
+        //
+        const updatedCustomer = await callWithPromise('retrieveCustomer', stripe_id);
+        return updatedCustomer;
+      } catch (error) {
+        throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
+      }
     }
 
     async function processNewPaymentSource() {
-    	try {
-    		// Make a token for the source
-	    	const newSourceToken = await createStripeToken();
-	    	// Make a blank args object for all arguments for Meteor.call
-	    	const args = {};
+      try {
+        // Make a token for the source
+        const newSourceToken = await createStripeToken();
+        // Make a blank args object for all arguments for Meteor.call
+        const args = {};
 
-	    	// If the user has Stripe userID -> a payment source logged with Stripe
-		    if (Meteor.user().stripe_id) {
-		    	// use their saved stripe_id and the token_id of the new source
-		    	// to send the info to Stripe, and save it in a constant (FIX? use of newSource?)
-		    	args.id = Meteor.user().stripe_id;
-		    	args.source = newSourceToken.id;
-		    	const newSource = await addStripePaymentSource(args);
-		    // If the user doesn't have a Stripe userID
-		    } else {
-		    	// make a new Stripe user with the source token, which will become their default source
-		    	const newUser = await createNewStripeUser(newSourceToken.id);
-		    	// FIX
-		    }
+        // If the user has Stripe userID -> a payment source logged with Stripe
+        if (Meteor.user().stripe_id) {
+          // use their saved stripe_id and the token_id of the new source
+          // to send the info to Stripe, and save it in a constant (FIX? use of newSource?)
+          args.id = Meteor.user().stripe_id;
+          args.source = newSourceToken.id;
+          const newSource = await addStripePaymentSource(args);
+        // If the user doesn't have a Stripe userID
+        } else {
+          // make a new Stripe user with the source token, which will become their default source
+          const newUser = await createNewStripeUser(newSourceToken.id);
+          // FIX
+        }
 
-		    const updatedCustomer = await retrieveStripeCustomer();
-    		Session.set('stripe_customer', updatedCustomer);
-		    sAlert.success('Card added!');
-		    template.showCardElement.set(false);
-		    card.unmount();
-		  } catch (error) {
-	    	sAlert.error('Something went wrong. Please try again.');
-		  	throw new Meteor.Error(error);
-		  }
+        const updatedCustomer = await retrieveStripeCustomer();
+        Session.set('stripe_customer', updatedCustomer);
+        sAlert.success('Card added!');
+        template.showCardElement.set(false);
+        card.unmount();
+      } catch (error) {
+        sAlert.error('Something went wrong. Please try again.');
+        throw new Meteor.Error(error);
+      }
     }
 
     processNewPaymentSource();

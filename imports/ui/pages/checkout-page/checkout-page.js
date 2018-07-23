@@ -57,7 +57,10 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
     this.discount = new ReactiveVar(order.discount); // discount Object
     this.appliedCredit = new ReactiveVar(0); // discount.credit
     this.newCredit = new ReactiveVar(false); // new user.credit
-    this.subscriber_discounts = new ReactiveVar(order.discount.subscriber_discounts); // discount.subscriber_discount
+
+    // discount.subscriber_discount
+    this.subscriber_discounts = new ReactiveVar(order.discount.subscriber_discounts);
+
     this.promo = new ReactiveVar(null); // discount.promo
     this.discountValue = new ReactiveVar(order.discount.value); // discount.value
 
@@ -66,24 +69,21 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
       const isReady = handle.ready();
       if (isReady && thisUserData.ready()) {
         if (Meteor.userId()) {
-          // If the customer has a Stripe ID, we attach it to the template and call a list of their payment sources
+          // If the customer has a Stripe ID,
+          // we attach it to the template and call a list of their payment sources
           if (!this.stripeId && Meteor.user().stripe_id) {
             this.stripeId = Meteor.user().stripe_id;
             // Call stripe user info
             Meteor.call('retrieveCustomer', this.stripeId, (error, response) => {
-              if (error) {
-                console.log(error);
-              } else {
-                this.stripeCustomer = response;
-                this.sources.set(this.stripeCustomer.sources);
-              }
+              if (error) { return; }
+              this.stripeCustomer = response;
+              this.sources.set(this.stripeCustomer.sources);
             });
           }
 
           // Set if user has a credit on account
           if (Meteor.user().credit > 0) {
-            const credit = Meteor.user().credit;
-            Math.round(credit * 100) / 100;
+            const { credit } = Meteor.user();
             this.userHasCredit.set(credit);
           }
         } else {
@@ -104,7 +104,11 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
         }
       }
 
-      this.order.total.set((this.order.subtotal.get() * 1.08875) + this.delivFee.get() - this.discountValue.get());
+      this.order.total.set(
+        (this.order.subtotal.get() * 1.08875)
+        + this.delivFee.get()
+        - this.discountValue.get(),
+      );
     });
   } else {
     sAlert.error('Sorry, your order got tossed! Redirecting you home...', { timeout: 3000, onClose() { FlowRouter.go('/'); } });
@@ -124,7 +128,7 @@ Template.Checkout_page.helpers({
     const itemList = Session.get('Order').items;
     const itemTally = {};
 
-    for (let i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (!itemTally[itemList[i].name]) {
         itemTally[itemList[i].name] = 1;
       } else {
@@ -138,13 +142,13 @@ Template.Checkout_page.helpers({
   },
 
   isPlan(item) {
-    const subscriptions = Session.get('Order').subscriptions;
-    if (subscriptions) {
-      for (let i = subscriptions.length - 1; i >= 0; i--) {
-        const subItemName = subscriptions[i].item_name;
-        if (subItemName === item.name) return true;
-      }
+    const { subscriptions } = Session.get('Order');
+    if (!subscriptions) { return undefined; }
+    for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+      const subItemName = subscriptions[i].item_name;
+      if (subItemName === item.name) return true;
     }
+    return undefined;
   },
 
   price() {
@@ -165,7 +169,9 @@ Template.Checkout_page.helpers({
   },
 
   userHasCredit() {
-    if (Template.instance().order.total.get() > 0 && Template.instance().userHasCredit.get() && !(Template.instance().appliedCredit.get())) {
+    if (Template.instance().order.total.get() > 0
+        && Template.instance().userHasCredit.get()
+        && !(Template.instance().appliedCredit.get())) {
       return `$${Template.instance().userHasCredit.get().toFixed(2)}`;
     }
     return false;
@@ -235,7 +241,7 @@ Template.Checkout_page.helpers({
   },
 
   deliv() {
-    const preferredDelivDay = Meteor.user().preferredDelivDay;
+    const { preferredDelivDay } = Meteor.user();
     if (!preferredDelivDay) { return undefined; }
     return preferredDelivDay;
   },
@@ -328,7 +334,8 @@ Template.Checkout_page.events({
             // FIX if (!Meteor.userId()) for future gifts purchases {
 
             // Set user credit
-            const origCredit = templateInstance.newCredit.get() || templateInstance.userHasCredit.get();
+            const origCredit = templateInstance.newCredit.get()
+              || templateInstance.userHasCredit.get();
             newCredit = origCredit + (Math.round(newCredit * 100) / 100);
             templateInstance.newCredit.set(newCredit);
 

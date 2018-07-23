@@ -42,6 +42,6 @@ Template.Orders_admin.helpers({
 
   currentOrders() {
     const lastSunday = toNewYorkTimezone(moment()).startOf('week').toDate();
-  	return Orders.find({ week_of: lastSunday }, { sort: { status: -1, created_at: -1 } });
+    return Orders.find({ week_of: lastSunday }, { sort: { status: -1, created_at: -1 } });
   },
 });

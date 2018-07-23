@@ -98,7 +98,7 @@ Template.Main_admin.helpers({
   },
 
   salesThisWeek: () => {
-  	let totalSalesThisWeek = 0;
+    let totalSalesThisWeek = 0;
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     const thisWeeksOrders = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }).fetch();
@@ -136,21 +136,23 @@ Template.Main_admin.helpers({
   },
 
   estimatedSubPlates: () => {
-  	let estimatedPlates = 0;
+    let estimatedPlates = 0;
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
       .toDate();
     // Get all pending-sub orders
     const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
     // Add the default number of dishes for each to total
-    for (let i = pendingSubOrders.length - 1; i >= 0; i -= 1) {
-      pendingSubOrders[i].items.forEach((item) => {
+    pendingSubOrders.forEach((pendingSubOrder) => {
+      pendingSubOrder.items.forEach((item) => {
         if (item.category === 'Pack') {
           estimatedPlates += item.sub_items.schema.total;
-        } else if (item.category === 'Meal') {
+          return;
+        }
+        if (item.category === 'Meal') {
           estimatedPlates += 1;
         }
       });
-    }
+    });
     return estimatedPlates;
   },
 
@@ -172,8 +174,8 @@ Template.Main_admin.helpers({
     // Get all pending-sub orders
     const pendingSubOrders = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }).fetch();
     // Add the default number of dishes for each to total
-    for (let i = pendingSubOrders.length - 1; i >= 0; i -= 1) {
-      pendingSubOrders[i].items.forEach((item) => {
+    pendingSubOrders.forEach((pendingSubOrder) => {
+      pendingSubOrder.items.forEach((item) => {
         if (item.category === 'Pack') {
           estimatedPlates += item.sub_items.schema.total;
           return;
@@ -182,7 +184,7 @@ Template.Main_admin.helpers({
           estimatedPlates += 1;
         }
       });
-    }
+    });
 
     const items = Template.instance().itemInfo.get();
     let customDishCount = 0;

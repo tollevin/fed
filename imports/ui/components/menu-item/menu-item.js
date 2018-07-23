@@ -25,7 +25,7 @@ Template.Menu_item.helpers({
       for (let i = filtered.length - 1; i >= 0; i--) {
         classes += `${filtered[i]} `;
       }
-  		return classes;
+      return classes;
     }
   },
 
@@ -110,7 +110,7 @@ Template.Menu_item.events({
       };
 
       const item = Items.findOne({ name: Template.currentData().name }, options);
-  		const order = Session.get('Order');
+      const order = Session.get('Order');
 
       // Ping here (GA)
       // Possibly Ping here if adding to an empty cart (GA)

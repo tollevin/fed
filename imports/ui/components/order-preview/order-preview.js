@@ -16,26 +16,26 @@ Template.Order_preview.onCreated(function orderPreviewOnCreated() {
 
 Template.Order_preview.helpers({
   user() {
-  	if (this.recipient) {
-  		return this.recipient;
-  	}
-	  	return Meteor.users.findOne({ _id: this.userId });
+    if (this.recipient) {
+      return this.recipient;
+    }
+    return Meteor.users.findOne({ _id: this.userId });
   },
 
   dishList() {
-  	const dishList = [];
+    const dishList = [];
     const dishTally = {};
 
-  	const itemList = Template.currentData().items;
-  	for (var i = itemList.length - 1; i >= 0; i--) {
-  		if (itemList[i].category === 'Pack') {
-  			for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
-  				dishList.push(itemList[i].sub_items.items[j].name);
-  			}
-  		} else if (itemList[i].category === 'Meal') {
-  			dishList.push(itemList[i].name);
-  		}
-  	}
+    const itemList = Template.currentData().items;
+    for (var i = itemList.length - 1; i >= 0; i--) {
+      if (itemList[i].category === 'Pack') {
+        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+          dishList.push(itemList[i].sub_items.items[j].name);
+        }
+      } else if (itemList[i].category === 'Meal') {
+        dishList.push(itemList[i].name);
+      }
+    }
 
     for (var i = dishList.length - 1; i >= 0; i--) {
       if (dishList[i] != '' && !dishTally[dishList[i]]) {
@@ -51,15 +51,15 @@ Template.Order_preview.helpers({
   },
 
   snackList() {
-  	const snackList = [];
+    const snackList = [];
     const snackTally = {};
 
     const itemList = Template.currentData().items;
     for (var i = itemList.length - 1; i >= 0; i--) {
-  		if (itemList[i].category === 'Snack') {
-  			snackList.push(itemList[i].name);
-  		}
-  	}
+      if (itemList[i].category === 'Snack') {
+        snackList.push(itemList[i].name);
+      }
+    }
 
     for (var i = snackList.length - 1; i >= 0; i--) {
       if (snackList[i] != '' && !snackTally[snackList[i]]) {
@@ -74,15 +74,15 @@ Template.Order_preview.helpers({
   },
 
   drinkList() {
-  	const drinkList = [];
+    const drinkList = [];
     const drinkTally = {};
 
     const itemList = Template.currentData().items;
     for (var i = itemList.length - 1; i >= 0; i--) {
-  		if (itemList[i].category === 'Drink') {
-  			drinkList.push(itemList[i].name);
-  		}
-  	}
+      if (itemList[i].category === 'Drink') {
+        drinkList.push(itemList[i].name);
+      }
+    }
 
     for (var i = drinkList.length - 1; i >= 0; i--) {
       if (drinkList[i] != '' && !drinkTally[drinkList[i]]) {
@@ -106,16 +106,16 @@ Template.Order_preview.helpers({
   deliveryZone() {
     let customer = Template.currentData().customer;
     if (!customer) {
-  		customer = Meteor.users.findOne({ _id: Template.currentData().userId });
-  	} // This should be an attribute of orders themselves (FIX)
-  	if (customer) {
+      customer = Meteor.users.findOne({ _id: Template.currentData().userId });
+    } // This should be an attribute of orders themselves (FIX)
+    if (customer) {
       const args = {
         zip_code: customer.address_zipcode,
       };
 
       const zipZone = getZipZone.call(args);
       return zipZone;
-	  }
+    }
   },
 
   packPriceToDecimal() {
