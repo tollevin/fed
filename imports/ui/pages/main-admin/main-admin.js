@@ -32,12 +32,7 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      const itemTallies = [];
       const menuThisWeek = Items.find({}, { fields: { name: 1, category: 1 } }).fetch();
-      menuThisWeek.forEach((item) => {
-        item.count = 0;
-        itemTallies.push(item);
-      });
 
       const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
         .toDate();
@@ -56,12 +51,14 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
           }
         });
       });
-      itemTallies.forEach((item) => {
+      const itemTallies = menuThisWeek.map((item) => {
+        let count = 0;
         for (let i = orderedItems.length - 1; i >= 0; i -= 1) {
           if (item._id === orderedItems[i]._id) {
-            item.count += 1;
+            count += 1;
           }
         }
+        return { ...item, count };
       });
       this.itemInfo.set(itemTallies);
     }
