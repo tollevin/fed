@@ -13,11 +13,10 @@ import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { Orders } from '/imports/api/orders/orders.js';
 
 // Components
-import '/imports/ui/components/loader/loader.js';
+import '/imports/ui/components/loading/loading.js';
 import '/imports/ui/components/side-nav/side-nav.js';
 import '/imports/ui/components/mobile-nav/mobile-nav.js';
 import '/imports/ui/components/modals/modals.js';
-import '/imports/ui/components/banner/banner.js';
 import '/imports/ui/components/content-overlay/content-overlay.js';
 import '/imports/ui/components/footer/footer.js';
 
