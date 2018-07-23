@@ -1,13 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
+const smtp = {
+  username: 'postmaster@mg.getfednyc.com', // eg: server@gentlenode.com
+  password: '8336f45b7a0d32864255c4622040e419', // eg: 3eeP1gtizk5eziohfervU
+  server: 'smtp.mailgun.org', // eg: mail.gandi.net
+  port: 587,
+};
+
 Meteor.startup(function () {
-  smtp = {
-    username: 'postmaster@mg.getfednyc.com', // eg: server@gentlenode.com
-    password: '8336f45b7a0d32864255c4622040e419', // eg: 3eeP1gtizk5eziohfervU
-    server: 'smtp.mailgun.org', // eg: mail.gandi.net
-    port: 587,
-  };
   process.env.ROOT_URL = 'https://getfednyc.com';
   process.env.MAIL_URL = `smtp://${encodeURIComponent(smtp.username)}:${encodeURIComponent(smtp.password)}@${encodeURIComponent(smtp.server)}:${smtp.port}`;
 
@@ -37,8 +38,8 @@ Accounts.emailTemplates.enrollAccount = {
   subject() {
     return 'Welcome to GetFedNYC';
   },
-  text(user, url) {
-    return `Hey, {user}!
+  text(user) {
+    return `Hey, ${user}!
 
 
 Thank you for choosing GetFedNYC, Brooklyn’s best blend of convenience, sustainability, and quality nutrition!

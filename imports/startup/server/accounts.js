@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { Email } from 'meteor/email';
+import { Template } from 'meteor/templating';
 import { SSR } from 'meteor/meteorhacks:ssr';
 
 import { moment } from 'meteor/momentjs:moment';
