@@ -7,18 +7,16 @@ Template.CartItem.helpers({
 
   subItems: () => {
     const subItems = Template.currentData().item.sub_items.items;
-    if (subItems) {
-      const dishTally = {};
-      for (let i = subItems.length - 1; i >= 0; i--) {
-        if (subItems[i] != '' && !dishTally[subItems[i]]) {
-          dishTally[subItems[i]] = 1;
-        } else if (subItems[i] != '') {
-          dishTally[subItems[i]] += 1;
-        }
+    if (!subItems) { return undefined; }
+
+    const dishTally = {};
+    for (let i = subItems.length - 1; i >= 0; i -= 1) {
+      if (subItems[i] !== '' && !dishTally[subItems[i]]) {
+        dishTally[subItems[i]] = 1;
+      } else if (subItems[i] !== '') {
+        dishTally[subItems[i]] += 1;
       }
-      const result = [];
-	    for (const key in dishTally) result.push({ name: key, value: dishTally[key] });
-	    return result;
     }
+    return Object.entries(dishTally).map(([name, value]) => ({ name, value }));
   },
 });

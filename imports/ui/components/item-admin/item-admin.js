@@ -1,17 +1,16 @@
 import { Template } from 'meteor/templating';
-import { $ } from 'meteor/jquery';
 
-import { toggleActive, toggleInPack, remove } from '/imports/api/items/methods.js';
+import { remove } from '/imports/api/items/methods.js';
 
 import './item-admin.html';
 
 Template.Item_admin.helpers({
   trueWarnings: () => {
-    const warnings = Template.currentData().warnings;
+    const { warnings } = Template.currentData();
     const warningsKeys = Object.keys(warnings);
     const trueWarnings = [];
 
-    for (let i = warningsKeys.length - 1; i >= 0; i--) {
+    for (let i = warningsKeys.length - 1; i >= 0; i -= 1) {
       if (warnings[warningsKeys[i]]) trueWarnings.push(warningsKeys[i]);
     }
 
@@ -19,11 +18,11 @@ Template.Item_admin.helpers({
   },
 
   trueAttributes: () => {
-    const attributes = Template.currentData().attributes;
+    const { attributes } = Template.currentData();
     const attributesKeys = Object.keys(attributes);
     const trueAttributes = [];
 
-    for (let i = attributesKeys.length - 1; i >= 0; i--) {
+    for (let i = attributesKeys.length - 1; i >= 0; i -= 1) {
       if (attributes[attributesKeys[i]]) trueAttributes.push(attributesKeys[i]);
     }
 
@@ -32,41 +31,6 @@ Template.Item_admin.helpers({
 });
 
 Template.Item_admin.events({
-  'change [name="thisWeek"]'(event) {
-    const checked = $(event.target).is(':checked');
-
-    toggleActive.call({
-      itemId: Template.currentData()._id,
-    });
-  },
-
-  'change [name="omnivorePack"]'(event) {
-    const checked = $(event.target).is(':checked');
-
-    toggleInPack.call({
-      itemId: Template.currentData()._id,
-      pack: event.target.name,
-    });
-  },
-
-  'change [name="vegetarianPack"]'(event) {
-    const checked = $(event.target).is(':checked');
-
-    toggleInPack.call({
-      itemId: Template.currentData()._id,
-      pack: event.target.name,
-    });
-  },
-
-  'change [name="veganPack"]'(event) {
-    const checked = $(event.target).is(':checked');
-
-    toggleInPack.call({
-      itemId: Template.currentData()._id,
-      pack: event.target.name,
-    });
-  },
-
   'click #Remove'(event) {
     event.preventDefault();
 

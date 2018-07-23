@@ -3,11 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { Check } from 'meteor/check';
 
-import {
-  Promos,
-} from './promos.js';
+import { Promos } from './promos.js';
 
 export const insertPromo = new ValidatedMethod({
   name: 'Meteor.insertPromo',

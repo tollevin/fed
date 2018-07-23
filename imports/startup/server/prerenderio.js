@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+
 // import prerender from 'prerender-node';
 
 // Meteor.startup(() => {

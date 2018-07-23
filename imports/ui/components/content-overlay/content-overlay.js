@@ -32,12 +32,12 @@ Template.Content_Overlay.helpers({
 });
 
 Template.Content_Overlay.events({
-  'click .content-overlay'(event) {
+  'click .content-overlay'() {
     Session.set('filterMenuOpen', false);
     Session.set('cartOpen', false);
   },
 
-  'click .x'(event) {
+  'click .x'() {
     Session.set('customizable', true);
   },
 });

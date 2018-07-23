@@ -42,7 +42,10 @@
       "no-param-reassign": [2, { "props": true, "ignorePropertyModificationsFor": ["event"] }]
     },
     "globals": {
-      "Stripe": true
+      "Stripe": true,
+      "Assets": true,
+      "WebApp": true,
+      "Npm": true
     }
   }
 }

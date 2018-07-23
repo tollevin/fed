@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import stripePackage from 'stripe';
+import { check, Match } from 'meteor/check';
+import { Accounts } from 'meteor/accounts-base';
 
 const Stripe = stripePackage('sk_live_KmzNeLrpctp1iT9Eo8n6qWoO');
 
 Meteor.methods({
-
   // Charges
-
   async processPayment(charge) {
     check(charge, {
       amount: Number,
@@ -19,11 +19,8 @@ Meteor.methods({
     });
 
     try {
-      const payment = await Stripe.charges.create(charge);
-
-      return payment;
+      return await Stripe.charges.create(charge);
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
@@ -49,7 +46,6 @@ Meteor.methods({
 
       return customer;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
@@ -61,25 +57,26 @@ Meteor.methods({
       account_balance: Number,
     });
 
+    check(email, String);
+    check(password, String);
+
     try {
       const customer = await Stripe.customers.create(cust);
 
-      const _id = Accounts.createUser({ email, password });
+      Accounts.createUser({ email, password });
 
       return customer;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
   async retrieveCustomer(id) {
-    try {
-      const customer = await Stripe.customers.retrieve(id);
+    check(id, String);
 
-      return customer;
+    try {
+      return await Stripe.customers.retrieve(id);
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
@@ -95,11 +92,9 @@ Meteor.methods({
     const credit = 0 - Math.round(args.account_balance * 100);
 
     try {
-      const customer = await Stripe.customers.update(args.id, { account_balance: credit });
-      return customer;
+      return await Stripe.customers.update(args.id, { account_balance: credit });
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
-      console.log('error: updateStripeCredit');
     }
   },
 
@@ -112,8 +107,7 @@ Meteor.methods({
     });
 
     try {
-      const customer = await Stripe.customers.update(args.id, { default_source: args.default_source });
-      return customer;
+      return await Stripe.customers.update(args.id, { default_source: args.default_source });
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
