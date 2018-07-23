@@ -16,10 +16,10 @@
     "isotope-layout": "^3.0.6",
     "meteor-node-stubs": "^0.2.3",
     "moment": "^2.22.2",
-    "moment-timezone": "^0.5.21",
     "prerender-node": "^2.4.0",
     "slideout": "^1.0.1",
-    "stripe": "^4.25.0"
+    "stripe": "^4.25.0",
+    "timezone": "^1.0.13"
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",

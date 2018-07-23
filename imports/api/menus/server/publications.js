@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import moment from 'moment';
-import 'moment-timezone';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { Menus } from '../menus.js';
 import { Items } from '../../items/items.js';
@@ -13,9 +13,9 @@ Meteor.publishComposite('Menus.thisWeek', function(timestamp) {
 
   return {
     find() {
-      const thisWeeksStart = moment(timestamp).tz('America/New_York').startOf('week').utc()
+      const thisWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').utc()
         .toDate();
-      const lastWeeksStart = moment(timestamp).tz('America/New_York').startOf('week').subtract(1, 'week')
+      const lastWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').subtract(1, 'week')
         .utc()
         .toDate();
 
@@ -46,7 +46,7 @@ Meteor.publishComposite('Menus.byWeek', function(timestamp) {
 
   return {
     find() {
-      const thisWeeksStart = moment(timestamp).tz('America/New_York').startOf('week').utc()
+      const thisWeeksStart = toNewYorkTimezone(moment(timestamp)).startOf('week').utc()
         .toDate();
       return Menus.find({ week_of: thisWeeksStart });
     },
