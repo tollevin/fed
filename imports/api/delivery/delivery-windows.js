@@ -23,7 +23,7 @@ class DeliveryWindowsCollection extends Mongo.Collection {
   }
 }
 
-export default DeliveryWindows = new DeliveryWindowsCollection('DeliveryWindows');
+const DeliveryWindows = new DeliveryWindowsCollection('DeliveryWindows');
 
 // Deny all client-side updates since we will be using methods to manage this collection
 DeliveryWindows.deny({
@@ -78,3 +78,5 @@ DeliveryWindows.publicFields = {
   delivery_start_time: 1,
   delivery_end_time: 1,
 };
+
+export default DeliveryWindows;

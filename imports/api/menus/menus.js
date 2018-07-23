@@ -2,9 +2,7 @@ import { Mongo } from 'meteor/mongo';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import {
-  Items,
-} from '../items/items.js';
+import { Items } from '../items/items.js';
 
 // SimpleSchema.debug = true;
 

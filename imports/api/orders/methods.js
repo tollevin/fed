@@ -3,16 +3,11 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { Check } from 'meteor/check';
 import { moment } from 'meteor/momentjs:moment';
 
 import { Orders } from './orders.js';
-import { Items } from '../items/items.js';
-import { Menus } from '../menus/menus.js';
-import { Plans } from '../plans/plans.js';
 
 // Methods
-import { orderItem } from '../items/methods.js';
 import { getMenuDWs } from '../menus/methods.js';
 
 // Zip Codes
@@ -59,44 +54,14 @@ export const insertOrder = new ValidatedMethod({
     const user = Meteor.users.findOne({ _id: user_id });
 
     // Calc subtotal, build items list
-    for (var i = items.length - 1; i >= 0; i--) {
+    for (let i = items.length - 1; i >= 0; i -= 1) {
       subtotal += items[i].price_per_unit;
     }
-
-    // // Set Subscription Discounts
-    // if (user.subscriptions && user.subscriptions.length > 0) {  // FIX to fix old user.subscriptions
-    //   const subs = user.subscriptions;
-
-    //   // for each subscription
-    //   for (var i = subs.length - 1; i >= 0; i--) {
-    //     const subItemId = subs[i].item_id;
-
-    //     // find the subscription item in the items list
-    //     var subItem = items.find((item)=> {
-    //       return item._id === subItemId;
-    //     });
-
-    //     // Only add discount if subItem is in list? What about a general pack discount?
-    //     if (subItem) {
-    //       const subscriber_discount = {
-    //         item_id: subItemId,
-    //         percent_off: subs[i].percent_off,
-    //         value: subs[i].percent_off / 100 * subItem.price_per_unit,
-    //       };
-
-    //       // add discount property to item
-    //       // subItem.discount.subscriber_discount = subs[i].discount;
-    //       // add discount object to order.discount
-    //       discount.subscriber_discounts.push(subscriber_discount);
-    //       discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
-    //     };
-    //   };
-    // };
 
     // Set Pending Subscription Discounts
     if (subscriptions && subscriptions.length > 0) {
       // for each subscription
-      for (var i = subscriptions.length - 1; i >= 0; i--) {
+      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
         const subItemId = subscriptions[i].item_id;
         const subItemName = subscriptions[i].item_name;
         const isPackSub = subItemName.split(' ')[1].split('-')[1] === 'Pack';
@@ -712,7 +677,7 @@ export const toggleSkip = new ValidatedMethod({
     const sub = order.subscriptions && order.subscriptions.length > 0;
 
     if (order.status === 'skipped') {
-      var newStatus = 'pending';
+      let newStatus = 'pending';
       if (sub) newStatus += '-sub';
       Orders.update(order._id, {
         $set: {
@@ -720,10 +685,9 @@ export const toggleSkip = new ValidatedMethod({
         },
       });
     } else {
-      var newStatus = 'skipped';
       Orders.update(order._id, {
         $set: {
-          status: newStatus,
+          status: 'skipped',
         },
       });
     }
@@ -748,9 +712,7 @@ export const createPSOrders = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run() {
-
-  },
+  run() {},
 });
 
 // Get list of all method names on orders

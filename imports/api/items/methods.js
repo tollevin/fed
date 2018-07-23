@@ -3,10 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { Check } from 'meteor/check';
-import {
-  Items,
-} from './items.js';
+
+import { Items } from './items.js';
 
 export const insertItem = new ValidatedMethod({
   name: 'Meteor.insertItem',

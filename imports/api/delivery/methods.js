@@ -6,9 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
 import { moment } from 'meteor/momentjs:moment';
 
-import {
-  zipZones,
-} from './zipcodes.js';
+import { zipZones } from './zipcodes.js';
 
 import DeliveryWindows from './delivery-windows.js';
 
