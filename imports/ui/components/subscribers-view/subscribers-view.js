@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 
 // Components used inside the template
 import '/imports/ui/components/subscriber-preview/subscriber-preview.js';
@@ -10,9 +11,9 @@ Template.Subscribers_view.onCreated(function subscribersViewOnCreated() {
   this.subscribe('subscriberData');
   Session.setDefault('substate', 'active');
   this.autorun(() => {
-  	if (Session.equals('substate', 'canceled')) {
-  		this.subscribe('unsubscriberData');
-  	}
+    if (Session.equals('substate', 'canceled')) {
+      this.subscribe('unsubscriberData');
+    }
   });
 });
 

@@ -1,3 +1,5 @@
+import { lodash } from 'meteor/erasaur:meteor-lodash';
+
 import { ALL_FOODS } from './diet_food_restrictions.js';
 
 export const RESTRICTION_TO_ITEM_RESTRICTION = {
@@ -70,9 +72,14 @@ export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) =
 
   const rejectedFoods = lodash.difference(ALL_FOODS, restrictions);
 
-  const allowedDishes = lodash.filter(allItems, ({ warnings }) => !lodash.some(rejectedFoods, food => warnings[RESTRICTION_TO_ITEM_RESTRICTION[food]]));
+  const allowedDishes = lodash.filter(allItems,
+    ({ warnings }) => !lodash.some(rejectedFoods,
+      food => warnings[RESTRICTION_TO_ITEM_RESTRICTION[food]]));
 
-  const categoryGroupedDishes = _.groupBy(allowedDishes, dish => CATEGORY_TO_PLATE[dish.subcategory.toLowerCase()]);
+  const categoryGroupedDishes = lodash.groupBy(
+    allowedDishes,
+    dish => CATEGORY_TO_PLATE[dish.subcategory.toLowerCase()],
+  );
 
   const idcounts = lodash
     .chain(plateNumbers)
@@ -88,7 +95,12 @@ export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) =
 
   const numberToItem = lodash.chain(idcounts)
     .toPairs()
-    .map(([plateId, numberOfPlate]) => [numberOfPlate, lodash.find(itemChoices, item => item._id === plateId)])
+    .map(
+      ([plateId, numberOfPlate]) => [
+        numberOfPlate,
+        lodash.find(itemChoices,
+          item => item._id === plateId)],
+    )
     .value();
 
   const numDishes = numberToItem.reduce((sum, [num]) => sum + num, 0);

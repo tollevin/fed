@@ -1,11 +1,12 @@
+import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
+
 // Meteor method wrapper for async
 export const callWithPromise = (method, myParameters) => new Promise((resolve, reject) => {
   // Anything called with callWithPromise must have only one args object
   Meteor.call(method, myParameters, (err, res) => {
-    if (err) {
-      reject(err);
-    }
-    resolve(res);
+    if (err) { return reject(err); }
+    return resolve(res);
   });
 });
 
@@ -16,12 +17,12 @@ export const minString = (str) => {
 };
 
 // Array Functions
-export const countInArray = (array, what) => array.filter(item => item == what).length;
+export const countInArray = (array, what) => array.filter(item => item === what).length;
 
 // Cart Functions
 export const cartSlots = () => {
   let newPack = {
-  	dishes: ['', '', '', '', '', ''],
+    dishes: ['', '', '', '', '', ''],
     snacks: [''],
     price: 8500,
     description: 'Fed 6-Pack',
@@ -29,7 +30,7 @@ export const cartSlots = () => {
   switch (Session.get('PackSelected')) {
     case '6-Pack':
       newPack = {
-      	dishes: ['', '', '', '', '', ''],
+        dishes: ['', '', '', '', '', ''],
         snacks: [''],
         price: 8500,
         description: 'Fed 6-Pack',
@@ -37,7 +38,7 @@ export const cartSlots = () => {
       break;
     case '8-Pack':
       newPack = {
-      	dishes: ['', '', '', '', '', '', '', ''],
+        dishes: ['', '', '', '', '', '', '', ''],
         snacks: [''],
         price: 11000,
         description: 'Fed 8-Pack',
@@ -45,7 +46,7 @@ export const cartSlots = () => {
       break;
     case '10-Pack':
       newPack = {
-      	dishes: ['', '', '', '', '', '', '', '', '', ''],
+        dishes: ['', '', '', '', '', '', '', '', '', ''],
         snacks: ['', ''],
         price: 13500,
         description: 'Fed 10-Pack',
@@ -53,12 +54,14 @@ export const cartSlots = () => {
       break;
     case '12-Pack':
       newPack = {
-      	dishes: ['', '', '', '', '', '', '', '', '', '', '', ''],
+        dishes: ['', '', '', '', '', '', '', '', '', '', '', ''],
         snacks: ['', ''],
         price: 15900,
         description: 'Fed 12-Pack',
       };
-    	break;
+      break;
+    default:
+      break;
   }
   // Set the template for order data. Could replace with orderId
   Session.set('pack', newPack);

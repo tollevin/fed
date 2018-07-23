@@ -5,6 +5,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+import { sAlert } from 'meteor/juliancwirko:s-alert';
 
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { Items } from '/imports/api/items/items.js';

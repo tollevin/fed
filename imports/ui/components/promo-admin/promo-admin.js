@@ -11,10 +11,10 @@ Template.Promo_admin.onCreated(function promoAdminOnCreated() {
 
 Template.Promo_admin.helpers({
   value() {
-  	const promo = Promos.findOne({ _id: Template.currentData()._id });
-  	if (promo.credit) {
-  		return (`Credit for $${promo.credit}`);
-  	}
-  		return (`${promo.percentage}% off`);
+    const promo = Promos.findOne({ _id: Template.currentData()._id });
+    if (promo.credit) {
+      return (`Credit for $${promo.credit}`);
+    }
+    return (`${promo.percentage}% off`);
   },
 });

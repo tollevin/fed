@@ -6,6 +6,8 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
+import { Tracker } from 'meteor/tracker';
+import { $ } from 'meteor/jquery';
 
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
@@ -46,16 +48,16 @@ Template.App_body.onCreated(function appBodyOnCreated() {
       // if a user has subscriptions,
       const user = Meteor.user();
       if (user && user.subscriptions && user.subscriptions.length > 0 && user.subscriptions[0].status === 'active') {
-        const week_of = toNewYorkTimezone(moment()).startOf('week').utc().toDate();
+        const weekOf = toNewYorkTimezone(moment()).startOf('week').utc().toDate();
 
-        const order_week_of = Orders.findOne({ week_of });
+        const orderWeekOf = Orders.findOne({ week_of: weekOf });
 
-        if (!Session.get('orderId')) Session.set('orderId', order_week_of);
+        if (!Session.get('orderId')) Session.set('orderId', orderWeekOf);
 
         Session.set('subscribed', true);
-      } else {
-        Session.set('subscribed', false);
+        return;
       }
+      Session.set('subscribed', false);
     }
   });
 });
@@ -85,7 +87,6 @@ Template.App_body.helpers({
     return Session.get('userMenuOpen');
   },
   connected() {
-    console.log('showConnectionIssue.get() = %j', showConnectionIssue.get());
     if (showConnectionIssue.get()) {
       return Meteor.status().connected;
     }
@@ -94,19 +95,18 @@ Template.App_body.helpers({
   },
 
   templateGestures: {
-    'swipeleft .content-overlay, #sideNav'(event, instance) {
+    'swipeleft .content-overlay, #sideNav'() {
       Session.set('sideNavOpen', false);
     },
 
-    'swiperight #content-container, #cart'(event, instance) {
-      const route = FlowRouter.getRouteName();
+    'swiperight #content-container, #cart'() {
       if (Session.get('packEditorOpen')) {
         Session.set('packEditorOpen', false);
-      } else {
-        Session.set('sideNavOpen', true);
+        return;
       }
+      Session.set('sideNavOpen', true);
     },
-    'swipeleft #content-container'(event, instance) {
+    'swipeleft #content-container'() {
       const route = FlowRouter.getRouteName();
       if (route === 'Menu.show') {
         Session.set('packEditorOpen', true);
@@ -116,13 +116,13 @@ Template.App_body.helpers({
 });
 
 Template.App_body.events({
-  'click #container' (event) {
+  'click #container' () {
     Session.set('userMenuOpen', false);
     Session.set('sideNavOpen', false);
   },
 
-  'click .js-menu'(event, instance) {
-    instance.state.set('menuOpen', !instance.state.get('menuOpen'));
+  'click .js-menu'(event, templateInstance) {
+    templateInstance.state.set('menuOpen', !templateInstance.state.get('menuOpen'));
   },
 
 

@@ -5,6 +5,8 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 import { $ } from 'meteor/jquery';
+import { sAlert } from 'meteor/juliancwirko:s-alert';
+import { Blaze } from 'meteor/blaze';
 // import { HTTP } from 'meteor/http';
 
 // Collections
@@ -136,8 +138,7 @@ Template.Checkout_page.helpers({
       }
     }
 
-    const result = [];
-    for (const key in itemTally) result.push({ name: key, value: itemTally[key] });
+    const result = Object.entries(itemTally).map(([name, value]) => ({ name, value }));
     return result;
   },
 

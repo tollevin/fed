@@ -35,7 +35,13 @@
     "extends": "@meteorjs/eslint-config-meteor",
     "rules": {
       "meteor/template-names": [2, "snake-case"],
-      "meteor/no-session": [0]
+      "meteor/no-session": [0],
+      "no-underscore-dangle": [0],
+      "new-cap": [0],
+      "import/prefer-default-export": [0]
+    },
+    "globals": {
+      "Stripe": true
     }
   }
 }

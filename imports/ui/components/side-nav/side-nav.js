@@ -1,5 +1,7 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 
 import { signout } from '/imports/ui/lib/auth.js';
 
@@ -68,8 +70,8 @@ Template.Side_Nav.events({
 
   'mouseleave #Main-Nav'() {
     const route = FlowRouter.getRouteName();
-    const isNotMenuPage = route.split('.')[0] != 'Menu';
-    const isNotAboutPage = route.split('.')[0] != 'About';
+    const isNotMenuPage = route.split('.')[0] !== 'Menu';
+    const isNotAboutPage = route.split('.')[0] !== 'About';
 
     if (isNotMenuPage) {
       Template.instance().showMenuLinks.set(false);

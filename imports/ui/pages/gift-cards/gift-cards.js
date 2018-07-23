@@ -5,6 +5,8 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 import { callWithPromise } from '/imports/ui/lib/helpers.js';
 import { yesZips } from '/imports/api/delivery/zipcodes.js';
+import { sAlert } from 'meteor/juliancwirko:s-alert';
+import { Blaze } from 'meteor/blaze';
 
 import '/imports/ui/components/stripe-card-element/stripe-card-element.js';
 

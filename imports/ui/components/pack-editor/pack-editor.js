@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { moment } from 'meteor/momentjs:moment';
+import { Session } from 'meteor/session';
 
 // Components
 import '/imports/ui/components/pack-editor-item/pack-editor-item.js';
@@ -12,7 +12,7 @@ import { Menus } from '/imports/api/menus/menus.js';
 import { Items } from '/imports/api/items/items.js';
 
 // Methods
-import { insertOrder, updatePendingSubOrder } from '/imports/api/orders/methods.js';
+import { insertOrder, updatePendingSubOrder, updateOrder } from '/imports/api/orders/methods.js';
 import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/pack_planner.js';
 
 // Template
@@ -38,13 +38,14 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     };
 
     if (user) {
-      diet = user.diet;
+      const userDiet = user.diet;
+      diet = userDiet;
       const restrictionsArray = [];
-      for (var i = user.restrictions.length - 1; i >= 0; i--) {
+      for (let i = user.restrictions.length - 1; i >= 0; i -= 1) {
         restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[user.restrictions[i]]);
       }
 
-      for (var i = restrictionsArray.length - 1; i >= 0; i--) {
+      for (let i = restrictionsArray.length - 1; i >= 0; i -= 1) {
         restrictions[restrictionsArray[i]] = true;
       }
     }
@@ -80,12 +81,12 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     let packName = order.subscriptions[0].item_name; // FIX
     if (!packName) packName = order.subscriptions.item_name;
     this.diet.set(packName.split(' ')[0]);
-    this.packSize.set(parseInt(packName.split(' ')[1].split('-')[0]));
+    this.packSize.set(parseInt(packName.split(' ')[1].split('-')[0], 10));
   }
 
   // If they have a pack in their order, open that pack to edit
   if (order && order.items && order.items.length > 0) {
-    for (var i = order.items.length - 1; i >= 0; i--) {
+    for (let i = order.items.length - 1; i >= 0; i -= 1) {
       if (order.items[i].category === 'Pack') { // FIX if more than meal packs / more than 1 pack?
         Session.set('pack', order.items[i]);
         this.diet.set(order.items[i].name.split(' ')[0]);
@@ -96,7 +97,6 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
   }
 
   this.order.set(order);
-  const thisWeeksStart = moment().startOf('week').utc().toDate();
 
   this.autorun(() => {
     this.subscribe('Menus.active');
@@ -126,48 +126,44 @@ Template.Pack_Editor.onDestroyed(function packEditorOnDestroyed() {
 
 Template.Pack_Editor.helpers({
   selectedDiet: (diet) => {
-    if (diet === Template.instance().diet.get()) {
-      return 'selected';
-    }
+    if (diet !== Template.instance().diet.get()) { return undefined; }
+    return 'selected';
   },
 
   selectedNumber: (packSize) => {
-    if (packSize === Template.instance().packSize.get()) {
-      return 'selected';
-    }
+    if (packSize !== Template.instance().packSize.get()) { return undefined; }
+    return 'selected';
   },
 
   packPrice: () => Session.get('pack') && Session.get('pack').price_per_unit,
 
   changePrice: () => {
-    if (Template.instance().priceChange.get() !== 0) {
-      return Template.instance().priceChange.get() > 0 ? 'plus' : 'minus';
-    }
+    if (Template.instance().priceChange.get() === 0) { return undefined; }
+    return Template.instance().priceChange.get() > 0 ? 'plus' : 'minus';
   },
 
   priceChange: () => {
-    if (Template.instance().priceChange.get() !== 0) {
-      return Template.instance().priceChange.get() > 0 ? Template.instance().priceChange.get().toFixed(2) : (0 - Template.instance().priceChange.get()).toFixed(2);
-    }
+    if (Template.instance().priceChange.get() === 0) { return undefined; }
+    return Template.instance().priceChange.get() > 0
+      ? Template.instance().priceChange.get().toFixed(2)
+      : (0 - Template.instance().priceChange.get()).toFixed(2);
   },
 
   schema: (category) => {
-    if (Session.get('pack')) {
-      let subcatArray;
-      category === 'Protein' ? subcatArray = ['Beef', 'Chicken', 'Fish', 'Soy'] : subcatArray = [category];
+    if (!Session.get('pack')) { return undefined; }
+    const subcatArray = category === 'Protein' ? ['Beef', 'Chicken', 'Fish', 'Soy'] : [category];
 
-      const packItems = Session.get('pack').sub_items.items;
-      let categoryInPack = 0;
+    const packItems = Session.get('pack').sub_items.items;
+    let categoryInPack = 0;
 
-      for (let i = packItems.length - 1; i >= 0; i--) {
-        const item = Items.findOne({ _id: packItems[i]._id });
+    for (let i = packItems.length - 1; i >= 0; i -= 1) {
+      const item = Items.findOne({ _id: packItems[i]._id });
 
-        if (item && subcatArray.indexOf(item.subcategory) > -1) categoryInPack += 1;
-      }
-
-      const schema = Session.get('pack').sub_items.schema;
-      return `${categoryInPack} / ${schema[category.toLowerCase()]}`;
+      if (item && subcatArray.indexOf(item.subcategory) > -1) categoryInPack += 1;
     }
+
+    const { schema } = Session.get('pack').sub_items;
+    return `${categoryInPack} / ${schema[category.toLowerCase()]}`;
   },
 
   price: () => {
@@ -181,7 +177,7 @@ Template.Pack_Editor.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -197,7 +193,7 @@ Template.Pack_Editor.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -213,7 +209,7 @@ Template.Pack_Editor.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -229,7 +225,7 @@ Template.Pack_Editor.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -245,7 +241,7 @@ Template.Pack_Editor.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -255,29 +251,27 @@ Template.Pack_Editor.helpers({
   },
 
   ready: () => {
-    if (Session.get('pack')) {
-      const itemTotal = Session.get('pack').sub_items.items.length;
-      const schemaTotal = Session.get('pack').sub_items.schema.total;
-      return itemTotal === schemaTotal && 'pack-ready';
-    }
+    if (!Session.get('pack')) { return undefined; }
+    const itemTotal = Session.get('pack').sub_items.items.length;
+    const schemaTotal = Session.get('pack').sub_items.schema.total;
+    return itemTotal === schemaTotal && 'pack-ready';
   },
 
   notSubscribe: () => {
     const route = FlowRouter.current().route.name;
-    return route != 'Subscribe'; // FIX ?
+    return route !== 'Subscribe'; // FIX ?
   },
 
   packSpace: () => {
-    if (Session.get('pack')) {
-      const itemTotal = Session.get('pack').sub_items.items.length;
-      const schemaTotal = Session.get('pack').sub_items.schema.total;
-      return `${itemTotal}/${schemaTotal}`;
-    }
+    if (!Session.get('pack')) { return undefined; }
+    const itemTotal = Session.get('pack').sub_items.items.length;
+    const schemaTotal = Session.get('pack').sub_items.schema.total;
+    return `${itemTotal}/${schemaTotal}`;
   },
 });
 
 Template.Pack_Editor.events({
-  'change .diet'(event, template) {
+  'change .diet'(event) {
     // set diet to filters.diet
     // add basic restrictions
     const filter = event.currentTarget.value;
@@ -300,21 +294,18 @@ Template.Pack_Editor.events({
       case 'Pescetarian':
         existingFilters.restrictions.beef = true;
         existingFilters.restrictions.chicken = true;
-        // existingFilters.iso.concat("':not(.beef), :not(.chicken)'");
         break;
       case 'Paleo':
         existingFilters.restrictions.peanuts = true;
         existingFilters.restrictions.soy = true;
         existingFilters.restrictions.milk = true;
         existingFilters.restrictions.wheat = true;
-        // existingFilters.iso.concat("':not(.peanuts), :not(.soy), :not(.milk), :not(wheat)'");
         break;
       case 'Vegetarian':
         existingFilters.restrictions.beef = true;
         existingFilters.restrictions.chicken = true;
         existingFilters.restrictions.fish = true;
         existingFilters.restrictions.shellfish = true;
-        // existingFilters.iso.concat("':not(.beef), :not(.chicken), :not(.fish), :not(.shellfish)'");
         break;
       case 'Vegan':
         existingFilters.restrictions.beef = true;
@@ -323,7 +314,8 @@ Template.Pack_Editor.events({
         existingFilters.restrictions.shellfish = true;
         existingFilters.restrictions.milk = true;
         existingFilters.restrictions.eggs = true;
-        // existingFilters.iso.concat("':not(.beef), :not(.chicken), :not(.fish), :not(.shellfish), :not(.milk), :not(.eggs)'");
+        break;
+      default:
         break;
     }
 
@@ -337,10 +329,9 @@ Template.Pack_Editor.events({
     Session.set('pack', pack);
   },
 
-  'change .packSize'(event, template) {
-    const input = event.target.value;
-    const name = event.target.name;
-    template[name].set(input);
+  'change .packSize'(event, templateInstance) {
+    const { name, value: input } = event.target;
+    templateInstance[name].set(input);
 
     const diet = Template.instance().diet.get();
     const packName = `${diet} ${input}-Pack`;
@@ -348,137 +339,138 @@ Template.Pack_Editor.events({
     Session.set('pack', pack);
   },
 
-  'click .accordion'(event, template) {
+  'click .accordion'(event, templateInstance) {
     event.preventDefault();
 
-    const accordions = template.findAll('.accordion');
-    const panels = template.findAll('.panel');
+    const accordions = templateInstance.findAll('.accordion');
+    const panels = templateInstance.findAll('.panel');
     const panel = event.currentTarget.nextElementSibling;
 
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
       event.currentTarget.classList.remove('open');
+      return;
+    }
+    for (let i = panels.length - 1; i >= 0; i -= 1) {
+      panels[i].style.maxHeight = null;
+      accordions[i].classList.remove('open');
+    }
+    event.currentTarget.classList.add('open');
+    // panel.style.maxHeight = panel.scrollHeight + "px";
+    panel.style.maxHeight = '375px';
+  },
+
+  'click .add-to-pack'(event, templateInstance) {
+    event.preventDefault();
+
+    if (!Meteor.user()) {
+      Session.set('overlay', 'pause');
+      FlowRouter.go('join');
+      return;
+    }
+
+    const options = {
+      fields: {
+        _id: 1,
+        name: 1,
+        category: 1,
+        subcategory: 1,
+        description: 1,
+        price_per_unit: 1,
+        photo: 1,
+      },
+    };
+
+    const item = Items.findOne({ _id: event.currentTarget.name }, options);
+    item.subcategory = (['Beef', 'Chicken', 'Fish', 'Soy'].indexOf(item.subcategory) > -1)
+      ? 'protein'
+      : item.subcategory.toLowerCase();
+    const pack = Session.get('pack');
+    const packItems = pack.sub_items.items;
+    const packSchema = pack.sub_items.schema;
+
+    // Ping here (GA)
+    // Possibly Ping here if adding to an empty cart (GA)
+
+    // If >= packSize, prompt for packUpgrade + !add-to-pack
+    if (packItems.length >= pack.sub_items.schema.total) { return; }
+
+    // Add to pack
+    packItems.push(item);
+
+    // Add to template schema
+    const schema = Template.instance().schema.get();
+    if (schema[item.subcategory]) {
+      schema[item.subcategory] += 1;
     } else {
-      for (let i = panels.length - 1; i >= 0; i--) {
+      schema[item.subcategory] = 1;
+    }
+    schema.total += 1;
+
+    Template.instance().schema.set(schema);
+
+    // if pack is full,
+    if (schema.total === packSchema.total) {
+      const accordions = templateInstance.findAll('.accordion');
+      const panels = templateInstance.findAll('.panel');
+
+      // close all accordion tabs
+      for (let i = panels.length - 1; i >= 0; i -= 1) {
+        // close current panel, restyle
         panels[i].style.maxHeight = null;
         accordions[i].classList.remove('open');
       }
-      event.currentTarget.classList.add('open');
-      // panel.style.maxHeight = panel.scrollHeight + "px";
-      panel.style.maxHeight = '375px';
-    }
-  },
 
-  'click .add-to-pack'(event, template) {
-    event.preventDefault();
+      const schemaKeys = Object.keys(schema);
+      const differences = {};
+      let different = false;
 
-    if (Meteor.user()) {
-      const options = {
-        fields: {
-          _id: 1,
-          name: 1,
-          category: 1,
-          subcategory: 1,
-          description: 1,
-          price_per_unit: 1,
-          photo: 1,
-        },
-      };
+      for (let i = schemaKeys.length - 1; i >= 0; i -= 1) {
+        const difference = schema[schemaKeys[i]] - packSchema[schemaKeys[i]];
+        differences[schemaKeys[i]] = difference;
+        if (difference !== 0) different = true;
+      }
 
-      const item = Items.findOne({ _id: event.currentTarget.name }, options);
-      (['Beef', 'Chicken', 'Fish', 'Soy'].indexOf(item.subcategory) > -1) ? item.subcategory = 'protein' : item.subcategory = item.subcategory.toLowerCase();
-      const pack = Session.get('pack');
-      const packItems = pack.sub_items.items;
-      const packSchema = pack.sub_items.schema;
-
-      // Ping here (GA)
-      // Possibly Ping here if adding to an empty cart (GA)
-
-      // If >= packSize, prompt for packUpgrade + !add-to-pack
-      if (packItems.length >= pack.sub_items.schema.total) {
-
-      } else {
-        // Add to pack
-        packItems.push(item);
-
-        // Add to template schema
-        const schema = Template.instance().schema.get();
-        if (schema[item.subcategory]) {
-          schema[item.subcategory] += 1;
-        } else {
-          schema[item.subcategory] = 1;
+      // if schema != packSchema, change pack price, add price differences to accordions
+      if (different) {
+        // change pack price
+        let newPrice = 0;
+        for (let i = packItems.length - 1; i >= 0; i -= 1) {
+          newPrice += packItems[i].price_per_unit;
         }
-        schema.total += 1;
 
-        Template.instance().schema.set(schema);
-
-        // if pack is full,
-        if (schema.total === packSchema.total) {
-          var accordions = template.findAll('.accordion');
-          var panels = template.findAll('.panel');
-
-          // close all accordion tabs
-          for (var i = panels.length - 1; i >= 0; i--) {
-            // close current panel, restyle
-            panels[i].style.maxHeight = null;
-            accordions[i].classList.remove('open');
-          }
-
-          const schemaKeys = Object.keys(schema);
-          const differences = {};
-          let different = false;
-
-          for (var i = schemaKeys.length - 1; i >= 0; i--) {
-            const difference = schema[schemaKeys[i]] - packSchema[schemaKeys[i]];
-            differences[schemaKeys[i]] = difference;
-            if (difference !== 0) different = true;
-          }
-
-          // if schema != packSchema, change pack price, add price differences to accordions
-          if (different) {
-            // change pack price
-            let newPrice = 0;
-            for (var i = packItems.length - 1; i >= 0; i--) {
-              newPrice += packItems[i].price_per_unit;
-            }
-
-            template.priceChange.set(newPrice - pack.price_per_unit);
-            pack.price_per_unit = newPrice;
-          }
-        } else {
-          template.priceChange.set(0);
-          // if schema[subcategory] === numInPack, close panel and open next
-          if (schema[item.subcategory] === packSchema[item.subcategory]) {
-            var accordions = template.findAll('.accordion');
-            var panels = template.findAll('.panel');
-
-            for (var i = panels.length - 1; i >= 0; i--) {
-              if (panels[i].style.maxHeight) {
-                // close current panel, restyle
-                // panels[i].style.maxHeight = null;
-                // accordions[i].classList.remove('open');
-                accordions[i].classList.add('filled');
-
-                // open next panel
-                if (i + 1 < panels.length) {
-                  panels[i + 1].style.maxHeight = '375px';
-                  accordions[i + 1].classList.add('open');
-                }
-              }
-            }
-          }
-        }
-        // Update Session pack var
-        pack.sub_items.items = packItems;
-        Session.set('pack', pack);
+        templateInstance.priceChange.set(newPrice - pack.price_per_unit);
+        pack.price_per_unit = newPrice;
       }
     } else {
-      Session.set('overlay', 'pause');
-      FlowRouter.go('join');
+      templateInstance.priceChange.set(0);
+      // if schema[subcategory] === numInPack, close panel and open next
+      if (schema[item.subcategory] === packSchema[item.subcategory]) {
+        const accordions = templateInstance.findAll('.accordion');
+        const panels = templateInstance.findAll('.panel');
+
+        for (let i = panels.length - 1; i >= 0; i -= 1) {
+          if (panels[i].style.maxHeight) {
+            // close current panel, restyle
+            // panels[i].style.maxHeight = null;
+            // accordions[i].classList.remove('open');
+            accordions[i].classList.add('filled');
+
+            // open next panel
+            if (i + 1 < panels.length) {
+              panels[i + 1].style.maxHeight = '375px';
+              accordions[i + 1].classList.add('open');
+            }
+          }
+        }
+      }
     }
+    // Update Session pack var
+    pack.sub_items.items = packItems;
+    Session.set('pack', pack);
   },
 
-  'click .remove-from-pack'(event, template) {
+  'click .remove-from-pack'(event) {
     event.preventDefault();
 
     const pack = Session.get('pack');
@@ -490,7 +482,7 @@ Template.Pack_Editor.events({
     let item;
     let itemInPack = -1;
 
-    for (let i = packItems.length - 1; i >= 0; i--) {
+    for (let i = packItems.length - 1; i >= 0; i -= 1) {
       if (packItems[i]._id === event.currentTarget.name) {
         itemInPack = i;
         item = packItems[i];
@@ -512,14 +504,14 @@ Template.Pack_Editor.events({
     }
   },
 
-  'click .cancel'(event, template) {
+  'click .cancel'(event) {
     event.preventDefault();
 
     Session.set('pack', null);
     Session.set('overlay', false);
   },
 
-  'click .toMarket'(event, template) {
+  'click .toMarket'(event) {
     event.preventDefault();
     Session.set('overlay', 'loading');
 
@@ -530,7 +522,7 @@ Template.Pack_Editor.events({
     // if order._id, update instead of insert
     if (order._id) {
       // replace pack
-      for (let i = order.items.length - 1; i >= 0; i--) {
+      for (let i = order.items.length - 1; i >= 0; i -= 1) {
         if (order.items[i]._id === pack._id) order.items[i] = pack;
       }
       // update order
@@ -557,7 +549,7 @@ Template.Pack_Editor.events({
     FlowRouter.go('/market');
   },
 
-  'click .toCheckout'(event, template) {
+  'click .toCheckout'(event) {
     event.preventDefault();
     Session.set('overlay', 'loading');
 

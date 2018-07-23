@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { signout } from '/imports/ui/lib/auth.js';
+import { Session } from 'meteor/session';
 
 import '/imports/ui/components/loading/loading.js';
 
@@ -56,43 +57,42 @@ Template.Admin_layout.helpers({
   },
 
   templateGesturesAdmin: {
-
-    'swiperight #container'(event, instance) {
+    'swiperight #container'() {
       Session.set('adminMenuOpen', true);
     },
-    'swipeleft #container, #admin-side-menu'(event, instance) {
+    'swipeleft #container, #admin-side-menu'() {
       Session.set('adminMenuOpen', false);
     },
   },
 });
 
 Template.Admin_layout.events({
-  'click #AllOrders-tab'(event, template) {
+  'click #AllOrders-tab'() {
     Session.set('state', 'allOrders');
   },
 
-  'click #ThisWeeksOrders-tab'(event, template) {
+  'click #ThisWeeksOrders-tab'() {
     Session.set('state', 'thisWeeksOrders');
   },
 
-  'click #Active-Subs'(event, template) {
+  'click #Active-Subs'() {
     Session.set('substate', 'active');
   },
 
-  'click #Canceled-Subs'(event, template) {
+  'click #Canceled-Subs'() {
     Session.set('substate', 'canceled');
   },
 
-  'click .js-menu'(event, instance) {
-    instance.state.set('menuOpen', !instance.state.get('menuOpen'));
+  'click .js-menu'(event, templateInstance) {
+    templateInstance.state.set('menuOpen', !templateInstance.state.get('menuOpen'));
   },
 
-  'click .content-overlay'(event, instance) {
-    instance.state.set('userMenuOpen', false);
+  'click .content-overlay'(event, templateInstance) {
+    templateInstance.state.set('userMenuOpen', false);
     event.preventDefault();
   },
 
-  'click .js-user-menu'(event, instance) {
+  'click .js-user-menu'(event) {
     Session.set('userMenuOpen', !Session.get('userMenuOpen'));
     // stop the menu from closing
     event.stopImmediatePropagation();

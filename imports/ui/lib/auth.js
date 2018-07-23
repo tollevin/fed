@@ -13,7 +13,10 @@ export const onLoginFunction = () => {
   // const nonRedirect = ['Subscribe', 'Packs', 'Checkout'];
   if (route === 'signin') {
     FlowRouter.go('Menu.show');
-  } else if (subs && subs[0].status != 'canceled') {
+    return;
+  }
+
+  if (subs && subs[0].status !== 'canceled') {
     FlowRouter.go('User.home');
   }
 };
@@ -31,10 +34,12 @@ const onLogoutFunction = () => {
   });
 };
 
-export const signin = ({ email, password }, callback) => Meteor.loginWithPassword(email, password, (error) => {
-  if (callback) { callback(error); }
-  if (!error) { onLoginFunction(); }
-});
+export const signin = ({ email, password }, callback) => (
+  Meteor.loginWithPassword(email, password, (error) => {
+    if (callback) { callback(error); }
+    if (!error) { onLoginFunction(); }
+  })
+);
 
 export const signout = callback => Meteor.logout((error) => {
   if (callback) { callback(error); }
