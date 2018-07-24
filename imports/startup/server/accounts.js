@@ -3,84 +3,82 @@ import { Accounts } from 'meteor/accounts-base';
 import { Email } from 'meteor/email';
 import { Template } from 'meteor/templating';
 import { SSR } from 'meteor/meteorhacks:ssr';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { check, Match } from 'meteor/check';
 
 import { moment } from 'meteor/momentjs:moment';
 import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
-import { Promos } from '/imports/api/promos/promos.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
-
-
 import { insertPromo } from '/imports/api/promos/methods.js';
 
 Meteor.methods({
 
-  async updateUser(user_id, data) {
+  async updateUser(userId, data) {
+    check(userId, String);
+    check(data, { credit: Number });
     try {
-      const user = Meteor.users.findOne({ _id: user_id });
+      const user = Meteor.users.findOne({ _id: userId });
 
-      if (!data.credit) data.credit = 0;
+      const cleanCredit = { ...data, credit: data.credit || 0 };
 
-      const updated = Meteor.users.update({ _id: user._id }, {
-        $set: data,
+      Meteor.users.update({ _id: user._id }, {
+        $set: cleanCredit,
       });
 
-      const creditUpdated = (user.credit != data.credit) && (`Updating stripe credit for ${user_id}: ${user.first_name} ${user.last_name}: $${user.credit} to $${data.credit}`);
-      if (creditUpdated) {
-        console.log(creditUpdated);
-      }
+      const creditUpdated = (user.credit !== cleanCredit.credit) && (`Updating stripe credit for ${userId}: ${user.first_name} ${user.last_name}: $${user.credit} to $${cleanCredit.credit}`);
 
       if (creditUpdated) {
         const args = {
           id: user.stripe_id,
-          account_balance: data.credit,
+          account_balance: cleanCredit.credit,
         };
 
         Meteor.call('updateStripeCredit', args);
       }
 
-      return (Meteor.users.findOne({ _id: user_id }));
+      return (Meteor.users.findOne({ _id: userId }));
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
   async createSubscriber (user) {
+    check(user, {
+      email: String,
+      password: String,
+      zipCode: String,
+    });
+
+    const { email, password, zipCode } = user;
+
     // Called only when someone is subscribing but not yet a user
     try {
-      const customer = {
-        email: user.email,
-        password: user.password,
-      };
+      const customer = { email, password };
 
       const _id = Accounts.createUser(customer);
 
-      Accounts.sendVerificationEmail(_id, user.email, (error) => {
-        if (error) {
-          console.log(error.reason);
-          return (error);
-        }
+      Accounts.sendVerificationEmail(_id, email, (error) => {
+        if (error) { return (error); }
+        return undefined;
       });
 
-      Meteor.users.update({ _id }, {
-        $set: {
-          address_zipcode: user.zipCode,
-        },
-      });
+      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode } });
 
       return _id;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async updateSubscriber (user, data) {
+  async updateSubscriber (userId, data) {
+    check(userId, String);
+    check(data, { email: String });
+
     try {
-      const updated = Meteor.users.update({ _id: user }, {
+      Meteor.users.update({ _id: userId }, {
         $set: data,
       });
 
@@ -92,8 +90,10 @@ Meteor.methods({
         },
       });
 
-      const emailData = data;
-      emailData.thisWeeksMenuItems = Items.find({ active: true }).fetch();
+      const emailData = {
+        ...data,
+        thisWeeksMenuItems: Items.find({ active: true }).fetch(),
+      };
 
       Email.send({
         to: data.email,
@@ -105,64 +105,67 @@ Meteor.methods({
 
       return (Meteor.user());
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async getUserSubscriptionItems(user_id) {
+  async getUserSubscriptionItems(userId) {
+    check(userId, String);
     try {
-      const user = Meteor.users.findOne({ _id: user_id });
-      const subscriptions = user.subscriptions;
+      const user = Meteor.users.findOne({ _id: userId });
+      const { subscriptions } = user;
       const items = [];
 
-      for (let i = subscriptions.length - 1; i >= 0; i--) {
+      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
         const subItem = Items.findOne({ _id: subscriptions[i].item_id });
         items.push(subItem);
       }
 
       return items;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async cancelSubscription(user_id, sub_id) {
+  async cancelSubscription(userId, subId) {
+    check(userId, String);
+    check(subId, String);
+
     try {
-      const user = Meteor.users.findOne({ _id: user_id });
-      const subscriptions = user.subscriptions;
-      let past_subs = user.past_subscriptions;
-      if (!past_subs) past_subs = [];
+      const user = Meteor.users.findOne({ _id: userId });
+      const { subscriptions } = user;
+      let pastSubs = user.past_subscriptions;
+      if (!pastSubs) pastSubs = [];
       let sub;
 
-      for (let i = subscriptions.length - 1; i >= 0; i--) {
-        if (subscriptions[i]._id === sub_id) {
+      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+        if (subscriptions[i]._id === subId) {
           sub = subscriptions[i];
           sub.status = 'canceled';
           sub.canceled_at = moment.utc().toDate();
           subscriptions.splice(i, 1);
-          past_subs.push(sub);
+          pastSubs.push(sub);
         }
       }
 
       if (sub) {
-        const updated = Meteor.users.update({ _id: user._id }, {
+        Meteor.users.update({ _id: user._id }, {
           $set: {
             subscriptions,
-            past_subscriptions: past_subs,
+            past_subscriptions: pastSubs,
           },
         });
       }
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  async sendOrderConfirmationEmail(user_id, data) {
+  async sendOrderConfirmationEmail(userId, data) {
+    check(data, { email: String, delivery_window_id: Match.Maybe(String) });
+    check(userId, String);
     try {
-      const user = Meteor.users.findOne({ _id: user_id });
+      const user = Meteor.users.findOne({ _id: userId });
       SSR.compileTemplate('htmlEmail', Assets.getText('order-confirmation-email.html'));
 
       Template.htmlEmail.helpers({
@@ -176,15 +179,15 @@ Meteor.methods({
         },
       });
 
-      const emailData = data;
-      emailData.email = user.emails[0].address;
-
-      const dw = DeliveryWindows.findOne({ _id: emailData.delivery_window_id });
-      const endDate = moment(dw.delivery_start_time).add(3, 'hour'); // Set Delivery Windows to be 3 hours long
-      // const dateToString = moment(dw.delivery_start_time).format("dddd, MMMM Do, h") + '-' + endDate.format("ha");
+      const dw = DeliveryWindows.findOne({ _id: data.delivery_window_id });
       const dateToString = moment(dw.delivery_start_time).format('dddd, MMMM Do,');
 
-      emailData.deliveryInfo = dateToString;
+      const emailData = {
+        ...data,
+        email: user.emails[0].address,
+        deliveryInfo: dateToString,
+      };
+
 
       Email.send({
         to: emailData.email,
@@ -196,12 +199,36 @@ Meteor.methods({
 
       return true;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
   async sendGiftCard (giftCard) {
+    // need to check this
+    check(giftCard, {
+      recipient: {
+        first_name: String,
+        last_name: String,
+        email: String,
+      },
+      customer: {
+        first_name: String,
+      },
+      value: Number,
+    });
+
+    const {
+      recipient: {
+        first_name: recipientFirstName,
+        last_name: recipientLastName,
+        email: recipientEmail,
+      },
+      customer: {
+        first_name: customerFirstName,
+      },
+      value,
+    } = giftCard;
+
     try {
       SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
 
@@ -215,117 +242,67 @@ Meteor.methods({
         },
       });
 
-      const emailData = giftCard;
-      emailData.code = makeGiftCardCode();
+      const emailData = { ...giftCard, code: makeGiftCardCode() };
 
       const promo = {
         codes: [emailData.code],
-        desc: `Fed Gift Card for ${giftCard.recipient.first_name} ${giftCard.recipient.last_name}`,
-        credit: giftCard.value / 100,
+        desc: `Fed Gift Card for ${recipientFirstName} ${recipientLastName}`,
+        credit: value / 100,
         useLimitPerCustomer: 1,
         useLimitTotal: 1,
         timesUsed: 0,
         active: true,
       };
 
-      const newPromo = insertPromo.call(promo);
+      insertPromo.call(promo);
 
       Email.send({
-        to: giftCard.recipient.email,
+        to: recipientEmail,
         bcc: 'info@getfednyc.com',
         from: 'no-reply@getfednyc.com',
-        subject: `${giftCard.customer.first_name} sent you a Fed Gift Card!`,
+        subject: `${customerFirstName} sent you a Fed Gift Card!`,
         html: SSR.render('giftCardHtmlEmail', emailData),
       });
 
       return emailData.code;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
-  // sendBackendGiftCard () {
-  //   SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
-
-  //   Template.giftCardHtmlEmail.helpers({
-  //     doctype() {
-  //       return '<!DOCTYPE HTML>'
-  //     },
-
-  //     amountString(inCents) {
-  //       return (inCents/100).toFixed(2);
-  //     },
-  //   });
-
-  //   var emailData = {
-  //     customer: {
-  //       first_name: ,
-  //       last_name: ,
-  //       email: ,
-  //     },
-  //     recipient: {
-  //       first_name: ,
-  //       last_name: ,
-  //       email: ,
-  //     },
-  //     value: , // in cents
-  //     message: ,
-  //   };
-
-  //   emailData.code = makeGiftCardCode();
-
-  //   const promo = {
-  //     codes: [emailData.code],
-  //     desc: 'Fed Gift Card for ' + giftCard.recipient.first_name + ' ' + giftCard.recipient.last_name,
-  //     credit: giftCard.value / 100,
-  //     useLimitPerCustomer: 1,
-  //     useLimitTotal: 1,
-  //     timesUsed: 0,
-  //     active: true,
-  //   };
-
-  //   const newPromo = insertPromo.call( promo );
-
-  //   Email.send({
-  //     to: giftCard.recipient.email,
-  //     bcc: "info@getfednyc.com",
-  //     from: "no-reply@getfednyc.com",
-  //     subject: giftCard.customer.first_name + " sent you a Fed Gift Card!",
-  //     html: SSR.render('giftCardHtmlEmail', emailData),
-  //   });
-
-  //   return emailData.code;
-  // },
-
   async referUser (user) {
+    check(user, {
+      email: String,
+      password: String,
+      referrer: String,
+      zipCode: String,
+    });
+
+    const {
+      email,
+      password,
+      referrer,
+      zipCode,
+    } = user;
+
     try {
       const customer = {
-        email: user.email,
-        password: user.password,
+        email,
+        password,
       };
 
       const _id = Accounts.createUser(customer);
 
-      Accounts.sendVerificationEmail(_id, user.email, (error) => {
-        if (error) {
-          console.log(error.reason);
-          return (error);
-        }
+      Accounts.sendVerificationEmail(_id, email, (error) => {
+        if (error) { return (error); }
+        return undefined;
       });
 
-      Meteor.users.update({ _id }, {
-        $set: {
-          address_zipcode: user.zipCode,
-          referrer: user.referrer,
-        },
-      });
+      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer } });
 
-      const emailData = {
-        email: user.email,
-      };
+      const emailData = { email };
 
-      switch (user.referrer) {
+      switch (referrer) {
         case 'Equinox':
           emailData.subject = 'Your Get Fed Promotion From Equinox!';
           emailData.file = 'equinox20.html';
@@ -333,6 +310,8 @@ Meteor.methods({
         case 'DeanStreet':
           emailData.subject = 'Your Get Fed Promotion From Dean Street Block Party!';
           emailData.file = 'deanstreet.html';
+          break;
+        default:
           break;
       }
 
@@ -354,21 +333,16 @@ Meteor.methods({
 
       return _id;
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
 
   async checkUserHasPurchased (email) {
+    check(email, String);
     try {
       const exists = Meteor.users.findOne({ 'emails.address': email });
-
-      if (exists && exists.last_purchase) {
-        return true;
-      }
-      return false;
+      return (exists && exists.last_purchase);
     } catch (err) {
-      console.log(err);
       throw new Meteor.Error(err.statusCode, err.message);
     }
   },
@@ -423,6 +397,8 @@ Meteor.publish('someUserData', function() {
 });
 
 Meteor.publish('thisUserData', function(id) {
+  check(id, Match.Maybe(String));
+
   if (id) {
     return Meteor.users.find({
       _id: id,
@@ -494,6 +470,7 @@ Meteor.publish('thisUserData', function(id) {
 });
 
 Meteor.publish('userData', function(limit) {
+  check(limit, Number);
   if (limit) {
     return Meteor.users.find({}, {
       fields: {
@@ -564,9 +541,8 @@ Meteor.publish('userData', function(limit) {
 });
 
 Meteor.publish('newestUsers', function(limit) {
-  new SimpleSchema({
-    limit: { type: Number },
-  }).validate({ limit });
+  check(limit, Number);
+  new SimpleSchema({ limit: { type: Number } }).validate({ limit });
 
   const options = {
     fields: {
