@@ -1,14 +1,12 @@
+import { Meteor } from 'meteor/meteor';
 import { stripeHandler } from './providers/stripe/index.js';
-
-let modulo;
 
 const providers = {
   stripe: stripeHandler,
 };
 
-const handler = ({ provider, request }, promise) => {
+const handler = ({ provider, request }) => {
   try {
-    modulo = promise;
     const targetProvider = providers[provider];
     if (targetProvider) targetProvider({ body: request.body });
     return ('Webhook received!');

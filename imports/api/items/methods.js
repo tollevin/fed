@@ -68,7 +68,26 @@ export const insertItem = new ValidatedMethod({
     noRetry: true,
   },
   run({
-    name, category, subcategory, photo, description, ingredients, warnings, nutrition_facts, good_for_days, active, attributes, weight, dimensions, producer, cost_per_unit, price_per_unit, unit, sub_items, inventory, rank,
+    name,
+    category,
+    subcategory,
+    photo,
+    description,
+    ingredients,
+    warnings,
+    nutrition_facts: nutritionFacts,
+    good_for_days: goodForDays,
+    active,
+    attributes,
+    weight,
+    dimensions,
+    producer,
+    cost_per_unit: costPerUnit,
+    price_per_unit: pricePerUnit,
+    unit,
+    sub_items: subItems,
+    inventory,
+    rank,
   }) {
     const item = {
       user_id: Meteor.userId(),
@@ -80,8 +99,8 @@ export const insertItem = new ValidatedMethod({
       description,
       ingredients,
       warnings,
-      nutrition_facts,
-      good_for_days,
+      nutrition_facts: nutritionFacts,
+      good_for_days: goodForDays,
       active,
       attributes,
       comments: {},
@@ -89,10 +108,10 @@ export const insertItem = new ValidatedMethod({
       weight,
       dimensions,
       producer,
-      cost_per_unit,
-      price_per_unit,
+      cost_per_unit: costPerUnit,
+      price_per_unit: pricePerUnit,
       unit,
-      sub_items,
+      sub_items: subItems,
       inventory,
       rank,
     };
@@ -115,7 +134,7 @@ export const remove = new ValidatedMethod({
 });
 
 // Get list of all method names on items
-const Items_METHODS = _.pluck([
+const ITEMS_METHODS = _.pluck([
   insertItem,
   // editItem,
   remove,
@@ -125,7 +144,7 @@ if (Meteor.isServer) {
   // Only allow 5 items operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(Items_METHODS, name);
+      return _.contains(ITEMS_METHODS, name);
     },
 
     // Rate limit per connection ID

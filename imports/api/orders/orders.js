@@ -2,21 +2,15 @@ import { Mongo } from 'meteor/mongo';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Items } from '../items/items.js';
-
-// SimpleSchema.debug = true;
-
 class OrdersCollection extends Mongo.Collection {
   insert(order, callback) {
     const ourOrder = order;
     ourOrder.createdAt = ourOrder.createdAt || new Date();
-    const result = super.insert(ourOrder, callback);
-    return result;
+    return super.insert(ourOrder, callback);
   }
 
   update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
+    return super.update(selector, modifier);
   }
   // No remove -- Orders should only be updated
 }
@@ -30,7 +24,7 @@ Orders.deny({
   remove() { return true; },
 });
 
-Recipient = new SimpleSchema({
+const Recipient = new SimpleSchema({
   first_name: { type: String },
   last_name: { type: String },
   phone: {

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
+import { lodash } from 'meteor/erasaur:meteor-lodash';
 
 Meteor.startup(function () {
   sAlert.config({
@@ -14,7 +15,8 @@ Meteor.startup(function () {
     //     spacing: 10 // in px
     //     limit: 3 // when fourth alert appears all previous ones are cleared
     // }
-    offset: 0, // in px - will be added to first alert (bottom or top - depends of the position in config)
+    // in px - will be added to first alert (bottom or top - depends of the position in config)
+    offset: 0,
     beep: false,
     // examples:
     // beep: '/beep.mp3'  // or you can pass an object:
@@ -24,7 +26,7 @@ Meteor.startup(function () {
     //     success: '/beep-success.mp3',
     //     warning: '/beep-warning.mp3'
     // }
-    onClose: _.noop, //
+    onClose: lodash.noop, //
     // examples:
     // onClose: function() {
     //     /* Code here will be executed once the alert closes. */
@@ -43,7 +45,8 @@ Meteor.startup(function () {
     //     spacing: 10 // in px
     //     limit: 3 // when fourth alert appears all previous ones are cleared
     // }
-    offset: 100, // in px - will be added to first alert (bottom or top - depends of the position in config)
+    // in px - will be added to first alert (bottom or top - depends of the position in config)
+    offset: 100,
     beep: false,
     // examples:
     // beep: '/beep.mp3'  // or you can pass an object:
@@ -53,7 +56,7 @@ Meteor.startup(function () {
     //     success: '/beep-success.mp3',
     //     warning: '/beep-warning.mp3'
     // }
-    onClose: _.noop, //
+    onClose: lodash.noop, //
     // examples:
     // onClose: function() {
     //     /* Code here will be executed once the alert closes. */

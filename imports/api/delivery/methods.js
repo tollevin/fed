@@ -15,7 +15,9 @@ export const getZipZone = new ValidatedMethod({
   validate: new SimpleSchema({
     zip_code: { type: String },
   }).validator({ clean: true, filter: false }),
-  run({ zip_code }) { return zip_code; },
+  run({ zip_code: zipCode }) {
+    return zipZones[zipCode];
+  },
 });
 
 export const createDeliveryWindows = new ValidatedMethod({
@@ -26,9 +28,9 @@ export const createDeliveryWindows = new ValidatedMethod({
   run({ ready_by_date: readyByDate }) {
     const sundayDeliveryStart = moment(readyByDate).hour(18).utc().toDate();
     const sundayDeliveryEnd = moment(readyByDate).hour(21).utc().toDate();
-    const mondayDeliveryStart = moment(ready_by_date).add(1, 'd').hour(18).utc()
+    const mondayDeliveryStart = moment(readyByDate).add(1, 'd').hour(18).utc()
       .toDate();
-    const mondayDeliveryEnd = moment(ready_by_date).add(1, 'd').hour(21).utc()
+    const mondayDeliveryEnd = moment(readyByDate).add(1, 'd').hour(21).utc()
       .toDate();
 
     const deliveryWindow1 = {
@@ -47,9 +49,7 @@ export const createDeliveryWindows = new ValidatedMethod({
 
     const dw1 = DeliveryWindows.insert(deliveryWindow1);
     const dw2 = DeliveryWindows.insert(deliveryWindow2);
-    const results = [dw1, dw2];
-
-    return results;
+    return [dw1, dw2];
   },
 });
 

@@ -6,20 +6,15 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 class PromosCollection extends Mongo.Collection {
   insert(promo, callback) {
-    const ourPromo = promo;
-    const result = super.insert(ourPromo, callback);
-    return result;
+    return super.insert(promo, callback);
   }
 
   update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
+    return super.update(selector, modifier);
   }
 
   remove(selector) {
-    const promos = this.find(selector).fetch();
-    const result = super.remove(selector);
-    return result;
+    return super.remove(selector);
   }
 }
 

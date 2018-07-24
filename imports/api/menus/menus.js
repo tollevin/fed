@@ -1,5 +1,4 @@
 import { Mongo } from 'meteor/mongo';
-
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Items } from '../items/items.js';
@@ -8,20 +7,15 @@ import { Items } from '../items/items.js';
 
 class MenusCollection extends Mongo.Collection {
   insert(menu, callback) {
-    const ourMenu = menu;
-    const result = super.insert(ourMenu, callback);
-    return result;
+    return super.insert(menu, callback);
   }
 
   update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
+    return super.update(selector, modifier);
   }
 
   remove(selector) {
-    const menus = this.find(selector).fetch();
-    const result = super.remove(selector);
-    return result;
+    return super.remove(selector);
   }
 }
 

@@ -1,4 +1,8 @@
-Logs = new Mongo.Collection('logs');
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+const Logs = new Mongo.Collection('logs');
 
 if (Meteor.isServer) {
   Logs._ensureIndex({ date: 1 }, { expireAfterSeconds: 86400 });

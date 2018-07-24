@@ -24,10 +24,16 @@ export const insertPromo = new ValidatedMethod({
     noRetry: true,
   },
   run({
-    codes, desc, credit, percentage, expires, useLimitPerCustomer, useLimitTotal, timesUsed, users, active,
+    codes,
+    desc,
+    credit,
+    percentage,
+    expires,
+    useLimitPerCustomer,
+    useLimitTotal,
   }) {
     const promos = [];
-    for (let i = 0; i < codes.length; i++) {
+    for (let i = 0; i < codes.length; i += 1) {
       const code = codes[i];
 
       const promo = {
@@ -53,35 +59,13 @@ export const insertPromo = new ValidatedMethod({
   },
 });
 
-// export const updatePromo = new ValidatedMethod({
-//   name: 'Meteor.updatePromo',
-//   validate: new SimpleSchema({
-//     _id: { type: String },
-//     codes: { type: [ String ] },
-//     desc: { type: String },
-//     credit: { type: Number, optional: true },
-//     percentage: { type: Number, optional: true },
-//     expires: { type: String, optional: true },
-//     useLimitPerCustomer: { type: Number },
-//     useLimitTotal: { type: Number, optional: true },
-//     timesUsed: { type: Number },
-//     users: { type: Object },
-//     active: { type: Boolean },
-//   }).validator(),
-//   run({ _id }) {
-//     Promos.remove(_id);
-//   },
-// });
-
 export const retrievePromo = new ValidatedMethod({
   name: 'Meteor.retrievePromo',
   validate: new SimpleSchema({
     code: { type: String },
   }).validator(),
   run({ code }) {
-    const promo = Promos.findOne({ code });
-    console.log(promo);
-    return promo;
+    return Promos.findOne({ code });
   },
 });
 
@@ -96,11 +80,8 @@ export const usePromo = new ValidatedMethod({
 
     // In the case where a promo can be used by many users, more than once,
     // if a user has reached useLimitPerCustomer, return an Error (FIX!)
-    if (!promo.users[user]) {
-      promo.users[user] = 1;
-    } else {
-      promo.users[user] += 1;
-    }
+    promo.users[user] = promo.users[user] || 0;
+    promo.users[user] += 1;
 
     promo.timesUsed += 1; // Add a new time used
 
@@ -118,40 +99,6 @@ export const usePromo = new ValidatedMethod({
   },
 });
 
-// export const realUsePromo = new ValidatedMethod({
-//   name: 'Meteor.usePromo',
-//   validate: new SimpleSchema({
-//     code: { type: String },
-//     type: { type: String },
-//   }).validator(),
-//   run({ code, type }) {
-//     var promo = Promos.findOne({code: code});
-//     const user = Meteor.userId();
-
-//     //In the case where a promo can be used by many users, more than once,
-//     //if a user has reached useLimitPerCustomer, return an Error (FIX!)
-//     if (!promo.users[user]) {
-//       promo.users[user] = 1;
-//     } else {
-//       promo.users[user] += 1;
-//     };
-
-//     promo.timesUsed += 1; //Add a new time used
-
-//     //If the promo has now reached useLimitTotal, deactivate
-//     if (promo.timesUsed === promo.useLimitTotal) {
-//       promo.active = false;
-//     };
-
-//     //Update promo
-//     const updatedPromo = Promos.update(promo._id, {
-//       $set: promo
-//     });
-
-//     return updatedPromo;
-//   },
-// });
-
 export const removePromo = new ValidatedMethod({
   name: 'Promos.methods.remove',
   validate: new SimpleSchema({
@@ -163,7 +110,7 @@ export const removePromo = new ValidatedMethod({
 });
 
 // Get list of all method names on orders
-const Promos_METHODS = _.pluck([
+const PROMOS_METHODS = _.pluck([
   insertPromo,
   retrievePromo,
   usePromo,
@@ -174,7 +121,7 @@ if (Meteor.isServer) {
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(Promos_METHODS, name);
+      return _.contains(PROMOS_METHODS, name);
     },
 
     // Rate limit per connection ID
