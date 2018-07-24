@@ -4,7 +4,7 @@ import { Email } from 'meteor/email';
 import { Template } from 'meteor/templating';
 import { SSR } from 'meteor/meteorhacks:ssr';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { check, Match } from 'meteor/check';
+// import { check, Match } from 'meteor/check';
 
 import { moment } from 'meteor/momentjs:moment';
 import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
@@ -17,8 +17,8 @@ import { insertPromo } from '/imports/api/promos/methods.js';
 Meteor.methods({
 
   async updateUser(userId, data) {
-    check(userId, String);
-    check(data, { credit: Number });
+    // check(userId, String);
+    // check(data, { credit: Number });
     try {
       const user = Meteor.users.findOne({ _id: userId });
 
@@ -46,11 +46,11 @@ Meteor.methods({
   },
 
   async createSubscriber (user) {
-    check(user, {
-      email: String,
-      password: String,
-      zipCode: String,
-    });
+    // check(user, {
+    //   email: String,
+    //   password: String,
+    //   zipCode: String,
+    // });
 
     const { email, password, zipCode } = user;
 
@@ -74,8 +74,8 @@ Meteor.methods({
   },
 
   async updateSubscriber (userId, data) {
-    check(userId, String);
-    check(data, { email: String });
+    // check(userId, String);
+    // check(data, { email: String });
 
     try {
       Meteor.users.update({ _id: userId }, {
@@ -110,7 +110,7 @@ Meteor.methods({
   },
 
   async getUserSubscriptionItems(userId) {
-    check(userId, String);
+    // check(userId, String);
     try {
       const user = Meteor.users.findOne({ _id: userId });
       const { subscriptions } = user;
@@ -128,8 +128,8 @@ Meteor.methods({
   },
 
   async cancelSubscription(userId, subId) {
-    check(userId, String);
-    check(subId, String);
+    // check(userId, String);
+    // check(subId, String);
 
     try {
       const user = Meteor.users.findOne({ _id: userId });
@@ -162,8 +162,8 @@ Meteor.methods({
   },
 
   async sendOrderConfirmationEmail(userId, data) {
-    check(data, { email: String, delivery_window_id: Match.Maybe(String) });
-    check(userId, String);
+    // check(data, { email: String, delivery_window_id: Match.Maybe(String) });
+    // check(userId, String);
     try {
       const user = Meteor.users.findOne({ _id: userId });
       SSR.compileTemplate('htmlEmail', Assets.getText('order-confirmation-email.html'));
@@ -205,17 +205,17 @@ Meteor.methods({
 
   async sendGiftCard (giftCard) {
     // need to check this
-    check(giftCard, {
-      recipient: {
-        first_name: String,
-        last_name: String,
-        email: String,
-      },
-      customer: {
-        first_name: String,
-      },
-      value: Number,
-    });
+    // check(giftCard, {
+    //   recipient: {
+    //     first_name: String,
+    //     last_name: String,
+    //     email: String,
+    //   },
+    //   customer: {
+    //     first_name: String,
+    //   },
+    //   value: Number,
+    // });
 
     const {
       recipient: {
@@ -271,12 +271,12 @@ Meteor.methods({
   },
 
   async referUser (user) {
-    check(user, {
-      email: String,
-      password: String,
-      referrer: String,
-      zipCode: String,
-    });
+    // check(user, {
+    //   email: String,
+    //   password: String,
+    //   referrer: String,
+    //   zipCode: String,
+    // });
 
     const {
       email,
@@ -338,7 +338,7 @@ Meteor.methods({
   },
 
   async checkUserHasPurchased (email) {
-    check(email, String);
+    // check(email, String);
     try {
       const exists = Meteor.users.findOne({ 'emails.address': email });
       return (exists && exists.last_purchase);
@@ -397,7 +397,7 @@ Meteor.publish('someUserData', function() {
 });
 
 Meteor.publish('thisUserData', function(id) {
-  check(id, Match.Maybe(String));
+  // check(id, Match.Maybe(String));
 
   if (id) {
     return Meteor.users.find({
@@ -470,7 +470,7 @@ Meteor.publish('thisUserData', function(id) {
 });
 
 Meteor.publish('userData', function(limit) {
-  check(limit, Number);
+  // check(limit, Number);
   if (limit) {
     return Meteor.users.find({}, {
       fields: {
@@ -541,7 +541,7 @@ Meteor.publish('userData', function(limit) {
 });
 
 Meteor.publish('newestUsers', function(limit) {
-  check(limit, Number);
+  // check(limit, Number);
   new SimpleSchema({ limit: { type: Number } }).validate({ limit });
 
   const options = {

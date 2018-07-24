@@ -28,12 +28,12 @@ Meteor.methods({
   // Customers
 
   async createCustomer(cust) {
-    check(cust, {
-      description: String,
-      source: String,
-      account_balance: Number,
-      email: Match.Maybe(String),
-    });
+    // check(cust, {
+    //   description: String,
+    //   source: String,
+    //   account_balance: Number,
+    //   email: Match.Maybe(String),
+    // });
 
     try {
       const customer = await Stripe.customers.create(cust);
@@ -51,11 +51,11 @@ Meteor.methods({
   },
 
   async createTrialCustomer(cust, email, password) {
-    check(cust, {
-      description: String,
-      source: String,
-      account_balance: Number,
-    });
+    // check(cust, {
+    //   description: String,
+    //   source: String,
+    //   account_balance: Number,
+    // });
 
     check(email, String);
     check(password, String);
@@ -72,7 +72,7 @@ Meteor.methods({
   },
 
   async retrieveCustomer(id) {
-    check(id, String);
+    // check(id, String);
     try {
       return await Stripe.customers.retrieve(id);
     } catch (err) {
@@ -83,10 +83,10 @@ Meteor.methods({
   // Credit
 
   async updateStripeCredit(args) {
-    check(args, {
-      id: String,
-      account_balance: Number,
-    });
+    // check(args, {
+    //   id: String,
+    //   account_balance: Number,
+    // });
 
     const credit = 0 - Math.round(args.account_balance * 100);
 
@@ -100,10 +100,10 @@ Meteor.methods({
   // Sources
 
   async updateDefaultSource(args) {
-    check(args, {
-      id: String,
-      default_source: String,
-    });
+    // check(args, {
+    //   id: String,
+    //   default_source: String,
+    // });
 
     try {
       return await Stripe.customers.update(args.id, { default_source: args.default_source });
@@ -113,10 +113,10 @@ Meteor.methods({
   },
 
   async addPaymentSource(args) {
-    check(args, {
-      id: String,
-      source: String,
-    });
+    // check(args, {
+    //   id: String,
+    //   source: String,
+    // });
 
     try {
       return await Stripe.customers.createSource(args.id, { source: args.source });

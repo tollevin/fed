@@ -39,7 +39,8 @@
       "no-underscore-dangle": [0],
       "new-cap": [0],
       "import/prefer-default-export": [0],
-      "no-param-reassign": [2, { "props": true, "ignorePropertyModificationsFor": ["event"] }]
+      "no-param-reassign": [2, { "props": true, "ignorePropertyModificationsFor": ["event"] }],
+      "meteor/audit-argument-checks": [0]
     },
     "globals": {
       "Stripe": true,
