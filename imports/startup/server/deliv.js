@@ -1,5 +1,5 @@
 import { HTTP } from 'meteor/http';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 const store_id = '47db9398-af1c-4c77-9d66-8fd081661243';
 function rby() {

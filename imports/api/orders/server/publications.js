@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { Orders } from '../orders.js';

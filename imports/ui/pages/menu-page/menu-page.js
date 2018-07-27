@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';

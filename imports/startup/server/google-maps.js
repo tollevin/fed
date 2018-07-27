@@ -1,5 +1,5 @@
 import { HTTP } from 'meteor/http';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 key = 'AIzaSyCFc9ReT6fI0UWG8Wip3NTgNRvu_Sr5uKM';
 

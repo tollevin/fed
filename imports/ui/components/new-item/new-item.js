@@ -5,7 +5,7 @@ import { Items } from '/imports/api/items/items.js';
 import { insertItem } from '/imports/api/items/methods.js';
 import { insertMenu } from '/imports/api/menus/methods.js';
 
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import './new-item.html';
 

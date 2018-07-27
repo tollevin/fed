@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 sitemaps.add('/sitemap.xml', function(req) {
   let host = Meteor.absoluteUrl();
