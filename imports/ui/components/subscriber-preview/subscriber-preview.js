@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { moment } from 'meteor/momentjs:moment'; 
+import { moment } from 'meteor/momentjs:moment';
 
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
 import { getZipZone } from '/imports/api/delivery/methods.js';
