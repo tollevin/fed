@@ -4,7 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Check } from 'meteor/check';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Orders } from './orders.js';
 import { Items } from '../items/items.js';

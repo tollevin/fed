@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import tz from 'timezone';
 import newYorkTimeZone from 'timezone/America/New_York';

@@ -4,7 +4,7 @@ import { Menus } from '/imports/api/menus/menus.js';
 import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
 import { createDeliveryWindows } from '/imports/api/delivery/methods.js';
 
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {

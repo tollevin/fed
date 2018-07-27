@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar } from 'meteor/reactive-var';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 // Components
 import '/imports/ui/components/pack-editor-item/pack-editor-item.js';

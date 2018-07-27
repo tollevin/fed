@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 import { Items } from '/imports/api/items/items.js';
 
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import './menu-item.less';
 import './menu-item.html';

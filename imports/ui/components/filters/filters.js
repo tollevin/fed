@@ -1,5 +1,5 @@
 import { Template } from 'meteor/templating';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import './filters.less';
 import './filters.html';

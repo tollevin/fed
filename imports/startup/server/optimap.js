@@ -1,5 +1,5 @@
 import { HTTP } from 'meteor/http';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 Meteor.methods({
 

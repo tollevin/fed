@@ -3,7 +3,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 // import { HTTP } from 'meteor/http';
 
 // Collections

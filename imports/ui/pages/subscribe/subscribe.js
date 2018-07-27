@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 

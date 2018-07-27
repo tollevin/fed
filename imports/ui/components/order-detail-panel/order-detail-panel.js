@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { ReactiveVar } from 'meteor/reactive-var';
 

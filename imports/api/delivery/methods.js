@@ -4,7 +4,7 @@ import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
-import moment from 'moment';
+import { moment } from 'meteor/momentjs:moment';
 
 import {
   zipZones,
