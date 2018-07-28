@@ -284,7 +284,7 @@ export const processOrder = new ValidatedMethod({
   run({
     _id,
     status,
-    userId,
+    user_id: userId,
     recipient,
     gift,
     items,

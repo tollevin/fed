@@ -70,7 +70,7 @@ export const getMenuDWs = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ menuId }) {
+  run({ menu_id: menuId }) {
     return Menus.findOne({ _id: menuId });
   },
 });
@@ -95,7 +95,7 @@ export const getNextWeeksMenu = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run(onlineAt) {
+  run({ online_at: onlineAt }) {
     const time = moment.utc(onlineAt).toDate();
     return Menus.find({ online_at: time });
   },
