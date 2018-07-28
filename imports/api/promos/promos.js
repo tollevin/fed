@@ -96,6 +96,16 @@ Promos.schema = new SimpleSchema({
       type: 'hidden',
     },
   },
+  referrer: {
+    type: String,
+    label: 'Referrer',
+    optional: true,
+  },
+  referrerCredit: {
+    type: Number,
+    label: ' Referrer Credit ($)',
+    optional: true,
+  },
   users: {
     type: Object,
     label: 'Users',
