@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+
 // import prerender from 'prerender-node';
 
 // Meteor.startup(() => {
@@ -16,9 +18,9 @@
 Meteor.startup(() => {
   const prerenderio = Npm.require('prerender-node');
   prerenderio.set('prerenderToken', 'Ew27iYLQaGXbOOKSJIOy');
-	prerenderio.crawlerUserAgents.push('googlebot');
-	prerenderio.crawlerUserAgents.push('bingbot');
-	prerenderio.crawlerUserAgents.push('yandex');
+  prerenderio.crawlerUserAgents.push('googlebot');
+  prerenderio.crawlerUserAgents.push('bingbot');
+  prerenderio.crawlerUserAgents.push('yandex');
   WebApp.rawConnectHandlers.use(prerenderio);
 //     }
 });

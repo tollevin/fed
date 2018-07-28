@@ -6,7 +6,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
 import { toggleSkip } from '/imports/api/orders/methods.js';
@@ -36,16 +36,16 @@ Template.Order_detail_panel.onCreated(function orderDetailPanelOnCreated() {
 Template.Order_detail_panel.helpers({
   date: () => {
     const dw = Template.instance().delivery_window.get();
-    if (dw) return moment(dw.delivery_start_time).format('dddd, MMM Do');
+    if (!dw) return undefined;
+    return moment(dw.delivery_start_time).format('dddd, MMM Do');
   },
 
   time: () => {
     const dw = Template.instance().delivery_window.get();
-    if (dw) {
-      const start = moment(dw.delivery_start_time).format('ha');
-      const end = moment(dw.delivery_end_time).format('ha');
-      return `${start}-${end}`;
-    }
+    if (!dw) { return undefined; }
+    const start = moment(dw.delivery_start_time).format('ha');
+    const end = moment(dw.delivery_end_time).format('ha');
+    return `${start}-${end}`;
   },
 
   active: () => ['skipped', 'canceled'].indexOf(Template.instance().status.get()) <= -1,
@@ -65,6 +65,8 @@ Template.Order_detail_panel.helpers({
         return 'Pending';
       case 'skipped':
         return 'Skipped';
+      default:
+        return undefined;
     }
   },
 
@@ -72,7 +74,7 @@ Template.Order_detail_panel.helpers({
     const itemList = Template.currentData().items;
     const itemTally = {};
 
-    for (let i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (!itemTally[itemList[i].name]) {
         itemTally[itemList[i].name] = 1;
       } else {
@@ -80,9 +82,7 @@ Template.Order_detail_panel.helpers({
       }
     }
 
-    const result = [];
-    for (const key in itemTally) result.push({ name: key, value: itemTally[key] });
-    return result;
+    return Object.entries(itemTally).map(([name, value]) => ({ name, value }));
   },
 
   isPack: item => item.name.split('-')[1] === 'Pack',
@@ -92,13 +92,13 @@ Template.Order_detail_panel.helpers({
     let subItemList = [];
     const subItemTally = {};
 
-    for (var i = orderItemList.length - 1; i >= 0; i--) {
+    for (let i = orderItemList.length - 1; i >= 0; i -= 1) {
       if (orderItemList[i].name === item.name) {
         subItemList = orderItemList[i].sub_items.items;
       }
     }
 
-    for (var i = subItemList.length - 1; i >= 0; i--) {
+    for (let i = subItemList.length - 1; i >= 0; i -= 1) {
       if (!subItemTally[subItemList[i].name]) {
         subItemTally[subItemList[i].name] = 1;
       } else {
@@ -106,14 +106,12 @@ Template.Order_detail_panel.helpers({
       }
     }
 
-    const result = [];
-    for (const key in subItemTally) result.push({ name: key, value: subItemTally[key] });
-    return result;
+    return Object.entries(subItemTally).map(([name, value]) => ({ name, value }));
   },
 });
 
 Template.Order_detail_panel.events({
-  'click .switch'(event, template) {
+  'click .switch'(event) {
     event.preventDefault();
 
     const timestamp = toNewYorkTimezone(moment());
@@ -136,7 +134,7 @@ Template.Order_detail_panel.events({
     }
   },
 
-  'click .edit-order'(event, template) {
+  'click .edit-order'(event) {
     event.preventDefault();
 
     Session.set('overlay', 'packEditor');

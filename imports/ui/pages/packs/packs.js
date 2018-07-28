@@ -13,7 +13,6 @@ import '/imports/ui/components/sign-up-modal/sign-up-modal.js';
 import './packs.html';
 
 Template.Packs.onCreated(function packsOnCreated() {
-  const template = Template.instance();
   Session.setDefault('PackSelected', false);
   Session.set('cartOpen', false);
 
@@ -21,10 +20,10 @@ Template.Packs.onCreated(function packsOnCreated() {
     this.subscribe('someUserData');
     if (Session.get('orderId')) {
       if (Session.get('orderId').status === 'pending') {
-	      this.subscribe('single.order', Session.get('orderId')._id);
-	    }
-	  }
-	  this.subscribe('items.thisWeek');
+        this.subscribe('single.order', Session.get('orderId')._id);
+      }
+    }
+    this.subscribe('items.thisWeek');
   });
 });
 
@@ -34,6 +33,7 @@ Template.Packs.helpers({
     if (today.getDay() > 3) {
       return 'inActive';
     }
+    return undefined;
   },
 
   omnivorePack() {
@@ -54,18 +54,19 @@ Template.Packs.helpers({
 });
 
 Template.Packs.events({
-  'click .buy'(event, template) {
+  'click .buy'(event) {
     event.preventDefault();
 
     const packSelection = event.target.id;
+    let newOrder;
 
     if (packSelection === 'StarterPack') {
       Session.set('PackSelected', packSelection);
       FlowRouter.go('/menu');
     } else {
       switch (packSelection) {
-        case 'OmnivorePack':
-          var newOrder = {
+        case 'OmnivorePack': {
+          newOrder = {
             dishes: [],
             snacks: ['Cranberry Energy Bites'],
             price: 8500,
@@ -76,8 +77,9 @@ Template.Packs.events({
             newOrder.dishes.push(item.name);
           });
           break;
-        case 'VegetarianPack':
-          var newOrder = {
+        }
+        case 'VegetarianPack': {
+          newOrder = {
             dishes: [],
             snacks: ['Antioxidant Energy Bar'],
             price: 8500,
@@ -88,8 +90,9 @@ Template.Packs.events({
             newOrder.dishes.push(item.name);
           });
           break;
-        case 'VeganPack':
-          var newOrder = {
+        }
+        case 'VeganPack': {
+          newOrder = {
             dishes: [],
             snacks: ['Antioxidant Energy Bar'],
             price: 8500,
@@ -100,28 +103,32 @@ Template.Packs.events({
             newOrder.dishes.push(item.name);
           });
           break;
-		  }
+        }
+        default: {
+          break;
+        }
+      }
     }
 
-	  Session.set('pack', newOrder); // Will change when packs become items (FIX)
+    Session.set('pack', newOrder); // Will change when packs become items (FIX)
 
     if (!Meteor.userId()) {
       Session.set('needsZip', true);
     } else {
-    	Session.set('processing', true);
-	    const orderReady = Session.get('pack'); // Will change when packs become items (FIX)
+      Session.set('processing', true);
+      const orderReady = Session.get('pack'); // Will change when packs become items (FIX)
 
       const orderToCreate = {
-	    	userId: Meteor.userId(),
-	    	packName: orderReady.description,
-	    	packPrice: orderReady.price,
-	    	packDishes: orderReady.dishes,
-	    	packSnacks: orderReady.snacks,
-	    };
+        userId: Meteor.userId(),
+        packName: orderReady.description,
+        packPrice: orderReady.price,
+        packDishes: orderReady.dishes,
+        packSnacks: orderReady.snacks,
+      };
 
-	    const orderId = insertOrder.call(orderToCreate);
-	    Session.set('orderId', orderId);
-	    FlowRouter.go('/checkout');
+      const orderId = insertOrder.call(orderToCreate);
+      Session.set('orderId', orderId);
+      FlowRouter.go('/checkout');
 
       Session.set('processing', false);
     }

@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 // Zip Codes
@@ -40,20 +41,14 @@ AccountsTemplates.configure({
   // Hooks
   postSignUpHook(userId) {
     const user = Meteor.users.findOne(userId);
-    const address_zipcode = user.profile.zipCode;
-    const amount_spent = 0;
+    const addressZipcode = user.profile.zipCode;
+    const amountSpent = 0;
     const data = {
-      address_zipcode,
-      amount_spent,
+      address_zipcode: addressZipcode,
+      amount_spent: amountSpent,
     };
 
-    Meteor.call('updateUser', user._id, data, (error, response) => {
-      if (error) {
-        console.log(`${error}: error`);
-      } else {
-        console.log(response);
-      }
-    });
+    Meteor.call('updateUser', user._id, data, () => { });
 
     // createCustomer.call(customer, (error, response) => {
     //   if (error) {

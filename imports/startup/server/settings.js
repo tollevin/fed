@@ -1,6 +1,7 @@
+import { Meteor } from 'meteor/meteor';
 import { addGoogleTagManager } from 'meteor/fuww:google-tag-manager';
 
-import { SyncedCron } from 'meteor/percolate:synced-cron';
+// import { SyncedCron } from 'meteor/percolate:synced-cron';
 
 // process.env.METEOR_SETTINGS_PRODUCTION = '../../../settings-pro.json';
 

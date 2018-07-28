@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { moment } from 'meteor/momentjs:moment';
 
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
 import { getZipZone } from '/imports/api/delivery/methods.js';
-
-import { moment } from 'meteor/momentjs:moment'; 
 
 import './subscriber-preview.html';
 
@@ -15,13 +14,13 @@ Template.Subscriber_preview.helpers({
   },
 
   emailss() {
-    const emails = Template.currentData().emails;
+    const { emails } = Template.currentData();
     return emails;
   },
 
   deliveryFee() {
     const zip = Template.currentData().address_zipcode;
-    const subtotal = Template.currentData().subtotal;
+    const { subtotal } = Template.currentData();
 
     const deliveryFees = zipZones[zip].delivery_fees;
 
@@ -30,60 +29,63 @@ Template.Subscriber_preview.helpers({
   },
 
   subtotal() {
-    const subscriptions = Template.currentData().subscriptions;
+    const { subscriptions } = Template.currentData();
     if (!subscriptions) { return undefined; }
 
     let subtotal = 0;
-    for (let i = subscriptions.length - 1; i >= 0; i--) {
-      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+      subtotal += (
+        subscriptions[i].price
+        * subscriptions[i].quantity
+        * ((100 - subscriptions[i].percent_off) / 100));
     }
 
     return subtotal.toFixed(2);
   },
 
   sales_tax() {
-    const subscriptions = Template.currentData().subscriptions;
+    const { subscriptions } = Template.currentData();
     if (!subscriptions) { return undefined; }
 
     let subtotal = 0;
-    for (let i = subscriptions.length - 1; i >= 0; i--) {
-      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+      subtotal += (
+        subscriptions[i].price
+        * subscriptions[i].quantity
+        * ((100 - subscriptions[i].percent_off) / 100));
     }
 
-    const sales_tax = subtotal * 0.08875;
+    const salesTax = subtotal * 0.08875;
 
-    return sales_tax.toFixed(2);
+    return salesTax.toFixed(2);
   },
 
   total() {
-    const subscriptions = Template.currentData().subscriptions;
+    const { subscriptions } = Template.currentData();
     if (!subscriptions) { return undefined; }
 
     let subtotal = 0;
-    for (let i = subscriptions.length - 1; i >= 0; i--) {
-      subtotal += subscriptions[i].price * subscriptions[i].quantity * ((100 - subscriptions[i].percent_off) / 100);
+    for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+      subtotal
+        += (subscriptions[i].price
+        * subscriptions[i].quantity
+        * ((100 - subscriptions[i].percent_off) / 100));
     }
 
     let total = subtotal * 1.08875;
 
     const zip = Template.currentData().address_zipcode;
 
-    let delivery_fee;
     const deliveryFees = zipZones[zip].delivery_fees;
+    const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
 
-    if (subtotal > 150) {
-      delivery_fee = deliveryFees.tier3;
-    } else {
-      delivery_fee = deliveryFees.tier1;
-    }
-
-    total += delivery_fee;
+    total += deliveryFee;
 
     return total.toFixed(2);
   },
 
   hasCredit: () => {
-    const credit = Template.currentData().credit;
+    const { credit } = Template.currentData();
     return credit;
   },
 
@@ -92,7 +94,7 @@ Template.Subscriber_preview.helpers({
     if (currentData.skipping) { return 'skipping'; }
     if (currentData.customized) { return 'customized'; }
 
-    const subscriptions = currentData.subscriptions;
+    const { subscriptions } = currentData;
     const nextFri = moment().day(12).unix();
     const paused = (subscriptions && (subscriptions.trial_end > nextFri));
 
@@ -102,11 +104,11 @@ Template.Subscriber_preview.helpers({
   },
 
   customed() {
-    const last_purchase = Template.currentData().last_purchase;
-    const ready_by = last_purchase.ready_by;
+    const { last_purchase: lastPurchase } = Template.currentData();
+    const { ready_by: readyBy } = lastPurchase;
     const now = new moment();
-    if (now.isBefore(ready_by)) {
-      const order = Meteor.Orders.findOne({ trackingCode: last_purchase.tracking_code });
+    if (now.isBefore(readyBy)) {
+      const order = Meteor.Orders.findOne({ trackingCode: lastPurchase.tracking_code });
       return order.packDishes;
     }
     return false;
@@ -114,23 +116,26 @@ Template.Subscriber_preview.helpers({
 
   deliveryZone() {
     const args = { zip_code: Template.currentData().address_zipcode };
-
-    const zipZone = getZipZone.call(args);
-    return zipZone;
+    return getZipZone.call(args);
   },
 
-  subscription: () => Template.currentData().subscriptions && Template.currentData().subscriptions[0],
+  subscription: () => Template.currentData().subscriptions
+    && Template.currentData().subscriptions[0],
 
-  deliv: () => (Template.currentData().preferred_deliv_windows ? Template.currentData().preferred_deliv_windows : Template.currentData().preferredDelivDay),
+  deliv: () => (
+    Template.currentData().preferred_deliv_windows
+      ? Template.currentData().preferred_deliv_windows
+      : Template.currentData().preferredDelivDay
+  ),
 
   allergies: () => {
-    const restrictions = Template.currentData().restrictions;
+    const { restrictions } = Template.currentData();
     if (!restrictions) { return false; }
 
     const keys = Object.keys(restrictions);
     const allergies = [];
 
-    for (let i = keys.length - 1; i >= 0; i--) {
+    for (let i = keys.length - 1; i >= 0; i -= 1) {
       if (restrictions[keys[i]]) {
         allergies.push(keys[i]);
       }

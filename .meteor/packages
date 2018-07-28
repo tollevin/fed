@@ -19,7 +19,7 @@ less@2.7.12
 
 # ui
 blaze-html-templates@1.0.4
-reactive-dict@1.2.0
+reactive-dict
 reactive-var@1.0.11
 aldeed:template-extension
 percolate:momentum
@@ -121,3 +121,4 @@ cultofcoders:persistent-session
 ostrio:flow-router-extra
 mealsunite:flow-routing-extra
 momentjs:moment
+tmeasday:publish-counts

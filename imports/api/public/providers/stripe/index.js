@@ -4,9 +4,6 @@ import { invoiceCreated } from './invoice-created.js';
 import { invoicePaymentFailed } from './invoice-paymentFailed.js';
 import { invoicePaymentSucceeded } from './invoice-paymentSucceeded.js';
 import { customerUpdated } from './customer-updated.js';
-import { subscriptionCreated } from './subscription-created.js';
-import { subscriptionUpdated } from './subscription-updated.js';
-import { subscriptionDeleted } from './subscription-deleted.js';
 
 const scenarios = {
   'charge.succeeded': chargeSucceeded,

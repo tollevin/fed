@@ -28,7 +28,7 @@ Template.Customers_toolbar.helpers({
         template: Template.userPill,
       },
       {
-        	token: ':',
+        token: ':',
         collection: Meteor.users,
         field: 'first_name',
         matchAll: true,
@@ -40,7 +40,7 @@ Template.Customers_toolbar.helpers({
 });
 
 Template.Customers_toolbar.events({
-  'autocompleteselect input'(event, template, doc) {
+  'autocompleteselect input'(event, templateInstance, doc) {
     FlowRouter.go('Customer.detail', { _id: doc._id });
   },
 });

@@ -3,10 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { Check } from 'meteor/check';
-import {
-  Items,
-} from './items.js';
+
+import { Items } from './items.js';
 
 export const insertItem = new ValidatedMethod({
   name: 'Meteor.insertItem',
@@ -70,7 +68,26 @@ export const insertItem = new ValidatedMethod({
     noRetry: true,
   },
   run({
-    name, category, subcategory, photo, description, ingredients, warnings, nutrition_facts, good_for_days, active, attributes, weight, dimensions, producer, cost_per_unit, price_per_unit, unit, sub_items, inventory, rank,
+    name,
+    category,
+    subcategory,
+    photo,
+    description,
+    ingredients,
+    warnings,
+    nutrition_facts: nutritionFacts,
+    good_for_days: goodForDays,
+    active,
+    attributes,
+    weight,
+    dimensions,
+    producer,
+    cost_per_unit: costPerUnit,
+    price_per_unit: pricePerUnit,
+    unit,
+    sub_items: subItems,
+    inventory,
+    rank,
   }) {
     const item = {
       user_id: Meteor.userId(),
@@ -82,8 +99,8 @@ export const insertItem = new ValidatedMethod({
       description,
       ingredients,
       warnings,
-      nutrition_facts,
-      good_for_days,
+      nutrition_facts: nutritionFacts,
+      good_for_days: goodForDays,
       active,
       attributes,
       comments: {},
@@ -91,10 +108,10 @@ export const insertItem = new ValidatedMethod({
       weight,
       dimensions,
       producer,
-      cost_per_unit,
-      price_per_unit,
+      cost_per_unit: costPerUnit,
+      price_per_unit: pricePerUnit,
       unit,
-      sub_items,
+      sub_items: subItems,
       inventory,
       rank,
     };
@@ -105,116 +122,6 @@ export const insertItem = new ValidatedMethod({
     // Update Item with Product ID
   },
 });
-
-// export const editItem = new ValidatedMethod({
-//   name: 'Items.methods.editItem',
-//   validate: new SimpleSchema({
-//     item_id: Items.simpleSchema().schema('_id')
-//   }).validator({ clean: true, filter: false }),
-//   run({ item_id, data }) {
-//     const item = Items.findOne(item_id);
-
-//     Items.update(item_id, { $set: {
-//       active: newCheckedStatus,
-//     } });
-//   },
-// });
-
-// export const addToMenu = new ValidatedMethod({
-//   name: 'Items.methods.addToMenu',
-//   validate: new SimpleSchema({
-//     item_id: Items.simpleSchema().schema('_id'),
-//     menu_id: Menus.simpleSchema().schema('_id'),
-//   }).validator({ clean: true, filter: false }),
-//   run({ item_id, menu_id }) {
-//     const item = Items.findOne(item_id);
-
-//     Menus.update(menu_id, { $set: {
-//       active: newCheckedStatus,
-//     } });
-//   },
-// });
-
-// export const toggleActive = new ValidatedMethod({
-//   name: 'Items.methods.toggleActive',
-//   validate: new SimpleSchema({
-//     itemId: Items.simpleSchema().schema('_id'),
-//     // newCheckedStatus: Items.simpleSchema().schema('active'),
-//   }).validator({ clean: true, filter: false }),
-//   run({ itemId }) {
-//     const item = Items.findOne(itemId);
-
-//     const newCheckedStatus = !(item.active);
-
-//     // if (!item.editableBy(this.userId)) {
-//     //   throw new Meteor.Error('items.setForThisWeek.accessDenied',
-//     //     'Cannot edit checked status in the menu');
-//     // }
-
-//     Items.update(itemId, { $set: {
-//       active: newCheckedStatus,
-//     } });
-//   },
-// });
-
-// export const orderItem = new ValidatedMethod({
-//   name: 'Items.methods.orderItem',
-//   validate: new SimpleSchema({
-//     name: Items.simpleSchema().schema('name'),
-//     // newCheckedStatus: Items.simpleSchema().schema('active'),
-//   }).validator({ clean: true, filter: false }),
-//   run({ name }) {
-//     const item = Items.findOne({name: name});
-
-//     const ordersThisWeek = item.ordersThisWeek + 1;
-//     const ordersTotal = item.ordersTotal + 1;
-
-//     Items.update(item._id, { $set: {
-//       ordersThisWeek: ordersThisWeek,
-//       ordersTotal: ordersTotal,
-//     } });
-//   },
-// });
-
-// export const toggleInPack = new ValidatedMethod({
-//   name: 'Items.methods.toggleInPack',
-//   validate: new SimpleSchema({
-//     itemId: Items.simpleSchema().schema('_id'),
-//     pack: { type: String },
-//   }).validator({ clean: true, filter: false }),
-//   run({ itemId, pack }) {
-//     const item = Items.findOne(itemId);
-
-//     var packOption = pack;
-//     var newCheckedStatus = !(item.packs[pack]);
-
-//     Items.update(itemId, { $set: {
-//       ["packs." + packOption]: newCheckedStatus,
-//     } });
-//   },
-// });
-
-// export const updateText = new ValidatedMethod({
-//   name: 'items.updateText',
-//   validate: new SimpleSchema({
-//     todoId: String },
-//     newText: String },
-//   }).validator(),
-//   run({ todoId, newText }) {
-//     // This is complex auth stuff - perhaps denormalizing a userId onto items
-//     // would be correct here?
-//     const todo = items.findOne(todoId);
-
-//     if (!todo.editableBy(this.userId)) {
-//       throw new Meteor.Error('items.updateText.accessDenied',
-//         'Cannot edit items in a private list that is not yours');
-//     }
-
-//     items.update(todoId, {
-//       $set: { text: newText },
-//     });
-//   },
-// });
 
 export const remove = new ValidatedMethod({
   name: 'Items.methods.remove',
@@ -227,7 +134,7 @@ export const remove = new ValidatedMethod({
 });
 
 // Get list of all method names on items
-const Items_METHODS = _.pluck([
+const ITEMS_METHODS = _.pluck([
   insertItem,
   // editItem,
   remove,
@@ -237,7 +144,7 @@ if (Meteor.isServer) {
   // Only allow 5 items operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(Items_METHODS, name);
+      return _.contains(ITEMS_METHODS, name);
     },
 
     // Rate limit per connection ID

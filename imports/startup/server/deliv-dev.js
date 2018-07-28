@@ -1,7 +1,8 @@
+import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
 import { moment } from 'meteor/momentjs:moment';
 
-const store_id = '8736cd2e-ff66-4df4-b9ed-8a99d332ed01';
+const storeId = '8736cd2e-ff66-4df4-b9ed-8a99d332ed01';
 function rby() {
   if (moment().day() === 0 && moment().hour() < 12) {
     return moment().day(0).hour(17).minute(0)
@@ -18,7 +19,6 @@ function rby() {
 }
 
 Meteor.methods({
-
   createDelivEstimate (datum) {
     const zip = datum.customer_zipcode;
     const readyBy = rby();
@@ -30,7 +30,7 @@ Meteor.methods({
       },
 
       data: {
-        store_id,
+        store_id: storeId,
         customer_zipcode: zip,
         ready_by: readyBy,
       },
@@ -41,11 +41,14 @@ Meteor.methods({
   },
 
   createDelivery (delivRequest) {
-    const order_reference = delivRequest.order_reference;
-    const customer = delivRequest.customer;
-    const packages = delivRequest.packages;
-    const window_id = delivRequest.delivery_window_id;
-    const comments = delivRequest.destination_comments;
+    const {
+      order_reference: orderReference,
+      customer,
+      packages,
+      delivery_window_id: windowId,
+      destination_comments: comments,
+    } = delivRequest;
+
     const readyBy = rby();
 
     const result = HTTP.post('https://api-sandbox.deliv.co/v2/deliveries', {
@@ -55,12 +58,12 @@ Meteor.methods({
       },
 
       data: {
-        store_id,
-        order_reference,
+        store_id: storeId,
+        order_reference: orderReference,
         customer,
         ready_by: readyBy,
         packages,
-        delivery_window_id: window_id,
+        delivery_window_id: windowId,
         customer_signature_type: 'leave_at_door',
         destination_comments: comments,
       },

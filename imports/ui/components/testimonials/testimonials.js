@@ -1,3 +1,4 @@
+import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 
 import './testimonials.html';
@@ -10,10 +11,10 @@ Template.Testimonials.onRendered(function testimonialsOnRendered() {
     autoplay: true,
     autoplaySpeed: 6000,
     infinite: true,
-	  speed: 600,
-	  fade: true,
-	  swipe: false,
-	  slidesToShow: 1,
-	  cssEase: 'linear',
+    speed: 600,
+    fade: true,
+    swipe: false,
+    slidesToShow: 1,
+    cssEase: 'linear',
   });
 });

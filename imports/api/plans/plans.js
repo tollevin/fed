@@ -8,19 +8,15 @@ class PlansCollection extends Mongo.Collection {
   insert(Plan, callback) {
     const ourPlan = Plan;
     ourPlan.created_at = ourPlan.created_at || new Date();
-    const result = super.insert(ourPlan, callback);
-    return result;
+    return super.insert(ourPlan, callback);
   }
 
   update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
+    return super.update(selector, modifier);
   }
 
   remove(selector) {
-    const Plans = this.find(selector).fetch();
-    const result = super.remove(selector);
-    return result;
+    return super.remove(selector);
   }
 }
 

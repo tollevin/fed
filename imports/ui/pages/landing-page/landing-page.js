@@ -8,7 +8,7 @@ import '/imports/ui/components/testimonials/testimonials.js';
 import '/imports/ui/components/lander-carousel/lander-carousel.js';
 
 // Zip Codes
-import { yesZips, MH, MH_20 } from '/imports/api/delivery/zipcodes.js';
+import { yesZips } from '/imports/api/delivery/zipcodes.js';
 
 import './landing-page.less';
 import './landing-page.html';
@@ -42,7 +42,7 @@ Template.Landing_page.helpers({
 });
 
 Template.Landing_page.events({
-  'click #zipSubmit'(event, instance) {
+  'click #zipSubmit'(event) {
     event.preventDefault();
 
     const zipInput = document.getElementById('zip').value.trim();
@@ -51,8 +51,8 @@ Template.Landing_page.events({
       Session.set('zipOk', true);
       Session.set('zipNotYet', false);
     } else {
-    	Session.set('zipNotYet', true);
-    	Session.set('zipOk', false);
+      Session.set('zipNotYet', true);
+      Session.set('zipOk', false);
     }
   },
 });

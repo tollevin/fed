@@ -15,7 +15,7 @@ import '/imports/ui/components/menu-item/menu-item.js';
 import '/imports/ui/components/menu-toolbar/menu-toolbar.js';
 
 // Methods
-import { insertOrder } from '/imports/api/orders/methods.js';
+import { insertOrder, updatePendingSubOrder } from '/imports/api/orders/methods.js';
 
 import './menu-page.less';
 import './menu-page.html';
@@ -42,13 +42,6 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
     },
   };
 
-  // const user = Meteor.user();
-  // if (user && user.restrictions) {
-  // 	for (var i = user.restrictions.length - 1; i >= 0; i--) {
-  // 		filters.restrictions[user.restrictions[i]] = true;
-  // 	};
-  // };
-
   Session.setDefault('filters', filters);
   Session.setDefault('selector', {});
 
@@ -56,13 +49,13 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
     // if hasItem and isPack
     const orderId = Session.get('orderId');
     if (orderId.status === 'pending-sub') {
-      for (let i = orderId.items.length - 1; i >= 0; i--) {
+      for (let i = orderId.items.length - 1; i >= 0; i -= 1) {
         if (orderId.items[i].category === 'Pack') {
           if (orderId.items[i].sub_items.items.length === 0) {
             orderId.items.splice(i, 1);
             // } else {
-            // 	orderId.items = orderId.items.concat(orderId.items[i].sub_items.items);
-            // 	orderId.items.splice(i, 1);
+            //  orderId.items = orderId.items.concat(orderId.items[i].sub_items.items);
+            //  orderId.items.splice(i, 1);
           }
         }
       }
@@ -75,15 +68,13 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
     const order = {
       user_id: Meteor.userId(),
       style: 'alacarte',
-	    items: [],
-	    week_of: moment().startOf('week').toDate(),
-	    created_at: moment().toDate(),
+      items: [],
+      week_of: moment().startOf('week').toDate(),
+      created_at: moment().toDate(),
     };
 
     Session.set('Order', order);
   }
-
-  const thisWeeksStart = Session.get('Order') ? Session.get('Order').week_of : moment().startOf('week').toDate();
 
   this.autorun(() => {
     const handle = this.subscribe('Menus.active');
@@ -99,8 +90,6 @@ Template.Menu_page.onCreated(function menuPageOnCreated() {
 
       Session.setDefault('menu', data);
 
-      //
-      const order = Session.get('Order');
       const pack = Session.get('pack');
 
       // If unfull pack, pull up pack editor
@@ -119,10 +108,10 @@ Template.Menu_page.onDestroyed(function menuPageOnDestroyed() {
 Template.Menu_page.helpers({
   pack: () => {
     const order = Session.get('Order');
-    const items = order.items;
+    const { items } = order;
     let hasPack = false;
 
-    for (let i = items.length - 1; i >= 0; i--) {
+    for (let i = items.length - 1; i >= 0; i -= 1) {
       if (items[i].name.split('-')[1] === 'Pack') hasPack = true;
     }
 
@@ -151,7 +140,7 @@ Template.Menu_meals.helpers({
     };
     const filtersObject = Session.get('filters').restrictions;
     const restrictions = Object.keys(filtersObject);
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       if (filtersObject[restrictions[i]]) {
         selector[`warnings.${restrictions[i]}`] = false;
       }
@@ -202,33 +191,33 @@ Template.Menu_page.events({
     FlowRouter.go('/market');
   },
 
-  'click .toCheckout' (event, template) {
+  'click .toCheckout' () {
     if (Meteor.user()) {
-    	Session.set('processing', true);
+      Session.set('processing', true);
 
-	  	const order = Session.get('Order');
-	  	const menu = Session.get('menu');
+      const order = Session.get('Order');
+      const menu = Session.get('menu');
 
-	  	if (order._id && order.status === ('pending-sub' || 'skipped')) { // FIX Add custom sub
-	      // update order
-	      const updatedOrder = updatePendingSubOrder.call(order);
-	      Session.set('Order', updatedOrder);
-	    } else {
+      if (order._id && order.status === ('pending-sub' || 'skipped')) { // FIX Add custom sub
+        // update order
+        const updatedOrder = updatePendingSubOrder.call(order);
+        Session.set('Order', updatedOrder);
+      } else {
         const orderToCreate = {
-		    	user_id: Meteor.userId(),
-		    	menu_id: menu._id,
-		    	style: order.style,
-		    	week_of: order.week_of,
-		    	items: order.items,
-		    	subscriptions: order.subscriptions,
-		    };
+          user_id: Meteor.userId(),
+          menu_id: menu._id,
+          style: order.style,
+          week_of: order.week_of,
+          items: order.items,
+          subscriptions: order.subscriptions,
+        };
 
-		    const orderId = insertOrder.call(orderToCreate);
-		    Session.set('Order', orderId);
-		  }
+        const orderId = insertOrder.call(orderToCreate);
+        Session.set('Order', orderId);
+      }
 
       Session.set('cartOpen', false);
-	    FlowRouter.go('/checkout');
+      FlowRouter.go('/checkout');
     } else {
       FlowRouter.go('join');
     }

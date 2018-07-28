@@ -1,24 +1,12 @@
 /* eslint-disable prefer-arrow-callback */
-
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { check } from 'meteor/check';
 
 import { Items } from '../items.js';
-import { Menus } from '../../menus/menus.js';
 
 Meteor.publish('items.active', function itemsActive() {
-  return Items.find({
-    active: true,
-  });
+  return Items.find({ active: true });
 });
-
-// Meteor.publish('items.inMenu', function itemsInMenu(menuId) {
-//   const menu = Menus.findOne({_id: menuId});
-
-//   return Items.find({
-//     _id: {$in: menu.items},
-//   });
-// });
 
 Meteor.publish('items.all', function itemsAll() {
   return Items.find({});

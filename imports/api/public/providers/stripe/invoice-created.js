@@ -5,7 +5,6 @@ let modulo;
 const handler = (data, promise) => {
   try {
     modulo = promise;
-    console.log(data);
   } catch (exception) {
     modulo.reject(`[invoiceCreated.handler] ${exception}`);
   }

@@ -6,9 +6,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 class DeliveryWindowsCollection extends Mongo.Collection {
   insert(dw, callback) {
-    const delivery_window = dw;
-    delivery_window.created_at = delivery_window.created_at || new Date();
-    const result = super.insert(delivery_window, callback);
+    const deliveryWindow = dw;
+    deliveryWindow.created_at = deliveryWindow.created_at || new Date();
+    const result = super.insert(deliveryWindow, callback);
     return result;
   }
 
@@ -18,13 +18,12 @@ class DeliveryWindowsCollection extends Mongo.Collection {
   }
 
   remove(selector) {
-    const windows = this.find(selector).fetch();
     const result = super.remove(selector);
     return result;
   }
 }
 
-export const DeliveryWindows = new DeliveryWindowsCollection('DeliveryWindows');
+const DeliveryWindows = new DeliveryWindowsCollection('DeliveryWindows');
 
 // Deny all client-side updates since we will be using methods to manage this collection
 DeliveryWindows.deny({
@@ -80,6 +79,4 @@ DeliveryWindows.publicFields = {
   delivery_end_time: 1,
 };
 
-DeliveryWindows.helpers({
-
-});
+export default DeliveryWindows;

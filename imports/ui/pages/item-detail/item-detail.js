@@ -28,9 +28,9 @@ Template.Item_detail.helpers({
   contains() {
     const id = FlowRouter.getParam('_id');
     const thisItem = Items.findOne({ _id: id });
-    const warnings = thisItem.warnings;
+    const { warnings } = thisItem;
     let allergens = false;
-    for (let i = Object.keys(warnings).length - 1; i >= 0; i--) {
+    for (let i = Object.keys(warnings).length - 1; i >= 0; i -= 1) {
       if (warnings[i]) {
         allergens = true;
       }
@@ -55,21 +55,16 @@ Template.Item_detail.events({
     const item = Items.findOne({ _id: id });
 
     const order = Session.get('order');
-    const dishes = order.dishes;
-    for (i = 0; i < dishes.length; i++) {
-    	if (!dishes[i]) {
-    		dishes[i] = item.name;
-    		order.dishes = dishes;
-    		Session.set('order', order);
+    const { dishes } = order;
+    for (let i = 0; i < dishes.length; i += 1) {
+      if (!dishes[i]) {
+        dishes[i] = item.name;
+        order.dishes = dishes;
+        Session.set('order', order);
         i = 0;
         FlowRouter.go('Menu.show');
         break;
-    	} else {
-        continue;
-    		if (i === dishes.length - 1) {
-      		sAlert.error('Your pack is full!');
-    		}
-    	}
+      }
     }
   },
 

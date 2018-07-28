@@ -1,4 +1,6 @@
 import { Meteor } from 'meteor/meteor';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Counts } from 'meteor/tmeasday:publish-counts';
 
 import { Promos } from '../promos.js';
 
@@ -18,14 +20,8 @@ Meteor.publish('all.promos', function allPromos(limit) {
 });
 
 Meteor.publish('single.promo', function singlePromo(code) {
-  // check(id, String);
-  if (Promos.findOne({ code })) {
-	  const promoCursor = Promos.find({ code });
-  	return promoCursor;
-	  this.ready();
-  }
-  	return [];
-  	this.error('Invalid promo code');
+  if (!Promos.findOne({ code })) { return []; }
+  return Promos.find({ code });
 });
 
 Meteor.publish('Promos.totalCount', function() {

@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating';
-import { onLoginFunction } from '/imports/ui/lib/auth';
 
 import './accounts-templates.less';
 import './accounts-templates.html';
@@ -12,6 +11,7 @@ Template['override-atTextInput'].replaces('atTextInput');
 Template['override-atTitle'].replaces('atTitle');
 Template['override-atError'].replaces('atError');
 
+// TODO how do i add this in?
 // Template.Auth_page.events({
 //   'submit form' (event, template) {
 //     event.preventDefault();

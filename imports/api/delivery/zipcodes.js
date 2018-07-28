@@ -632,7 +632,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11109: {
+  11109: {
     code: 'QNS2-N',
     neighborhood: 'LIC',
     delivery_fees: {
@@ -641,7 +641,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11370: {
+  11370: {
     code: 'QNS2-N',
     neighborhood: 'East Elmhurst',
     delivery_fees: {
@@ -650,7 +650,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11371: {
+  11371: {
     code: 'QNS2-N',
     neighborhood: 'Flushing',
     delivery_fees: {
@@ -659,7 +659,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11372: {
+  11372: {
     code: 'QNS2-N',
     neighborhood: 'Jackson Heights',
     delivery_fees: {
@@ -668,7 +668,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11373: {
+  11373: {
     code: 'QNS2-N',
     neighborhood: 'Elmherst',
     delivery_fees: {
@@ -677,7 +677,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11377: {
+  11377: {
     code: 'QNS2-N',
     neighborhood: 'Woodside',
     delivery_fees: {
@@ -686,7 +686,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11374: {
+  11374: {
     code: 'QNS2-E',
     neighborhood: 'Rego Park',
     delivery_fees: {
@@ -695,7 +695,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11375: {
+  11375: {
     code: 'QNS2-E',
     neighborhood: 'Forest Hills',
     delivery_fees: {
@@ -704,7 +704,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11379: {
+  11379: {
     code: 'QNS2-E',
     neighborhood: 'Middle Village',
     delivery_fees: {
@@ -713,7 +713,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11415: {
+  11415: {
     code: 'QNS2-E',
     neighborhood: 'Kew Gardens',
     delivery_fees: {
@@ -722,7 +722,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11416: {
+  11416: {
     code: 'QNS2-E',
     neighborhood: 'Ozone Park',
     delivery_fees: {
@@ -731,7 +731,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11417: {
+  11417: {
     code: 'QNS2-E',
     neighborhood: 'Ozone Park',
     delivery_fees: {
@@ -740,7 +740,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11418: {
+  11418: {
     code: 'QNS2-E',
     neighborhood: 'Richmond Hill',
     delivery_fees: {
@@ -749,7 +749,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11421: {
+  11421: {
     code: 'QNS2-E',
     neighborhood: 'Woodhaven',
     delivery_fees: {
@@ -758,7 +758,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11385: {
+  11385: {
     code: 'QNS2-E',
     neighborhood: 'Ridgewood',
     delivery_fees: {
@@ -767,7 +767,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11101: {
+  11101: {
     code: 'QNS2-N',
     neighborhood: 'LIC',
     delivery_fees: {
@@ -776,7 +776,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11203: {
+  11203: {
     code: 'BK2-S',
     neighborhood: 'East Flatbush',
     delivery_fees: {
@@ -785,7 +785,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11207: {
+  11207: {
     code: 'BK2-E',
     neighborhood: 'East New York',
     delivery_fees: {
@@ -794,7 +794,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11208: {
+  11208: {
     code: 'QNS2-E',
     neighborhood: 'Cypress Hills',
     delivery_fees: {
@@ -803,7 +803,7 @@ export const zipZones = {
       tier3: 0,
     },
   },
-  	11210: {
+  11210: {
     code: 'BK2-S',
     neighborhood: 'East Midwood',
     delivery_fees: {

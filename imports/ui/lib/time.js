@@ -5,7 +5,7 @@ import newYorkTimeZone from 'timezone/America/New_York';
 
 const ny = tz(newYorkTimeZone);
 
-export const toNewYorkTimezone= (time) => {
+export const toNewYorkTimezone = (time) => {
   const nyTimeZoneOffset = ny(time, 'America/New_York', '%z');
   return moment.utc(time).utcOffset(nyTimeZoneOffset);
-}
+};

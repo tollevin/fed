@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 // process.env.METEOR_SETTINGS_PRODUCTION = '../../../settings-pro.json';
 
 // Meteor.startup(function() {

@@ -11,7 +11,6 @@ Picker.route('/api/webhooks/:provider', ({ provider }, request, response) => {
       response.end(result);
     })
     .catch((error) => {
-      console.warn(error);
       response.statusCode = 500;
       response.end(error);
     });

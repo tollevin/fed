@@ -10,19 +10,15 @@ class ItemsCollection extends Mongo.Collection {
   insert(item, callback) {
     const ourItem = item;
     ourItem.created_at = ourItem.created_at || new Date();
-    const result = super.insert(ourItem, callback);
-    return result;
+    return super.insert(ourItem, callback);
   }
 
   update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
+    return super.update(selector, modifier);
   }
 
   remove(selector) {
-    const items = this.find(selector).fetch();
-    const result = super.remove(selector);
-    return result;
+    return super.remove(selector);
   }
 }
 
@@ -33,16 +29,6 @@ Items.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },
-});
-
-Ingredient = new SimpleSchema({
-  name: { type: String },
-  subIngredients: { type: String, optional: true },
-  // brand: { type: String, optional: true },
-  // amount: { type: Number, optional: true },
-  // amountUnit: { type: String, optional: true },
-  // supplier: { type: String, optional: true },
-  // allergen: { type: String, optional: true },
 });
 
 Items.schema = new SimpleSchema({
@@ -433,6 +419,10 @@ Items.publicFields = {
 
 Items.helpers({
   plans(data) {
-    return Plans.findOne({ item_id: data.item_id, frequency: data.frequency, quantity: data.quantity });
+    return Plans.findOne({
+      item_id: data.item_id,
+      frequency: data.frequency,
+      quantity: data.quantity,
+    });
   },
 });

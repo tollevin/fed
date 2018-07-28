@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { Session } from 'meteor/session';
 
 import '/imports/ui/components/pack-editor/pack-editor.js';
 
@@ -31,12 +32,12 @@ Template.Content_Overlay.helpers({
 });
 
 Template.Content_Overlay.events({
-  'click .content-overlay'(event) {
+  'click .content-overlay'() {
     Session.set('filterMenuOpen', false);
     Session.set('cartOpen', false);
   },
 
-  'click .x'(event) {
+  'click .x'() {
     Session.set('customizable', true);
   },
 });

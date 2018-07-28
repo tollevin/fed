@@ -14,7 +14,7 @@ Template.Cart.helpers({
     const order = Session.get('Order');
     const itemsObj = {};
 
-    for (let i = order.items.length - 1; i >= 0; i--) {
+    for (let i = order.items.length - 1; i >= 0; i -= 1) {
       if (itemsObj[order.items[i]._id]) {
         itemsObj[order.items[i]._id].tally += 1;
       } else {
@@ -33,7 +33,7 @@ Template.Cart.helpers({
     let subtotal = 0;
     const order = Session.get('Order');
 
-    for (let i = order.items.length - 1; i >= 0; i--) {
+    for (let i = order.items.length - 1; i >= 0; i -= 1) {
       subtotal += order.items[i].price_per_unit;
     }
 
@@ -42,37 +42,36 @@ Template.Cart.helpers({
 });
 
 Template.Cart.events({
-
-  'click .remove-dish'(event, template) {
+  'click .remove-dish'(event) {
     const pack = Session.get('pack');
-    const dishes = pack.dishes;
+    const { dishes } = pack;
     const itemName = event.target.parentElement.closest('.dish-name').text;
     dishes[dishes.indexOf(itemName)] = '';
     pack.dishes = dishes;
     Session.set('pack', pack);
   },
 
-  'click .remove-snack'(event, template) {
-    oldPack = Session.get('pack');
-    sncks = oldPack.snacks;
+  'click .remove-snack'(event) {
+    const oldPack = Session.get('pack');
+    const sncks = oldPack.snacks;
     sncks[event.target.name] = '';
     oldPack.snacks = sncks;
     Session.set('pack', oldPack);
   },
 
-  'click .ready' (event, template) {
+  'click .ready' () {
     Session.set('processing', true);
 
-  	const order = Session.get('Order');
-  	const menu = Session.get('menu');
+    const order = Session.get('Order');
+    const menu = Session.get('menu');
 
     const orderToCreate = {
-    	user_id: Meteor.userId(),
-    	menu_id: menu._id,
-    	style: order.style,
-    	week_of: order.week_of,
-    	items: order.items,
-    	subscriptions: order.subscriptions,
+      user_id: Meteor.userId(),
+      menu_id: menu._id,
+      style: order.style,
+      week_of: order.week_of,
+      items: order.items,
+      subscriptions: order.subscriptions,
     };
 
     const orderId = insertOrder.call(orderToCreate);

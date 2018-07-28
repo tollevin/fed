@@ -7,7 +7,6 @@ import { moment } from 'meteor/momentjs:moment';
 
 // Collections
 import { Menus } from './menus.js';
-import { Items } from '../items/items.js';
 
 // Methods
 import { createDeliveryWindows } from '../delivery/methods.js';
@@ -29,35 +28,36 @@ export const insertMenu = new ValidatedMethod({
     noRetry: true,
   },
   run({
-    user_id, name, items, online_at, custom_until, offline_at, ready_by,
+    name,
+    items,
+    online_at: onlineAt,
+    custom_until: customUntil,
+    offline_at: offlineAt,
+    ready_by: readyBy,
   }) {
-    const ready_by_date = moment(ready_by);
-    const on_at = online_at || ready_by_date.subtract(7, 'd').toDate();
-    const custom_til = custom_until || ready_by_date.add(4, 'd').toDate();
-    const off_at = offline_at || ready_by_date.endOf('week').toDate();
+    const readyByDate = moment(readyBy);
+    const onAt = onlineAt || readyByDate.subtract(7, 'd').toDate();
+    const customTil = customUntil || readyByDate.add(4, 'd').toDate();
+    const offAt = offlineAt || readyByDate.endOf('week').toDate();
 
     const menu = {
       created_at: new Date(),
       id_number: menusLength,
       name,
       items,
-      online_at: on_at,
-      custom_until: custom_til,
-      offline_at: off_at,
-      ready_by,
+      online_at: onAt,
+      custom_until: customTil,
+      offline_at: offAt,
+      ready_by: readyBy,
     };
 
     createDeliveryWindows.call({
-      ready_by_date: ready_by,
+      ready_by_date: readyBy,
     }, (err, res) => {
-      if (err) {
-        console.log(err.error);
-      } else {
-        menu.delivery_windows = res;
-        const menuId = Menus.insert(menu);
-        const result = Menus.findOne({ _id: menuId });
-        return result;
-      }
+      if (err) { return undefined; }
+      menu.delivery_windows = res;
+      const menuId = Menus.insert(menu);
+      return Menus.findOne({ _id: menuId });
     });
   },
 });
@@ -70,9 +70,8 @@ export const getMenuDWs = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ menu_id }) {
-    const menu = Menus.findOne({ _id: menu_id });
-    return menu.delivery_windows;
+  run({ menu_id: menuId }) {
+    return Menus.findOne({ _id: menuId });
   },
 });
 
@@ -84,8 +83,7 @@ export const getFutureMenus = new ValidatedMethod({
   },
   run() {
     const timestamp = moment.utc().toDate();
-    const menus = Menus.find({ online_at: { $gte: timestamp } });
-    return menus;
+    return Menus.find({ online_at: { $gte: timestamp } });
   },
 });
 
@@ -97,17 +95,15 @@ export const getNextWeeksMenu = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run(online_at) {
-    const time = moment.utc(online_at).toDate();
-    console.log(time);
-    const menu = Menus.find({ online_at: time });
-    return menu;
+  run({ online_at: onlineAt }) {
+    const time = moment.utc(onlineAt).toDate();
+    return Menus.find({ online_at: time });
   },
 });
 
 
 // Get list of all method names on menus
-const Menus_METHODS = _.pluck([
+const MENUS_METHODS = _.pluck([
   insertMenu,
   getMenuDWs,
   getFutureMenus,
@@ -118,7 +114,7 @@ if (Meteor.isServer) {
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(Menus_METHODS, name);
+      return _.contains(MENUS_METHODS, name);
     },
 
     // Rate limit per connection ID

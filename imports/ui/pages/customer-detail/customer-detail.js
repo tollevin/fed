@@ -15,10 +15,8 @@ Template.Customer_detail.onCreated(function customerDetailOnCreated() {
 Template.Customer_detail.helpers({
   customer() {
     const id = FlowRouter.getParam('_id');
-    if (id) {
-      const customer = Meteor.users.findOne({ _id: id });
-      return customer;
-    }
+    if (!id) { return undefined; }
+    return Meteor.users.findOne({ _id: id });
   },
 
   Back() {
@@ -33,9 +31,9 @@ Template.Customer_detail.events({
     FlowRouter.go('Customers.admin');
   },
 
-  'click #CrEdit' (event, template) {
+  'click #CrEdit' (event, templateInstance) {
     event.preventDefault();
-    const newCredit = template.find('[name="currentCredit"]').value;
+    const newCredit = templateInstance.find('[name="currentCredit"]').value;
     if (newCredit) {
       const user = FlowRouter.getParam('_id');
       const newCreditToFloat = parseFloat(newCredit);
@@ -43,15 +41,9 @@ Template.Customer_detail.events({
         credit: newCreditToFloat,
       };
 
-      Meteor.call('updateUser', user, data, (error, response) => {
-        if (error) {
-          console.log(`${error}: error`);
-        } else {
-          console.log(response);
-        }
-      });
+      Meteor.call('updateUser', user, data, () => {});
     } else {
-      const errorElement = template.find('[name="currentCredit"]');
+      const errorElement = templateInstance.find('[name="currentCredit"]');
       errorElement.classList.add('StripeElement--invalid');
     }
   },

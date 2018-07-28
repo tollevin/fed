@@ -11,37 +11,37 @@ Template.NewPromo.helpers({
 });
 
 Template.NewPromo.events({
-  'click .sbmtPromo'(event, template) {
-	  event.preventDefault();
+  'click .sbmtPromo'(event, templateInstance) {
+    event.preventDefault();
 
-	  const codes = template.find('[name="code"]').value.split('","');
-  	const desc = template.find('[name="desc"]').value;
-  	const credit = template.find('[name="credit"]').value;
-  	const percentage = template.find('[name="percentage"]').value;
-  	const expires = template.find('[name="expires"]').value;
-  	const useLimitPerCustomer = template.find('[name="useLimitPerCustomer"]').value;
-  	const useLimitTotal = template.find('[name="useLimitTotal"]').value;
-  	const timesUsed = 0;
-  	const users = {};
-  	const active = template.find('[name="active"]').checked;
+    const codes = templateInstance.find('[name="code"]').value.split('","');
+    const desc = templateInstance.find('[name="desc"]').value;
+    const credit = templateInstance.find('[name="credit"]').value;
+    const percentage = templateInstance.find('[name="percentage"]').value;
+    const expires = templateInstance.find('[name="expires"]').value;
+    const useLimitPerCustomer = templateInstance.find('[name="useLimitPerCustomer"]').value;
+    const useLimitTotal = templateInstance.find('[name="useLimitTotal"]').value;
+    const timesUsed = 0;
+    const users = {};
+    const active = templateInstance.find('[name="active"]').checked;
 
-  	const promo = {
-  		codes,
-  		desc,
-  		credit,
-  		percentage,
-  		expires,
-  		useLimitPerCustomer,
-  		useLimitTotal,
-  		timesUsed,
-  		users,
-  		active,
-  	};
+    const promo = {
+      codes,
+      desc,
+      credit,
+      percentage,
+      expires,
+      useLimitPerCustomer,
+      useLimitTotal,
+      timesUsed,
+      users,
+      active,
+    };
 
     insertPromo.call(promo, (err) => {
-	    if (err) {
-	      alert(err); // eslint-disable-line no-alert
-	    }
-	  });
+      if (err) {
+        alert(err); // eslint-disable-line no-alert
+      }
+    });
   },
 });

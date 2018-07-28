@@ -3,17 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { Check } from 'meteor/check';
-import { moment } from 'meteor/momentjs:moment';
 
-import {
-  Plans,
-} from './plans.js';
-
-import {
-  Items,
-} from '../items/items.js';
-
+import { Plans } from './plans.js';
 
 // Call from server only
 
@@ -24,27 +15,33 @@ export const insertPlan = new ValidatedMethod({
     item_id: { type: String },
     item_name: { type: String, optional: true },
     price: { type: Number, decimal: true, optional: true },
-	  percent_off: { type: Number, optional: true },
-	  quantity: { type: Number, optional: true },
-	  frequency: { type: Number, optional: true },
-	  tax_percent: { type: Number, decimal: true, optional: true },
+    percent_off: { type: Number, optional: true },
+    quantity: { type: Number, optional: true },
+    frequency: { type: Number, optional: true },
+    tax_percent: { type: Number, decimal: true, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
   },
   run({
-    item_id, item_name, price, percent_off, quantity, frequency, tax_percent,
+    item_id: itemId,
+    item_name: itemName,
+    price,
+    percent_off: percentOff,
+    quantity,
+    frequency,
+    tax_percent: taxPercent,
   }) {
-  	const newPlan = {
-		  item_id,
-      item_name,
+    const newPlan = {
+      item_id: itemId,
+      item_name: itemName,
       price,
-		  created_at: new Date(),
-		  canceled_at: null,
-		  percent_off: percent_off || 5,
-		  quantity: quantity || 1,
-		  frequency: frequency || 7,
-		  tax_percent: tax_percent || 8.875,
+      created_at: new Date(),
+      canceled_at: null,
+      percent_off: percentOff || 5,
+      quantity: quantity || 1,
+      frequency: frequency || 7,
+      tax_percent: taxPercent || 8.875,
     };
 
     const planId = Plans.insert(newPlan);
@@ -64,22 +61,19 @@ export const subscribeToPlan = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run({ plan_id, user_id }) {
-    const user = Meteor.users.findOne({ _id: user_id });
-    const plan = Plans.findOne({ _id: plan_id });
+  run({ plan_id: planId, user_id: userId }) {
+    const user = Meteor.users.findOne({ _id: userId });
+    const plan = Plans.findOne({ _id: planId });
 
     plan.status = 'active';
     plan.subscribed_at = new Date();
 
-    let subscriptions = user.subscriptions;
+    let { subscriptions } = user;
 
-    if (subscriptions) {
-      subscriptions.push(plan);
-    } else {
-      subscriptions = [plan];
-    }
+    subscriptions = subscriptions || [];
+    subscriptions.push(plan);
 
-    Meteor.users.update(user_id, {
+    Meteor.users.update(userId, {
       $set: {
         subscriptions,
       },
@@ -90,33 +84,24 @@ export const subscribeToPlan = new ValidatedMethod({
 export const checkForPlan = new ValidatedMethod({
   name: 'Plans.check',
   validate: new SimpleSchema({
-	  item_id: { type: String },
-	  // discount: { type: Number, optional: true },
-	  quantity: { type: Number },
-	  frequency: { type: Number },
-	  // tax_percent: { type: Number, optional: true },
+    item_id: { type: String },
+    // discount: { type: Number, optional: true },
+    quantity: { type: Number },
+    frequency: { type: Number },
+    // tax_percent: { type: Number, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
   },
-  run({
-    item_id, discount, quantity, frequency,
-  }) {
-    const selector = {
-      item_id,
-      quantity,
-      frequency,
-    };
+  run({ item_id: itemId, quantity, frequency }) {
+    const selector = { item_id: itemId, quantity, frequency };
 
-    console.log(selector);
-  	const planExists = Plans.find(selector).fetch();
-
-  	return planExists;
+    return Plans.find(selector).fetch();
   },
 });
 
 // Get list of all method names on plans
-const Plans_METHODS = _.pluck([
+const PLANS_METHODS = _.pluck([
   insertPlan,
   checkForPlan,
   subscribeToPlan,
@@ -126,7 +111,7 @@ if (Meteor.isServer) {
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(Plans_METHODS, name);
+      return _.contains(PLANS_METHODS, name);
     },
 
     // Rate limit per connection ID

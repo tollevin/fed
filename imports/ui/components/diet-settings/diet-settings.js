@@ -1,14 +1,13 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-// import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-// import { Session } from 'meteor/session';
-// import { Tracker } from 'meteor/tracker';
+import { Session } from 'meteor/session';
+import { sAlert } from 'meteor/juliancwirko:s-alert';
+import { lodash } from 'meteor/erasaur:meteor-lodash';
 
 import {
   ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS,
-}
-  from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
-import { RESTRICTION_TO_ITEM_RESTRICTION } from '/imports/ui/lib/pack_picker/pack_planner.js';
+} from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
 
 import './diet-settings.less';
 import './diet-settings.html';
@@ -21,15 +20,7 @@ Template.Diet_settings.onCreated(function dietSettingsOnCreated() {
   this.deliveryDay = new ReactiveVar(Meteor.user().preferredDelivDay);
 });
 
-Template.Diet_settings.onRendered(function dietSettingsOnRendered() {
-  // var restrictions = template.findAll('.checked');
-  // formdata.restrictions = [];
-  // for (var i = restrictions.length - 1; i >= 0; i--) {
-  //   formdata.restrictions.push(restrictions[i].id);
-  // };
-  // const user = formdata;
-  console.log(this.diet.get());
-});
+Template.Diet_settings.onRendered(function dietSettingsOnRendered() { });
 
 Template.Diet_settings.helpers({
   diets: () => {
@@ -46,11 +37,11 @@ Template.Diet_settings.helpers({
 });
 
 Template.Diet_settings.events({
-  'click .diet label, touchstart .diet label'(event, template) {
+  'click .diet label, touchstart .diet label'(event, templateInstance) {
     event.preventDefault();
 
-    const diets = template.findAll('.diet > label');
-    for (let i = diets.length - 1; i >= 0; i--) {
+    const diets = templateInstance.findAll('.diet > label');
+    for (let i = diets.length - 1; i >= 0; i -= 1) {
       diets[i].classList.remove('clicked');
     }
 
@@ -61,19 +52,19 @@ Template.Diet_settings.events({
     const notEatenFoods = foodList => lodash.difference(ALL_FOODS, foodList);
 
     const selectRelevantFoods = (foodList) => {
-      template
+      templateInstance
         .findAll(foodNamesToIds(ALL_FOODS))
         .forEach(element => element.classList.remove('checked'));
 
-      template
+      templateInstance
         .findAll(foodNamesToClasses(ALL_FOODS))
         .forEach(element => element.classList.remove('fadeIn'));
 
-      template
+      templateInstance
         .findAll(foodNamesToIds(notEatenFoods(foodList)))
         .forEach(element => element.classList.add('checked'));
 
-      template
+      templateInstance
         .findAll(foodNamesToClasses(notEatenFoods(foodList)))
         .forEach(element => element.classList.add('fadeIn'));
     };
@@ -110,42 +101,32 @@ Template.Diet_settings.events({
     selectRelevantFoods(foodTypeArray);
   },
 
-  'click .restriction'(event, template) {
+  'click .restriction'(event, templateInstance) {
     event.preventDefault();
 
     event.currentTarget.classList.toggle('checked');
 
     const itemClass = `.${event.currentTarget.id}`;
-    const imgs = template.findAll(itemClass);
-    for (let i = imgs.length - 1; i >= 0; i--) {
+    const imgs = templateInstance.findAll(itemClass);
+    for (let i = imgs.length - 1; i >= 0; i -= 1) {
       imgs[i].classList.toggle('fadeIn');
     }
-
-    // if restrictions match a diet != to current diet
-
-    // change diet
   },
 
-  'click #edit-diet-settings'(event, template) {
+  'click #edit-diet-settings'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
 
     const formdata = {};
     if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
-    const restrictions = template.findAll('.checked');
+    const restrictions = templateInstance.findAll('.checked');
     formdata.restrictions = [];
-    for (let i = restrictions.length - 1; i >= 0; i--) {
+    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
       formdata.restrictions.push(restrictions[i].id);
     }
     const user = formdata;
 
-    Meteor.call('updateUser', Meteor.userId(), user, (error, response) => {
-      if (error) {
-        console.log(`${error}; error`);
-      } else {
-        console.log(response);
-      }
-    });
+    Meteor.call('updateUser', Meteor.userId(), user, () => {});
     sAlert.success('Settings saved!');
     Session.set('stage', 0);
     Session.set('loading', false);

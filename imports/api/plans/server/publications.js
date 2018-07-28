@@ -1,7 +1,7 @@
-import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+// import { Meteor } from 'meteor/meteor';
+// import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Plans } from '../plans.js';
+// import { Plans } from '../plans.js';
 
 
 // Meteor.publish('some.plans', function(limit) {

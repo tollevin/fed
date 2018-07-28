@@ -4,7 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
-import { DeliveryWindows } from '/imports/api/delivery/delivery-windows.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
 import { toggleSkip } from '/imports/api/orders/methods.js';
@@ -37,27 +37,27 @@ Template.Order_toggle.onRendered(function orderToggleOnRendered() {
 Template.Order_toggle.helpers({
   date: () => {
     const dw = Template.instance().delivery_window.get();
-    if (dw) return moment(dw.delivery_start_time).format('dddd, MMM Do');
+    if (!dw) return undefined;
+    return moment(dw.delivery_start_time).format('dddd, MMM Do');
   },
 
   time: () => {
     const dw = Template.instance().delivery_window.get();
-    if (dw) {
-      const start = moment(dw.delivery_start_time).format('ha');
-      const end = moment(dw.delivery_end_time).format('ha');
-      return `${start}-${end}`;
-    }
+    if (!dw) { return undefined; }
+    const start = moment(dw.delivery_start_time).format('ha');
+    const end = moment(dw.delivery_end_time).format('ha');
+    return `${start}-${end}`;
   },
 
   checked: () => ['skipped', 'canceled'].indexOf(Template.instance().status.get()) <= -1,
 });
 
 Template.Order_toggle.events({
-  'click .switch, touchstart .switch'(event, template) {
+  'click .switch, touchstart .switch'(event, templateInstance) {
     event.preventDefault();
     // const order = Orders.findOne({_id: template._id});
     const data = {
-      order_id: template.data._id,
+      order_id: templateInstance.data._id,
     };
     toggleSkip.call(data);
   },
