@@ -26,14 +26,14 @@ const createSelector = (type) => {
   return Object
     .entries(filtersObject)
     .reduce(
-      (memo, [restriction, restrictionSelected]) =>
-        restrictionSelected
-        ? ({...memo, [`warnings.${restriction}`]: false})
-        : memo,
-    { category: type });
+      (memo, [restriction, restrictionSelected]) => (restrictionSelected
+        ? ({ ...memo, [`warnings.${restriction}`]: false })
+        : memo),
+      { category: type },
+    );
 };
 
-const some = (array, mapFn) => array.map(mapFn || ((a) => a)).length > 0;
+const some = (array, mapFn) => array.map(mapFn || (a => a)).length > 0;
 
 Template.Menu_page.onCreated(function menuPageOnCreated() {
   const afterWednes = moment().day() > 3;
@@ -121,11 +121,11 @@ Template.Menu_page.helpers({
   filterMenuOpen: () => Session.get('filterMenuOpen'),
   packEditorOpen: () => Session.get('packEditorOpen'),
   cartOpen: () => Session.get('cartOpen'),
-  notSubscribed: () =>!(Session.get('subscribed')),
-  pack: () =>
-    some(
-      Session.get('Order').items,
-      (item) => (item.name.split('-')[1] === 'Pack')),
+  notSubscribed: () => !(Session.get('subscribed')),
+  pack: () => some(
+    Session.get('Order').items,
+    item => (item.name.split('-')[1] === 'Pack'),
+  ),
 });
 
 Template.Menu_page.events({
