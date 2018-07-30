@@ -11,6 +11,15 @@ import '/imports/ui/components/diet-settings/diet-settings.js';
 import './account-page.less';
 import './account-page.html';
 
+const isSkipping = (user) => {
+  if (!user.skipping) { return false; }
+
+  const skippingTil = user.skipping.slice(6);
+  if (moment().unix() > moment(skippingTil, 'MM-DD-YYYY').subtract(7, 'd').unix()) { return false; }
+
+  return user.skipping;
+};
+
 Template.Account_page.onCreated(function accountPageOnCreated() {
   Session.set('stage', 0);
 
@@ -33,131 +42,61 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
       // Set stripe_customer info to a Session var
       Session.setDefault('stripe_customer', response);
       // Figure out if a user is currently skipping (REDUNDANT post cron)
-      let skipping = false;
-      if (Meteor.user().skipping) {
-        const skippingTil = Meteor.user().skipping.slice(6);
-        skipping = true;
-        if (moment().unix() > moment(skippingTil, 'MM-DD-YYYY').subtract(7, 'd').unix()) {
-          skipping = false;
-          Meteor.user().skipping = false;
-        }
-      }
-      Session.setDefault('skipping', skipping);
+
+      const user = Meteor.user();
+      user.skipping = isSkipping(user);
+      Session.setDefault('skipping', user.skipping);
       // If user's subscription start matches the start of their current billing period,
       // set them as 'trialing' (new customer)
-      if (response.subscriptions.data.created
-        === response.subscriptions.data.current_period_start) {
-        Session.set('trial', true);
-      }
+      const { created, current_period_start: currentPeriodStart } = response.subscriptions.data;
+      if (created === currentPeriodStart) { Session.set('trial', true); }
     });
   });
 
   Session.set('cartOpen', false);
 });
 
-Template.Account_page.onRendered(function accountPageOnRendered() {
-
-});
-
 Template.Account_page.helpers({
-  forward() {
-    return !(Session.get('stage') === 0);
-  },
-
-  settingsMenu() {
-    return Session.get('stage') === 0;
-  },
-
-  diet() {
-    return Session.get('stage') === 1;
-  },
-
-  delivery() {
-    return Session.get('stage') === 2;
-  },
-
-  payment() {
-    return Session.get('stage') === 3;
-  },
-
-  skipper() {
-    return Session.get('stage') === 4;
-  },
-
-  unsub() {
-    return Session.get('stage') === 5;
-  },
-
-  subscribed() {
-    return Meteor.user().subscriptions && Meteor.user().subscriptions.status !== 'canceled'; // FIX!!!!
-  },
-
-  first_name() {
-    return Meteor.user().first_name;
-  },
-
-  last_name() {
-    return Meteor.user().last_name;
-  },
-
-  phone() {
-    return Meteor.user().phone;
-  },
-
-  email() {
-    return Meteor.user().emails[0].address;
-  },
-
-  address1() {
-    return Meteor.user().address_line_1;
-  },
-
-  address2() {
-    return Meteor.user().address_line_2;
-  },
-
-  city() {
-    return Meteor.user().address_city;
-  },
-
-  zip() {
-    return Meteor.user().address_zipcode;
-  },
-
-  comments() {
-    return Meteor.user().deliv_comments;
-  },
-
-  cardNo() {
-    return `************${Session.get('stripe_customer').sources.data[0].last4}`;
-  },
-
+  forward: () => !(Session.get('stage') === 0),
+  settingsMenu: () => Session.get('stage') === 0,
+  diet: () => Session.get('stage') === 1,
+  delivery: () => Session.get('stage') === 2,
+  payment: () => Session.get('stage') === 3,
+  unsub: () => Session.get('stage') === 5,
+  subscribed: () => Meteor.user().subscriptions && Meteor.user().subscriptions.status !== 'canceled', // FIX!!!!
+  first_name: () => Meteor.user().first_name,
+  last_name: () => Meteor.user().last_name,
+  phone: () => Meteor.user().phone,
+  email: () => Meteor.user().emails[0].address,
+  address1: () => Meteor.user().address_line_1,
+  address2: () => Meteor.user().address_line_2,
+  city: () => Meteor.user().address_city,
+  zip: () => Meteor.user().address_zipcode,
+  comments: () => Meteor.user().deliv_comments,
+  cardNo: () => `************${Session.get('stripe_customer').sources.data[0].last4}`,
   nextDeliv() {
-    if (Meteor.user().subscriptions.status === 'trialing') {
-      const { trial_end: trialEnd } = Meteor.user().subscriptions;
-      const delDay = Meteor.user().preferredDelivDay;
-      const toAdd = (delDay === 'sunday') ? 3 : 4;
+    const user = Meteor.user();
+    if (!user) { return undefined; }
+
+    const { preferredDelivDay, subscription } = user;
+    if (!subscription) { return undefined; }
+
+    const { status: subscriptionStatus, trial_end: trialEnd } = subscription;
+
+    if (subscriptionStatus === 'trialing') {
+      const toAdd = (preferredDelivDay === 'sunday') ? 3 : 4;
       const nextDelivTime = (trialEnd * 1000) + (toAdd * 24 * 60 * 60 * 1000);
       const nextDeliv = new Date(nextDelivTime).toLocaleDateString();
-      return `${delDay.charAt(0).toUpperCase() + delDay.slice(1)}, ${nextDeliv}`;
+      return `${preferredDelivDay.charAt(0).toUpperCase() + preferredDelivDay.slice(1)}, ${nextDeliv}`;
     }
 
-    if (Meteor.user().subscriptions.status === 'active') {
-      const delDay = Meteor.user().preferredDelivDay;
-      const dy = (delDay === 'sunday') ? 0 : 1;
+    if (subscriptionStatus === 'active') {
+      const dy = (preferredDelivDay === 'sunday') ? 0 : 1;
       const now = new moment();
 
       return now.day(dy + 7).format('dddd, M/D/YY');
     }
     return undefined;
-  },
-
-  skipping() {
-    return Session.get('skipping');
-  },
-
-  beforeThurs() {
-    return moment().day() < 4;
   },
 });
 
@@ -219,14 +158,12 @@ Template.Account_page.events({
     if (document.querySelector('input[name="plan"]:checked').value) formdata.plan = document.querySelector('input[name="plan"]:checked').value;
     if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
     if (document.querySelector('input[name="delivery"]:checked').value) formdata.preferredDelivDay = document.querySelector('input[name="delivery"]:checked').value;
-    const restrictions = templateInstance.findAll('.checked');
-    formdata.restrictions = [];
-    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
-      formdata.restrictions.push(restrictions[i].id);
-    }
-    const user = formdata;
 
-    Meteor.call('updateUser', Meteor.userId(), user, () => {});
+    formdata.restrictions = templateInstance
+      .findAll('.checked')
+      .map(restriction => restriction.id);
+
+    Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
     sAlert.success('Settings saved!');
     Session.set('stage', 0);
     Session.set('loading', false);
@@ -257,74 +194,9 @@ Template.Account_page.events({
     Session.set('loading', false);
   },
 
-  'click #skip'(event) {
+
+  'click #Unsub'(event) {
     event.preventDefault();
-
-    const subscriptionId = Meteor.user().subscriptions.id;
-
-    const now = moment().unix();
-    const thisThursdayTime = moment().day(4).hours(0).minutes(0)
-      .seconds(0)
-      .unix();
-
-    let nextThursdayTime;
-    if (now < thisThursdayTime) {
-      nextThursdayTime = moment().day(11).hours(0).minutes(0)
-        .seconds(0)
-        .unix();
-    }
-
-    const args = {
-      subscription_id: subscriptionId,
-      trial_end: nextThursdayTime,
-      prorate: false,
-    };
-
-    Meteor.call('updateSubscription', args, (error, response) => {
-      if (error) { return; }
-      const user = Meteor.user();
-      user.subscriptions = response;
-      user.skipping = `Until ${new moment(nextThursdayTime * 1000).format('MM/DD/YY')}`;
-      Meteor.call('updateUser', Meteor.userId(), user);
-      Session.set('skipping', true);
-    });
-  },
-
-  'click #unskip'(event) {
-    event.preventDefault();
-
-    const subscriptionId = Meteor.user().subscriptions.id;
-
-    const now = moment().unix();
-    const thisThursdayTime = moment().day(4).hours(0).minutes(0)
-      .seconds(0)
-      .unix();
-
-    let comingThursdayTime;
-    if (now < thisThursdayTime) {
-      comingThursdayTime = moment().day(4).hours(0).minutes(0)
-        .seconds(0)
-        .unix();
-    }
-
-    const args = {
-      subscription_id: subscriptionId,
-      trial_end: comingThursdayTime,
-      prorate: false,
-    };
-
-    Meteor.call('updateSubscription', args, (error, response) => {
-      if (error) { return; }
-      const user = Meteor.user();
-      user.subscriptions = response;
-      user.skipping = false;
-
-      Meteor.call('updateUser', Meteor.userId(), user);
-      Session.set('skipping', false);
-    });
-  },
-
-  'click #Unsub'() {
     Session.set('stage', 5);
   },
 

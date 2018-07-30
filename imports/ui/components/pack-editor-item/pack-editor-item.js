@@ -3,6 +3,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 
 import './pack-editor-item.html';
+import '/imports/ui/components/menu-item/menu-item.less'; // TODO move this eventually
 
 Template.Pack_Editor_Item.helpers({
   attributes: () => {
