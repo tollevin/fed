@@ -1,7 +1,12 @@
+/* eslint no-undef: [0, "Template"] */
+// need the above because of the new router ostrio:flow-router-meta
+// https://github.com/meteor/meteor/issues/9570
+// TODO fix
+
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { Email } from 'meteor/email';
-import { Template } from 'meteor/templating';
+// import { Template } from 'meteor/templating';
 import { SSR } from 'meteor/meteorhacks:ssr';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // import { check, Match } from 'meteor/check';
