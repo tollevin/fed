@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 
+import { SETTING_SESSION, MAIN } from '/imports/ui/lib/constants/settings';
+
 import './delivery-settings.less';
 import './delivery-settings.html';
 
@@ -38,7 +40,7 @@ Template.Delivery_settings.events({
     Meteor.call('updateUser', Meteor.userId(), formdata, (error) => {
       if (error) { return; }
       sAlert.success('Delivery settings updated!');
-      Session.set('settingStage', 0);
+      Session.set(SETTING_SESSION, MAIN);
     });
     Session.set('loading', false);
   },

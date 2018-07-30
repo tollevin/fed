@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 
+import { SETTING_SESSION, MAIN } from '/imports/ui/lib/constants/settings';
+
 import {
   ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS,
 } from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
@@ -146,7 +148,7 @@ Template.Diet_settings.events({
 
     Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
     sAlert.success('Settings saved!');
-    Session.set('settingStage', 0);
+    Session.set(SETTING_SESSION, MAIN);
     Session.set('loading', false);
   },
 });

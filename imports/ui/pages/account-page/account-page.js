@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 
+import { SETTING_SESSION, MAIN, DIET, DELIVERY, PAYMENT } from '/imports/ui/lib/constants/settings';
+
 import '/imports/ui/components/main-settings/main-settings.js';
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/diet-settings/diet-settings.js';
@@ -23,7 +25,7 @@ const isSkipping = (user) => {
 };
 
 Template.Account_page.onCreated(function accountPageOnCreated() {
-  Session.set('settingStage', 0);
+  Session.set(SETTING_SESSION, MAIN);
 
   this.autorun(() => {
     const subs = this.subscribe('thisUserData');
@@ -59,11 +61,11 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
 });
 
 Template.Account_page.helpers({
-  forward: () => !(Session.get('settingStage') === 0),
-  settingsMenu: () => Session.get('settingStage') === 0,
-  diet: () => Session.get('settingStage') === 1,
-  delivery: () => Session.get('settingStage') === 2,
-  payment: () => Session.get('settingStage') === 3,
+  forward: () => !(Session.get(SETTING_SESSION) === MAIN),
+  settingsMenu: () => Session.get(SETTING_SESSION) === MAIN,
+  diet: () => Session.get(SETTING_SESSION) === DIET,
+  delivery: () => Session.get(SETTING_SESSION) === DELIVERY,
+  payment: () => Session.get(SETTING_SESSION) === PAYMENT,
 });
 
 Template.Account_page.events({
@@ -74,21 +76,21 @@ Template.Account_page.events({
 
   'click #diet-settings'(event) {
     event.preventDefault();
-    Session.set('settingStage', 1);
+    Session.set(SETTING_SESSION, DIET);
   },
 
   'click #manage-subscriptions'(event) {
     event.preventDefault();
-    Session.set('settingStage', 2);
+    Session.set(SETTING_SESSION, DELIVERY);
   },
 
   'click #payment-settings'(event) {
     event.preventDefault();
-    Session.set('settingStage', 3);
+    Session.set(SETTING_SESSION, PAYMENT);
   },
 
   'click #Back'(event) {
     event.preventDefault();
-    Session.set('settingStage', 0);
+    Session.set(SETTING_SESSION, MAIN);
   },
 });
