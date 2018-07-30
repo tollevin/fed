@@ -187,12 +187,15 @@ Meteor.methods({
       const dw = DeliveryWindows.findOne({ _id: data.delivery_window_id });
       const dateToString = moment(dw.delivery_start_time).format('dddd, MMMM Do,');
 
+      const packItems = data.sub_items ? data.sub_items.items : [];
+      const products = (data.items || []).concat(packItems);
+
       const emailData = {
         ...data,
         email: user.emails[0].address,
         deliveryInfo: dateToString,
+        products,
       };
-
 
       Email.send({
         to: emailData.email,
