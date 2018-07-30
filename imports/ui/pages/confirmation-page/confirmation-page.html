@@ -2,67 +2,69 @@
 <template name="Confirmation">
 	<div id="confirmation" class="page">
     {{#if Template.subscriptionsReady}}
-      <div class="page-title">
-        <h2>{{orderStatus}}</h2>
-      </div>
+      {{#if orderExists}}
+        <div class="page-title">
+          <h2>{{orderStatus}}</h2>
+        </div>
 
-      <div class="page-body">
-        <div class="order-info">
-          <p class="delivery-date">{{deliveryDay}}<br>6-9pm</p>
-          {{#with recipient}}
-            <p class="recipient-name">{{first_name}} {{last_name}}</p>
-            <p class="recipient-address">{{address_line_1}}{{#if address_line_2}}, {{address_line_2}}{{/if}}, {{address_city}} {{address_state}}, {{address_zipcode}}</p>
-            <p class="recipient-contact">{{phone}} | {{email}}</p>
-            {{#if delivery_comments}}
-              <p class="delivery_comments">{{delivery_comments}}</p>
-            {{/if}}
-          {{/with}}
-        </div>
-        <div class="flex-wrapper">
-          <div class="order-items-list">
-            <h3>Items</h3>
-            {{#each item in itemsTally}}
-              <p class="tallied-item">{{item.value}} {{item.name}}</p>
-              {{#if isPack item}}
-                {{#each subitem in subitems item}}
-                  <p class="tallied-subitem">{{subitem.value}} {{subitem.name}}</p>
-                {{/each}}
+        <div class="page-body">
+          <div class="order-info">
+            <p class="delivery-date">{{deliveryDay}}<br>6-9pm</p>
+            {{#with recipient}}
+              <p class="recipient-name">{{first_name}} {{last_name}}</p>
+              <p class="recipient-address">{{address_line_1}}{{#if address_line_2}}, {{address_line_2}}{{/if}}, {{address_city}} {{address_state}}, {{address_zipcode}}</p>
+              <p class="recipient-contact">{{phone}} | {{email}}</p>
+              {{#if delivery_comments}}
+                <p class="delivery_comments">{{delivery_comments}}</p>
               {{/if}}
-            {{/each}}
+            {{/with}}
           </div>
-          <div class="payment-info">
-            <div class="subtotal">
-              <p class="label">Subtotal</p>
-              <p class="num">${{subtotal}}</p>
+          <div class="flex-wrapper">
+            <div class="order-items-list">
+              <h3>Items</h3>
+              {{#each item in itemsTally}}
+                <p class="tallied-item">{{item.value}} {{item.name}}</p>
+                {{#if isPack item}}
+                  {{#each subitem in subitems item}}
+                    <p class="tallied-subitem">{{subitem.value}} {{subitem.name}}</p>
+                  {{/each}}
+                {{/if}}
+              {{/each}}
             </div>
-            <div class="sales_tax">
-              <p class="label">Sales Tax</p>
-              <p class="num">${{sales_tax}}</p>
-            </div>
-            <div class="delivery-fee">
-              <p class="label">Delivery</p>
-              <p class="num">${{deliveryFee}}</p>
-            </div>
-            {{#if userHasCredit}}
-              <div class="credit">
-                <p class="label">Account Credit</p>
-                <p class="num">{{userHasCredit}}</p>
-                <button type="submit" id="applyCredit">Apply</button>
+            <div class="payment-info">
+              <div class="subtotal">
+                <p class="label">Subtotal</p>
+                <p class="num">${{subtotal}}</p>
               </div>
-            {{/if}}
-            {{#if discountTotal}}
-              <div class="discount">
-                <p class="label">Discount</p>
-                <p class="num">-${{discountTotal}}</p>
+              <div class="sales_tax">
+                <p class="label">Sales Tax</p>
+                <p class="num">${{sales_tax}}</p>
               </div>
-            {{/if}}
-            <div class="total">
-              <p class="label">Total</p>
-              <p class="num">${{total}}</p>
+              <div class="delivery-fee">
+                <p class="label">Delivery</p>
+                <p class="num">${{deliveryFee}}</p>
+              </div>
+              {{#if userHasCredit}}
+                <div class="credit">
+                  <p class="label">Account Credit</p>
+                  <p class="num">{{userHasCredit}}</p>
+                  <button type="submit" id="applyCredit">Apply</button>
+                </div>
+              {{/if}}
+              {{#if discountTotal}}
+                <div class="discount">
+                  <p class="label">Discount</p>
+                  <p class="num">-${{discountTotal}}</p>
+                </div>
+              {{/if}}
+              <div class="total">
+                <p class="label">Total</p>
+                <p class="num">${{total}}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      {{/if}}
     {{/if}}
   </div>
 </template>

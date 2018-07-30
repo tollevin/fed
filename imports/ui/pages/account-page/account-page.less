@@ -1,7 +1,7 @@
 @import '{}/imports/ui/styles/utils.less';
 
 #account-page {
-	text-align: center;
+  text-align: center;
   background: #fafffa;  /* fallback for old browsers */
 
   @media screen and (min-width: 40em) {
@@ -10,39 +10,39 @@
     padding-top: 4em;
   }
   
-	h1,
-	h2,
-	h3 {
-		font-weight: 400;
-		color: @fgreene;
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+    color: @fgreene;
     margin-left: 15px;
     margin-right: 15px;
-	}
+  }
 
-	ul {
-		padding-left: 0;
-		text-align: center;
-		display: inline-block;
-		width: 90%;
+  ul {
+    padding-left: 0;
+    text-align: center;
+    display: inline-block;
+    width: 90%;
 
-		li {
-			list-style-type: none;
-		}
+    li {
+      list-style-type: none;
+    }
 
-		input[type=radio] {
-			position: absolute;
-			visibility: hidden;
-		}
-	}
+    input[type=radio] {
+      position: absolute;
+      visibility: hidden;
+    }
+  }
 
-	.title-auth {
+  .title-auth {
     .font-l1;
     .type-light;
     color: @fgreene;
     margin-bottom: .75rem;
 
     @media screen and (max-width: 600px) {
-    	.font-m2;
+      .font-m2;
     }
   }
 
@@ -52,204 +52,133 @@
   }
 
   .button-holder {
-  	display: flex;
-  	flex-direction: row;
-  	flex-wrap: wrap;
-  	max-width: 800px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-  	align-content: space-between;
-  	justify-content: space-between;
+    align-content: space-between;
+    justify-content: space-between;
 
-  	.acct-btn {
+    .acct-btn {
       cursor: pointer;
       width: 100%;
       max-width: 400px;
-  		height: 20vh;
-  		min-height: 70px;
+      height: 20vh;
+      min-height: 70px;
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 0;
       color: #FFF;
       border: 1px solid transparent;
-	    font-size: 23px;
-	    font-weight: 600;
-	    text-transform: uppercase;
-  	}
+      font-size: 23px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
 
-  	#diet-settings {
-  		background-color: #ff6262;
-  	}
+    #diet-settings {
+      background-color: #ff6262;
+    }
 
-  	#manage-subscriptions {
-  		background-color: #ffb53d;
-  	}
+    #manage-subscriptions {
+      background-color: #ffb53d;
+    }
 
-  	#payment-settings {
-  		background-color: #89b358;
-  	}
+    #payment-settings {
+      background-color: #89b358;
+    }
 
-  	#Sub {
+    #Sub {
       background-color: rgb(255, 181, 61);
-  		display: flex;
-  		flex-wrap: wrap;
-  		height: auto;
-  		text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      height: auto;
+      text-align: center;
 
-  		span {
-  			margin: 5px auto;
-  		}
-  	}
+      span {
+        margin: 5px auto;
+      }
+    }
   }
 
-	#DeliveryForm {
-		width: 90%;
-		max-width: 500px;
-		margin: auto;
+  .promo {
+    margin-bottom: 30px;
 
-		div {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			flex-wrap: nowrap;
-			justify-content: flex-end;
-			margin-top: 10px;
+    @media screen and (max-width: 600px) {
+      padding-left: 0;
+    }
 
-			label {
-				display: inline-table;
-			}
+    .enterPromo {
+      border: 1px solid @forange;
+      color: @forange;
+      font-size: 18px;
+      background-color: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 5px 10px;
+      height: 39px;
+      border-radius: 5px;
+    }
+  }
 
-			input,
-			select,
-			textarea {
-				width: 100%;
-				padding: 7px 11px;
-				border: none;
-				font-size: 15px
-			}
+  .submitPromo {
+    display: flex;
+    flex-direction: row;
 
-			select {
-				padding: 0 0 0 11px;
-		    height: 32px;
-		    background: #FFF;
-		    border-radius: 0;
-			}
-		}
+    @media screen and (max-width: 600px) {
+      padding-left: 0;
+      text-align: center;
+    }
 
-		.firstName,
-		.lastName,
-		.city {
-			width: 48%;
-			float: left;
-		}
+    #promo {
+      padding: 10px;
+      height: 40px;
+      font-size: 16px;
+      border: 2px solid #f5c832;
+      border-radius: 5px;
+      color: #666;
+    }
 
-		.firstName,
-		.city,
-		.state {
-			margin-right: 4%;
-		}
+    #promoSub {
+      border: 4px solid #f5c832;
+      background-color: #f5c832;
+      color: #FFF;
+      font-size: 16px;
+      font-weight: 600;
+      margin-left: 10px;
+      border-radius: 5px;
+    }
+  }
 
-		.state {
-			width: 16%;
-			float: left;
-		}
+  .info-errors {
+    margin-top: 100px;
+  }
 
-		.zip {
-			width: 28%;
-			float: left;
-		}
+  .account-form {
+    .position(absolute,0,0,0,0);
+    min-height: 90%;
 
-		.comments {
-			display: inline-flex;
-		}
+    .input {
+      margin-bottom: 1px;
+      width: 100%;
+      display: block;
 
-		#sbmtOrder {
-			width: 80%;
-			max-width: 350px;
-			margin: auto;
-		}
-	}
+      input {
+        width: 90%;
+        max-width: 400px;
+        margin-bottom: 5px;
+        padding: .5rem;
+      }
+    }
 
-	.promo {
-		margin-bottom: 30px;
+    .at-input {
+      padding-top: 7px;
+    }
 
-		@media screen and (max-width: 600px) {
-			padding-left: 0;
-		}
-
-		.enterPromo {
-			border: 1px solid @forange;
-			color: @forange;
-			font-size: 18px;
-			background-color: transparent;
-			cursor: pointer;
-	    font-weight: 600;
-	    padding: 5px 10px;
-	    height: 39px;
-	    border-radius: 5px;
-		}
-	}
-
-	.submitPromo {
-		display: flex;
-		flex-direction: row;
-
-		@media screen and (max-width: 600px) {
-			padding-left: 0;
-			text-align: center;
-		}
-
-		#promo {
-			padding: 10px;
-			height: 40px;
-			font-size: 16px;
-			border: 2px solid #f5c832;
-			border-radius: 5px;
-			color: #666;
-		}
-
-		#promoSub {
-			border: 4px solid #f5c832;
-			background-color: #f5c832;
-			color: #FFF;
-			font-size: 16px;
-			font-weight: 600;
-			margin-left: 10px;
-			border-radius: 5px;
-		}
-	}
-
-	.info-errors {
-		margin-top: 100px;
-	}
-
-	.account-form {
-		.position(absolute,0,0,0,0);
-		min-height: 90%;
-
-		.input {
-	    margin-bottom: 1px;
-	    width: 100%;
-	    display: block;
-
-	    input {
-	      width: 90%;
-	      max-width: 400px;
-	      margin-bottom: 5px;
-	      padding: .5rem;
-	    }
-	  }
-
-	  label {
-	  }
-
-	  .at-input {
-	    padding-top: 7px;
-	  }
-
-	  .at-pwd-link {
-	    margin-top: 1em;
-	  }
+    .at-pwd-link {
+      margin-top: 1em;
+    }
   }
 
   .list-errors {
@@ -277,185 +206,114 @@
   .agreeToTerms {
     margin: 40px auto;
     width: 80%;
-	}
+  }
 
-	.skip-title {
-		margin-top: 50px;
-	}
+  .skip-title {
+    margin-top: 50px;
+  }
 
-	.nextDelivery {
-		color: @fgreene;
-		margin-bottom: 60px;
-	}
-
-	.unsub {
-    text-align: center;
-    bottom: 20px;
-    position: absolute;
-    width: 100%;
-    right: 0;
-    left: 0;
-
-    @media screen and (max-width: 400px) {
-			position: relative;
-			margin-top: 70px;	
-		}
-
-		#Unsub {
-			color: #ccb53d;
-		}
-	}
+  .nextDelivery {
+    color: @fgreene;
+    margin-bottom: 60px;
+  }
 }
 
 
 #account-page {
-	.panel-body {
-		text-align: center;
+  .panel-body {
+    text-align: center;
 
-		p {
-			color: #ccb53d;
-		}
+    p {
+      color: #ccb53d;
+    }
 
     @media screen and (max-width: 450px) {
       margin: 0 auto;
-	    max-width: 480px;
-	    width: 80%;
-	    padding-top: 4em;
+      max-width: 480px;
+      width: 80%;
+      padding-top: 4em;
     }
-	}
+  }
 
-	h1 {
-		color:#333;
-		text-align: center;
-	}
+  h1 {
+    color:#333;
+    text-align: center;
+  }
 
-	.settings {
-		button {
-			width: 80%;
-			min-width: 290px;
-			margin-bottom: 30px;
-		}
-	}
+  .delivery-details {
+    margin-top: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
-	.order-report {
-		position: absolute;
-		left: 10%;
-		width: 40%;
+  .form-group {
+    margin-bottom: 7px;
+    vertical-align: middle;
 
-		@media screen and (max-width: 600px) {
-      position: relative;
-      width: 100%;
+    input, select {
+      border: 1px solid #999;
+      padding: 5px;
+      float: right;
+    }
+    
+    .form-control {
+      width: 60%;
     }
 
-		ul {
+    select {
+      width: 45%;
+    }
 
-			li {
-				list-style: none;
-				margin-left: 0;
-			}
-		}
+    textarea {
+      border: 1px solid #999;
+      float: right;
 
-		hr {
+      @media screen and (max-width: 395px) {
+        width: 100% !important;
+      }
+    }
 
-			@media screen and (max-width: 600px) {
-	      width: 60%;
-	      margin-left: 0px;
-	    }
-		}
-	}
+    ul {
+      -webkit-padding-start: 0px;
+      -webkit-margin-before: 0;
+      -webkit-margin-after: 0;
 
-	.delivery-details {
-		margin-top: 50px;
-		padding-left: 10px;
-		padding-right: 10px;
-	}
+      li {
+        list-style: none;
+        display: block;
+        position: relative;
+        height: auto;
+        float: left;
+      
+        input[type=radio] {
+          position: absolute;
+          visibility: hidden;
+        }
 
-	.form-group {
-		margin-bottom: 7px;
-		vertical-align: middle;
+        &:hover {
+          border-color: #007444;
 
-		input, select {
-			border: 1px solid #999;
-			padding: 5px;
-			float: right;
-		}
+          label {
+            color: #007444;
+          }
+        }
 
-		.control-label {
-		}
-		
-		.form-control {
-			width: 60%;
-		}
+        input[type=radio]:checked ~ label {
+          color: #007444;
+        }
+      }
+    }
+  }
 
-		select {
-			width: 45%;
-		}
-
-		textarea {
-			border: 1px solid #999;
-			float: right;
-
-			@media screen and (max-width: 395px) {
-				width: 100% !important;
-			}
-		}
-
-		h3 {
-
-		}
-
-		ul {
-			-webkit-padding-start: 0px;
-			-webkit-margin-before: 0;
-	    -webkit-margin-after: 0;
-
-			li {
-				list-style: none;
-			  display: block;
-			  position: relative;
-			  height: auto;
-			  float: left;
-			
-				input[type=radio] {
-					position: absolute;
-					visibility: hidden;
-				}
-
-				&:hover {
-					border-color: #007444;
-
-					label {
-						color: #007444;
-					}
-				}
-
-				input[type=radio]:checked ~ label {
-					color: #007444;
-				}
-			}
-		}
-	}
-
-	#DeliveryForm {
-		div {
-			label {
-				@media screen and (min-width: 700px) {
-					flex-direction: row;
-					justify-content: space-between;
-				}
-			}
-		}
-	}
-
-	.sbmt-button {
-		text-align: center;
-		margin-top: 20px;
-		margin-bottom: 35px;
+  .sbmt-button {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 35px;
 
 
-		.sbmtOrder {
-			display: inline-block;
-			width: 85%;
-		}
-	}
+    .sbmtOrder {
+      display: inline-block;
+      width: 85%;
+    }
+  }
 }

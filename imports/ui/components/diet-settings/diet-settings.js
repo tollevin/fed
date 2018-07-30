@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 import { lodash } from 'meteor/erasaur:meteor-lodash';
 
+import { SETTING_SESSION, MAIN } from '/imports/ui/lib/constants/settings';
+
 import {
   ALL_FOODS, VEGETARIAN_FOODS, VEGAN_FOODS, PESCATARIAN_FOODS, PALEO_FOODS,
 } from '/imports/ui/lib/pack_picker/diet_food_restrictions.js';
@@ -17,7 +19,6 @@ Template.Diet_settings.onCreated(function dietSettingsOnCreated() {
   // this.plan = new ReactiveVar(Meteor.user().subscriptions.plan.id);
   this.diet = new ReactiveVar(Meteor.user().diet);
   this.restrictions = new ReactiveVar(Meteor.user().restrictions);
-  this.deliveryDay = new ReactiveVar(Meteor.user().preferredDelivDay);
 });
 
 Template.Diet_settings.onRendered(function dietSettingsOnRendered() { });
@@ -33,7 +34,25 @@ Template.Diet_settings.helpers({
     return allRestrictions;
   },
 
-  activeDiet: diet => diet,
+  activeRestricted: (restriction) => {
+    const userRestrictions = Template.instance().restrictions;
+    return (userRestrictions && !!userRestrictions.curValue.find(r => r === restriction)) ? 'checked' : '';
+  },
+
+  activeFadeInRestricted: (restriction) => {
+    const userRestrictions = Template.instance().restrictions;
+    return (userRestrictions && !!userRestrictions.curValue.find(r => r === restriction)) ? 'fadeIn' : '';
+  },
+
+  isActiveDiet: (diet) => {
+    const currentDiet = Template.instance().diet;
+    return (currentDiet && (diet === currentDiet.curValue));
+  },
+
+  activeDietClicked: (diet) => {
+    const currentDiet = Template.instance().diet;
+    return (currentDiet && (diet === currentDiet.curValue)) ? 'clicked' : '';
+  },
 });
 
 Template.Diet_settings.events({
@@ -46,6 +65,7 @@ Template.Diet_settings.events({
     }
 
     event.currentTarget.classList.add('clicked');
+    event.currentTarget.checked = true;
 
     const foodNamesToClasses = foodList => foodList.map(foodStr => `.${foodStr}`).join(', ');
     const foodNamesToIds = foodList => foodList.map(foodStr => `#${foodStr}`).join(', ');
@@ -118,17 +138,17 @@ Template.Diet_settings.events({
     Session.set('loading', true);
 
     const formdata = {};
-    if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
-    const restrictions = templateInstance.findAll('.checked');
-    formdata.restrictions = [];
-    for (let i = restrictions.length - 1; i >= 0; i -= 1) {
-      formdata.restrictions.push(restrictions[i].id);
-    }
-    const user = formdata;
 
-    Meteor.call('updateUser', Meteor.userId(), user, () => {});
+    const checkedDiet = document.querySelector('.diet label.clicked');
+    if (checkedDiet && checkedDiet.innerText) formdata.diet = checkedDiet.innerText;
+
+    formdata.restrictions = templateInstance
+      .findAll('.checked')
+      .map(restriction => restriction.id);
+
+    Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
     sAlert.success('Settings saved!');
-    Session.set('stage', 0);
+    Session.set(SETTING_SESSION, MAIN);
     Session.set('loading', false);
   },
 });

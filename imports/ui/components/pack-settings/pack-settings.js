@@ -4,6 +4,8 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 
+import { SETTING_SESSION, MAIN } from '/imports/ui/lib/constants/settings';
+
 import './pack-settings.less';
 import './pack-settings.html';
 
@@ -43,7 +45,7 @@ Template.Pack_settings.events({
 
     Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
     sAlert.success('Settings saved!');
-    Session.set('stage', 0);
+    Session.set(SETTING_SESSION, MAIN);
     Session.set('loading', false);
   },
 });

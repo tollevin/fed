@@ -1,38 +1,38 @@
 <template name="Diet_settings">
-	<div id="Diet-Settings">
-		<h3 class="title-auth">Diet Settings</h3>
-		<div id="Diets" class="form-group" data-required="true">
-			<h2>Change your diet:</h2>
-			<ul>
-				{{#each diet in diets}}
-					<li class="diet" id="{{diet}}">
-						<input type="radio" name="diet" id="{{diet}}" value="{{diet}}" checked="{{activeDiet diet}}">
-						<label for="{{diet}}">
-							{{diet}}
-						</label>
-					</li>
-				{{/each}}
-			</ul>
-		</div>
-		<div id="Restrictions" class="form-group" data-required="true">
-			<h2>Change what you avoid:</h2>
-			<ul id="Restrictions">
-				{{#each restriction in restrictions}}
-				<li id="{{restriction}}" class="restriction">
-					<div class="restriction-img">
-						<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
-						<img src="icons/food/{{restriction}}.gif">
-						<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
-					</div>
-					<p>{{restriction}}</p>
-				</li>
-				{{/each}}
-			</ul>
-		</div>
-		<div class="sbmt-button">
-			<button id="edit-diet-settings" type="submit" class="btn-secondary">
-				Save
-			</button>
-		</div>
-	</div>
+  <div id="Diet-Settings">
+    <h3 class="title-auth">Diet Settings</h3>
+    <div id="Diets" class="form-group" data-required="true">
+      <h2>Change your diet:</h2>
+      <ul>
+        {{#each diet in diets}}
+          <li class="diet" id="{{diet}}">
+            <input type="radio" name="diet" id="{{diet}}" value="{{diet}}" class="{{activeDietClicked diet}}" checked="{{isActiveDiet diet}}">
+            <label for="{{diet}}" class="{{activeDietClicked diet}}">
+              {{diet}}
+            </label>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+    <div id="Restrictions" class="form-group" data-required="true">
+      <h2>Change what you avoid:</h2>
+      <ul id="Restrictions">
+        {{#each restriction in restrictions}}
+        <li id="{{restriction}}" class="restriction {{activeRestricted restriction}}">
+          <div class="restriction-img">
+            <img class="no-circle {{restriction}} {{activeFadeInRestricted restriction}}" src="icons/food/no-circle.gif">
+            <img src="icons/food/{{restriction}}.gif">
+            <img class="no-line {{restriction}} {{activeFadeInRestricted restriction}}" src="icons/food/no-line.gif">
+          </div>
+          <p>{{restriction}}</p>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="sbmt-button">
+      <button id="edit-diet-settings" type="submit" class="btn-secondary">
+        Save
+      </button>
+    </div>
+  </div>
 </template>

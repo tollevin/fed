@@ -1,0 +1,21 @@
+<template name="Main_settings">
+  <div id="Main_settings">
+    <div class="settings">
+      <h1 class="title-auth">Account Settings</h1>
+      <p class="subtitle-auth">Setup or change your account settings here</p>
+      <div class="button-holder">
+      <button id="payment-settings" class="acct-btn">Payment Settings</button>
+      {{#if subscribed}}
+        <button id="diet-settings" class="acct-btn">Diet Settings</button>
+        <button id="manage-subscriptions" class="acct-btn">Delivery Settings</button>
+      {{else}}
+        <button id="Sub" class="acct-btn">
+          <span>Subscribe Today</span>
+          <span>and get 5% off</span>
+          <span>all packs!</span>
+        </button>
+      {{/if}}
+      </div>
+    </div>
+  </div>
+</template>
