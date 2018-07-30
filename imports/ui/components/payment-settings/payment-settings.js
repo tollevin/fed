@@ -39,7 +39,8 @@ Template.PaymentSettings.onRendered(function paymentSettingsOnRendered() {
 
 Template.PaymentSettings.helpers({
   sources() {
-    return Session.get('stripe_customer').sources;
+    const stripeCustomer = Session.get('stripe_customer');
+    return stripeCustomer ? stripeCustomer.sources : undefined;
   },
 
   showCardElement() {

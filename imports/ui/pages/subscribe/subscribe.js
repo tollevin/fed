@@ -53,6 +53,7 @@ Template.Subscribe.onCreated(function subscribeOnCreated() {
 
 Template.Subscribe.onRendered(function freeTrialOnRendered() {
   Session.set('loading', false);
+  Session.set('stage', 0);
 });
 
 Template.Subscribe.helpers({

@@ -1,34 +1,31 @@
 <template name="Pack_Editor_Item">
-	<article class="menu-item animated {{attributes}} {{restrictions}}">
-		<a class="item-details" href="#">
-			<div class="menu-item-img">
-				<img src="{{photo}}" alt="" />
-			</div>
-			<div class="menu-item-name">
-				<h3>{{name}}</h3>
-			</div>
-		</a>
+  <article class="menu-item animated {{attributes}} {{restrictions}}">
+    <a class="item-details" href="#">
+      <div class="menu-item-img">
+        <img src="{{photo}}" alt="" />
+      </div>
+      <div class="menu-item-name">
+        <h3>{{name}}</h3>
+      </div>
+    </a>
 
-		<div class="menu-item-icons"></div>
+    <div class="menu-item-icons"></div>
 
-		<div class="menu-item-attributes">
-			{{veggie}}
-			{{paleo}}
-		</div>
+    <div class="menu-item-attributes">
+      {{veggie}}
+      {{paleo}}
+    </div>
 
-		<div class="menu-item-desc">
-			<p>{{description}}</p>
-		</div>
+    <div class="menu-item-desc">
+      <p>{{description}}</p>
+    </div>
 
-		<div class="item-interactive">
-			<div class="menu-item-price">
-			</div>
-
-			<div class="counter">
-				<button class="remove-from-pack" name="{{_id}}"><i class="fa fa-minus"></i></button>
-				<input type="number" value="{{tally _id}}" readonly>
-				<button class="add-to-pack" name="{{_id}}"><i class="fa fa-plus"></i></button>
-			</div>
-		</div>
-	</article>
+    <div class="item-interactive">
+      <div class="counter">
+        <button class="remove-from-pack" name="{{_id}}"><i class="fa fa-minus"></i></button>
+        <input type="number" value="{{tally _id}}" readonly>
+        <button class="add-to-pack" name="{{_id}}"><i class="fa fa-plus"></i></button>
+      </div>
+    </div>
+  </article>
 </template>

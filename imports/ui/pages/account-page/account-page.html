@@ -15,15 +15,11 @@
 							<h1 class="title-auth">Account Settings</h1>
 							<p class="subtitle-auth">Setup or change your account settings here</p>
 							<div class="button-holder">
+							<button id="payment-settings" class="acct-btn">Payment Settings</button>
 							{{#if subscribed}}
 								<button id="diet-settings" class="acct-btn">Diet Settings</button>
 								<button id="manage-subscriptions" class="acct-btn">Manage Subscriptions</button>
-								<button id="delivery-settings" class="acct-btn">Delivery Settings</button>
-								<button id="payment-settings" class="acct-btn">Payment Settings</button>
-								<!-- <button id="skipWeek" class="acct-btn">Skip / Cancel</button> -->
 							{{else}}
-								<button id="delivery-settings" class="acct-btn">Delivery Settings</button>
-								<button id="payment-settings" class="acct-btn">Payment Settings</button>
 								<button id="Sub" class="acct-btn">
 									<span>Subscribe Today</span>
 									<span>and get 5% off</span>
@@ -115,28 +111,6 @@
 
 					{{#if payment}}
 						{{> PaymentSettings}}
-					{{/if}}
-
-					{{#if skipper}}
-						<h2 class="title-auth skip-title">Your Next Delivery</h2>
-						<p>
-							is scheduled for
-						</p>
-						<h3 class="nextDelivery">{{ nextDeliv }} 6-9pm</h3>
-						{{#if beforeThurs}}
-							{{#if skipping}}
-								<p>Changed your mind?</p>
-								<button id="unskip" class="btn-secondary">Unskip</button>
-							{{else}}
-								<p>Want to skip your next delivery? Just click below</p>
-								<button id="skip" class="btn-secondary">Skip</button>
-							{{/if}}
-						{{else}}
-							<p>Skip before Wednesdays at Midnight</p>
-						{{/if}}
-						<div class="unsub">
-							<a id="Unsub" href="#unsubscribe">Or click here if you would like to unsubscribe</a>
-						</div>
 					{{/if}}
 
 					{{#if unsub}}

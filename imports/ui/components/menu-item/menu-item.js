@@ -19,9 +19,7 @@ Template.Menu_item.helpers({
     if (!att) { return undefined; }
 
     const keys = Object.keys(att);
-    const filtered = keys.filter(function(key) {
-      return att[key];
-    });
+    const filtered = keys.filter(key => att[key]);
     let classes = '';
     for (let i = filtered.length - 1; i >= 0; i -= 1) {
       classes += `${filtered[i]} `;
@@ -96,30 +94,33 @@ Template.Menu_item.events({
 
     if (afterWednes || sundayBeforeNoon) {
       Session.set('customizable', false);
-    } else if (Meteor.user()) {
-      const options = {
-        fields: {
-          _id: 1,
-          name: 1,
-          category: 1,
-          description: 1,
-          price_per_unit: 1,
-          photo: 1,
-        },
-      };
-
-      const item = Items.findOne({ name: Template.currentData().name }, options);
-      const order = Session.get('Order');
-
-      // Ping here (GA)
-      // Possibly Ping here if adding to an empty cart (GA)
-
-
-      order.items.push(item);
-      Session.set('Order', order);
-    } else {
-      FlowRouter.go('join');
+      return;
     }
+
+    if (!Meteor.user()) {
+      FlowRouter.go('join');
+      return;
+    }
+
+    const options = {
+      fields: {
+        _id: 1,
+        name: 1,
+        category: 1,
+        description: 1,
+        price_per_unit: 1,
+        photo: 1,
+      },
+    };
+
+    const item = Items.findOne({ name: Template.currentData().name }, options);
+    const order = Session.get('Order');
+
+    // Ping here (GA)
+    // Possibly Ping here if adding to an empty cart (GA)
+
+    order.items.push(item);
+    Session.set('Order', order);
   },
 
   'click .remove-from-cart'(event) {
@@ -130,36 +131,39 @@ Template.Menu_item.events({
 
     if (afterWednes || sundayBeforeNoon) {
       Session.set('customizable', false);
-    } else if (Meteor.user()) {
-      const options = {
-        fields: {
-          _id: 1,
-          name: 1,
-          category: 1,
-        },
-      };
+      return;
+    }
 
-      const item = Items.findOne({ name: Template.currentData().name }, options);
-      const order = Session.get('Order');
-
-      // Ping here (GA)
-      // Possibly Ping here if adding to an empty cart (GA)
-      let itemInCart;
-      // let packWithItem;
-      for (let i = order.items.length - 1; i >= 0; i -= 1) {
-        if (order.items[i]._id === item._id) {
-          itemInCart = {
-            index: i,
-          };
-        }
-      }
-
-      if (itemInCart) {
-        order.items.splice(itemInCart.index, 1);
-        Session.set('Order', order);
-      }
-    } else {
+    if (!Meteor.user()) {
       FlowRouter.go('join');
+      return;
+    }
+
+    const options = {
+      fields: {
+        _id: 1,
+        name: 1,
+        category: 1,
+      },
+    };
+
+    const item = Items.findOne({ name: Template.currentData().name }, options);
+    const order = Session.get('Order');
+
+    // Ping here (GA)
+    // Possibly Ping here if adding to an empty cart (GA)
+
+    let itemInCart;
+    // let packWithItem;
+    for (let i = order.items.length - 1; i >= 0; i -= 1) {
+      if (order.items[i]._id === item._id) {
+        itemInCart = { index: i };
+      }
+    }
+
+    if (itemInCart) {
+      order.items.splice(itemInCart.index, 1);
+      Session.set('Order', order);
     }
   },
 });

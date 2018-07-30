@@ -3,6 +3,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { Accounts } from 'meteor/accounts-base';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
+import { addTriggers } from './routeTriggers';
 
 // Import user templates
 
@@ -11,6 +12,8 @@ import '/imports/ui/layouts/admin-layout/admin-layout.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates/accounts-templates.js';
+
+addTriggers(FlowRouter);
 
 FlowRouter.route('/', {
   name: 'App.home',
