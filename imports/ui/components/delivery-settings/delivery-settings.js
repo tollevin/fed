@@ -38,7 +38,7 @@ Template.Delivery_settings.events({
     Meteor.call('updateUser', Meteor.userId(), formdata, (error) => {
       if (error) { return; }
       sAlert.success('Delivery settings updated!');
-      Session.set('stage', 0);
+      Session.set('settingStage', 0);
     });
     Session.set('loading', false);
   },

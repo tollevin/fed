@@ -23,7 +23,7 @@ const isSkipping = (user) => {
 };
 
 Template.Account_page.onCreated(function accountPageOnCreated() {
-  Session.set('stage', 0);
+  Session.set('settingStage', 0);
 
   this.autorun(() => {
     const subs = this.subscribe('thisUserData');
@@ -59,11 +59,11 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
 });
 
 Template.Account_page.helpers({
-  forward: () => !(Session.get('stage') === 0),
-  settingsMenu: () => Session.get('stage') === 0,
-  diet: () => Session.get('stage') === 1,
-  delivery: () => Session.get('stage') === 2,
-  payment: () => Session.get('stage') === 3,
+  forward: () => !(Session.get('settingStage') === 0),
+  settingsMenu: () => Session.get('settingStage') === 0,
+  diet: () => Session.get('settingStage') === 1,
+  delivery: () => Session.get('settingStage') === 2,
+  payment: () => Session.get('settingStage') === 3,
 });
 
 Template.Account_page.events({
@@ -74,21 +74,21 @@ Template.Account_page.events({
 
   'click #diet-settings'(event) {
     event.preventDefault();
-    Session.set('stage', 1);
+    Session.set('settingStage', 1);
   },
 
   'click #manage-subscriptions'(event) {
     event.preventDefault();
-    Session.set('stage', 2);
+    Session.set('settingStage', 2);
   },
 
   'click #payment-settings'(event) {
     event.preventDefault();
-    Session.set('stage', 3);
+    Session.set('settingStage', 3);
   },
 
   'click #Back'(event) {
     event.preventDefault();
-    Session.set('stage', 0);
+    Session.set('settingStage', 0);
   },
 });

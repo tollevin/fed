@@ -43,7 +43,7 @@ Template.Pack_settings.events({
 
     Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
     sAlert.success('Settings saved!');
-    Session.set('stage', 0);
+    Session.set('settingStage', 0);
     Session.set('loading', false);
   },
 });
