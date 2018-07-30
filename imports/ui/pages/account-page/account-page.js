@@ -64,7 +64,6 @@ Template.Account_page.helpers({
   diet: () => Session.get('stage') === 1,
   delivery: () => Session.get('stage') === 2,
   payment: () => Session.get('stage') === 3,
-  unsub: () => Session.get('stage') === 5,
 });
 
 Template.Account_page.events({
@@ -91,27 +90,5 @@ Template.Account_page.events({
   'click #Back'(event) {
     event.preventDefault();
     Session.set('stage', 0);
-  },
-
-
-  'click #Unsub'(event) {
-    event.preventDefault();
-    Session.set('stage', 5);
-  },
-
-  'click #Unsubscribe'(event) {
-    event.preventDefault();
-
-    const subscriptionId = Meteor.user().subscriptions.id;
-
-    Meteor.call('cancelSubscription', subscriptionId, (error, response) => {
-      if (error) { return; }
-      const user = Meteor.user();
-      user.subscriptions = response;
-
-      Meteor.call('updateUser', Meteor.userId(), user);
-      sAlert.success('You have been unsubscribed. We hope to see you again soon!');
-      FlowRouter.go('/');
-    });
   },
 });
