@@ -18,17 +18,25 @@ import './confirmation-page.html';
 Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!Meteor.userId()) {
     FlowRouter.go('signin');
-  } else {
-    const order = Session.get('orderId');
-    this.order = new ReactiveVar(order);
-
-    this.autorun(() => {
-      this.subscribe('DeliveryWindows.single', order.delivery_window_id);
-    });
+    return;
   }
+
+  const order = Session.get('orderId');
+
+  if (!order) {
+    FlowRouter.go('/');
+    return;
+  }
+
+  this.order = new ReactiveVar(order);
+
+  this.autorun(() => {
+    this.subscribe('DeliveryWindows.single', order.delivery_window_id);
+  });
 });
 
 Template.Confirmation.helpers({
+  orderExists: () => !!Template.instance().order,
   orderStatus: () => {
     const order = Template.instance().order.get();
     switch (order.status) {
