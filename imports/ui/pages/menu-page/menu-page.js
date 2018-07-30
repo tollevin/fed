@@ -184,6 +184,11 @@ Template.Menu_meals.helpers({
   meals: () => Items.find(createSelector('Meal'), { sort: { rank: -1 } }),
 });
 
+Template.Menu_plates.helpers({
+  has: () => some(Items.find(createSelector('Plate'), { sort: { rank: -1 } })),
+  plates: () => Items.find(createSelector('Plate'), { sort: { rank: -1 } }),
+});
+
 Template.Menu_snacks.helpers({
   has: () => some(Items.find(createSelector('Snack'), { sort: { rank: -1 } })),
   snacks: () => Items.find(createSelector('Snack'), { sort: { rank: -1 } }),

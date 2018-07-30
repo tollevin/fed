@@ -20,6 +20,7 @@
         {{#if Template.subscriptionsReady}}
           <div class="menu-items">
             {{> Menu_meals}}
+            {{> Menu_plates}}
             {{> Menu_snacks}}
             {{> Menu_drinks}}
             {{> Menu_packs}}
@@ -41,6 +42,17 @@
     {{#transition in="zoomIn" out="zoomOut"}}
       <h2>Meals</h2>
       {{#each meals}}
+        {{> Menu_item}}
+      {{/each}}
+    {{/transition}}
+  {{/if}}
+</template>
+
+<template name="Menu_plates">
+  {{#if has}}
+    {{#transition in="zoomIn" out="zoomOut"}}
+      <h2>Plates</h2>
+      {{#each plates}}
         {{> Menu_item}}
       {{/each}}
     {{/transition}}

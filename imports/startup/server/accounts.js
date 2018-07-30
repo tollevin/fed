@@ -121,7 +121,7 @@ Meteor.methods({
       const { subscriptions } = user;
       const items = [];
 
-      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
+      for (let i = subscriptions.length - 1; i >= 0; i--) {
         const subItem = Items.findOne({ _id: subscriptions[i].item_id });
         items.push(subItem);
       }
