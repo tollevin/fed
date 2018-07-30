@@ -101,20 +101,6 @@ Template.Account_page.helpers({
 });
 
 Template.Account_page.events({
-  'click #Plan li label'(event, templateInstance) {
-    const plans = templateInstance.findAll('#Plan li');
-    plans[0].style.borderColor = '#034b2c';
-    plans[1].style.borderColor = '#034b2c';
-    plans[2].style.borderColor = '#034b2c';
-    plans[3].style.borderColor = '#034b2c';
-    plans[0].style.backgroundColor = 'transparent';
-    plans[1].style.backgroundColor = 'transparent';
-    plans[2].style.backgroundColor = 'transparent';
-    plans[3].style.backgroundColor = 'transparent';
-    event.target.closest('li').style.borderColor = '#fff';
-    event.target.closest('li').style.backgroundColor = '#fff';
-  },
-
   'click #DeliveryDay li label'(event, templateInstance) {
     const delivery = templateInstance.findAll('#DeliveryDay li');
     delivery[0].style.borderColor = '#034b2c';
