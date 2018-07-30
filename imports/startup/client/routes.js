@@ -33,12 +33,6 @@ FlowRouter.route('/menu', {
   action: () => BlazeLayout.render('App_body', { main: 'Menu_page' }),
 });
 
-FlowRouter.route('/market', {
-  name: 'Market',
-  waitOn: () => import('/imports/ui/pages/market-page/market-page.js'),
-  action: () => BlazeLayout.render('App_body', { main: 'Market_page' }),
-});
-
 FlowRouter.route('/about-us', {
   name: 'About.us',
   waitOn: () => import('/imports/ui/pages/about-page/about-page.js'),
