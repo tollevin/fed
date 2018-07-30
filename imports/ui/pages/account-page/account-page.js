@@ -3,9 +3,10 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
-import { sAlert } from 'meteor/juliancwirko:s-alert';
 
-import { SETTING_SESSION, MAIN, DIET, DELIVERY, PAYMENT } from '/imports/ui/lib/constants/settings';
+import {
+  SETTING_SESSION, MAIN, DIET, DELIVERY, PAYMENT,
+} from '/imports/ui/lib/constants/settings';
 
 import '/imports/ui/components/main-settings/main-settings.js';
 import '/imports/ui/components/payment-settings/payment-settings.js';

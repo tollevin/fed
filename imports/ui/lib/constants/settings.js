@@ -1,4 +1,4 @@
-export const SETTING_SESSION = "settingStage";
+export const SETTING_SESSION = 'settingStage';
 
 export const MAIN = 0;
 export const DIET = 1;
