@@ -1,130 +1,107 @@
 <template name="Subscribe">
-	<div id="Subscribe" class="page">
-		{{#if signIn}}
-			{{> signUp_Modal}}
-		{{/if}}
-		<div class="content-scrollable">
+  <div id="Subscribe" class="page">
+    {{#if signIn}}
+      {{> signUp_Modal}}
+    {{/if}}
+    <div class="content-scrollable">
       <div class="wrapper-auth">
-				<form class="subscribe-form">
-					<div class="panel-body">
-	      		<div id="Subscribe-status-bar">
-	      			<ul>
-	      				<li class="{{currentForm 'diet'}}">diet</li>
-	      				<hr>
-	      				<li class="{{currentForm 'plan'}}">plan</li>
-	      				<hr>
-	      				<li class="{{currentForm 'meals'}}">meals</li>
-	      				<hr>
-	      				<li class="{{currentForm 'delivery'}}">payment</li>
-	      			</ul>
-	      		</div>
+        <form class="subscribe-form">
+          <div class="panel-body">
+            <div id="Subscribe-status-bar">
+              <ul>
+                <li class="{{currentForm 'diet'}}">diet</li>
+                <hr>
+                <li class="{{currentForm 'plan'}}">plan</li>
+                <hr>
+                <li class="{{currentForm 'meals'}}">meals</li>
+                <hr>
+                <li class="{{currentForm 'delivery'}}">payment</li>
+              </ul>
+            </div>
 
-						{{#if diet}}
-							<div id="Diet">
-								<h1>Subscribe Today</h1>
-								<p>and get 5% off all orders for life!</p>
-								<div class="question">
-									<h2>What do you eat?</h2>
-									<div id="Diets">
-										<ul>
-											<li class="diet" id="Omnivore">
-												<input type="radio" name="diet" id="omnivore" value="Omnivore">
-												<label for="omnivore">
-													Omnivore
-												</label>
-											</li>
-											<li class="diet" id="Vegetarian">
-												<input type="radio" name="diet" id="vegetarian" value="Vegetarian">
-												<label for="vegetarian">
-													Vegetarian
-												</label>
-											</li>
-											<li class="diet" id="Vegan">
-												<input type="radio" name="diet" id="vegan" value="Vegan">
-												<label for="vegan">
-													Vegan
-												</label>
-											</li>
-											<li class="diet" id="Pescetarian">
-												<input type="radio" name="diet" id="pescetarian" value="Pescetarian">
-												<label for="pescetarian">
-													Pescetarian
-												</label>
-											</li>
-											<li class="diet" id="Paleo">
-												<input type="radio" name="diet" id="paleo" value="Paleo">
-												<label for="paleo">
-													Paleo
-												</label>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="question">
-									<h2>What do you avoid?</h2>
-									<ul id="Restrictions">
-										{{#each restriction in restrictions}}
-										<li id="{{restriction}}" class="restriction">
-											<div class="restriction-img">
-												<img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
-												<img src="icons/food/{{restriction}}.gif">
-												<img class="no-line {{restriction}}" src="icons/food/no-line.gif">
-											</div>
-											<p>{{restriction}}</p>
-										</li>
-										{{/each}}
-									</ul>
-								</div>
-							</div>
-							<div class="sbmt-button">
-								<a href="choose-plan" id="next0" class="btn-secondary next">
-									Next
-								</a>
-							</div>
-						{{/if}}
+            {{#if diet}}
+              <div id="Diet">
+                <h1>Subscribe Today</h1>
+                <p>and get 5% off all orders for life!</p>
+                <div class="question">
+                  <h2>What do you eat?</h2>
+                  <div id="Diets">
+                    <ul>
+                      <li class="diet" id="Omnivore">
+                        <input type="radio" name="diet" id="omnivore" value="Omnivore">
+                        <label for="omnivore">
+                          Omnivore
+                        </label>
+                      </li>
+                      <li class="diet" id="Vegetarian">
+                        <input type="radio" name="diet" id="vegetarian" value="Vegetarian">
+                        <label for="vegetarian">
+                          Vegetarian
+                        </label>
+                      </li>
+                      <li class="diet" id="Vegan">
+                        <input type="radio" name="diet" id="vegan" value="Vegan">
+                        <label for="vegan">
+                          Vegan
+                        </label>
+                      </li>
+                      <li class="diet" id="Pescetarian">
+                        <input type="radio" name="diet" id="pescetarian" value="Pescetarian">
+                        <label for="pescetarian">
+                          Pescetarian
+                        </label>
+                      </li>
+                      <li class="diet" id="Paleo">
+                        <input type="radio" name="diet" id="paleo" value="Paleo">
+                        <label for="paleo">
+                          Paleo
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="question">
+                  <h2>What do you avoid?</h2>
+                  <ul id="Restrictions">
+                    {{#each restriction in restrictions}}
+                    <li id="{{restriction}}" class="restriction">
+                      <div class="restriction-img">
+                        <img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
+                        <img src="icons/food/{{restriction}}.gif">
+                        <img class="no-line {{restriction}}" src="icons/food/no-line.gif">
+                      </div>
+                      <p>{{restriction}}</p>
+                    </li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+              <div class="sbmt-button">
+                <a href="choose-plan" id="next0" class="btn-secondary next">
+                  Next
+                </a>
+              </div>
+            {{/if}}
 
-	      		{{#if plan}}
-							<div id="Plan" class="form-group" data-required="true">
-								<h2>Choose your plan:</h2>
-								{{> Pack_schemas diet=userDiet}}
-							</div>
+            {{#if plan}}
+              <div id="Plan" class="form-group" data-required="true">
+                <h2>Choose your plan:</h2>
+                {{> Pack_schemas diet=userDiet}}
+              </div>
 
-							<div id="Delivery" class="form-group" data-required="true">
-								<h2>Choose your preferred delivery date:</h2>
-								{{> Delivery_day_toggle}}
-								<!-- <h2>And your first delivery:</h2>
-								<div class="delivery-window-holder">
-									{{#transition in="fadeIn" out="fadeOut"}}
-										{{#if thisWeek}}
-											<div class="delivery-window">
-												<p>{{thisWeek}}</p>
-												<div class="subscription-errors"></div>
-												<div class="buttons-group">
-													<a id="skip-first-delivery" href="skip">Skip</a> -->
-													<a href="#payment-details" id="next1" class="btn-secondary next">Ok</a>
-												<!-- </div>
-											</div>
-										{{else}}
-											<div class="delivery-window">
-												{{nextWeek}}
-												<div class="subscription-errors"></div>
-												<div class="buttons-group">
-													<a id="unskip-first-delivery" href="unskip">Unskip</a>
-													<a href="#payment-details" id="next1" class="btn-secondary next">Ok</a>
-												</div>
-											</div>
-										{{/if}}
-									{{/transition}}
-								</div> -->
-							</div>
-						{{/if}}
+              <div id="Delivery" class="form-group" data-required="true">
+                <h2>Choose your preferred delivery date:</h2>
+                {{> Delivery_day_toggle}}
+                <a href="#payment-details" id="next1" class="btn-secondary next">Ok</a>
+              </div>
+            {{/if}}
 
-						{{#if meals}}
-							{{> Pack_Editor}}
-						{{/if}}
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+            {{#if meals}}
+              {{> Pack_Editor}}
+            {{/if}}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>

@@ -1,58 +1,81 @@
 <head><meta name="fragment" content="!"></head>
 <template name="Menu_page">
   <div id="menu-page" class="page {{cartOpen}}">
-		{{> Menu_toolbar}}
-		<!-- {{> Mobile_Menu_overlay}} -->
+    {{> Menu_toolbar}}
+    <!-- {{> Mobile_Menu_overlay}} -->
 
-		<div id="content-scrollable">
-			<div id="menu-view">
-				{{#if notSubscribed}}
-					<div class="header">
-						<div class="getPack">
-							<p>Get a Pack</p>
-						</div>
-						<div class="subscribe-cta">
-							<p>Subscribe today to get 5% off <br class="hide-mobile">your customized meal plan</p>
-							<button class="button toSubscribe">Subscribe</button>
-						</div>
-					</div>
-				{{/if}}
-				{{#if Template.subscriptionsReady}}
-					<div class="menu-items">
-						{{> Menu_meals}}
-						<!-- {{> Menu_snacks}} -->
-						<div class="buttons-group">
-							<button class="toMarket">Shop Products</button>
-							<button class="toCheckout">Checkout</button>
-						</div>
-					</div>
-				{{else}}
-					<p>Loading...</p>
-				{{/if}}
-			</div>
-		</div>
-	</div>
+    <div id="content-scrollable">
+      <div id="menu-view">
+        {{#if notSubscribed}}
+          <div class="header">
+            <div class="getPack">
+              <p>Get a Pack</p>
+            </div>
+            <div class="subscribe-cta">
+              <p>Subscribe today to get 5% off <br class="hide-mobile">your customized meal plan</p>
+              <button class="button toSubscribe">Subscribe</button>
+            </div>
+          </div>
+        {{/if}}
+        {{#if Template.subscriptionsReady}}
+          <div class="menu-items">
+            {{> Menu_meals}}
+            {{> Menu_snacks}}
+            {{> Menu_drinks}}
+            {{> Menu_packs}}
+            <div class="buttons-group">
+              <button class="toCheckout">Checkout</button>
+            </div>
+          </div>
+        {{else}}
+          <p>Loading...</p>
+        {{/if}}
+      </div>
+    </div>
+  </div>
 </template>
 
 <template name="Menu_meals">
-	{{#transition in="zoomIn" out="zoomOut"}}
-		<h2>Meals</h2>
-		{{#each meals}}
-			{{> Menu_item}}
-		{{/each}}
-	{{/transition}}
+  <!-- Inefficient -->
+  {{#if has}}
+    {{#transition in="zoomIn" out="zoomOut"}}
+      <h2>Meals</h2>
+      {{#each meals}}
+        {{> Menu_item}}
+      {{/each}}
+    {{/transition}}
+  {{/if}}
 </template>
 
 <template name="Menu_snacks">
-	<h2>Snacks</h2>
-	{{#each snacks}}
-		{{> Menu_item}}
-	{{/each}}
+  {{#if has}}
+    {{#transition in="zoomIn" out="zoomOut"}}
+      <h2>Snacks</h2>
+      {{#each snacks}}
+        {{> Menu_item}}
+      {{/each}}
+    {{/transition}}
+  {{/if}}
 </template>
 
 <template name="Menu_drinks">
-	<h2>Drinks</h2>
-	{{#each drinks}}
-		{{> Menu_item}}
-	{{/each}}
+  {{#if has}}
+    {{#transition in="zoomIn" out="zoomOut"}}
+      <h2>Drinks</h2>
+      {{#each drinks}}
+        {{> Menu_item}}
+      {{/each}}
+    {{/transition}}
+  {{/if}}
+</template>
+
+<template name="Menu_packs">
+  {{#if has}}
+    {{#transition in="zoomIn" out="zoomOut"}}
+      <h2>Packs</h2>
+      {{#each packs}}
+        {{> Menu_item}}
+      {{/each}}
+    {{/transition}}
+  {{/if}}
 </template>

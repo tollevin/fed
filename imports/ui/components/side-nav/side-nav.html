@@ -23,7 +23,6 @@
             {{/if}}
           {{/if}}
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
-          <li><a href="/market" class="{{currentPage 'Market.show'}}" alt="Market">Market</a></li>
           <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
           {{#if notSubscribed}}
             <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
@@ -43,7 +42,6 @@
           {{#transition in="fadeIn" out="fadeOut"}}
             <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
             <li><a href="/menu" class="shop-menu-link {{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
-            <li><a href="/market" class="{{currentPage 'Market'}}" alt="Menu">Market</a></li>
             {{#if showMarketLinks}}
               <ul class="menu-link-ul">
                 <li><a href="/menu#Meals" class="{{currentPage 'menu#Meals'}}" alt="Meals">Meals</a></li>

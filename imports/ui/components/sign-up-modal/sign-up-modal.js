@@ -16,9 +16,15 @@ import './sign-up-modal.html';
 Template.signUp_Modal.events({
   'click .close, click .modal-background' () {
     Session.set('needsZip', false);
+    Session.set('signIn', false);
+  },
+
+  'click .modal-content' (event) {
+    event.stopPropagation();
   },
 
   'change .zip' (event, templateInstance) {
+    event.preventDefault();
     const zipInput = templateInstance.find('.zip');
     if (yesZips.indexOf(zipInput.value.toString()) < 0) {
       // alert user they are outside of our delivery range

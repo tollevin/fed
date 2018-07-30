@@ -546,7 +546,7 @@ Template.Pack_Editor.events({
 
     Session.set('pack', null);
     Session.set('overlay', null);
-    FlowRouter.go('/market');
+    FlowRouter.go('/menu');
   },
 
   'click .toCheckout'(event) {
