@@ -5,6 +5,7 @@ import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
 
+import '/imports/ui/components/main-settings/main-settings.js';
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/diet-settings/diet-settings.js';
 import '/imports/ui/components/delivery-settings/delivery-settings.js';
@@ -64,7 +65,6 @@ Template.Account_page.helpers({
   delivery: () => Session.get('stage') === 2,
   payment: () => Session.get('stage') === 3,
   unsub: () => Session.get('stage') === 5,
-  subscribed: () => Meteor.user().subscriptions && Meteor.user().subscriptions.status !== 'canceled', // FIX!!!!
 });
 
 Template.Account_page.events({
