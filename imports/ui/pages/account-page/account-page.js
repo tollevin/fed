@@ -101,16 +101,6 @@ Template.Account_page.helpers({
 });
 
 Template.Account_page.events({
-  'click #DeliveryDay li label'(event, templateInstance) {
-    const delivery = templateInstance.findAll('#DeliveryDay li');
-    delivery[0].style.borderColor = '#034b2c';
-    delivery[1].style.borderColor = '#034b2c';
-    delivery[0].style.backgroundColor = 'transparent';
-    delivery[1].style.backgroundColor = 'transparent';
-    event.target.closest('li').style.borderColor = '#fff';
-    event.target.closest('li').style.backgroundColor = '#fff';
-  },
-
   'click #Sub' (event) {
     event.preventDefault();
     FlowRouter.go('/subscribe');
@@ -136,25 +126,6 @@ Template.Account_page.events({
     Session.set('stage', 0);
   },
 
-  'click .sbmtPack'(event, templateInstance) {
-    event.preventDefault();
-    Session.set('loading', true);
-
-    const formdata = {};
-    if (document.querySelector('input[name="plan"]:checked').value) formdata.plan = document.querySelector('input[name="plan"]:checked').value;
-    if (document.querySelector('input[name="diet"]:checked').value) formdata.plan = document.querySelector('input[name="diet"]:checked').value;
-    if (document.querySelector('input[name="delivery"]:checked').value) formdata.preferredDelivDay = document.querySelector('input[name="delivery"]:checked').value;
-
-    formdata.restrictions = templateInstance
-      .findAll('.checked')
-      .map(restriction => restriction.id);
-
-    Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
-    sAlert.success('Settings saved!');
-    Session.set('stage', 0);
-    Session.set('loading', false);
-  },
-
   'submit #DeliveryForm'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
@@ -170,9 +141,8 @@ Template.Account_page.events({
     if (templateInstance.find('[name="customer.address.state"]').value) formdata.address_state = templateInstance.find('[name="customer.address.state"]').value;
     if (templateInstance.find('[name="customer.address.zipCode"]').value) formdata.address_zipcode = templateInstance.find('[name="customer.address.zipCode"]').value;
     if (templateInstance.find('[name="destinationComments"]').value) formdata.comments = templateInstance.find('[name="destinationComments"]').value;
-    const user = formdata;
 
-    Meteor.call('updateUser', Meteor.userId(), user, (error) => {
+    Meteor.call('updateUser', Meteor.userId(), formdata, (error) => {
       if (error) { return; }
       sAlert.success('Delivery settings updated!');
       Session.set('stage', 0);
