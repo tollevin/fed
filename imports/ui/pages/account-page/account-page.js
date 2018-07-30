@@ -65,7 +65,6 @@ Template.Account_page.helpers({
   payment: () => Session.get('stage') === 3,
   unsub: () => Session.get('stage') === 5,
   subscribed: () => Meteor.user().subscriptions && Meteor.user().subscriptions.status !== 'canceled', // FIX!!!!
-  cardNo: () => `************${Session.get('stripe_customer').sources.data[0].last4}`,
 });
 
 Template.Account_page.events({

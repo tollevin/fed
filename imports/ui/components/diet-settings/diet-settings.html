@@ -6,8 +6,8 @@
       <ul>
         {{#each diet in diets}}
           <li class="diet" id="{{diet}}">
-            <input type="radio" name="diet" id="{{diet}}" value="{{diet}}" checked="{{activeDiet diet}}">
-            <label for="{{diet}}">
+            <input type="radio" name="diet" id="{{diet}}" value="{{diet}}" class="{{activeDietClicked diet}}" checked="{{isActiveDiet diet}}">
+            <label for="{{diet}}" class="{{activeDietClicked diet}}">
               {{diet}}
             </label>
           </li>
@@ -18,11 +18,11 @@
       <h2>Change what you avoid:</h2>
       <ul id="Restrictions">
         {{#each restriction in restrictions}}
-        <li id="{{restriction}}" class="restriction">
+        <li id="{{restriction}}" class="restriction {{activeRestricted restriction}}">
           <div class="restriction-img">
-            <img class="no-circle {{restriction}}" src="icons/food/no-circle.gif">
+            <img class="no-circle {{restriction}} {{activeFadeInRestricted restriction}}" src="icons/food/no-circle.gif">
             <img src="icons/food/{{restriction}}.gif">
-            <img class="no-line {{restriction}}" src="icons/food/no-line.gif">
+            <img class="no-line {{restriction}} {{activeFadeInRestricted restriction}}" src="icons/food/no-line.gif">
           </div>
           <p>{{restriction}}</p>
         </li>

@@ -1,21 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
-import { lodash } from 'meteor/erasaur:meteor-lodash';
-
 
 import './delivery-settings.less';
 import './delivery-settings.html';
-
-Template.Delivery_settings.onCreated(function dietSettingsOnCreated() {
-  // const user = Meteor.user();
-  // this.plan = new ReactiveVar(Meteor.user().subscriptions.plan.id);
-  this.diet = new ReactiveVar(Meteor.user().diet);
-  this.restrictions = new ReactiveVar(Meteor.user().restrictions);
-  this.deliveryDay = new ReactiveVar(Meteor.user().preferredDelivDay);
-});
 
 Template.Delivery_settings.helpers({
   first_name: () => Meteor.user().first_name,
@@ -29,7 +18,7 @@ Template.Delivery_settings.helpers({
   comments: () => Meteor.user().deliv_comments,
 });
 
-Template.Diet_settings.events({
+Template.Delivery_settings.events({
   'submit #DeliveryForm'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
@@ -44,7 +33,7 @@ Template.Diet_settings.events({
     if (templateInstance.find('[name="customer.address.city"]').value) formdata.address_city = templateInstance.find('[name="customer.address.city"]').value;
     if (templateInstance.find('[name="customer.address.state"]').value) formdata.address_state = templateInstance.find('[name="customer.address.state"]').value;
     if (templateInstance.find('[name="customer.address.zipCode"]').value) formdata.address_zipcode = templateInstance.find('[name="customer.address.zipCode"]').value;
-    if (templateInstance.find('[name="destinationComments"]').value) formdata.comments = templateInstance.find('[name="destinationComments"]').value;
+    if (templateInstance.find('[name="destinationComments"]').value) formdata.deliv_comments = templateInstance.find('[name="destinationComments"]').value;
 
     Meteor.call('updateUser', Meteor.userId(), formdata, (error) => {
       if (error) { return; }
