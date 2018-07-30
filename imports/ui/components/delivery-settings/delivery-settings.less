@@ -1,0 +1,78 @@
+#Delivery_settings {
+  #DeliveryForm {
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+
+    div {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      margin-top: 10px;
+
+      label {
+        display: inline-table;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 7px 11px;
+        border: none;
+        font-size: 15px
+      }
+
+      select {
+        padding: 0 0 0 11px;
+        height: 32px;
+        background: #FFF;
+        border-radius: 0;
+      }
+    }
+
+    .firstName,
+    .lastName,
+    .city {
+      width: 48%;
+      float: left;
+    }
+
+    .firstName,
+    .city,
+    .state {
+      margin-right: 4%;
+    }
+
+    .state {
+      width: 16%;
+      float: left;
+    }
+
+    .zip {
+      width: 28%;
+      float: left;
+    }
+
+    .comments {
+      display: inline-flex;
+    }
+
+    #sbmtOrder {
+      width: 80%;
+      max-width: 350px;
+      margin: auto;
+    }
+
+    div {
+      label {
+        @media screen and (min-width: 700px) {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}

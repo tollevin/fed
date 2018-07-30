@@ -1,0 +1,76 @@
+<template name="Delivery_settings">
+  <div id="Delivery_settings">
+    <form id="DeliveryForm">
+      <h2>Delivery Details</h2>
+        <div class="form-group firstName" data-required="true">
+          <label for="7TGxZsAyFk9zWn6rj" class="control-label">First Name</label> 
+          <input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" required data-schema-key="customer.firstName" class="form-control" value="{{first_name}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group lastName" data-required="true">
+          <label for="zS5Mw3HxCAsACZCui" class="control-label">Last Name</label> 
+          <input type="text" name="customer.lastName" id="zS5Mw3HxCAsACZCui" required data-schema-key="customer.lastName" class="form-control" value="{{last_name}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group" data-required="true">
+          <label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label> 
+          <input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" required data-schema-key="customer.phone" class="form-control" value="{{phone}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group" data-required="true">
+          <label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label> 
+          <input type="email" name="customer.email" id="EsBbF9Ads8fEFFAut" required data-schema-key="customer.email" class="form-control" value="{{email}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group" data-required="true">
+          <label for="KcYJxhTp8QLnZEk2c" class="control-label">Address Line 1</label> 
+          <input type="text" name="customer.address.line1" id="KcYJxhTp8QLnZEk2c" required data-schema-key="customer.address.line1" class="form-control" value="{{address1}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="L2ukezE6Qb2SMWw2i" class="control-label">Address Line 2</label> 
+          <input type="text" name="customer.address.line2" id="L2ukezE6Qb2SMWw2i" data-schema-key="customer.address.line2" class="form-control" value="{{address2}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group city" data-required="true">
+          <label for="gPijubZcAW4ZYuDGA" class="control-label">City</label> 
+          <input type="text" name="customer.address.city" id="gPijubZcAW4ZYuDGA" required data-schema-key="customer.address.city" class="form-control" value="{{city}}">
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group state" data-required="true">
+          <label for="D268gw6JgngaxcDMt" class="control-label">State</label> 
+          <select name="customer.address.state" id="D268gw6JgngaxcDMt" required data-schema-key="customer.address.state" autocomplete="off" class="form-control"> 
+            <option value="">(Select One)</option>  <option value="AL">AL</option>  <option value="AK">AK</option>  <option value="AS">AS</option>  <option value="AZ">AZ</option>  <option value="AR">AR</option>  <option value="CA">CA</option>  <option value="CO">CO</option>  <option value="CT">CT</option>  <option value="DE">DE</option>  <option value="DC">DC</option>  <option value="FM">FM</option>  <option value="FL">FL</option>  <option value="GA">GA</option>  <option value="GU">GU</option>  <option value="HI">HI</option>  <option value="ID">ID</option>  <option value="IL">IL</option>  <option value="IN">IN</option>  <option value="IA">IA</option>  <option value="KS">KS</option>  <option value="KY">KY</option>  <option value="LA">LA</option>  <option value="ME">ME</option>  <option value="MH">MH</option>  <option value="MD">MD</option>  <option value="MA">MA</option>  <option value="MI">MI</option>  <option value="MN">MN</option>  <option value="MS">MS</option>  <option value="MO">MO</option>  <option value="MT">MT</option>  <option value="NE">NE</option>  <option value="NV">NV</option>  <option value="NH">NH</option>  <option value="NJ">NJ</option>  <option value="NM">NM</option>  <option value="NY" selected="selected">NY</option>  <option value="NC">NC</option>  <option value="ND">ND</option>  <option value="MP">MP</option>  <option value="OH">OH</option>  <option value="OK">OK</option>  <option value="OR">OR</option>  <option value="PW">PW</option>  <option value="PA">PA</option>  <option value="PR">PR</option>  <option value="RI">RI</option>  <option value="SC">SC</option>  <option value="SD">SD</option>  <option value="TN">TN</option>  <option value="TX">TX</option>  <option value="UT">UT</option>  <option value="VT">VT</option>  <option value="VI">VI</option>  <option value="VA">VA</option>  <option value="WA">WA</option>  <option value="WV">WV</option>  <option value="WI">WI</option>  <option value="WY">WY</option> 
+          </select>
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group zip" data-required="true"> 
+          <label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label> 
+          <input type="number" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" required data-schema-key="customer.address.zipCode" value="{{zip}}" class="form-control number" />
+          <span class="help-block"></span>
+        </div>
+
+        <div class="form-group comments"> 
+          <label for="9Lt5aG8uEGEL5KfnL" class="control-label">Comments for delivery</label>
+          <textarea name="destinationComments" id="9Lt5aG8uEGEL5KfnL"  data-schema-key="destinationComments" rows="8" cols="20" class="form-control"  value="{{comments}}"></textarea>
+          <span class="help-block"></span>
+        </div>
+
+      <div class="info-errors"></div>
+
+      <div class="sbmt-button">
+        <button type="submit" form="DeliveryForm" class="sbmtAddress btn-secondary">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</template>

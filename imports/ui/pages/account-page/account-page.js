@@ -7,6 +7,7 @@ import { sAlert } from 'meteor/juliancwirko:s-alert';
 
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/diet-settings/diet-settings.js';
+import '/imports/ui/components/delivery-settings/delivery-settings.js';
 
 import './account-page.less';
 import './account-page.html';
@@ -64,40 +65,7 @@ Template.Account_page.helpers({
   payment: () => Session.get('stage') === 3,
   unsub: () => Session.get('stage') === 5,
   subscribed: () => Meteor.user().subscriptions && Meteor.user().subscriptions.status !== 'canceled', // FIX!!!!
-  first_name: () => Meteor.user().first_name,
-  last_name: () => Meteor.user().last_name,
-  phone: () => Meteor.user().phone,
-  email: () => Meteor.user().emails[0].address,
-  address1: () => Meteor.user().address_line_1,
-  address2: () => Meteor.user().address_line_2,
-  city: () => Meteor.user().address_city,
-  zip: () => Meteor.user().address_zipcode,
-  comments: () => Meteor.user().deliv_comments,
   cardNo: () => `************${Session.get('stripe_customer').sources.data[0].last4}`,
-  nextDeliv() {
-    const user = Meteor.user();
-    if (!user) { return undefined; }
-
-    const { preferredDelivDay, subscription } = user;
-    if (!subscription) { return undefined; }
-
-    const { status: subscriptionStatus, trial_end: trialEnd } = subscription;
-
-    if (subscriptionStatus === 'trialing') {
-      const toAdd = (preferredDelivDay === 'sunday') ? 3 : 4;
-      const nextDelivTime = (trialEnd * 1000) + (toAdd * 24 * 60 * 60 * 1000);
-      const nextDeliv = new Date(nextDelivTime).toLocaleDateString();
-      return `${preferredDelivDay.charAt(0).toUpperCase() + preferredDelivDay.slice(1)}, ${nextDeliv}`;
-    }
-
-    if (subscriptionStatus === 'active') {
-      const dy = (preferredDelivDay === 'sunday') ? 0 : 1;
-      const now = new moment();
-
-      return now.day(dy + 7).format('dddd, M/D/YY');
-    }
-    return undefined;
-  },
 });
 
 Template.Account_page.events({
@@ -124,30 +92,6 @@ Template.Account_page.events({
   'click #Back'(event) {
     event.preventDefault();
     Session.set('stage', 0);
-  },
-
-  'submit #DeliveryForm'(event, templateInstance) {
-    event.preventDefault();
-    Session.set('loading', true);
-
-    const formdata = {};
-    if (templateInstance.find('[name="customer.firstName"]').value) formdata.first_name = templateInstance.find('[name="customer.firstName"]').value;
-    if (templateInstance.find('[name="customer.lastName"]').value) formdata.last_name = templateInstance.find('[name="customer.lastName"]').value;
-    if (templateInstance.find('[name="customer.phone"]').value) formdata.phone = templateInstance.find('[name="customer.phone"]').value;
-    if (templateInstance.find('[name="customer.email"]').value) formdata.email = templateInstance.find('[name="customer.email"]').value;
-    if (templateInstance.find('[name="customer.address.line1"]').value) formdata.address_line_1 = templateInstance.find('[name="customer.address.line1"]').value;
-    if (templateInstance.find('[name="customer.address.line2"]').value) formdata.address_line_2 = templateInstance.find('[name="customer.address.line2"]').value;
-    if (templateInstance.find('[name="customer.address.city"]').value) formdata.address_city = templateInstance.find('[name="customer.address.city"]').value;
-    if (templateInstance.find('[name="customer.address.state"]').value) formdata.address_state = templateInstance.find('[name="customer.address.state"]').value;
-    if (templateInstance.find('[name="customer.address.zipCode"]').value) formdata.address_zipcode = templateInstance.find('[name="customer.address.zipCode"]').value;
-    if (templateInstance.find('[name="destinationComments"]').value) formdata.comments = templateInstance.find('[name="destinationComments"]').value;
-
-    Meteor.call('updateUser', Meteor.userId(), formdata, (error) => {
-      if (error) { return; }
-      sAlert.success('Delivery settings updated!');
-      Session.set('stage', 0);
-    });
-    Session.set('loading', false);
   },
 
 
