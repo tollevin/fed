@@ -127,7 +127,9 @@ Template.Checkout_page.onDestroyed(function checkoutPageOnDestroyed() {
 
 Template.Checkout_page.helpers({
   packItems() {
-    const itemList = Session.get('Order').items;
+    const order = Session.get('Order');
+    if(!order) { return undefined; }
+    const itemList = order.items;
     const itemTally = {};
 
     for (let i = itemList.length - 1; i >= 0; i -= 1) {
@@ -143,7 +145,10 @@ Template.Checkout_page.helpers({
   },
 
   isPlan(item) {
-    const { subscriptions } = Session.get('Order');
+    const order = Session.get('Order');
+    if(!order) { return undefined; }
+
+    const { subscriptions } = order;
     if (!subscriptions) { return undefined; }
     for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
       const subItemName = subscriptions[i].item_name;
