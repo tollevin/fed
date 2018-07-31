@@ -3,6 +3,7 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
 
 import { Promos } from './promos.js';
 
@@ -19,6 +20,8 @@ export const insertPromo = new ValidatedMethod({
     timesUsed: { type: Number, optional: true },
     users: { type: Object, optional: true },
     active: { type: Boolean, optional: true },
+    referrer: { type: String, optional: true },
+    referredEmail: { type: String, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -31,11 +34,10 @@ export const insertPromo = new ValidatedMethod({
     expires,
     useLimitPerCustomer,
     useLimitTotal,
+    referrer,
+    referredEmail,
   }) {
-    const promos = [];
-    for (let i = 0; i < codes.length; i += 1) {
-      const code = codes[i];
-
+    const promos = codes.map((code) => {
       const promo = {
         code,
         createdAt: new Date(),
@@ -48,14 +50,67 @@ export const insertPromo = new ValidatedMethod({
         timesUsed: 0,
         users: {},
         active: true,
+        referrer,
+        referredEmail,
       };
 
       const promoId = Promos.insert(promo);
-      const result = Promos.findOne({ _id: promoId });
-      promos.push(result);
-    }
+      return Promos.findOne({ _id: promoId });
+    });
 
     return promos;
+  },
+});
+
+export const createEmailPromos = new ValidatedMethod({
+  name: 'Meteor.createEmailPromos',
+  validate: new SimpleSchema({
+    emails: { type: [String] },
+    userId: { type: String },
+  }).validator(),
+  run(req) {
+    const { emails, userId } = req;
+    const user = Meteor.users.findOne({ _id: userId });
+    const referredPromos = Promos.find({ referrer: userId }).fetch();
+
+    const allUserReferredEmail = referredPromos.map(({ referredEmail }) => (referredEmail));
+    const res = emails
+      // don't allow referring self
+      .filter(email => email !== user.email)
+      // don't allow referring same person multiple times
+      .filter(email => !allUserReferredEmail.find(referredEmail => email === referredEmail))
+      .map((email) => {
+        const credit = 5; // 5 dollars? // is it a percentage?
+        const code = makeGiftCardCode();
+
+        const promo = {
+          codes: [code],
+          desc: `Fed Gift Card for ${email}`,
+          credit,
+          useLimitPerCustomer: 1,
+          useLimitTotal: 1,
+          timesUsed: 0,
+          active: true,
+          users: {},
+          referrer: userId,
+          referredEmail: email, // this is userId not email.  Does not exist yet
+        };
+
+        insertPromo.call(promo); // this is ineffecient... do this for now though
+
+        Meteor.call('sendGiftToUserViaEmail', {
+          recipientEmail: email,
+          value: credit * 100,
+          code,
+          customerFirstName: user.email,
+          message: 'Enjoy your Referral',
+          cardType: 'Referral Coupon Code',
+        }, () => {});
+
+        return promo;
+      });
+
+    return res;
   },
 });
 
@@ -115,6 +170,7 @@ const PROMOS_METHODS = _.pluck([
   retrievePromo,
   usePromo,
   removePromo,
+  createEmailPromos,
 ], 'name');
 
 if (Meteor.isServer) {

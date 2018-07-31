@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
     <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
-  <title>{{ customer.first_name }} sent you a Fed Gift Card!</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+  <title>{{ customer.first_name }} sent you a Fed {{cardType}}!</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
   <!-- Web Font / @font-face : BEGIN -->
   <!-- NOTE: If web fonts are not required, lines 9 - 26 can be safely removed. -->
@@ -191,7 +191,7 @@
                     <img src="https://www.getfednyc.com/FEDlogo.png" width="100" height="100" alt="Fed Logo" border="0" align="center" class="fluid" style="width: 33%; max-width: 220px; height: auto; margin: 15px auto 0px;">
                   </div>
                   <div>
-                    <span style="font-size: 22px; font-weight: 600; margin-top: -100px;">Gift Card</span>
+                    <span style="font-size: 22px; font-weight: 600; margin-top: -100px;">{{cardType}}</span>
                   </div>
 
                   <br><br>

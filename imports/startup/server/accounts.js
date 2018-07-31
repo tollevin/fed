@@ -20,8 +20,47 @@ import { Items } from '/imports/api/items/items.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { insertPromo } from '/imports/api/promos/methods.js';
 
-Meteor.methods({
+export const sendGiftToUserViaEmail = ({
+  recipientEmail,
+  value,
+  code,
+  customerFirstName,
+  message,
+  cardType,
+}) => {
+  const emailData = {
+    value,
+    code,
+    customer: { first_name: customerFirstName },
+    message,
+    cardType,
+  };
 
+  SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
+
+  Template.giftCardHtmlEmail.helpers({
+    doctype() {
+      return '<!DOCTYPE HTML>';
+    },
+
+    amountString(inCents) {
+      return (inCents / 100).toFixed(2);
+    },
+  });
+
+  Email.send({
+    to: recipientEmail,
+    bcc: 'info@getfednyc.com',
+    from: 'no-reply@getfednyc.com',
+    subject: `${customerFirstName} sent you a Fed Gift Card!`,
+    html: SSR.render('giftCardHtmlEmail', emailData),
+  });
+};
+
+Meteor.methods({
+  async sendGiftToUserViaEmail(...args) {
+    sendGiftToUserViaEmail(...args);
+  },
   async updateUser(userId, data) {
     // check(userId, String);
     // check(data, { credit: Number });
@@ -213,19 +252,6 @@ Meteor.methods({
   },
 
   async sendGiftCard (giftCard) {
-    // need to check this
-    // check(giftCard, {
-    //   recipient: {
-    //     first_name: String,
-    //     last_name: String,
-    //     email: String,
-    //   },
-    //   customer: {
-    //     first_name: String,
-    //   },
-    //   value: Number,
-    // });
-
     const {
       recipient: {
         first_name: recipientFirstName,
@@ -239,22 +265,10 @@ Meteor.methods({
     } = giftCard;
 
     try {
-      SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
-
-      Template.giftCardHtmlEmail.helpers({
-        doctype() {
-          return '<!DOCTYPE HTML>';
-        },
-
-        amountString(inCents) {
-          return (inCents / 100).toFixed(2);
-        },
-      });
-
-      const emailData = { ...giftCard, code: makeGiftCardCode() };
+      const code = makeGiftCardCode();
 
       const promo = {
-        codes: [emailData.code],
+        codes: [code],
         desc: `Fed Gift Card for ${recipientFirstName} ${recipientLastName}`,
         credit: value / 100,
         useLimitPerCustomer: 1,
@@ -265,15 +279,16 @@ Meteor.methods({
 
       insertPromo.call(promo);
 
-      Email.send({
-        to: recipientEmail,
-        bcc: 'info@getfednyc.com',
-        from: 'no-reply@getfednyc.com',
-        subject: `${customerFirstName} sent you a Fed Gift Card!`,
-        html: SSR.render('giftCardHtmlEmail', emailData),
+      sendGiftToUserViaEmail({
+        recipientEmail,
+        value: giftCard.value,
+        code,
+        customerFirstName,
+        message: giftCard.message,
+        cardType: 'Gift Card',
       });
 
-      return emailData.code;
+      return code;
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
