@@ -1,3 +1,5 @@
+/* eslint no-console: [0] */
+
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
@@ -328,7 +330,7 @@ Template.Main_admin.events({
 
       // if more than one order this week, alert!
       if (ordersThisWeek.length > 1) {
-        console.log(`Alert! ${user_id} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
+        console.log(`Alert! ${userId} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
       }
     }
 
@@ -395,7 +397,7 @@ Template.Main_admin.events({
 
       // if more than one order this week, alert!
       if (ordersThisWeek.length > 1) {
-        console.log(`Alert! ${user_id} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
+        console.log(`Alert! ${userId} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
       }
     }
 
