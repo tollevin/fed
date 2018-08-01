@@ -67,9 +67,10 @@ export const createEmailPromos = new ValidatedMethod({
   validate: new SimpleSchema({
     emails: { type: [String] },
     userId: { type: String },
+    credit: { type: Number, optional: true }
   }).validator(),
   run(req) {
-    const { emails, userId } = req;
+    const { emails, userId, credit } = req;
     const user = Meteor.users.findOne({ _id: userId });
     const referredPromos = Promos.find({ referrer: userId }).fetch();
 
@@ -80,7 +81,7 @@ export const createEmailPromos = new ValidatedMethod({
       // don't allow referring same person multiple times
       .filter(email => !allUserReferredEmail.find(referredEmail => email === referredEmail))
       .map((email) => {
-        const credit = 5; // 5 dollars? // is it a percentage?
+        const credit = credit || 5; // 5 dollars? // is it a percentage?
         const code = makeGiftCardCode();
 
         const promo = {
