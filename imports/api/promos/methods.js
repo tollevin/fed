@@ -21,7 +21,6 @@ export const insertPromo = new ValidatedMethod({
     users: { type: Object, optional: true },
     active: { type: Boolean, optional: true },
     referrer: { type: String, optional: true },
-    referredEmail: { type: String, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -35,7 +34,6 @@ export const insertPromo = new ValidatedMethod({
     useLimitPerCustomer,
     useLimitTotal,
     referrer,
-    referredEmail,
   }) {
     const promos = codes.map((code) => {
       const promo = {
@@ -51,7 +49,6 @@ export const insertPromo = new ValidatedMethod({
         users: {},
         active: true,
         referrer,
-        referredEmail,
       };
 
       const promoId = Promos.insert(promo);
@@ -67,38 +64,37 @@ export const createEmailPromos = new ValidatedMethod({
   validate: new SimpleSchema({
     emails: { type: [String] },
     userId: { type: String },
-    credit: { type: Number, optional: true }
+    credit: { type: Number, optional: true },
   }).validator(),
   run(req) {
-    const { emails, userId, credit } = req;
+    const { emails, userId, credit: reqCredit } = req;
     const user = Meteor.users.findOne({ _id: userId });
-    const referredPromos = Promos.find({ referrer: userId }).fetch();
+    let promo = Promos.findOne({ referrer: userId });
 
-    const allUserReferredEmail = referredPromos.map(({ referredEmail }) => (referredEmail));
+    const credit = promo ? promo.credit : (reqCredit || 5); // 5 dollars? // is it a percentage?
+    const code = promo ? promo.code : makeGiftCardCode();
+
+    if (!promo) {
+      promo = {
+        codes: [code],
+        desc: `User ${user.email}'s referral code`,
+        credit,
+        useLimitPerCustomer: 1,
+        useLimitTotal: Number.MAX_SAFE_INTEGER,
+        timesUsed: 0,
+        active: true,
+        users: {},
+        referrer: userId,
+      };
+
+      insertPromo.call(promo);
+    }
+
     const res = emails
       // don't allow referring self
       .filter(email => email !== user.email)
-      // don't allow referring same person multiple times
-      .filter(email => !allUserReferredEmail.find(referredEmail => email === referredEmail))
+      // needs to not send email to someone who has made a purchase
       .map((email) => {
-        const credit = credit || 5; // 5 dollars? // is it a percentage?
-        const code = makeGiftCardCode();
-
-        const promo = {
-          codes: [code],
-          desc: `Fed Gift Card for ${email}`,
-          credit,
-          useLimitPerCustomer: 1,
-          useLimitTotal: 1,
-          timesUsed: 0,
-          active: true,
-          users: {},
-          referrer: userId,
-          referredEmail: email, // this is userId not email.  Does not exist yet
-        };
-
-        insertPromo.call(promo); // this is ineffecient... do this for now though
-
         Meteor.call('sendGiftToUserViaEmail', {
           recipientEmail: email,
           value: credit * 100,

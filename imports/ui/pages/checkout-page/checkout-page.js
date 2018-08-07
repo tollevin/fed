@@ -11,6 +11,7 @@ import { Blaze } from 'meteor/blaze';
 
 // Collections
 import { Promos } from '/imports/api/promos/promos.js';
+import { Orders } from '/imports/api/orders/orders.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Zip Codes
@@ -306,17 +307,34 @@ Template.Checkout_page.events({
 
     const code = templateInstance.find('[id="promo"]').value.toUpperCase();
     const user = Meteor.userId();
+
+    const hasMadePurchase = userId => !!Orders.findOne({
+      user_id: userId,
+      paid_at: { $ne: undefined },
+    });
+
     templateInstance.subscribe('single.promo', code, {
       onReady () {
         Session.set('newUser', false);
 
         const promo = Promos.findOne({ code });
 
+        // this is in the browser so unsafe
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
+          return;
         }
         if (promo && promo.users[user] === promo.useLimitPerCustomer) {
           sAlert.error('Sorry, that code has already been used.');
+          return;
+        }
+        if (promo && promo.referrer === user) {
+          sAlert.error("Sorry, you can't use your own code.");
+          return;
+        }
+
+        if (promo && promo.referrer && hasMadePurchase(user)) {
+          sAlert.error('Sorry, you already have used a referral.');
           return;
         }
         if (promo && promo.credit) {

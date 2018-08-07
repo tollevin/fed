@@ -123,10 +123,6 @@ Promos.schema = new SimpleSchema({
     type: String,
     label: 'Referrer',
   },
-  referredEmail: {
-    type: String,
-    label: 'Referred Email',
-  },
 });
 
 Promos.attachSchema(Promos.schema);
@@ -148,7 +144,6 @@ Promos.publicFields = {
   users: 1,
   active: 1,
   referrer: 1,
-  referredEmail: 1,
 };
 
 Promos.helpers({
