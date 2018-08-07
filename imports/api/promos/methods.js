@@ -6,6 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
 
 import { Promos } from './promos.js';
+import { hasMadePurchase } from '../orders/orders.js';
 
 export const insertPromo = new ValidatedMethod({
   name: 'Meteor.insertPromo',
@@ -96,7 +97,12 @@ export const createEmailPromos = new ValidatedMethod({
     const res = emails
       // don't allow referring self
       .filter(email => email !== user.email)
-      // needs to not send email to someone who has made a purchase
+      .filter((email) => {
+        // needs to not send email to someone who has made a purchase
+        const referredUser = Meteor.users.findOne({ email });
+        const userHasPurchase = referredUser && hasMadePurchase(referredUser._id);
+        return !userHasPurchase;
+      })
       .map((email) => {
         Meteor.call('sendGiftToUserViaEmail', {
           recipientEmail: email,

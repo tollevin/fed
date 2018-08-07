@@ -328,6 +328,10 @@ Orders.schema = new SimpleSchema({
   },
 });
 
+export const hasMadePurchase = userId => !!Orders.findOne({
+  user_id: userId,
+});
+
 Orders.attachSchema(Orders.schema);
 
 // This represents the keys from Orders objects that should be published

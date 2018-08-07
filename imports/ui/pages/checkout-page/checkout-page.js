@@ -11,7 +11,7 @@ import { Blaze } from 'meteor/blaze';
 
 // Collections
 import { Promos } from '/imports/api/promos/promos.js';
-import { Orders } from '/imports/api/orders/orders.js';
+import { hasMadePurchase } from '/imports/api/orders/orders.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Zip Codes
@@ -306,11 +306,6 @@ Template.Checkout_page.events({
 
     const code = templateInstance.find('[id="promo"]').value.toUpperCase();
     const user = Meteor.userId();
-
-    const hasMadePurchase = userId => !!Orders.findOne({
-      user_id: userId,
-      paid_at: { $ne: undefined },
-    });
 
     templateInstance.subscribe('single.promo', code, {
       onReady () {
