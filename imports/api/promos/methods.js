@@ -59,6 +59,8 @@ export const insertPromo = new ValidatedMethod({
   },
 });
 
+const REFERRER_CREDIT = 5; // dollars
+
 export const createEmailPromos = new ValidatedMethod({
   name: 'Meteor.createEmailPromos',
   validate: new SimpleSchema({
@@ -71,7 +73,8 @@ export const createEmailPromos = new ValidatedMethod({
     const user = Meteor.users.findOne({ _id: userId });
     let promo = Promos.findOne({ referrer: userId });
 
-    const credit = promo ? promo.credit : (reqCredit || 5); // 5 dollars? // is it a percentage?
+    // 5 dollars? // is it a percentage?
+    const credit = promo ? promo.credit : (reqCredit || REFERRER_CREDIT);
     const code = promo ? promo.code : makeGiftCardCode();
 
     if (!promo) {
@@ -121,36 +124,6 @@ export const retrievePromo = new ValidatedMethod({
   },
 });
 
-export const usePromo = new ValidatedMethod({
-  name: 'Meteor.usePromo',
-  validate: new SimpleSchema({
-    code: { type: String },
-  }).validator(),
-  run({ code }) {
-    const promo = Promos.findOne({ code });
-    const user = Meteor.userId();
-
-    // In the case where a promo can be used by many users, more than once,
-    // if a user has reached useLimitPerCustomer, return an Error (FIX!)
-    promo.users[user] = promo.users[user] || 0;
-    promo.users[user] += 1;
-
-    promo.timesUsed += 1; // Add a new time used
-
-    // If the promo has now reached useLimitTotal, deactivate
-    if (promo.timesUsed === promo.useLimitTotal) {
-      promo.active = false;
-    }
-
-    // Update promo
-    const updatedPromo = Promos.update(promo._id, {
-      $set: promo,
-    });
-
-    return updatedPromo;
-  },
-});
-
 export const removePromo = new ValidatedMethod({
   name: 'Promos.methods.remove',
   validate: new SimpleSchema({
@@ -165,12 +138,43 @@ export const removePromo = new ValidatedMethod({
 const PROMOS_METHODS = _.pluck([
   insertPromo,
   retrievePromo,
-  usePromo,
   removePromo,
   createEmailPromos,
 ], 'name');
 
 if (Meteor.isServer) {
+  Meteor.methods({
+    usePromo: ({ code }) => {
+      const promo = Promos.findOne({ code });
+      const user = Meteor.userId();
+
+      // In the case where a promo can be used by many users, more than once,
+      // if a user has reached useLimitPerCustomer, return an Error (FIX!)
+      promo.users[user] = promo.users[user] || 0;
+      promo.users[user] += 1;
+
+      promo.timesUsed += 1; // Add a new time used
+
+      // If the promo has now reached useLimitTotal, deactivate
+      if (promo.timesUsed === promo.useLimitTotal) {
+        promo.active = false;
+      }
+
+      if (promo.referrer) {
+        const referrerUser = Meteor.users.findOne({ _id: promo.referrer });
+        const referrerCredit = (referrerUser.credit || 0) + REFERRER_CREDIT;
+        Meteor.users.update(referrerUser._id, { $set: { credit: referrerCredit } });
+      }
+
+      // Update promo
+      const updatedPromo = Promos.update(promo._id, {
+        $set: promo,
+      });
+
+      return updatedPromo;
+    },
+  });
+
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {

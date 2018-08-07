@@ -69,9 +69,7 @@ Meteor.methods({
 
       const cleanCredit = { ...data, credit: data.credit || 0 };
 
-      Meteor.users.update({ _id: user._id }, {
-        $set: cleanCredit,
-      });
+      Meteor.users.update({ _id: user._id }, { $set: cleanCredit });
 
       const creditUpdated = (user.credit !== cleanCredit.credit) && (`Updating stripe credit for ${userId}: ${user.first_name} ${user.last_name}: $${user.credit} to $${cleanCredit.credit}`);
 

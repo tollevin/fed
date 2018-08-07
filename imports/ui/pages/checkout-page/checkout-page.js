@@ -19,7 +19,6 @@ import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
 // Methods
 import { processOrder } from '/imports/api/orders/methods.js';
-import { usePromo } from '/imports/api/promos/methods.js';
 
 // Components
 import '/imports/ui/components/loader/loader.js';
@@ -334,7 +333,7 @@ Template.Checkout_page.events({
         }
 
         if (promo && promo.referrer && hasMadePurchase(user)) {
-          sAlert.error('Sorry, you already have used a referral.');
+          sAlert.error('Sorry, you have purchased already.');
           return;
         }
         if (promo && promo.credit) {
@@ -474,14 +473,7 @@ Template.Checkout_page.events({
         const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
         if (code) {
-          usePromo.call({
-            code,
-          }, (err, res) => {
-            if (err) {
-              return (err);
-            }
-            return (res);
-          });
+          Meteor.call('usePromo', { code });
         }
       } catch (error) {
         sAlert.error(error.reason);
