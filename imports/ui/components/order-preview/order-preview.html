@@ -1,78 +1,104 @@
 <template name="Order_preview">
 	<tr class="order-preview">
 		{{#if Template.subscriptionsReady}}
+			<td class="recipient-name">
+				<p>{{user.first_name}} {{user.last_name}}</p>
+			</td>
+			<td class="recipient-phone">
+				<p>{{user.phone}}</p>
+			</td>
+			<td class="address-line1">
+				<p>{{user.address_line_1}}</p>
+			</td>
+			<td class="address-line2">
+				<p>{{user.address_line_2}}</p>
+			</td>
+			<td class="address-city">
+				<p>{{user.address_city}}</p>
+			</td>
+			<td class="address-zipcode">
+				<p>{{user.address_zipcode}}</p>
+			</td>
+			<td class="address-state">
+				<p>{{user.address_state}}</p>
+			</td>
+			<td class="address-country">
+				<p>USA</p>
+			</td>
+			<td class="delivery-notifications">
+				<p>TRUE</p>
+			</td>
+			<td class="recipient-notes">
+				<p>{{delivery_comments}}</p>
+			</td>
+			<td class="complete-after">
+				<p>{{completeAfter}}</p>
+			</td>
+			<td class="complete-before">
+				<p>{{completeBefore}}</p>
+			</td>
 			<td class="order-paid-at">
-				{{paid_at}}
+				<p>{{paid_at}}</p>
 			</td>
 			<td class="order-number">
-				{{id_number}}
+				<p>{{id_number}}</p>
 			</td>
 			<td class="order-stripe-id">
-				{{payment_id}}
-			</td>
-			<td class="customer-name">
-				<span>{{user.first_name}} {{user.last_name}}</span>
-			</td>
-			<td class="customer-address">
-				{{user.address_line_1}}
-				{{user.address_line_2}}
-			</td>
-			<td class="customer-borough">
-				{{user.address_city}}
-			</td>
-			<td class="customer-zipCode">
-				{{user.address_zipcode}}
-			</td>
-			<td class="customer-phone">
-				{{user.phone}}
-			</td>
-			<td class="delivery-zone">
-				{{deliveryZone}}
+				<p>{{payment_id}}</p>
 			</td>
 			<td class="customer-email">
-				{{user.email}}
+				<p>{{user.email}}</p>
 			</td>
-			<td class="status-light">
-				{{status}}
+			<td class="delivery-day">
+				<p>{{deliv_day}}</p>
+			</td>
+			<td class="delivery-zone">
+				Zone
+			</td>
+			<td class="dietary-restrictions">
+				{{user.restrictions}}
 			</td>
 			<td class="order-items">
-				{{#each dish in dishList}}
-					{{dish.value}} {{dish.name}}<br>
-				{{/each}}
+				<p>
+					{{#each dish in dishList}}
+						{{dish.value}} {{dish.name}}<br>
+					{{/each}}
+				</p>
 			</td>
 			<td class="order-snacks">
-				{{#each snack in snackList}}
-					<span>{{snack.value}} {{snack.name}}</span>
-				{{/each}}
+				<p>
+					{{#each snack in snackList}}
+						{{snack.value}} {{snack.name}}<br>
+					{{/each}}
+				</p>
 			</td>
 			<td class="order-drinks">
-				{{#each drink in drinkList}}
-					<span>{{drink.value}} {{drink.name}}</span>
-				{{/each}}
+				<p>
+					{{#each drink in drinkList}}
+						{{drink.value}} {{drink.name}}<br>
+					{{/each}}
+				</p>
 			</td>
-			<td class="delDay">
-				{{deliv_day}}
+			<td class="delivery-fee">
+				<p>{{delivery_fee}}</p>
 			</td>
-			<td class="delivFee">
-				{{delivery_fee}}
+			<td class="sale-amount">
+				<p>{{subtotal}}</p>
 			</td>
-			<td class="saleAmount">
-				{{subtotal}}
+			<td class="tax-amount">
+				<p>{{sales_tax}}</p>
 			</td>
-			<td class="taxAmount">
-				{{sales_tax}}
-			</td>
-			<td class="total">
-				{{total}}
-			</td>
-			<td class="customer-delivComments">
-				{{delivery_comments}}
+			<td class="total-amount">
+				<p>{{total}}</p>
 			</td>
 			<td class="coupon">
-				{{discount.promo.type}}
+				<p>{{discount.promo.type}}
 				{{discount.promo.code}}
 				{{discount.promo.description}}
-				{{discount.value}}
+				{{discount.value}}</p>
+			</td>
+			<td class="notes">
+				<p>{{user.notes}}</p>
 			</td>
 		{{/if}}
 	</tr>

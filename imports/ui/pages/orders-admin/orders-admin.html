@@ -6,38 +6,62 @@
 					<table class="orders-table"> 
 						{{#if Template.subscriptionsReady}}
 							<tr class="table-header">
+								<th class="recipient-name">
+									Recipient_Name
+								</th>
+								<th class="recipient-phone">
+									Recipient_Phone
+								</th>
+								<th class="address-line1">
+									Address_Line1
+								</th>
+								<th class="address-line2">
+									Address_Line2
+								</th>
+								<th class="address-city">
+									City/Town
+								</th>
+								<th class="address-zipcode">
+									Postal_Code
+								</th>
+								<th class="address-state">
+									State/Province
+								</th>
+								<th class="address-country">
+									Country
+								</th>
+								<th class="delivery-notifications">
+									Notifications
+								</th>
+								<th class="recipient-notes">
+									Recipient Notes
+								</th>
+								<th class="complete-after">
+									completeAfter
+								</th>
+								<th class="complete-before">
+									completeBefore
+								</th>
 								<th class="order-paid-at">
 									Paid At
 								</th>
 								<th class="order-number">
-									Order #
+									Order ID
 								</th>
 								<th class="order-stripe-id">
 									Stripe Charge ID
 								</th>
-								<th class="customer-name">
-									Customer Name
+								<th class="customer-email">
+									Email
 								</th>
-								<th class="customer-address">
-									Customer Address
-								</th>
-								<th class="customer-borough">
-									City
-								</th>
-								<th class="customer-zipCode">
-									Zip Code
-								</th>
-								<th class="customer-phone">
-									Phone #
+								<th class="delivery-day">
+									Delivery Day
 								</th>
 								<th class="delivery-zone">
 									Zone
 								</th>
-								<th class="customer-email">
-									Email
-								</th>
-								<th class="status-light">
-									Order Status
+								<th class="dietary-restrictions">
+									Restrictions
 								</th>
 								<th class="order-items">
 									Dishes
@@ -48,26 +72,23 @@
 								<th class="order-drinks">
 									Drinks
 								</th>
-								<th class="delDay">
-									Delivery Day
-								</th>
-								<th>
+								<th class="delivery-fee">
 									Delivery Fee
 								</th>
-								<th>
+								<th class="sale-amount">
 									Sale Amount
 								</th>
-								<th>
+								<th class="tax-amount">
 									Tax Amount
 								</th>
-								<th>
+								<th class="total-amount">
 									Total
-								</th>
-								<th>
-									Deliv Comments
 								</th>
 								<th class="coupon">
 									Promo Code
+								</th>
+								<th class="notes">
+									Internal Notes
 								</th>
 							</tr>
 							{{#if allOrders}}

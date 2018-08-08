@@ -93,7 +93,7 @@ Template.Order_preview.helpers({
   deliv_day() {
     const dwId = Template.currentData().delivery_window_id;
     const dw = DeliveryWindows.findOne({ _id: dwId });
-    const dday = moment(dw.delivery_start_time).format('dddd');
+    const dday = moment(dw.delivery_start_time).format('ddd M/D/YY');
     return dday;
   },
 
@@ -114,5 +114,19 @@ Template.Order_preview.helpers({
   packPriceToDecimal() {
     const packPrice = (Template.currentData().packPrice / 100).toFixed(2);
     return packPrice;
+  },
+
+  completeAfter() {
+    const dwId = Template.currentData().delivery_window_id;
+    const dw = DeliveryWindows.findOne({ _id: dwId });
+    const cA = moment(dw.delivery_start_time).format('M/D/YYYY h:mm a');
+    return cA;
+  },
+
+  completeBefore() {
+    const dwId = Template.currentData().delivery_window_id;
+    const dw = DeliveryWindows.findOne({ _id: dwId });
+    const cB = moment(dw.delivery_end_time).format('M/D/YYYY h:mm a');
+    return cB;
   },
 });
