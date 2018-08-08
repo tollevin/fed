@@ -129,6 +129,12 @@ FlowRouter.route('/test', {
   action: () => BlazeLayout.render('App_body', { main: 'Test' }),
 });
 
+FlowRouter.route('/ambassadors', {
+  name: 'Ambassadors',
+  waitOn: () => import('/imports/ui/pages/ambassadors/ambassadors.js'),
+  action: () => BlazeLayout.render('App_body', { main: 'Ambassadors' }),
+});
+
 FlowRouter.route('/equinox', {
   name: 'Equinox.join',
   waitOn: () => import('/imports/ui/pages/equinox-join/equinox-join.js'),

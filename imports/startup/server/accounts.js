@@ -13,6 +13,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { moment } from 'meteor/momentjs:moment';
 import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
+import { makeAmbassadorPromo } from '/imports/utils/make_promo.js';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
@@ -322,6 +323,70 @@ Meteor.methods({
         default:
           break;
       }
+
+      SSR.compileTemplate('htmlEmail', Assets.getText(emailData.file));
+
+      Template.htmlEmail.helpers({
+        doctype() {
+          return '<!DOCTYPE HTML>';
+        },
+      });
+
+      Email.send({
+        to: emailData.email,
+        bcc: 'info@getfednyc.com',
+        from: 'no-reply@getfednyc.com',
+        subject: emailData.subject,
+        html: SSR.render('htmlEmail', emailData),
+      });
+
+      return _id;
+    } catch (err) {
+      throw new Meteor.Error(err.statusCode, err.message);
+    }
+  },
+
+  async createAmbassador (user) {
+
+    const {
+      email,
+      password,
+      referrer,
+      zipCode,
+      ambassador
+    } = user;
+
+    try {
+      const customer = {
+        email,
+        password,
+      };
+
+      const _id = Accounts.createUser(customer);
+
+      Accounts.sendVerificationEmail(_id, email, (error) => {
+        if (error) { return (error); }
+        return undefined;
+      });
+
+      const emailData = { email, code: makeAmbassadorPromo() };
+
+      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code } });
+
+      const promo = {
+        codes: [emailData.code],
+        desc: `Fed Ambassador Code for ${email}`,
+        credit: 20,
+        useLimitPerCustomer: 1,
+        useLimitTotal: 0,
+        timesUsed: 0,
+        active: true,
+      };
+
+      insertPromo.call(promo);
+
+      emailData.subject = 'Welcome to our Ambassador program!';
+      emailData.file = 'new-ambassador-email.html';
 
       SSR.compileTemplate('htmlEmail', Assets.getText(emailData.file));
 
