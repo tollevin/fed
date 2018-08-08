@@ -360,13 +360,12 @@ Meteor.methods({
   },
 
   async createAmbassador (user) {
-
     const {
       email,
       password,
       referrer,
       zipCode,
-      ambassador
+      ambassador,
     } = user;
 
     try {
@@ -384,7 +383,11 @@ Meteor.methods({
 
       const emailData = { email, code: makeAmbassadorPromo() };
 
-      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code } });
+      Meteor.users.update({ _id }, {
+        $set: {
+          address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code,
+        },
+      });
 
       const promo = {
         codes: [emailData.code],
