@@ -49,10 +49,12 @@ Promos.schema = new SimpleSchema({
     type: String,
     label: 'code',
   },
-  // type: {
-  //   type: String,
-  //   label: "type"
-  // },
+  type: {
+    type: String,
+    label: 'type',
+    allowedValues: ['ambassador', 'referral', 'promo', 'gift'],
+    optional: true,
+  },
   desc: {
     type: String,
     label: 'Description',
@@ -122,6 +124,12 @@ Promos.schema = new SimpleSchema({
   referrer: {
     type: String,
     label: 'Referrer',
+    optional: true,
+  },
+  ambassador: {
+    type: String,
+    label: 'Ambassador',
+    optional: true,
   },
 });
 
@@ -134,6 +142,7 @@ Promos.publicFields = {
   _id: 1,
   createdAt: 1,
   code: 1,
+  type: 1,
   desc: 1,
   discount: 1,
   percentage: 1,
@@ -144,6 +153,7 @@ Promos.publicFields = {
   users: 1,
   active: 1,
   referrer: 1,
+  ambassador: 1,
 };
 
 Promos.helpers({

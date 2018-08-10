@@ -397,6 +397,8 @@ Meteor.methods({
         useLimitTotal: 0,
         timesUsed: 0,
         active: true,
+        type: 'ambassador',
+        ambassador: _id,
       };
 
       insertPromo.call(promo);
