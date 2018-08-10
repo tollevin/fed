@@ -3,7 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
+
+import { makeAmbassadorPromo } from '/imports/utils/make_promo.js';
 
 import { Promos } from './promos.js';
 import { hasMadePurchase } from '../orders/orders.js';
@@ -76,7 +77,7 @@ export const createEmailPromos = new ValidatedMethod({
 
     // 5 dollars? // is it a percentage?
     const credit = promo ? promo.credit : (reqCredit || REFERRER_CREDIT);
-    const code = promo ? promo.code : makeGiftCardCode();
+    const code = promo ? promo.code : makeAmbassadorPromo();
 
     if (!promo) {
       promo = {

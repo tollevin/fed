@@ -330,6 +330,7 @@ Orders.schema = new SimpleSchema({
 
 export const hasMadePurchase = userId => !!Orders.findOne({
   user_id: userId,
+  status: { $ne: "pending" },
 });
 
 Orders.attachSchema(Orders.schema);
