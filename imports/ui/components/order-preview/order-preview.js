@@ -19,7 +19,7 @@ Template.Order_preview.helpers({
     if (this.recipient) {
       return this.recipient;
     }
-    return Meteor.users.findOne({ _id: this.userId });
+    return Meteor.users.findOne({ _id: this.user_id });
   },
 
   dishList() {
@@ -128,5 +128,10 @@ Template.Order_preview.helpers({
     const dw = DeliveryWindows.findOne({ _id: dwId });
     const cB = moment(dw.delivery_end_time).format('M/D/YYYY h:mm a');
     return cB;
+  },
+
+  restrictions: ()=> {
+    const { restrictions } = Meteor.users.findOne({ _id:  Template.currentData().user_id });
+    return restrictions;
   },
 });
