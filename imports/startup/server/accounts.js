@@ -20,8 +20,47 @@ import { Items } from '/imports/api/items/items.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { insertPromo } from '/imports/api/promos/methods.js';
 
-Meteor.methods({
+export const sendGiftToUserViaEmail = ({
+  recipientEmail,
+  value,
+  code,
+  customerFirstName,
+  message,
+  cardType,
+}) => {
+  const emailData = {
+    value,
+    code,
+    customer: { first_name: customerFirstName },
+    message,
+    cardType,
+  };
 
+  SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
+
+  Template.giftCardHtmlEmail.helpers({
+    doctype() {
+      return '<!DOCTYPE HTML>';
+    },
+
+    amountString(inCents) {
+      return (inCents / 100).toFixed(2);
+    },
+  });
+
+  Email.send({
+    to: recipientEmail,
+    bcc: 'info@getfednyc.com',
+    from: 'no-reply@getfednyc.com',
+    subject: `${customerFirstName} sent you a Fed Gift Card!`,
+    html: SSR.render('giftCardHtmlEmail', emailData),
+  });
+};
+
+Meteor.methods({
+  async sendGiftToUserViaEmail(...args) {
+    sendGiftToUserViaEmail(...args);
+  },
   async updateUser(userId, data) {
     // check(userId, String);
     // check(data, { credit: Number });
@@ -30,9 +69,7 @@ Meteor.methods({
 
       const cleanCredit = { ...data, credit: data.credit || 0 };
 
-      Meteor.users.update({ _id: user._id }, {
-        $set: cleanCredit,
-      });
+      Meteor.users.update({ _id: user._id }, { $set: cleanCredit });
 
       const creditUpdated = (user.credit !== cleanCredit.credit) && (`Updating stripe credit for ${userId}: ${user.first_name} ${user.last_name}: $${user.credit} to $${cleanCredit.credit}`);
 
@@ -122,7 +159,7 @@ Meteor.methods({
       const { subscriptions } = user;
       const items = [];
 
-      for (let i = subscriptions.length - 1; i >= 0; i--) {
+      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
         const subItem = Items.findOne({ _id: subscriptions[i].item_id });
         items.push(subItem);
       }
@@ -213,19 +250,6 @@ Meteor.methods({
   },
 
   async sendGiftCard (giftCard) {
-    // need to check this
-    // check(giftCard, {
-    //   recipient: {
-    //     first_name: String,
-    //     last_name: String,
-    //     email: String,
-    //   },
-    //   customer: {
-    //     first_name: String,
-    //   },
-    //   value: Number,
-    // });
-
     const {
       recipient: {
         first_name: recipientFirstName,
@@ -239,22 +263,10 @@ Meteor.methods({
     } = giftCard;
 
     try {
-      SSR.compileTemplate('giftCardHtmlEmail', Assets.getText('gift-card-email.html'));
-
-      Template.giftCardHtmlEmail.helpers({
-        doctype() {
-          return '<!DOCTYPE HTML>';
-        },
-
-        amountString(inCents) {
-          return (inCents / 100).toFixed(2);
-        },
-      });
-
-      const emailData = { ...giftCard, code: makeGiftCardCode() };
+      const code = makeGiftCardCode();
 
       const promo = {
-        codes: [emailData.code],
+        codes: [code],
         desc: `Fed Gift Card for ${recipientFirstName} ${recipientLastName}`,
         credit: value / 100,
         useLimitPerCustomer: 1,
@@ -265,15 +277,16 @@ Meteor.methods({
 
       insertPromo.call(promo);
 
-      Email.send({
-        to: recipientEmail,
-        bcc: 'info@getfednyc.com',
-        from: 'no-reply@getfednyc.com',
-        subject: `${customerFirstName} sent you a Fed Gift Card!`,
-        html: SSR.render('giftCardHtmlEmail', emailData),
+      sendGiftToUserViaEmail({
+        recipientEmail,
+        value: giftCard.value,
+        code,
+        customerFirstName,
+        message: giftCard.message,
+        cardType: 'Gift Card',
       });
 
-      return emailData.code;
+      return code;
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
@@ -347,13 +360,12 @@ Meteor.methods({
   },
 
   async createAmbassador (user) {
-
     const {
       email,
       password,
       referrer,
       zipCode,
-      ambassador
+      ambassador,
     } = user;
 
     try {
@@ -371,7 +383,11 @@ Meteor.methods({
 
       const emailData = { email, code: makeAmbassadorPromo() };
 
-      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code } });
+      Meteor.users.update({ _id }, {
+        $set: {
+          address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code,
+        },
+      });
 
       const promo = {
         codes: [emailData.code],
@@ -381,6 +397,8 @@ Meteor.methods({
         useLimitTotal: 0,
         timesUsed: 0,
         active: true,
+        type: 'ambassador',
+        ambassador: _id,
       };
 
       insertPromo.call(promo);

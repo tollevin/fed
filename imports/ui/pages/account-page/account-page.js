@@ -5,13 +5,14 @@ import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 
 import {
-  SETTING_SESSION, MAIN, DIET, DELIVERY, PAYMENT,
+  SETTING_SESSION, MAIN, DIET, DELIVERY, PAYMENT, REFERRAL,
 } from '/imports/ui/lib/constants/settings';
 
 import '/imports/ui/components/main-settings/main-settings.js';
 import '/imports/ui/components/payment-settings/payment-settings.js';
 import '/imports/ui/components/diet-settings/diet-settings.js';
 import '/imports/ui/components/delivery-settings/delivery-settings.js';
+import '/imports/ui/components/referral-settings/referral-settings.js';
 
 import './account-page.less';
 import './account-page.html';
@@ -62,10 +63,11 @@ Template.Account_page.onCreated(function accountPageOnCreated() {
 });
 
 Template.Account_page.helpers({
-  forward: () => !(Session.get(SETTING_SESSION) === MAIN),
+  forward: () => Session.get(SETTING_SESSION) !== MAIN,
   settingsMenu: () => Session.get(SETTING_SESSION) === MAIN,
   diet: () => Session.get(SETTING_SESSION) === DIET,
   delivery: () => Session.get(SETTING_SESSION) === DELIVERY,
+  referral: () => Session.get(SETTING_SESSION) === REFERRAL,
   payment: () => Session.get(SETTING_SESSION) === PAYMENT,
 });
 
@@ -88,6 +90,11 @@ Template.Account_page.events({
   'click #payment-settings'(event) {
     event.preventDefault();
     Session.set(SETTING_SESSION, PAYMENT);
+  },
+
+  'click #referral-settings'(event) {
+    event.preventDefault();
+    Session.set(SETTING_SESSION, REFERRAL);
   },
 
   'click #Back'(event) {

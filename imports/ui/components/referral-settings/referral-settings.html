@@ -1,0 +1,21 @@
+<template name="Referral_settings">
+  <div id="Referral-Settings">
+    <h3 class="title-auth">Referrals</h3>
+    <div class="form-group" data-required="true">
+      <h2>Introduce your friends to Sustainable Eating</h2>
+      <ul>
+        {{#each referral in referrals}}
+          <li class="referral form-group">
+            <input id="referral-{{@index}}" value="{{referral.email}}" class="referral" placeholder="your@friend.com" />
+          </li>
+        {{/each}}
+      </ul>
+      <button id="add-another-friend">+ Add another Friend</button>
+    </div>
+    <div class="sbmt-button">
+      <button id="submit-referrals" type="submit" class="btn-secondary">
+        Send Emails
+      </button>
+    </div>
+  </div>
+</template>

@@ -130,8 +130,8 @@ Template.Order_preview.helpers({
     return cB;
   },
 
-  restrictions: ()=> {
-    const { restrictions } = Meteor.users.findOne({ _id:  Template.currentData().user_id });
+  restrictions: () => {
+    const { restrictions } = Meteor.users.findOne({ _id: Template.currentData().user_id });
     return restrictions;
   },
 });

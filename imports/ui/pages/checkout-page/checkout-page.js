@@ -11,6 +11,7 @@ import { Blaze } from 'meteor/blaze';
 
 // Collections
 import { Promos } from '/imports/api/promos/promos.js';
+import { hasMadePurchase } from '/imports/api/orders/orders.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Zip Codes
@@ -18,7 +19,6 @@ import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
 // Methods
 import { processOrder } from '/imports/api/orders/methods.js';
-import { usePromo } from '/imports/api/promos/methods.js';
 
 // Components
 import '/imports/ui/components/loader/loader.js';
@@ -306,17 +306,29 @@ Template.Checkout_page.events({
 
     const code = templateInstance.find('[id="promo"]').value.toUpperCase();
     const user = Meteor.userId();
+
     templateInstance.subscribe('single.promo', code, {
       onReady () {
         Session.set('newUser', false);
 
         const promo = Promos.findOne({ code });
 
+        // this is in the browser so unsafe
         if (promo && !promo.active) {
           sAlert.error('Sorry, that code is no longer valid.');
+          return;
         }
         if (promo && promo.users[user] === promo.useLimitPerCustomer) {
           sAlert.error('Sorry, that code has already been used.');
+          return;
+        }
+        if (promo && promo.referrer === user) {
+          sAlert.error("Sorry, you can't use your own code.");
+          return;
+        }
+
+        if (promo && promo.referrer && hasMadePurchase(user)) {
+          sAlert.error('Sorry, you have purchased already.');
           return;
         }
         if (promo && promo.credit) {
@@ -456,14 +468,7 @@ Template.Checkout_page.events({
         const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
         if (code) {
-          usePromo.call({
-            code,
-          }, (err, res) => {
-            if (err) {
-              return (err);
-            }
-            return (res);
-          });
+          Meteor.call('usePromo', { code });
         }
       } catch (error) {
         sAlert.error(error.reason);

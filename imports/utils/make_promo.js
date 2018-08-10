@@ -1,4 +1,5 @@
-export const makeAmbassadorPromo = () => {  let text = '';
+export const makeAmbassadorPromo = () => {
+  let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   for (let i = 0; i < 6; i += 1) {
