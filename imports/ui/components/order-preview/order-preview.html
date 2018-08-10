@@ -1,6 +1,42 @@
 <template name="Order_preview">
 	<tr class="order-preview">
 		{{#if Template.subscriptionsReady}}
+			<td class="recipient-name">
+				{{user.first_name}} {{user.last_name}}
+			</td>
+			<td class="recipient-phone">
+				{{user.phone}}
+			</td>
+			<td class="address-line1">
+				{{user.address_line_1}}
+			</td>
+			<td class="address-line2">
+				{{user.address_line_2}}
+			</td>
+			<td class="address-city">
+				{{user.address_city}}
+			</td>
+			<td class="address-zipcode">
+				{{user.address_zipcode}}
+			</td>
+			<td class="address-state">
+				{{user.address_state}}
+			</td>
+			<td class="address-country">
+				USA
+			</td>
+			<td class="delivery-notifications">
+				TRUE
+			</td>
+			<td class="recipient-notes">
+				{{delivery_comments}}
+			</td>
+			<td class="complete-after">
+				{{completeAfter}}
+			</td>
+			<td class="complete-before">
+				{{completeBefore}}
+			</td>
 			<td class="order-paid-at">
 				{{paid_at}}
 			</td>
@@ -10,30 +46,25 @@
 			<td class="order-stripe-id">
 				{{payment_id}}
 			</td>
-			<td class="customer-name">
-				<span>{{user.first_name}} {{user.last_name}}</span>
-			</td>
-			<td class="customer-address">
-				{{user.address_line_1}}
-				{{user.address_line_2}}
-			</td>
-			<td class="customer-borough">
-				{{user.address_city}}
-			</td>
-			<td class="customer-zipCode">
-				{{user.address_zipcode}}
-			</td>
-			<td class="customer-phone">
-				{{user.phone}}
-			</td>
-			<td class="delivery-zone">
-				{{deliveryZone}}
+			<td class="recipient-name">
+				{{user.first_name}} {{user.last_name}}
 			</td>
 			<td class="customer-email">
 				{{user.email}}
 			</td>
-			<td class="status-light">
+			<td class="delivery-day">
+				{{deliv_day}}
+			</td>
+			<td class="delivery-zone">
+				Zone
+			</td>
+			<td class="order-status">
 				{{status}}
+			</td>
+			<td class="dietary-restrictions">
+				{{#each restriction in restrictions}}
+					{{restriction}}<br>
+				{{/each}}
 			</td>
 			<td class="order-items">
 				{{#each dish in dishList}}
@@ -42,37 +73,34 @@
 			</td>
 			<td class="order-snacks">
 				{{#each snack in snackList}}
-					<span>{{snack.value}} {{snack.name}}</span>
+					{{snack.value}} {{snack.name}}<br>
 				{{/each}}
 			</td>
 			<td class="order-drinks">
 				{{#each drink in drinkList}}
-					<span>{{drink.value}} {{drink.name}}</span>
+					{{drink.value}} {{drink.name}}<br>
 				{{/each}}
 			</td>
-			<td class="delDay">
-				{{deliv_day}}
-			</td>
-			<td class="delivFee">
+			<td class="delivery-fee">
 				{{delivery_fee}}
 			</td>
-			<td class="saleAmount">
+			<td class="sale-amount">
 				{{subtotal}}
 			</td>
-			<td class="taxAmount">
+			<td class="tax-amount">
 				{{sales_tax}}
 			</td>
-			<td class="total">
+			<td class="total-amount">
 				{{total}}
-			</td>
-			<td class="customer-delivComments">
-				{{delivery_comments}}
 			</td>
 			<td class="coupon">
 				{{discount.promo.type}}
 				{{discount.promo.code}}
 				{{discount.promo.description}}
 				{{discount.value}}
+			</td>
+			<td class="notes">
+				{{user.notes}}
 			</td>
 		{{/if}}
 	</tr>
