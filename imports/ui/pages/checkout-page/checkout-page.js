@@ -468,7 +468,7 @@ Template.Checkout_page.events({
         const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
         if (code) {
-          Meteor.call('usePromo', { code });
+          Meteor.call('usePromo', { code, user: Meteor.userId() });
         }
       } catch (error) {
         sAlert.error(error.reason);

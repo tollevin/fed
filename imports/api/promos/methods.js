@@ -151,14 +151,13 @@ const PROMOS_METHODS = _.pluck([
 
 if (Meteor.isServer) {
   Meteor.methods({
-    usePromo: ({ code }) => {
+    usePromo: ({ code, userId }) => {
       const promo = Promos.findOne({ code });
-      const user = Meteor.userId();
 
       // In the case where a promo can be used by many users, more than once,
       // if a user has reached useLimitPerCustomer, return an Error (FIX!)
-      promo.users[user] = promo.users[user] || 0;
-      promo.users[user] += 1;
+      promo.users[userId] = promo.users[userId] || 0;
+      promo.users[userId] += 1;
 
       promo.timesUsed += 1; // Add a new time used
 
@@ -167,10 +166,22 @@ if (Meteor.isServer) {
         promo.active = false;
       }
 
-      if (promo.referrer) {
-        const referrerUser = Meteor.users.findOne({ _id: promo.referrer });
-        const referrerCredit = (referrerUser.credit || 0) + REFERRER_CREDIT;
-        Meteor.users.update(referrerUser._id, { $set: { credit: referrerCredit } });
+      switch (promo.type) {
+        case 'referral':
+          const referrerUser = Meteor.users.findOne({ _id: promo.referrer });
+          const referrerCredit = (referrerUser.credit || 0) + REFERRER_CREDIT;
+          Meteor.users.update(referrerUser._id, { $set: { credit: referrerCredit } });
+          break;
+        case 'ambassador':
+          const referreeUser = Meteor.users.findOne({ _id: userId });
+          if (!referreeUser.referrer) {
+            Meteor.users.update(referreeUser._id, { $set: { referrer: promo.referrer } });
+          }
+          break;
+        // case 'gift':
+        //   break;
+        // default:
+        //   break;
       }
 
       // Update promo
