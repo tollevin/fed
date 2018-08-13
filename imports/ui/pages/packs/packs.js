@@ -6,8 +6,6 @@ import { Session } from 'meteor/session';
 import { Items } from '/imports/api/items/items.js';
 import { insertOrder } from '/imports/api/orders/methods.js';
 
-import '/imports/ui/components/footer/footer.js';
-import '/imports/ui/components/pack-item/pack-item.js';
 import '/imports/ui/components/sign-up-modal/sign-up-modal.js';
 
 import './packs.html';

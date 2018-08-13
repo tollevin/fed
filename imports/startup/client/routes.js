@@ -51,12 +51,6 @@ FlowRouter.route('/subscribe', {
   action: () => BlazeLayout.render('App_body', { main: 'Subscribe' }),
 });
 
-FlowRouter.route('/subscriptions', {
-  name: 'My.subscriptions',
-  waitOn: () => import('/imports/ui/pages/my-subscriptions/my-subscriptions.js'),
-  action: () => BlazeLayout.render('App_body', { main: 'My_Subscriptions' }),
-});
-
 FlowRouter.route('/orders', {
   name: 'My.orders',
   waitOn: () => import('/imports/ui/pages/my-orders/my-orders.js'),
@@ -109,12 +103,6 @@ FlowRouter.route('/jobs', {
   name: 'Jobs',
   waitOn: () => import('/imports/ui/pages/jobs/jobs.js'),
   action: () => BlazeLayout.render('App_body', { main: 'Jobs' }),
-});
-
-FlowRouter.route('/media', {
-  name: 'Media',
-  waitOn: () => import('/imports/ui/pages/media/media.js'),
-  action: () => BlazeLayout.render('App_body', { main: 'Media' }),
 });
 
 FlowRouter.route('/test', {

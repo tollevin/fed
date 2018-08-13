@@ -5,9 +5,6 @@ import { Session } from 'meteor/session';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { moment } from 'meteor/momentjs:moment';
 
-// Components
-import '/imports/ui/components/footer/footer.js';
-
 // Collections
 import DeliveryWindows from '/imports//api/delivery/delivery-windows.js';
 

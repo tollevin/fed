@@ -3,7 +3,6 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
 // Components
-import '/imports/ui/components/footer/footer.js';
 import '/imports/ui/components/testimonials/testimonials.js';
 import '/imports/ui/components/lander-carousel/lander-carousel.js';
 
