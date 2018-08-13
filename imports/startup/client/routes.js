@@ -45,12 +45,6 @@ FlowRouter.route('/confirmation', {
   action: () => BlazeLayout.render('App_body', { main: 'Confirmation' }),
 });
 
-FlowRouter.route('/settings', {
-  name: 'Account.settings',
-  waitOn: () => import('/imports/ui/pages/account-page/account-page.js'),
-  action: () => BlazeLayout.render('App_body', { main: 'Account_page' }),
-});
-
 FlowRouter.route('/subscribe', {
   name: 'Subscribe',
   waitOn: () => import('/imports/ui/pages/subscribe/subscribe.js'),

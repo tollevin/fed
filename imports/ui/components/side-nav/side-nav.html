@@ -9,29 +9,16 @@
     {{#if currentUser}}
       <nav id="User-Nav">
         <ul>
-          {{#if notSubscribed}}
-            <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
-          {{else}}
-            <li><a href="/my-account" class="{{currentPage 'User.home'}}" alt="My Account">My Account</a></li>
-            {{#if showAccountLinks}}
-              <ul>
-                <li><a href="/settings" class="{{currentPage 'My.settings'}}" alt="Packs">Packs</a></li>
-                <li><a href="/my-orders" class="{{currentPage 'Menu.meals'}}" alt="Meals">Meals</a></li>
-                <li><a href="/my-subscriptions" class="{{currentPage 'Menu.snacks'}}" alt="Snacks">Snacks</a></li>
-                <li><a href="/my-payments" class="{{currentPage 'Menu.drinks'}}" alt="Drinks">Drinks</a></li> 
-              </ul>
-            {{/if}}
-          {{/if}}
+          <li><a href="/" class="{{currentPage 'App.home'}}" alt="Home">Home</a></li>
+          <li><a href="/my-account" class="{{currentPage 'User.home'}}" alt="My Account">My Account</a></li>
           <li><a href="/menu" class="{{currentPage 'Menu.show'}}" alt="Menu">Menu</a></li>
           <li><a href="/gifts" class="{{currentPage 'Gifts'}}" alt="Gifts">Gifts</a></li>
+
           {{#if notSubscribed}}
             <li><a href="/subscribe" class="{{currentPage 'Subscribe'}}" alt="Subscribe">Subscribe</a></li>
-          {{else}}
-
           {{/if}}
         </ul>
         <ul class="login-buttons">
-          <li><a href="/settings" class="{{currentPage 'Settings'}}" alt="Settings">Settings</a></li>
           <li><a href="/support" class="{{currentPage 'Support'}}" alt="Support">Support</a></li>
           <li><a id="logout" href="/" alt="Sign Out">Sign Out</a></li>
         </ul>

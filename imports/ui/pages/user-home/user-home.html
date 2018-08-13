@@ -6,37 +6,34 @@
     </div>
 
     <div class="page-body">
-      <div class="user-orders">
-        <div class="next-order">
-          <h2>My Next Order</h2>
-          {{#with nextOrder}}
-            {{> Order_detail_panel}}
-          {{/with}}
-        </div>
-        <div class="future-orders">
-          <h2>Upcoming Orders</h2>
-          {{#each order in futureOrders}}
-            {{#with order}}
-              {{> Order_toggle}}
-            {{/with}}
-          {{/each}}
-        </div>
-      </div>
-      <div class="fed-cred">
-        <h2>My Fed Cred</h2>
-        <div class="credit">
-          <span class="sign">$</span>
-          <span class="dollars">{{creditDollars}}.</span>
-          <span class="cents">{{creditCents}}</span>
-        </div>
-        <div class="message">
-          <p>Use Fed Cred towards any purchase!</p>
-        </div>
-        <div class="buttons-holder">
-          <!-- <button class="invite">Invite Friends</button> -->
-          <!-- <button class="promo">Use a Promo</button> -->
+      <div id="account-page">
+        <div class="account-form">
+          {{#if forward}}
+            <button id="Back">&lt; Back</button>
+          {{/if}}
+
+          {{#if settingsMenu}}
+            {{> Main_settings}}
+          {{/if}}
+          
+          {{#if diet}}
+            {{> Diet_settings}}
+          {{/if}}
+
+          {{#if delivery}}
+            {{> Delivery_settings}}
+          {{/if}}
+
+          {{#if payment}}
+            {{> PaymentSettings}}
+          {{/if}}
+
+          {{#if referral}}
+            {{> Referral_settings}}
+          {{/if}}
         </div>
       </div>
+
       <div class="dynamic-content">
         {{#if rate}}
         {{else}}

@@ -171,23 +171,16 @@ if (Meteor.isServer) {
         promo.active = false;
       }
 
-      switch (promo.type) {
-        case 'referral':
-          const referrerUser = Meteor.users.findOne({ _id: promo.referrer });
-          const referrerCredit = (referrerUser.credit || 0) + REFERRER_CREDIT;
-          Meteor.users.update(referrerUser._id, { $set: { credit: referrerCredit } });
-          break;
-        case 'ambassador':
-          const referreeUser = Meteor.users.findOne({ _id: userId });
-          if (!referreeUser.referrer) {
-            Meteor.users.update(referreeUser._id, { $set: { referrer: promo.referrer } });
-          }
-          break;
-        // case 'gift':
-        //   break;
-        // default:
-        //   break;
-      }
+      if (promo.type === 'referral') {
+        const referrerUser = Meteor.users.findOne({ _id: promo.referrer });
+        const referrerCredit = (referrerUser.credit || 0) + REFERRER_CREDIT;
+        Meteor.users.update(referrerUser._id, { $set: { credit: referrerCredit } });
+      } else if (promo.type === 'ambassador') {
+        const referreeUser = Meteor.users.findOne({ _id: userId });
+        if (!referreeUser.referrer) {
+          Meteor.users.update(referreeUser._id, { $set: { referrer: promo.referrer } });
+        }
+      } // else if (promo.type === 'gift')
 
       // Update promo
       const updatedPromo = Promos.update(promo._id, {
