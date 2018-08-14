@@ -147,6 +147,18 @@ FlowRouter.route('/deanstreet', {
   action: () => BlazeLayout.render('App_body', { main: 'DeanStreet' }),
 });
 
+FlowRouter.route('/primary', {
+  name: 'Primary.join',
+  waitOn: () => import('/imports/ui/pages/primary-join/primary-join.js'),
+  action: () => BlazeLayout.render('App_body', { main: 'Primary_join' }),
+});
+
+FlowRouter.route('/orangetheory', {
+  name: 'OT.join',
+  waitOn: () => import('/imports/ui/pages/ot-join/ot-join.js'),
+  action: () => BlazeLayout.render('App_body', { main: 'OT_join' }),
+});
+
 const flowAdminRoutes = FlowRouter.group({
   prefix: '/admin',
   name: 'admin',
