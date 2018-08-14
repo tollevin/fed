@@ -208,6 +208,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
+    subtotal = Math.round(subtotal * 100) / 100;
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 

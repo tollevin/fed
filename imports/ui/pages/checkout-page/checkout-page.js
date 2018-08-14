@@ -467,8 +467,9 @@ Template.Checkout_page.events({
       try {
         const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
+        const userId = Meteor.userId()
         if (code) {
-          Meteor.call('usePromo', { code, user: Meteor.userId() });
+          Meteor.call('usePromo', { code, userId });
         }
       } catch (error) {
         sAlert.error(error.reason);
@@ -608,7 +609,7 @@ Template.Checkout_page.events({
 
             // GA
             const itemList = response.items;
-            
+
             for (var i = itemList.length - 1; i >= 0; i--) {
               if (itemList[i].category === 'Pack') {
                 for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
@@ -637,12 +638,16 @@ Template.Checkout_page.events({
               }
             }
 
+            const promo = templateInstance.promo.get();
+            const promoCode = promo.code;
+
             ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
               'id': response._id,// (Required) Transaction id (string).
               'affiliation': 'Getfednyc.com', // Affiliation (string).
               'revenue': response.subtotal, // Revenue (currency).
               'tax': response.sales_tax, // Tax (currency).
               'shipping': response.delivery_fee, // Shipping (currency).
+              'coupon': promoCode
             });
             ga('send', 'event', 'UX', 'purchase');
 

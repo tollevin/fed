@@ -61,7 +61,7 @@ export const insertPromo = new ValidatedMethod({
   },
 });
 
-const REFERRER_CREDIT = 5; // dollars
+const REFERRER_CREDIT = 15; // dollars
 
 export const createEmailPromos = new ValidatedMethod({
   name: 'Meteor.createEmailPromos',
@@ -78,11 +78,13 @@ export const createEmailPromos = new ValidatedMethod({
     // 5 dollars? // is it a percentage?
     const credit = promo ? promo.credit : (reqCredit || REFERRER_CREDIT);
     const code = promo ? promo.code : makeAmbassadorPromo();
+    const type = 'referral';
 
     if (!promo) {
       promo = {
         codes: [code],
         desc: `User ${user.email}'s referral code`,
+        type,
         credit,
         useLimitPerCustomer: 1,
         useLimitTotal: Number.MAX_SAFE_INTEGER,

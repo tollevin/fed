@@ -49,10 +49,8 @@ Template.Item_detail.helpers({
     if (thisItem) {
       const { warnings } = thisItem;
       const keys = Object.keys(warnings);
-      console.log(keys);
       for (let i = keys.length - 1; i >= 0; i -= 1) {
         if (warnings[keys[i]]) {
-          console.log('?');
           allergens = true;
           allergenArray.push(keys[i]);
         }
