@@ -1,7 +1,7 @@
 @import '{}/imports/ui/styles/utils.less';
 
 #menu-toolbar {
-	.position(sticky, 0, 0, auto, 0, auto, auto);
+	.position(absolute, 0, 0, auto, 0, auto, auto);
 	padding: 10px 2%;
 	display: flex;
   justify-content: space-between;
@@ -9,10 +9,6 @@
   z-index: 5;
 	transition: height 200ms ease-in;
 	overflow-x: hidden;
-
-  @media screen and (max-width: 600px) {
-  	top: 60px;
-  }
 
   div {
   	display: flex;

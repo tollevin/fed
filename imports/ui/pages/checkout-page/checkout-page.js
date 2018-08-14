@@ -639,7 +639,7 @@ Template.Checkout_page.events({
             }
 
             const promo = templateInstance.promo.get();
-            const promoCode = promo.code;
+            const promoCode = promo && promo.code;
 
             ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
               'id': response._id,// (Required) Transaction id (string).
