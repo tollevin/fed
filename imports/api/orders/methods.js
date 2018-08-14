@@ -50,7 +50,7 @@ export const insertOrder = new ValidatedMethod({
     };
     const user = Meteor.users.findOne({ _id: userId });
 
-    // Calc subtotal, build items list
+    // Calc subtotal
     for (let i = items.length - 1; i >= 0; i -= 1) {
       subtotal += items[i].price_per_unit;
     }
@@ -208,6 +208,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
+    subtotal = Math.round(subtotal * 100) / 100;
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 

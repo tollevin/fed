@@ -265,6 +265,14 @@ Template.Subscribe.events({
       if (!Meteor.userId()) {
         Session.set('signIn', true);
       } else {
+        // GA
+        ga('ec:setAction','checkout', {
+          'step': 1,
+          'option': dietToUpperCase
+        });
+
+        ga('send', 'event', 'UX', 'checkout');
+
         Session.set('stage', 1);
         $('.content-scrollable').scrollTop(0, 2000);
       }
@@ -357,7 +365,16 @@ Template.Subscribe.events({
       }
 
       Session.set('Order', order);
+
       Session.set('loading', false);
+      // GA
+      ga('ec:setAction','checkout', {
+        'step': 2,
+        'option': packName
+      });
+
+      ga('send', 'event', 'UX', 'checkout');
+      
       Session.set('stage', 2);
 
       const filters = Session.get('filters');

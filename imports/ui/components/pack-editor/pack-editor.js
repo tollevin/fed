@@ -398,6 +398,19 @@ Template.Pack_Editor.events({
     // Add to pack
     packItems.push(item);
 
+    // GA
+    ga('ec:addProduct', {
+      'id': item._id,
+      'name': item.name,
+      'category': item.category,
+      'brand': 'Fed',
+      'variant': item.variant,
+      'price': item.price_per_unit,
+      'quantity': 1
+    });
+    ga('ec:setAction', 'add');
+    ga('send', 'event', 'UX', 'click', 'add to cart');
+
     // Add to template schema
     const schema = Template.instance().schema.get();
     if (schema[item.subcategory]) {
@@ -501,6 +514,19 @@ Template.Pack_Editor.events({
       // Update Session pack var
       pack.sub_items.items = packItems;
       Session.set('pack', pack);
+
+      // GA
+      ga('ec:addProduct', {
+        'id': item._id,
+        'name': item.name,
+        'category': item.category,
+        'brand': 'Fed',
+        'variant': item.variant,
+        'price': item.price_per_unit,
+        'quantity': 1
+      });
+      ga('ec:setAction', 'remove');
+      ga('send', 'event', 'UX', 'click', 'remove from cart');
     }
   },
 
@@ -576,8 +602,19 @@ Template.Pack_Editor.events({
         subscriptions: order.subscriptions,
       };
 
+      // console.log(orderToCreate);
+
       const orderId = insertOrder.call(orderToCreate);
       Session.set('Order', orderId);
+
+      // GA
+      const currentRoute = FlowRouter.getRouteName();
+      ga('ec:setAction','checkout', {
+        'step': 3,
+        'option': currentRoute
+      });
+
+      ga('send', 'event', 'UX', 'checkout');
     }
 
     Session.set('pack', null);
