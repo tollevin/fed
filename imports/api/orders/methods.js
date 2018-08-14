@@ -50,7 +50,7 @@ export const insertOrder = new ValidatedMethod({
     };
     const user = Meteor.users.findOne({ _id: userId });
 
-    // Calc subtotal, build items list
+    // Calc subtotal
     for (let i = items.length - 1; i >= 0; i -= 1) {
       subtotal += items[i].price_per_unit;
     }

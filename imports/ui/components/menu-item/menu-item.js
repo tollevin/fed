@@ -79,6 +79,17 @@ Template.Menu_item.events({
   'click .item-details'(event) {
     event.preventDefault();
 
+    // GA
+    const item = Template.currentData();
+    ga('ec:addProduct', {
+      'id': item._id,
+      'name': item.name,
+      'category': item.category,
+      'brand': item.producer,
+    });
+    ga('ec:setAction', 'click', {list: 'Menu'});
+    ga('send', 'event', 'UX', 'click', 'Menu Items');
+
     const routeName = FlowRouter.getRouteName();
     Session.set('previousRoute', routeName);
 
@@ -102,24 +113,32 @@ Template.Menu_item.events({
       return;
     }
 
-    const options = {
-      fields: {
-        _id: 1,
-        name: 1,
-        category: 1,
-        description: 1,
-        price_per_unit: 1,
-        photo: 1,
-      },
+    const item = Template.currentData();
+    const partialItemData = {
+      _id: item._id,
+      name: item.name,
+      category: item.category,
+      description: item.description,
+      price_per_unit: item.price_per_unit,
+      photo: item.photo,
     };
 
-    const item = Items.findOne({ name: Template.currentData().name }, options);
     const order = Session.get('Order');
 
-    // Ping here (GA)
-    // Possibly Ping here if adding to an empty cart (GA)
+    // GA
+    ga('ec:addProduct', {
+      'id': item._id,
+      'name': item.name,
+      'category': item.category,
+      'brand': item.producer,
+      'variant': item.variant,
+      'price': item.price_per_unit,
+      'quantity': 1
+    });
+    ga('ec:setAction', 'add');
+    ga('send', 'event', 'UX', 'click', 'add to cart');
 
-    order.items.push(item);
+    order.items.push(partialItemData);
     Session.set('Order', order);
   },
 
@@ -147,11 +166,21 @@ Template.Menu_item.events({
       },
     };
 
-    const item = Items.findOne({ name: Template.currentData().name }, options);
+    const item = Template.currentData();
     const order = Session.get('Order');
 
-    // Ping here (GA)
-    // Possibly Ping here if adding to an empty cart (GA)
+    // GA
+    ga('ec:addProduct', {
+      'id': item._id,
+      'name': item.name,
+      'category': item.category,
+      'brand': item.producer,
+      'variant': item.variant,
+      'price': item.price_per_unit,
+      'quantity': 1
+    });
+    ga('ec:setAction', 'remove');
+    ga('send', 'event', 'UX', 'click', 'remove from cart');
 
     let itemInCart;
     // let packWithItem;

@@ -606,6 +606,46 @@ Template.Checkout_page.events({
             Session.set('Order', null);
             Session.set('orderId', response);
 
+            // GA
+            const itemList = response.items;
+            
+            for (var i = itemList.length - 1; i >= 0; i--) {
+              if (itemList[i].category === 'Pack') {
+                for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+                  const thisItem = itemList[i].sub_items.items[j];
+                  ga('ec:addProduct', {
+                    'id': thisItem._id,
+                    'name': thisItem.name,
+                    'category': thisItem.category,
+                    'brand': thisItem.producer,
+                    'variant': thisItem.variant,
+                    'price': thisItem.price_per_unit,
+                    'quantity': 1
+                  });
+                }
+              } else {
+                const thisItem = itemList[i];
+                ga('ec:addProduct', {
+                  'id': thisItem._id,
+                  'name': thisItem.name,
+                  'category': thisItem.category,
+                  'brand': thisItem.producer,
+                  'variant': thisItem.variant,
+                  'price': thisItem.price_per_unit,
+                  'quantity': 1
+                });
+              }
+            }
+
+            ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
+              'id': response._id,// (Required) Transaction id (string).
+              'affiliation': 'Getfednyc.com', // Affiliation (string).
+              'revenue': response.subtotal, // Revenue (currency).
+              'tax': response.sales_tax, // Tax (currency).
+              'shipping': response.delivery_fee, // Shipping (currency).
+            });
+            ga('send', 'event', 'UX', 'purchase');
+
             Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => {});
           }
         });

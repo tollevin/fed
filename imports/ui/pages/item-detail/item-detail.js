@@ -8,15 +8,31 @@ import './item-detail.less';
 import './item-detail.html';
 
 Template.Item_detail.onCreated(function menuItemOnCreated() {
+  this.cartWasOpen = Session.get('cartOpen');
+  Session.set('cartOpen', false);
+
   const id = FlowRouter.getParam('_id');
 
   this.autorun(() => {
     this.subscribe('singleItem', id);
+
+    const item = Items.findOne();
+    if (item) {
+      // GA
+      ga('ec:addProduct', {
+        'id': item._id,
+        'name': item.name,
+        'category': item.category,
+        'brand': item.producer,
+      });
+
+      ga('ec:setAction', 'detail');
+      ga('send', 'event', 'UX', 'detail');
+    }
   });
+});
 
-  this.cartWasOpen = Session.get('cartOpen');
-
-  Session.set('cartOpen', false);
+Template.Item_detail.onRendered(function menuItemOnrendered() {
 });
 
 Template.Item_detail.helpers({
@@ -28,14 +44,21 @@ Template.Item_detail.helpers({
   contains() {
     const id = FlowRouter.getParam('_id');
     const thisItem = Items.findOne({ _id: id });
-    const { warnings } = thisItem;
     let allergens = false;
-    for (let i = Object.keys(warnings).length - 1; i >= 0; i -= 1) {
-      if (warnings[i]) {
-        allergens = true;
+    let allergenArray = [];
+    if (thisItem) {
+      const { warnings } = thisItem;
+      const keys = Object.keys(warnings);
+      console.log(keys);
+      for (let i = keys.length - 1; i >= 0; i -= 1) {
+        if (warnings[keys[i]]) {
+          console.log('?');
+          allergens = true;
+          allergenArray.push(keys[i]);
+        }
       }
     }
-    return allergens;
+    return allergens && allergenArray;
   },
 
   fromMenu() {

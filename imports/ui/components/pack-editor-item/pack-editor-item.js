@@ -55,6 +55,17 @@ Template.Pack_Editor_Item.events({
   'click .item-details'(event) {
     event.preventDefault();
 
+    // GA
+    const item = Template.currentData();
+    ga('ec:addProduct', {
+      'id': item._id,
+      'name': item.name,
+      'category': item.category,
+      'brand': item.producer,
+    });
+    ga('ec:setAction', 'click', {list: 'Pack Menu'});
+    ga('send', 'event', 'UX', 'click', 'Menu Items');
+
     const routeName = FlowRouter.getRouteName();
     Session.set('previousRoute', routeName);
 
