@@ -268,6 +268,7 @@ Meteor.methods({
       const promo = {
         codes: [code],
         desc: `Fed Gift Card for ${recipientFirstName} ${recipientLastName}`,
+        type: 'gift',
         credit: value / 100,
         useLimitPerCustomer: 1,
         useLimitTotal: 1,
@@ -333,7 +334,9 @@ Meteor.methods({
           emailData.subject = 'Your Get Fed Promotion From Dean Street Block Party!';
           emailData.file = 'deanstreet.html';
           break;
-        default:
+        case 'Orange Theory':
+          emailData.subject = 'Your Get Fed Promotion From Orange Theory Fitness!';
+          emailData.file = 'ot.html';
           break;
       }
 
