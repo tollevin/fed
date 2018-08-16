@@ -453,7 +453,7 @@ Template.Pack_Editor.events({
         }
 
         templateInstance.priceChange.set(newPrice - pack.price_per_unit);
-        pack.price_per_unit = newPrice;
+        pack.price_per_unit = Math.round(newPrice * 100) / 100;
       }
     } else {
       templateInstance.priceChange.set(0);

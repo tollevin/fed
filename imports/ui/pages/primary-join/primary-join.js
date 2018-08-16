@@ -8,25 +8,34 @@ import { $ } from 'meteor/jquery';
 // Zip Codes
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
-import './equinox-join.html';
+import './primary-join.html';
+import './primary-join.less';
 
-Template.Equinox_join.onCreated(function equinoxJoinOnCreated() {
+Template.Primary_join.onCreated(function primaryJoinOnCreated() {
   Session.set('cartOpen', false);
 });
 
-Template.Equinox_join.events({
+Template.Primary_join.events({
   'submit form' (event, templateInstance) {
     event.preventDefault();
 
     const zip = templateInstance.find('[name="zipCode"]').value.toString();
     const zipInRange = zipZones[zip];
+    var referrer = 'Primary';
+    const dls = $('.delivery-location:checkbox:checked');
+    var dl = '';
+
+    for (var i = 0; i < dls.length; i++) {
+      dl = dl.concat(dls[i].value);
+    };
 
     if (zipInRange) {
       const user = {
         email: templateInstance.find('[name="emailAddress"]').value,
         password: templateInstance.find('[name="password"]').value,
         zipCode: zip,
-        referrer: 'Equinox',
+        referrer: 'Primary',
+        dl
       };
 
       Meteor.call('referUser', user, (error) => {

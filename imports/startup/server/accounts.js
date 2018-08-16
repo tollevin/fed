@@ -306,6 +306,7 @@ Meteor.methods({
       password,
       referrer,
       zipCode,
+      dl
     } = user;
 
     try {
@@ -321,7 +322,7 @@ Meteor.methods({
         return undefined;
       });
 
-      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer } });
+      Meteor.users.update({ _id }, { $set: { address_zipcode: zipCode, referrer, dl } });
 
       const emailData = { email };
 
@@ -337,6 +338,10 @@ Meteor.methods({
         case 'Orange Theory':
           emailData.subject = 'Your Get Fed Promotion From Orange Theory Fitness!';
           emailData.file = 'ot.html';
+          break;
+        case 'Primary':
+          emailData.subject = 'Your Get Fed Promotion From Primary!';
+          emailData.file = 'primary.html';
           break;
       }
 

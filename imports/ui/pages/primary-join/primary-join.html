@@ -1,10 +1,11 @@
-<template name="Equinox_join">
-	<div id="equinox-join" class="page auth">
+<template name="Primary_join">
+	<div id="Primary-join" class="page auth">
 		<div class="content-scrollable">
 			<div class="wrapper-auth">
 				<div class="at-form">
-					<img class="header-img" src="/images/fedXequinox.png">
-				  <p class="subtitle-auth">Great nutrition, in just a few clicks</p>
+					<h1>eating well,<br>made easy</h1>
+
+				  <p class="subtitle-auth">Sustainable, chef-made meals,<br>designed with your wellbeing in mind.</p>
 				  <div class="at-pwd-form">
 				    <form id="signup">
 				      <div id="Errors"></div>
@@ -17,7 +18,19 @@
 				      <div class="input">
 				        <input type="tel" name="zipCode" class="form-control" placeholder="Zip Code" required>
 				      </div>
-
+				      <div class="input">
+				      	<p>Where would you like<br>to get Fed delivered?</p>
+				      	<label class="container">
+								  <input class="delivery-location" type="checkbox" name="use" value="Office">
+								  <span class="checkmark"></span>
+								  
+								</label>Primary
+								<label class="container">
+								  <input class="delivery-location" type="checkbox" name="use" value="Home">
+								  <span class="checkmark"></span>
+								  Home
+								</label>
+				      </div>
 				      <button form="signup" type="submit" value="submit" class="btn-primary">Join</button>
 				    </form>
 				  </div>
