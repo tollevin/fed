@@ -14,6 +14,7 @@ export const insertPromo = new ValidatedMethod({
   validate: new SimpleSchema({
     codes: { type: [String] },
     desc: { type: String },
+    type: { type: String, optional: true },
     credit: { type: Number, optional: true },
     percentage: { type: Number, optional: true },
     expires: { type: String, optional: true },
@@ -30,6 +31,7 @@ export const insertPromo = new ValidatedMethod({
   run({
     codes,
     desc,
+    type,
     credit,
     percentage,
     expires,
@@ -42,6 +44,7 @@ export const insertPromo = new ValidatedMethod({
         code,
         createdAt: new Date(),
         desc,
+        type,
         credit,
         percentage,
         expires,
