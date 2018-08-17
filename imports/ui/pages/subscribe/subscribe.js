@@ -266,9 +266,9 @@ Template.Subscribe.events({
         Session.set('signIn', true);
       } else {
         // GA
-        ga('ec:setAction','checkout', {
-          'step': 1,
-          'option': dietToUpperCase
+        ga('ec:setAction', 'checkout', {
+          step: 1,
+          option: dietToUpperCase,
         });
 
         ga('send', 'event', 'UX', 'checkout');
@@ -368,13 +368,13 @@ Template.Subscribe.events({
 
       Session.set('loading', false);
       // GA
-      ga('ec:setAction','checkout', {
-        'step': 2,
-        'option': packName
+      ga('ec:setAction', 'checkout', {
+        step: 2,
+        option: packName,
       });
 
       ga('send', 'event', 'UX', 'checkout');
-      
+
       Session.set('stage', 2);
 
       const filters = Session.get('filters');

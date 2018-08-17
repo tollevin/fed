@@ -23,15 +23,15 @@ Template.Confirmation.onCreated(function confirmationOnCreated() {
   if (!order) {
     FlowRouter.go('/');
     return;
-  } else {
-    // GA
-    ga('ec:setAction','checkout', {
-      'step': 4,
-      'option': order.status
-    });
-
-    ga('send', 'event', 'UX', 'checkout');
   }
+  // GA
+  ga('ec:setAction', 'checkout', {
+    step: 4,
+    option: order.status,
+  });
+
+  ga('send', 'event', 'UX', 'checkout');
+
 
   this.order = new ReactiveVar(order);
   Session.set('orderId', null);

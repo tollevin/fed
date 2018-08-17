@@ -4,12 +4,10 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 
-import { Items } from '/imports/api/items/items.js';
-
 import './menu-item.less';
 import './menu-item.html';
 
-const countInArray = function(array, what) {
+const countInArray = function (array, what) {
   return array.filter(item => item === what).length;
 };
 
@@ -31,7 +29,7 @@ Template.Menu_item.helpers({
     const restrictions = Template.currentData().warnings;
     if (!restrictions) { return undefined; }
     const keys = Object.keys(restrictions);
-    const filtered = keys.filter(function(key) {
+    const filtered = keys.filter(function (key) {
       return restrictions[key];
     });
     let classes = '';
@@ -82,12 +80,12 @@ Template.Menu_item.events({
     // GA
     const item = Template.currentData();
     ga('ec:addProduct', {
-      'id': item._id,
-      'name': item.name,
-      'category': item.category,
-      'brand': item.producer,
+      id: item._id,
+      name: item.name,
+      category: item.category,
+      brand: item.producer,
     });
-    ga('ec:setAction', 'click', {list: 'Menu'});
+    ga('ec:setAction', 'click', { list: 'Menu' });
     ga('send', 'event', 'UX', 'click', 'Menu Items');
 
     const routeName = FlowRouter.getRouteName();
@@ -127,13 +125,13 @@ Template.Menu_item.events({
 
     // GA
     ga('ec:addProduct', {
-      'id': item._id,
-      'name': item.name,
-      'category': item.category,
-      'brand': item.producer,
-      'variant': item.variant,
-      'price': item.price_per_unit,
-      'quantity': 1
+      id: item._id,
+      name: item.name,
+      category: item.category,
+      brand: item.producer,
+      variant: item.variant,
+      price: item.price_per_unit,
+      quantity: 1,
     });
     ga('ec:setAction', 'add');
     ga('send', 'event', 'UX', 'click', 'add to cart');
@@ -158,26 +156,18 @@ Template.Menu_item.events({
       return;
     }
 
-    const options = {
-      fields: {
-        _id: 1,
-        name: 1,
-        category: 1,
-      },
-    };
-
     const item = Template.currentData();
     const order = Session.get('Order');
 
     // GA
     ga('ec:addProduct', {
-      'id': item._id,
-      'name': item.name,
-      'category': item.category,
-      'brand': item.producer,
-      'variant': item.variant,
-      'price': item.price_per_unit,
-      'quantity': 1
+      id: item._id,
+      name: item.name,
+      category: item.category,
+      brand: item.producer,
+      variant: item.variant,
+      price: item.price_per_unit,
+      quantity: 1,
     });
     ga('ec:setAction', 'remove');
     ga('send', 'event', 'UX', 'click', 'remove from cart');

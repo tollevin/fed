@@ -88,7 +88,7 @@ Meteor.methods({
     }
   },
 
-  async createSubscriber (user) {
+  async createSubscriber(user) {
     // check(user, {
     //   email: String,
     //   password: String,
@@ -116,7 +116,7 @@ Meteor.methods({
     }
   },
 
-  async updateSubscriber (userId, data) {
+  async updateSubscriber(userId, data) {
     // check(userId, String);
     // check(data, { email: String });
 
@@ -249,7 +249,7 @@ Meteor.methods({
     }
   },
 
-  async sendGiftCard (giftCard) {
+  async sendGiftCard(giftCard) {
     const {
       recipient: {
         first_name: recipientFirstName,
@@ -293,7 +293,7 @@ Meteor.methods({
     }
   },
 
-  async referUser (user) {
+  async referUser(user) {
     // check(user, {
     //   email: String,
     //   password: String,
@@ -306,7 +306,7 @@ Meteor.methods({
       password,
       referrer,
       zipCode,
-      dl
+      dl,
     } = user;
 
     try {
@@ -343,6 +343,8 @@ Meteor.methods({
           emailData.subject = 'Your Get Fed Promotion From Primary!';
           emailData.file = 'primary.html';
           break;
+        default:
+          break;
       }
 
       SSR.compileTemplate('htmlEmail', Assets.getText(emailData.file));
@@ -367,7 +369,7 @@ Meteor.methods({
     }
   },
 
-  async createAmbassador (user) {
+  async createAmbassador(user) {
     const {
       email,
       password,
@@ -436,7 +438,7 @@ Meteor.methods({
     }
   },
 
-  async checkUserHasPurchased (email) {
+  async checkUserHasPurchased(email) {
     // check(email, String);
     try {
       const exists = Meteor.users.findOne({ 'emails.address': email });
@@ -451,7 +453,7 @@ Meteor.methods({
   // },
 });
 
-Meteor.publish('limitedUserData', function() {
+Meteor.publish('limitedUserData', function () {
   return Meteor.users.find({
     _id: this.userId,
   }, {
@@ -469,7 +471,7 @@ Meteor.publish('limitedUserData', function() {
   });
 });
 
-Meteor.publish('someUserData', function() {
+Meteor.publish('someUserData', function () {
   return Meteor.users.find({
     _id: this.userId,
   }, {
@@ -495,7 +497,7 @@ Meteor.publish('someUserData', function() {
   });
 });
 
-Meteor.publish('thisUserData', function(id) {
+Meteor.publish('thisUserData', function (id) {
   // check(id, Match.Maybe(String));
 
   if (id) {
@@ -568,7 +570,7 @@ Meteor.publish('thisUserData', function(id) {
   });
 });
 
-Meteor.publish('userData', function(limit) {
+Meteor.publish('userData', function (limit) {
   // check(limit, Number);
   if (limit) {
     return Meteor.users.find({}, {
@@ -639,7 +641,7 @@ Meteor.publish('userData', function(limit) {
   });
 });
 
-Meteor.publish('newestUsers', function(limit) {
+Meteor.publish('newestUsers', function (limit) {
   // check(limit, Number);
   new SimpleSchema({ limit: { type: Number } }).validate({ limit });
 
@@ -681,7 +683,7 @@ Meteor.publish('newestUsers', function(limit) {
   return Meteor.users.find({}, options);
 });
 
-Meteor.publish('subscriberData', function() {
+Meteor.publish('subscriberData', function () {
   const options = {
     fields: {
       _id: 1,
@@ -721,7 +723,7 @@ Meteor.publish('subscriberData', function() {
   return Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }, options);
 });
 
-Meteor.publish('subscriberFullData', function() {
+Meteor.publish('subscriberFullData', function () {
   const options = {
     fields: {
       _id: 1,
@@ -758,7 +760,7 @@ Meteor.publish('subscriberFullData', function() {
   return Meteor.users.find({ 'subscriptions.quantity': { $gt: 0 } }, options);
 });
 
-Meteor.publish('unsubscriberData', function() {
+Meteor.publish('unsubscriberData', function () {
   const options = {
     fields: {
       _id: 1,
@@ -798,7 +800,7 @@ Meteor.publish('unsubscriberData', function() {
   return Meteor.users.find({ 'past_subscriptions.0': { $exists: true }, 'subscriptions.0': { $exists: false } }, options);
 });
 
-Meteor.publish('userSearchData', function() {
+Meteor.publish('userSearchData', function () {
   const options = {
     fields: {
       first_name: 1,

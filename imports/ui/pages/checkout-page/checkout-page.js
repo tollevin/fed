@@ -176,8 +176,8 @@ Template.Checkout_page.helpers({
 
   userHasCredit() {
     if (Template.instance().order.total.get() > 0
-        && Template.instance().userHasCredit.get()
-        && !(Template.instance().appliedCredit.get())) {
+      && Template.instance().userHasCredit.get()
+      && !(Template.instance().appliedCredit.get())) {
       return `$${Template.instance().userHasCredit.get().toFixed(2)}`;
     }
     return false;
@@ -287,7 +287,7 @@ Template.Checkout_page.helpers({
 });
 
 Template.Checkout_page.events({
-  'click .enterPromo' (event) {
+  'click .enterPromo'(event) {
     event.preventDefault();
 
     Template.instance().userHasPromo.set(true);
@@ -308,7 +308,7 @@ Template.Checkout_page.events({
     const user = Meteor.userId();
 
     templateInstance.subscribe('single.promo', code, {
-      onReady () {
+      onReady() {
         Session.set('newUser', false);
 
         const promo = Promos.findOne({ code });
@@ -382,7 +382,7 @@ Template.Checkout_page.events({
         if (promo && promo.percentage) { return; }
         sAlert.error("Sorry, that code isn't recognized");
       },
-      onError () {
+      onError() {
         sAlert.error("Sorry, that code isn't recognized");
       },
     });
@@ -467,7 +467,7 @@ Template.Checkout_page.events({
       try {
         const promo = templateInstance.promo.get();
         const code = promo && promo.code.toUpperCase();
-        const userId = Meteor.userId()
+        const userId = Meteor.userId();
         if (code) {
           Meteor.call('usePromo', { code, userId });
         }
@@ -517,7 +517,7 @@ Template.Checkout_page.events({
       return undefined;
     }
 
-    async function processSingleOrder () {
+    async function processSingleOrder() {
       try {
         // if promo used, process
         await processPromo();
@@ -536,7 +536,7 @@ Template.Checkout_page.events({
             description: `Order for ${customer.first_name} ${customer.last_name}`,
             receipt_email: customer.email,
           };
-        // Else if new customer
+          // Else if new customer
         } else {
           const token = await createStripeTokenFromElement();
           const cust = {
@@ -610,30 +610,30 @@ Template.Checkout_page.events({
             // GA
             const itemList = response.items;
 
-            for (var i = itemList.length - 1; i >= 0; i--) {
+            for (let i = itemList.length - 1; i >= 0; i -= 1) {
               if (itemList[i].category === 'Pack') {
-                for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+                for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j -= 1) {
                   const thisItem = itemList[i].sub_items.items[j];
                   ga('ec:addProduct', {
-                    'id': thisItem._id,
-                    'name': thisItem.name,
-                    'category': thisItem.category,
-                    'brand': thisItem.producer,
-                    'variant': thisItem.variant,
-                    'price': thisItem.price_per_unit,
-                    'quantity': 1
+                    id: thisItem._id,
+                    name: thisItem.name,
+                    category: thisItem.category,
+                    brand: thisItem.producer,
+                    variant: thisItem.variant,
+                    price: thisItem.price_per_unit,
+                    quantity: 1,
                   });
                 }
               } else {
                 const thisItem = itemList[i];
                 ga('ec:addProduct', {
-                  'id': thisItem._id,
-                  'name': thisItem.name,
-                  'category': thisItem.category,
-                  'brand': thisItem.producer,
-                  'variant': thisItem.variant,
-                  'price': thisItem.price_per_unit,
-                  'quantity': 1
+                  id: thisItem._id,
+                  name: thisItem.name,
+                  category: thisItem.category,
+                  brand: thisItem.producer,
+                  variant: thisItem.variant,
+                  price: thisItem.price_per_unit,
+                  quantity: 1,
                 });
               }
             }
@@ -642,16 +642,16 @@ Template.Checkout_page.events({
             const promoCode = promo && promo.code;
 
             ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-              'id': response._id,// (Required) Transaction id (string).
-              'affiliation': 'Getfednyc.com', // Affiliation (string).
-              'revenue': response.subtotal, // Revenue (currency).
-              'tax': response.sales_tax, // Tax (currency).
-              'shipping': response.delivery_fee, // Shipping (currency).
-              'coupon': promoCode
+              id: response._id, // (Required) Transaction id (string).
+              affiliation: 'Getfednyc.com', // Affiliation (string).
+              revenue: response.subtotal, // Revenue (currency).
+              tax: response.sales_tax, // Tax (currency).
+              shipping: response.delivery_fee, // Shipping (currency).
+              coupon: promoCode,
             });
             ga('send', 'event', 'UX', 'purchase');
 
-            Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => {});
+            Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => { });
           }
         });
 

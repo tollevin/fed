@@ -16,7 +16,6 @@ Template.NewPromo.events({
 
     const codes = templateInstance.find('[name="code"]').value.split('","');
     const desc = templateInstance.find('[name="desc"]').value;
-    const type = templateInstance.find('[name="type"]').value;
     const credit = templateInstance.find('[name="credit"]').value;
     const percentage = templateInstance.find('[name="percentage"]').value;
     const expires = templateInstance.find('[name="expires"]').value;
