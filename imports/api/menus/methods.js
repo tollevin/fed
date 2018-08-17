@@ -4,6 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { moment } from 'meteor/momentjs:moment';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 // Collections
 import { Menus } from './menus.js';
@@ -35,7 +36,7 @@ export const insertMenu = new ValidatedMethod({
     offline_at: offlineAt,
     ready_by: readyBy,
   }) {
-    const readyByDate = moment(readyBy);
+    const readyByDate = toNewYorkTimezone(moment(readyBy));
     const onAt = onlineAt || readyByDate.subtract(7, 'd').toDate();
     const customTil = customUntil || readyByDate.add(4, 'd').toDate();
     const offAt = offlineAt || readyByDate.endOf('week').toDate();

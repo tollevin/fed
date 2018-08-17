@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { moment } from 'meteor/momentjs:moment';
 
 import { zipZones } from './zipcodes.js';
@@ -26,11 +26,12 @@ export const createDeliveryWindows = new ValidatedMethod({
     ready_by_date: { type: Date },
   }).validator({ clean: true, filter: false }),
   run({ ready_by_date: readyByDate }) {
-    const sundayDeliveryStart = moment(readyByDate).hour(18).utc().toDate();
-    const sundayDeliveryEnd = moment(readyByDate).hour(21).utc().toDate();
-    const mondayDeliveryStart = moment(readyByDate).add(1, 'd').hour(18).utc()
+    const readyByNY = toNewYorkTimezone(moment(readyByDate)).toDate();
+    const sundayDeliveryStart = moment(readyByNY).hour(18).utc().toDate();
+    const sundayDeliveryEnd = moment(readyByNY).hour(21).utc().toDate();
+    const mondayDeliveryStart = moment(readyByNY).add(1, 'd').hour(18).utc()
       .toDate();
-    const mondayDeliveryEnd = moment(readyByDate).add(1, 'd').hour(21).utc()
+    const mondayDeliveryEnd = moment(readyByNY).add(1, 'd').hour(21).utc()
       .toDate();
 
     const deliveryWindow1 = {

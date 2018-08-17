@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Items } from '/imports/api/items/items.js';
 import { Menus } from '/imports/api/menus/menus.js';
 import { createDeliveryWindows } from '/imports/api/delivery/methods.js';
-
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { moment } from 'meteor/momentjs:moment';
 
 // if the database is empty on server start, create some sample data.
@@ -908,302 +908,6 @@ Meteor.startup(() => {
     },
   ];
 
-  const platesB = [
-    {
-      _id: 'i98NZRhyL7THGyAHZ',
-      name: 'Chicken w/ Babaganoush',
-      category: 'Meal',
-      subcategory: 'Chicken',
-      description: 'Details coming soon...',
-      createdAt: '2018-05-06T06:41:11.527Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: ['Details coming soon...'],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: true,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/coming-soon.jpg',
-      goodFor_Days: 5,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: { PDV: {} },
-      attributes: {
-        dairyFree: true,
-        glutenFree: true,
-        highProtein: false,
-        paleo: true,
-        vegan: false,
-        vegetarian: false,
-      },
-      weight: 3,
-      ordersThisWeek: 0,
-      ordersTotal: 0,
-    },
-    {
-      _id: '7TKLdiWkJPTfjRwPf',
-      name: 'Rhubarb & Ginger Tempeh',
-      id: 'SY-008',
-      category: 'Meal',
-      subcategory: 'Soy',
-      description: 'zucchini, jicama, peppers, fresh herbs',
-      createdAt: '2017-05-26T07:03:26.185Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: [
-        'tempeh (Soy)',
-        'sweet potato',
-        'peppers',
-        'zucchini',
-        'shallots',
-        'rhubarb',
-        'beetroot',
-        'lemon',
-        'cilantro',
-        'parsley',
-        'garlic',
-        'ground ginger',
-        'rosemary',
-        null,
-        'extra virgin olive oil',
-        null,
-        'corn oil',
-        'sumac',
-        'thyme',
-        'salt',
-        'black pepper',
-      ],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: true,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/88.jpg',
-      goodFor_Days: 5,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: {
-        servingSize: '420',
-        calories: '350',
-        totalFat: '14',
-        saturatedFat: '3.5',
-        transFat: '0',
-        protein: '21',
-        totalCarb: '41',
-        sodium: '210',
-        cholesterol: '0',
-        dietaryFiber: '11',
-        sugars: '13',
-        PDV: {
-          vitaminA: '310', vitaminC: '280', calcium: '20', iron: '25',
-        },
-      },
-      attributes: {
-        dairyFree: true,
-        glutenFree: true,
-        highProtein: true,
-        paleo: false,
-        vegan: true,
-        vegetarian: true,
-      },
-      ordersThisWeek: 0,
-      ordersTotal: 0,
-      weight: 3,
-      active: false,
-    },
-    {
-      _id: 'rFAf2qPBP42eJc7Ym',
-      name: 'Coriander Carrot Steak',
-      category: 'Meal',
-      subcategory: 'Vegetable',
-      description: 'Details coming soon...',
-      createdAt: '2018-05-06T06:41:44.846Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: ['Details coming soon...'],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/coming-soon.jpg',
-      goodFor_Days: 5,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: { PDV: {} },
-      attributes: {
-        dairyFree: true,
-        glutenFree: true,
-        highProtein: false,
-        paleo: true,
-        vegan: true,
-        vegetarian: true,
-      },
-      weight: 3,
-      ordersThisWeek: 0,
-      ordersTotal: 0,
-    },
-    {
-      _id: 'ZGTMLjNE5hrk7kAHZ',
-      name: 'Peas & Quinoa',
-      id: 'G-014',
-      category: 'Meal',
-      subcategory: 'Grain',
-      description: 'halloumi, zucchini, heirloom tomato, tarragon',
-      createdAt: '2017-08-13T16:07:55.637Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: ['Details Coming Soon!'],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: true,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/128.jpg',
-      goodFor_Days: 5,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: { PDV: {} },
-      attributes: {
-        dairyFree: false,
-        glutenFree: true,
-        highProtein: true,
-        paleo: false,
-        vegan: false,
-        vegetarian: true,
-      },
-      ordersThisWeek: 0,
-      ordersTotal: 0,
-      active: false,
-      weight: 2,
-    },
-    {
-      _id: 'iGc28tfWwDN6Equcb',
-      name: 'Spinach & Roasted Chickpeas',
-      id: 'SD-015',
-      category: 'Meal',
-      subcategory: 'Salad',
-      description: 'pear, lavender poppy seed goat cheese, dried cherry, sunflower seeds, raspberry dressing',
-      createdAt: '2017-01-27T07:50:00.574Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: [
-        'Chickpeas',
-        'Spinach',
-        'Pears',
-        'Raspberries',
-        'Dried Cranberries',
-        'Lemon Juice',
-        'Goat Cheese (MILK)',
-        'Poppy Seeds',
-        'Sunflower Seeds',
-        'Extra Virgin Olive Oil',
-        'Lavender',
-        'Maple Syrup',
-        'Chipotle Pepper',
-        'Salt',
-      ],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: true,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/37.jpg',
-      goodFor_Days: 2,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: {
-        servingSize: '300',
-        calories: '290',
-        totalFat: '10',
-        saturatedFat: '2',
-        transFat: '0',
-        protein: '11',
-        totalCarb: '45',
-        sodium: '390',
-        cholesterol: '<5',
-        dietaryFiber: '12',
-        sugars: '11',
-        PDV: {
-          vitaminA: '140', vitaminC: '60', calcium: '20', iron: '25',
-        },
-      },
-      attributes: {
-        dairyFree: false,
-        glutenFree: true,
-        highProtein: false,
-        paleo: true,
-        vegan: false,
-        vegetarian: true,
-      },
-      active: false,
-      weight: 1,
-    },
-    {
-      _id: 'aJxunXWZnFwx5YTYm',
-      name: 'Split Pea & Lentil Soup',
-      category: 'Meal',
-      subcategory: 'Soup',
-      description: 'Details coming soon...',
-      createdAt: '2018-05-06T06:42:18.178Z',
-      userId: 'dvC2r25nr8JkyaMhP',
-      ingredients: ['Details coming soon...'],
-      warnings: {
-        peanuts: false,
-        treenuts: false,
-        soy: false,
-        beef: false,
-        chicken: false,
-        fish: false,
-        shellfish: false,
-        milk: false,
-        eggs: false,
-        wheat: false,
-      },
-      photo: '/images/menu/coming-soon.jpg',
-      goodFor_Days: 5,
-      packs: { omnivorePack: false, vegetarianPack: false },
-      nutritionFacts: { PDV: {} },
-      attributes: {
-        dairyFree: true,
-        glutenFree: true,
-        highProtein: false,
-        paleo: false,
-        vegan: true,
-        vegetarian: true,
-      },
-      weight: 3,
-      ordersThisWeek: 0,
-      ordersTotal: 0,
-    },
-  ];
-
   /* eslint-disable max-len */
   // {"name":"Chicken w/ Mushrooms","id":"CH-008","category":"Meal","subcategory":"Chicken","description":"celeriac, sweet potato, cherry tomatoes, fresh herbs","createdAt":"2017-01-29T16:58:24.601Z","userId":"dvC2r25nr8JkyaMhP","ingredients":["Chicken","White Mushrooms","Portobello Mushrooms","Celeriac","Sweet Potatoes","Cherry Tomatoes","Onions","Parsley","Garlic","Extra Virgin Olive Oil","Rosemary","Black Pepper","Thyme","Salt"],"warnings":{"peanuts":false,"treenuts":false,"soy":false,"beef":false,"chicken":true,"fish":false,"shellfish":false,"eggs":false,"milk":false,"wheat":false},"photo":"/images/menu/1.jpg","goodFor_Days":5,"packs":{"omnivorePack":false,"vegetarianPack":false},"nutritionFacts":{"servingSize":"415","calories":"360","totalFat":"10","saturatedFat":"2","transFat":"0","protein":"42","totalCarb":"28","sodium":"390","cholesterol":"100","dietaryFiber":"6","sugars":"5","PDV":{"vitaminA":"15","vitaminC":"45","calcium":"8","iron":"25"}},"attributes":{"dairyFree":true,"glutenFree":true,"highProtein":true,"paleo":true,"vegan":false,"vegetarian":false},"active":false,"weight":"3"},
   // {"name":"Chicken w/ Turmeric Mayo","id":"CH-019","category":"Meal","subcategory":"Chicken","description":"sweet potato, eggplant, cherry tomato","createdAt":"2017-09-17T18:30:36.147Z","userId":"dvC2r25nr8JkyaMhP","ingredients":["chicken breast","eggplant","cherry tomatoes","sweet potato","red onion","chickpeas","lemon juice","lime juice","ginger","turmeric","sumac","parsley","garlic","extra virgin olive oil","sunflower oil","black pepper","thyme","salt"],"photo":"/images/menu/142.jpg","goodFor_Days":5,"packs":{"omnivorePack":false,"vegetarianPack":false},"nutritionFacts":{"PDV":{"vitaminA":"290","vitaminC":"70","calcium":"8","iron":"25"},"servingSize":"380","calories":"300","totalFat":"8","saturatedFat":"1.5","transFat":"0","cholesterol":"50","sodium":"340","totalCarb":"39","dietaryFiber":"8","sugars":"10","protein":"21"},"attributes":{"dairyFree":true,"glutenFree":true,"highProtein":false,"paleo":true,"vegan":false,"vegetarian":false},"warnings":{"peanuts":false,"treenuts":false,"soy":false,"beef":false,"chicken":true,"fish":false,"shellfish":false,"milk":false,"eggs":true,"wheat":false},"ordersThisWeek":0,"ordersTotal":0,"active":false,"weight":3},
@@ -1220,6 +924,7 @@ Meteor.startup(() => {
 
   const itemIdsA = [];
   const itemIdsB = [];
+  const itemIdsC = [];
 
   platesA.forEach((item) => {
     let updatedItem = item;
@@ -1281,68 +986,8 @@ Meteor.startup(() => {
     });
 
     itemIdsA.push(itemId);
-  });
-
-  platesB.forEach((item) => {
-    let updatedItem = item;
-    switch (item.subcategory) {
-      case 'Beef':
-        updatedItem = { ...item, rank: 9, price_per_unit: 17 };
-        break;
-      case 'Chicken':
-        updatedItem = { ...item, rank: 9, price_per_unit: 16 };
-        break;
-      case 'Fish':
-        updatedItem = { ...item, rank: 9, price_per_unit: 17 };
-        break;
-      case 'Soy':
-        updatedItem = { ...item, rank: 9, price_per_unit: 16 };
-        break;
-      case 'Vegetable':
-        updatedItem = { ...item, rank: 9, price_per_unit: 15 };
-        break;
-      case 'Grain':
-        updatedItem = { ...item, rank: 5, price_per_unit: 14 };
-        break;
-      case 'Salad':
-        updatedItem = { ...item, rank: 1, price_per_unit: 12 };
-        break;
-      case 'Soup':
-        updatedItem = { ...item, rank: 3, price_per_unit: 9 };
-        break;
-      default:
-        break;
-    }
-
-    const itemId = Items.insert({
-      user_id: updatedItem.userId,
-      created_at: updatedItem.createdAt,
-      name: updatedItem.name,
-      category: updatedItem.category,
-      subcategory: updatedItem.subcategory,
-      photo: updatedItem.photo,
-      description: updatedItem.description,
-      stripe_product_id: '',
-      stripe_plans: {},
-      ingredients: updatedItem.ingredients,
-      warnings: updatedItem.warnings,
-      nutrition_facts: updatedItem.nutritionFacts,
-      good_for_days: updatedItem.goodFor_days,
-      active: false,
-      attributes: updatedItem.attributes,
-      comments: {},
-      ratings: {},
-      producer: 'Fed',
-      cost_per_unit: 0,
-      price_per_unit: updatedItem.price_per_unit,
-      unit: 'meal',
-      weight: 0,
-      dimensions: '',
-      inventory: 0,
-      rank: updatedItem.rank,
-    });
-
     itemIdsB.push(itemId);
+    itemIdsC.push(itemId);
   });
 
   const snacks = [
@@ -2240,22 +1885,27 @@ Meteor.startup(() => {
   };
   const nextWeek = {
     date: moment().add(1, 'week').toDate(),
-    items: itemIdsB,
+    items: itemIdsA,
     id: 1,
   };
   const twoWeeksFromNow = {
     date: moment().add(2, 'week').toDate(),
-    items: itemIdsB,
+    items: itemIdsA,
     id: 2,
   };
+  const threeWeeksFromNow = {
+    date: moment().add(3, 'week').toDate(),
+    items: itemIdsA,
+    id: 3,
+  };
 
-  dates.push(now, nextWeek, twoWeeksFromNow);
+  dates.push(now, nextWeek, twoWeeksFromNow, threeWeeksFromNow);
 
   dates.forEach((week) => {
-    const onlineAt = moment(week.date).startOf('week').toDate();
-    const customUntil = moment(week.date).startOf('week').add(4, 'd').toDate();
-    const offlineAt = moment(week.date).endOf('week').toDate();
-    const readyBy = moment(week.date).endOf('week').add(17, 'h').startOf('hour')
+    const onlineAt = toNewYorkTimezone(moment(week.date)).startOf('week').toDate();
+    const customUntil = toNewYorkTimezone(moment(week.date)).startOf('week').add(4, 'd').toDate();
+    const offlineAt = toNewYorkTimezone(moment(week.date)).endOf('week').toDate();
+    const readyBy = toNewYorkTimezone(moment(week.date)).endOf('week').add(17, 'h').startOf('hour')
       .toDate();
     const deliveryWindows = createDeliveryWindows.call({ ready_by_date: readyBy });
 
