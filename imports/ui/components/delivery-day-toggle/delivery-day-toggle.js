@@ -1,9 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
-// Methods
-import { toggleDeliveryDay } from '/imports/api/orders/methods.js';
-
 // Template
 import './delivery-day-toggle.html';
 
@@ -27,6 +24,8 @@ Template.Delivery_day_toggle.events({
     event.preventDefault();
     const user = Meteor.user();
     const preferredDelivDay = swapPreferredDeliveryDate(user);
-    toggleDeliveryDay.call({ day: preferredDelivDay });
+    // toggleDeliveryDay.call({ day: preferredDelivDay });
+
+    return Meteor.call('toggleDeliveryDay', { day: preferredDelivDay });
   },
 });
