@@ -15,6 +15,10 @@
           {{> App_loading}}
         {{/if}}
       {{/momentum}}
+
+      {{#if Template.subscriptionsReady}}
+        {{> Footer }}
+      {{/if}}
     </div>
   </div>
   {{/HammerTouchArea}}

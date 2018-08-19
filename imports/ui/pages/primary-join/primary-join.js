@@ -16,18 +16,17 @@ Template.Primary_join.onCreated(function primaryJoinOnCreated() {
 });
 
 Template.Primary_join.events({
-  'submit form' (event, templateInstance) {
+  'submit form'(event, templateInstance) {
     event.preventDefault();
 
     const zip = templateInstance.find('[name="zipCode"]').value.toString();
     const zipInRange = zipZones[zip];
-    var referrer = 'Primary';
     const dls = $('.delivery-location:checkbox:checked');
-    var dl = '';
+    let dl = '';
 
-    for (var i = 0; i < dls.length; i++) {
+    for (let i = 0; i < dls.length; i += 1) {
       dl = dl.concat(dls[i].value);
-    };
+    }
 
     if (zipInRange) {
       const user = {
@@ -35,7 +34,7 @@ Template.Primary_join.events({
         password: templateInstance.find('[name="password"]').value,
         zipCode: zip,
         referrer: 'Primary',
-        dl
+        dl,
       };
 
       Meteor.call('referUser', user, (error) => {

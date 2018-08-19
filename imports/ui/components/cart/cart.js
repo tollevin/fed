@@ -59,7 +59,7 @@ Template.Cart.events({
     Session.set('pack', oldPack);
   },
 
-  'click .ready' () {
+  'click .ready'() {
     Session.set('processing', true);
 
     const order = Session.get('Order');
@@ -80,48 +80,48 @@ Template.Cart.events({
 
     // GA
     const itemList = order.items;
-    for (var i = itemList.length - 1; i >= 0; i--) {
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
       if (itemList[i].category === 'Pack') {
         ga('ec:addProduct', {
-          'id': itemList[i]._id,
-          'name': itemList[i].name,
-          'category': itemList[i].category,
-          'brand': itemList[i].producer,
-          'variant': itemList[i].variant,
-          'price': itemList[i].price_per_unit,
-          'quantity': 1
+          id: itemList[i]._id,
+          name: itemList[i].name,
+          category: itemList[i].category,
+          brand: itemList[i].producer,
+          variant: itemList[i].variant,
+          price: itemList[i].price_per_unit,
+          quantity: 1,
         });
 
-        for (var j = itemList[i].sub_items.items.length - 1; j >= 0; j--) {
+        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j -= 1) {
           const thisItem = itemList[i].sub_items.items[j];
           ga('ec:addProduct', {
-            'id': thisItem._id,
-            'name': thisItem.name,
-            'category': thisItem.category,
-            'brand': thisItem.producer,
-            'variant': thisItem.variant,
-            'price': thisItem.price_per_unit,
-            'quantity': 1
+            id: thisItem._id,
+            name: thisItem.name,
+            category: thisItem.category,
+            brand: thisItem.producer,
+            variant: thisItem.variant,
+            price: thisItem.price_per_unit,
+            quantity: 1,
           });
         }
       } else {
         const thisItem = itemList[i];
         ga('ec:addProduct', {
-          'id': thisItem._id,
-          'name': thisItem.name,
-          'category': thisItem.category,
-          'brand': thisItem.producer,
-          'variant': thisItem.variant,
-          'price': thisItem.price_per_unit,
-          'quantity': 1
+          id: thisItem._id,
+          name: thisItem.name,
+          category: thisItem.category,
+          brand: thisItem.producer,
+          variant: thisItem.variant,
+          price: thisItem.price_per_unit,
+          quantity: 1,
         });
       }
     }
 
     const currentRoute = FlowRouter.getRouteName();
-    ga('ec:setAction','checkout', {
-      'step': 3,
-      'option': currentRoute
+    ga('ec:setAction', 'checkout', {
+      step: 3,
+      option: currentRoute,
     });
 
     ga('send', 'event', 'UX', 'checkout');

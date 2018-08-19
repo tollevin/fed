@@ -20,10 +20,10 @@ Template.Item_detail.onCreated(function menuItemOnCreated() {
     if (item) {
       // GA
       ga('ec:addProduct', {
-        'id': item._id,
-        'name': item.name,
-        'category': item.category,
-        'brand': item.producer,
+        id: item._id,
+        name: item.name,
+        category: item.category,
+        brand: item.producer,
       });
 
       ga('ec:setAction', 'detail');
@@ -45,7 +45,7 @@ Template.Item_detail.helpers({
     const id = FlowRouter.getParam('_id');
     const thisItem = Items.findOne({ _id: id });
     let allergens = false;
-    let allergenArray = [];
+    const allergenArray = [];
     if (thisItem) {
       const { warnings } = thisItem;
       const keys = Object.keys(warnings);

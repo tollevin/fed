@@ -1,3 +1,5 @@
+@import '{}/imports/ui/styles/utils.less';
+
 #Main_settings {
   .settings {
     button {
@@ -59,6 +61,262 @@
       span {
         margin: 5px auto;
       }
+    }
+  }
+}
+
+#account-page {
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+    color: @fgreene;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  ul {
+    padding-left: 0;
+    text-align: center;
+    display: inline-block;
+    width: 90%;
+
+    li {
+      list-style-type: none;
+    }
+
+    input[type=radio] {
+      position: absolute;
+      visibility: hidden;
+    }
+  }
+
+  .title-auth {
+    .font-l1;
+    .type-light;
+    color: @fgreene;
+    margin-bottom: .75rem;
+
+    @media screen and (max-width: 600px) {
+      .font-m2;
+    }
+  }
+
+  .subtitle-auth {
+    color: @fgreene;
+    margin: 0 15% 2rem;
+  }
+
+  .promo {
+    margin-bottom: 30px;
+
+    @media screen and (max-width: 600px) {
+      padding-left: 0;
+    }
+
+    .enterPromo {
+      border: 1px solid @forange;
+      color: @forange;
+      font-size: 18px;
+      background-color: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 5px 10px;
+      height: 39px;
+      border-radius: 5px;
+    }
+  }
+
+  .submitPromo {
+    display: flex;
+    flex-direction: row;
+
+    @media screen and (max-width: 600px) {
+      padding-left: 0;
+      text-align: center;
+    }
+
+    #promo {
+      padding: 10px;
+      height: 40px;
+      font-size: 16px;
+      border: 2px solid #f5c832;
+      border-radius: 5px;
+      color: #666;
+    }
+
+    #promoSub {
+      border: 4px solid #f5c832;
+      background-color: #f5c832;
+      color: #FFF;
+      font-size: 16px;
+      font-weight: 600;
+      margin-left: 10px;
+      border-radius: 5px;
+    }
+  }
+
+  .info-errors {
+    margin-top: 100px;
+  }
+
+  .account-form {
+    min-height: 90%;
+
+    .input {
+      margin-bottom: 1px;
+      width: 100%;
+      display: block;
+
+      input {
+        width: 90%;
+        max-width: 400px;
+        margin-bottom: 5px;
+        padding: .5rem;
+      }
+    }
+
+    .at-input {
+      padding-top: 7px;
+    }
+
+    .at-pwd-link {
+      margin-top: 1em;
+    }
+  }
+
+  .list-errors {
+    margin-top: -2rem;
+    .list-item {
+      .title-caps;
+      background: @color-note;
+      color: @color-negative;
+      font-size: .625em; // 10px
+      margin-bottom: 1px;
+      padding: .7rem 0;
+    }
+  }
+
+  .at-message, .at-result {
+    margin-top: -2rem;
+    .title-caps;
+    background: @color-note;
+    color: @color-ancillary;
+    font-size: .625em; // 10px
+    margin-bottom: 1px;
+    padding: .7rem 0;
+  }
+
+  .agreeToTerms {
+    margin: 40px auto;
+    width: 80%;
+  }
+
+  .skip-title {
+    margin-top: 50px;
+  }
+
+  .nextDelivery {
+    color: @fgreene;
+    margin-bottom: 60px;
+  }
+}
+
+#account-page {
+  .panel-body {
+    text-align: center;
+
+    p {
+      color: #ccb53d;
+    }
+
+    @media screen and (max-width: 450px) {
+      margin: 0 auto;
+      max-width: 480px;
+      width: 80%;
+      padding-top: 4em;
+    }
+  }
+
+  h1 {
+    color:#333;
+    text-align: center;
+  }
+
+  .delivery-details {
+    margin-top: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 7px;
+    vertical-align: middle;
+
+    input, select {
+      border: 1px solid #999;
+      padding: 5px;
+      float: right;
+    }
+    
+    .form-control {
+      width: 60%;
+    }
+
+    select {
+      width: 45%;
+    }
+
+    textarea {
+      border: 1px solid #999;
+      float: right;
+
+      @media screen and (max-width: 395px) {
+        width: 100% !important;
+      }
+    }
+
+    ul {
+      -webkit-padding-start: 0px;
+      -webkit-margin-before: 0;
+      -webkit-margin-after: 0;
+
+      li {
+        list-style: none;
+        display: block;
+        position: relative;
+        height: auto;
+        float: left;
+      
+        input[type=radio] {
+          position: absolute;
+          visibility: hidden;
+        }
+
+        &:hover {
+          border-color: #007444;
+
+          label {
+            color: #007444;
+          }
+        }
+
+        input[type=radio]:checked ~ label {
+          color: #007444;
+        }
+      }
+    }
+  }
+
+  .sbmt-button {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 35px;
+
+
+    .sbmtOrder {
+      display: inline-block;
+      width: 85%;
     }
   }
 }

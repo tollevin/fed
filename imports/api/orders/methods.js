@@ -51,7 +51,7 @@ export const insertOrder = new ValidatedMethod({
     const user = Meteor.users.findOne({ _id: userId });
 
     // Calc subtotal
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i += 1) {
       subtotal += items[i].price_per_unit;
     }
 
@@ -464,7 +464,7 @@ export const updateOrderItems = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run() {},
+  run() { },
 });
 
 export const updateOrder = new ValidatedMethod({
@@ -770,7 +770,7 @@ export const createPSOrders = new ValidatedMethod({
   applyOptions: {
     noRetry: true,
   },
-  run() {},
+  run() { },
 });
 
 // Get list of all method names on orders

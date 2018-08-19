@@ -400,13 +400,13 @@ Template.Pack_Editor.events({
 
     // GA
     ga('ec:addProduct', {
-      'id': item._id,
-      'name': item.name,
-      'category': item.category,
-      'brand': 'Fed',
-      'variant': item.variant,
-      'price': item.price_per_unit,
-      'quantity': 1
+      id: item._id,
+      name: item.name,
+      category: item.category,
+      brand: 'Fed',
+      variant: item.variant,
+      price: item.price_per_unit,
+      quantity: 1,
     });
     ga('ec:setAction', 'add');
     ga('send', 'event', 'UX', 'click', 'add to cart');
@@ -517,13 +517,13 @@ Template.Pack_Editor.events({
 
       // GA
       ga('ec:addProduct', {
-        'id': item._id,
-        'name': item.name,
-        'category': item.category,
-        'brand': 'Fed',
-        'variant': item.variant,
-        'price': item.price_per_unit,
-        'quantity': 1
+        id: item._id,
+        name: item.name,
+        category: item.category,
+        brand: 'Fed',
+        variant: item.variant,
+        price: item.price_per_unit,
+        quantity: 1,
       });
       ga('ec:setAction', 'remove');
       ga('send', 'event', 'UX', 'click', 'remove from cart');
@@ -609,9 +609,9 @@ Template.Pack_Editor.events({
 
       // GA
       const currentRoute = FlowRouter.getRouteName();
-      ga('ec:setAction','checkout', {
-        'step': 3,
-        'option': currentRoute
+      ga('ec:setAction', 'checkout', {
+        step: 3,
+        option: currentRoute,
       });
 
       ga('send', 'event', 'UX', 'checkout');
