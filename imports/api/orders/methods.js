@@ -6,9 +6,10 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { moment } from 'meteor/momentjs:moment';
 
 import { Orders } from './orders.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
-import { getMenuDWs } from '../menus/methods.js';
+import { getMenuDWs } from '/imports/api/menus/methods.js';
 
 // Zip Codes
 import { zipZones } from '../delivery/zipcodes.js';
@@ -600,6 +601,8 @@ export const updatePendingSubOrder = new ValidatedMethod({
     notes: { type: String, optional: true },
     changes: { type: Object, blackbox: true, optional: true },
     auto_correct: { type: Number, optional: true },
+    paid_at: { type: Date, optional: true },
+    payment_id: { type: String, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -788,6 +791,53 @@ const ORDERS_METHODS = _.pluck([
 ], 'name');
 
 if (Meteor.isServer) {
+  Meteor.methods({
+    toggleDeliveryDay({ day }) {
+      const user = Meteor.user();
+
+      if (!user) { return; }
+
+      const now = new Date();
+      const futureDeliveryWindows = DeliveryWindows.find({
+        delivery_start_time: {
+          $gte: now,
+        },
+      }).fetch();
+      const futureDeliveryWindowIds = futureDeliveryWindows.map(dw => dw._id);
+
+      const futureUserOrders = Orders.find({
+        delivery_window_id: {
+          $in: futureDeliveryWindowIds,
+        },
+        user_id: user._id,
+      }).fetch();
+
+      futureUserOrders.map((order) => {
+        const dwIds = getMenuDWs.call({ menu_id: order.menu_id });
+
+
+        const dws = DeliveryWindows.find({
+          _id: {
+            $in: dwIds,
+          },
+        }).fetch();
+
+        const newDeliveryWindow = dws.filter(dw => dw.delivery_day === day)[0];
+
+        Orders.update(order._id, {
+          $set: {
+            delivery_window_id:
+              newDeliveryWindow
+                ? newDeliveryWindow._id
+                : order.delivery_window_id,
+          },
+        });
+
+        return order;
+      });
+    },
+  });
+
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {

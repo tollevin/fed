@@ -51,12 +51,6 @@ FlowRouter.route('/subscribe', {
   action: () => BlazeLayout.render('App_body', { main: 'Subscribe' }),
 });
 
-FlowRouter.route('/orders', {
-  name: 'My.orders',
-  waitOn: () => import('/imports/ui/pages/my-orders/my-orders.js'),
-  action: () => BlazeLayout.render('App_body', { main: 'My_Orders' }),
-});
-
 FlowRouter.route('/gifts', {
   name: 'Gifts',
   waitOn: () => import('/imports/ui/pages/gift-cards/gift-cards.js'),

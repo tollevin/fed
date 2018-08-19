@@ -20,24 +20,20 @@ Template.Order_toggle.onCreated(function orderToggleOnCreated() {
   this.status = new ReactiveVar();
 
   this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      const dw = DeliveryWindows.findOne({ _id: this.data.delivery_window_id });
-      this.delivery_window.set(dw);
+    if (!this.subscriptionsReady()) { return; }
 
-      const order = Orders.findOne({ _id: this.data._id });
-      this.status.set(order.status);
-    }
+    const dw = DeliveryWindows.findOne({ _id: this.data.delivery_window_id });
+    this.delivery_window.set(dw);
+
+    const order = Orders.findOne({ _id: this.data._id });
+    this.status.set(order.status);
   });
-});
-
-Template.Order_toggle.onRendered(function orderToggleOnRendered() {
-
 });
 
 Template.Order_toggle.helpers({
   date: () => {
     const dw = Template.instance().delivery_window.get();
-    if (!dw) return undefined;
+    if (!dw) { return undefined; }
     return moment(dw.delivery_start_time).format('dddd, MMM Do');
   },
 
@@ -55,10 +51,6 @@ Template.Order_toggle.helpers({
 Template.Order_toggle.events({
   'click .switch, touchstart .switch'(event, templateInstance) {
     event.preventDefault();
-    // const order = Orders.findOne({_id: template._id});
-    const data = {
-      order_id: templateInstance.data._id,
-    };
-    toggleSkip.call(data);
+    toggleSkip.call({ order_id: templateInstance.data._id });
   },
 });
