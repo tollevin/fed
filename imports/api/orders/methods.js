@@ -6,6 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { moment } from 'meteor/momentjs:moment';
 
 import { Orders } from './orders.js';
+import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
 import { getMenuDWs } from '../menus/methods.js';
@@ -752,6 +753,47 @@ export const toggleSkip = new ValidatedMethod({
   },
 });
 
+export const toggleDeliveryDay = new ValidatedMethod({
+  name: 'Orders.methods.toggleDeliveryDay',
+  validate: new SimpleSchema({
+    day: { type: String },
+  }).validator({}),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({ day }) {
+    const user = Meteor.user();
+
+    if (!user) { return; }
+    const now = Date.now();
+    const futureDeliveryWindows = DeliveryWindows.find({
+      delivery_start_time: {
+        $gte: now,
+      },
+    }).fetch();
+    const futureDeliveryWindowIds = futureDeliveryWindows.map(dw => dw._id);
+    const futureUserOrders = Orders.find({
+      delivery_window_id: {
+        $in: [futureDeliveryWindowIds],
+      },
+      user_id: user._id,
+    }).fetch();
+
+    futureUserOrders.map((order) => {
+      const dws = getMenuDWs({ menu_id: order.menu_id }).fetch();
+      const newDeliveryWindow = dws.filter(dw => dw.delivery_day === day)[0];
+
+      Orders.update(order._id, {
+        $set: {
+          delivery_window_id: newDeliveryWindow ? newDeliveryWindow._id : order.delivery_window_id,
+        },
+      });
+
+      return order;
+    });
+  },
+});
+
 export const clearPSOrders = new ValidatedMethod({
   name: 'Orders.methods.clearPSOrders',
   validate: null,
@@ -781,6 +823,7 @@ const ORDERS_METHODS = _.pluck([
   updateOrder,
   updatePendingSubOrder,
   clearPSOrders,
+  toggleDeliveryDay,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,

@@ -5,6 +5,8 @@ import { sAlert } from 'meteor/juliancwirko:s-alert';
 
 import { SETTING_SESSION, MAIN } from '/imports/ui/lib/constants/settings';
 
+import '/imports/ui/components/delivery-day-toggle/delivery-day-toggle.js';
+
 import './delivery-settings.less';
 import './delivery-settings.html';
 

@@ -1,10 +1,12 @@
 <template name="Delivery_day_toggle">
-	<div class="delivery-day-checkbox">
-		<span class="delivery-day">Sunday</span>
-		<label class="switch">
-		  <input type="checkbox" id="delivery-day-checkbox">
-		  <span class="slider"></span>
-		</label>
-		<span class="delivery-day">Monday</span>
-	</div>
+  <div class="delivery-day-toggle">
+    <span class="delivery-day">Sunday</span>
+    <div class="toggle">
+      <label class="switch {{locked}}">
+        <input type="checkbox" id="delivery-day-checkbox" checked={{checked}}>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <span class="delivery-day">Monday</span>
+  </div>
 </template>
