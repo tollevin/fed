@@ -5,7 +5,8 @@
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "pretest": "npm run lint --silent",
-    "start": "meteor run"
+    "start": "meteor run",
+    "debug": "meteor run --inspect"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.51",
