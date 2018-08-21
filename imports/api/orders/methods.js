@@ -94,7 +94,8 @@ export const insertOrder = new ValidatedMethod({
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 
-    const zip = user.address_zipcode;
+    let zip = user.address_zipcode;
+    if (!zip) zip = user.profile.zipCode;  // FIX! double check for users without address_zipcode
     const deliveryFees = zipZones[zip].delivery_fees;
 
     const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
