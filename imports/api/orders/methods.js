@@ -154,32 +154,35 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     // Set Subscription Discounts
     if (!(user.subscriptions && user.subscriptions.length > 0)) { return undefined; }
 
-    const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
+    const getSubscriptionItem = (sub) => items.find(item => item._id === sub.item_id);
 
     // create subtotalDollars
-    const subtotalDollars = user.subscriptions
-      .map(getSubscriptionItem)
-      .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
+    const subtotalDollars =
+      user.subscriptions
+        .map(getSubscriptionItem)
+        .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
 
     // for each subscription
-    const discount = user.subscriptions
-      .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
-        const subscriptionItem = getSubscriptionItem(sub);
+    const discount =
+      user.subscriptions
+        .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
+          const subscriptionItem = getSubscriptionItem(sub);
 
-        const subscriberDiscount = {
-          item_id: subscriptionItem._id,
-          percent_off: sub.percent_off,
-          value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
-        };
+          const subscriberDiscount = {
+            item_id: subscriptionItem._id,
+            percent_off: sub.percent_off,
+            value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
+          };
 
-        const percentOffValue = (sub.percent_off / 100) * subscriptionItem.price_per_unit;
+          const percentOffValue =
+            (sub.percent_off / 100) * subscriptionItem.price_per_unit;
 
-        // add discount object to order.discount
-        return {
-          subscriber_discounts: [...prevDiscounts, subscriberDiscount],
-          value: aggregateValue + percentOffValue,
-        };
-      }, { subscriber_discounts: [], value: 0 });
+          // add discount object to order.discount
+          return {
+            subscriber_discounts: [...prevDiscounts, subscriberDiscount],
+            value: aggregateValue + percentOffValue
+          };
+        }, { subscriber_discounts: [], value: 0 });
 
     // Create default recipient obj
     const recipient = {
@@ -210,7 +213,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
-    const subtotal = Math.round(subtotalDollars * 100) / 100;
+    let subtotal = Math.round(subtotalDollars * 100) / 100;
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 
