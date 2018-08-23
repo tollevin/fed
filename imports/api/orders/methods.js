@@ -756,27 +756,6 @@ export const toggleSkip = new ValidatedMethod({
   },
 });
 
-export const clearPSOrders = new ValidatedMethod({
-  name: 'Orders.methods.clearPSOrders',
-  validate: null,
-  applyOptions: {
-    noRetry: true,
-  },
-  run() {
-    const PSOrders = Orders.remove({ status: 'pending-sub' });
-    return PSOrders;
-  },
-});
-
-export const createPSOrders = new ValidatedMethod({
-  name: 'Orders.methods.createPSOrders',
-  validate: null,
-  applyOptions: {
-    noRetry: true,
-  },
-  run() { },
-});
-
 // Get list of all method names on orders
 const ORDERS_METHODS = _.pluck([
   insertOrder,
@@ -784,7 +763,6 @@ const ORDERS_METHODS = _.pluck([
   processOrder,
   updateOrder,
   updatePendingSubOrder,
-  clearPSOrders,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,

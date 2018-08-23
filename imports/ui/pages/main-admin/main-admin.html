@@ -1,58 +1,102 @@
 <template name="Main_admin">
-	<div class="content-scrollable">
-		<div id="main-admin" class="admin-page">
-			<div id="Admin-Dashboard">
-				{{#if Template.subscriptionsReady}}
-					<div id="This-Weeks-Orders-Table">
-						<table>
-							<tr><h3>Your Orders</h3></tr>
-							<tr><td>Today</td><td class="value">{{ordersToday}}</td></tr>
-							<tr><td>This Week</td><td class="value">{{ordersThisWeek}}</td></tr>
-						</table>
-					</div>
+  <div class="content-scrollable">
+    <div id="main-admin" class="admin-page">
+      <div id="Admin-Dashboard">
+        {{#if Template.subscriptionsReady}}
+        <div id="This-Weeks-Orders-Table">
+          <table>
+            <tr>
+              <h3>Your Orders</h3>
+            </tr>
+            <tr>
+              <td>Today</td>
+              <td class="value">{{ordersToday}}</td>
+            </tr>
+            <tr>
+              <td>This Week</td>
+              <td class="value">{{ordersThisWeek}}</td>
+            </tr>
+          </table>
+        </div>
 
-					<div id="Payments-Summary-Table">
-						<table>
-							<tr><h3>Payments Summary</h3></tr>
-							<tr><td>Today's Sales</td><td class="value">$ {{salesToday}}</td></tr>
-							<tr><td>This Week's Balance</td><td class="value">$ {{salesThisWeek}}</td></tr>
-						</table>
-					</div>
+        <div id="Payments-Summary-Table">
+          <table>
+            <tr>
+              <h3>Payments Summary</h3>
+            </tr>
+            <tr>
+              <td>Today's Sales</td>
+              <td class="value">$ {{salesToday}}</td>
+            </tr>
+            <tr>
+              <td>This Week's Balance</td>
+              <td class="value">$ {{salesThisWeek}}</td>
+            </tr>
+          </table>
+        </div>
 
-					<div id="Subscriptions-Table">
-						<table>
-							<tr><h3>Subscriptions</h3></tr>
-							<tr><td>Total</td><td class="value">{{totalSubs}}</td></tr>
-							<tr><hr></tr>
-							<tr><h4>This Week</h4></tr>
-							<!-- <tr><td>Active</td><td class="value">{{activeSubs}}</td></tr> -->
-							<tr><td>Customized</td><td class="value">{{customizedSubs}}</td></tr>
-							<tr><td>Skipping</td><td class="value">{{skippingSubs}}</td></tr>
-							<tr><td>New</td><td class="value">{{newSubs}}</td></tr>
-							<tr><td>Canceled</td><td class="value">{{canceledSubs}}</td></tr>
-							<tr><td>{{#if beforeThurs}}Estimated {{/if}}Sub Plates</td><td class="value">{{estimatedSubPlates}}</td></tr>
-							<tr><td>Custom Plates</td><td class="value">{{customPlates}}</td></tr>
-							<tr><td>{{#if beforeThurs}}Estimated {{/if}}Total Plates</td><td class="value">{{estimatedTotalPlates}}</td></tr>
-						</table>
-					</div>
+        <div id="Subscriptions-Table">
+          <table>
+            <tr>
+              <h3>Subscriptions</h3>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td class="value">{{totalSubs}}</td>
+            </tr>
+            <tr>
+              <hr>
+            </tr>
+            <tr>
+              <h4>This Week</h4>
+            </tr>
+            <!-- <tr><td>Active</td><td class="value">{{activeSubs}}</td></tr> -->
+            <tr>
+              <td>Customized</td>
+              <td class="value">{{customizedSubs}}</td>
+            </tr>
+            <tr>
+              <td>Skipping</td>
+              <td class="value">{{skippingSubs}}</td>
+            </tr>
+            <tr>
+              <td>New</td>
+              <td class="value">{{newSubs}}</td>
+            </tr>
+            <tr>
+              <td>Canceled</td>
+              <td class="value">{{canceledSubs}}</td>
+            </tr>
+            <tr>
+              <td>{{#if beforeThurs}}Estimated {{/if}}Sub Plates</td>
+              <td class="value">{{estimatedSubPlates}}</td>
+            </tr>
+            <tr>
+              <td>Custom Plates</td>
+              <td class="value">{{customPlates}}</td>
+            </tr>
+            <tr>
+              <td>{{#if beforeThurs}}Estimated {{/if}}Total Plates</td>
+              <td class="value">{{estimatedTotalPlates}}</td>
+            </tr>
+          </table>
+        </div>
 
-					<div id="Menu-Items-Table">
-						{{#each itemsThisWeek}}
-              <p class="menu-item-info"><span class="count">{{count}}</span>  <span class="name">{{name}}</span></p>
-            {{/each}}
-					</div>
+        <div id="Menu-Items-Table">
+          {{#each itemsThisWeek}}
+          <p class="menu-item-info"><span class="count">{{count}}</span> <span class="name">{{name}}</span></p>
+          {{/each}}
+        </div>
 
-					<div class="buttons-holder">
-						<button id="clearPS">Delete PS Orders</button>
-						<button id="createPS">Create PS Orders</button>
-						<button id="checkUsers">Check Users</button>
-						<button id="checkUsers2">Check Users week 2</button>
-						<button id="checkUsers3">Check Users week 3</button>
-					</div>
-				{{else}}
-					<p>Loading...</p>
-				{{/if}}
-			</div>
-		</div>
-	</div>
+        <div class="buttons-holder">
+          <button id="checkUsers">Check Users</button>
+          <button id="checkUsers2">Check Users week 2</button>
+          <button id="checkUsers3">Check Users week 3</button>
+        </div>
+        {{else}}
+        <p>Loading...</p>
+        {{/if}}
+      </div>
+    </div>
+  </div>
 </template>
