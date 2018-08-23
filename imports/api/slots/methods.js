@@ -3,11 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { moment } from 'meteor/momentjs:moment';
 
 import { Slots } from './slots.js';
-import { Items } from '/imports/api/items/items.js';
-import { Orders } from '/imports/api/orders/orders.js';
 // import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
@@ -24,7 +21,7 @@ export const insertSlot = new ValidatedMethod({
     category: { type: String },
     restrictions: { type: Array },
     'restrictions.$': { type: String, optional: true },
-    static: { type: Boolean, optional: true },
+    is_static: { type: Boolean, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -34,7 +31,7 @@ export const insertSlot = new ValidatedMethod({
     sub_id: subId,
     category,
     restrictions,
-    static,
+    is_static: isStatic,
   }) {
     const slot = {
       created_at: new Date(),
@@ -42,7 +39,7 @@ export const insertSlot = new ValidatedMethod({
       sub_id: subId,
       category,
       restrictions,
-      static: static || false,
+      is_static: isStatic || false,
     };
 
     Slots.insert(slot);
@@ -55,7 +52,6 @@ const SLOTS_METHODS = _.pluck([
 ], 'name');
 
 if (Meteor.isServer) {
-
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {

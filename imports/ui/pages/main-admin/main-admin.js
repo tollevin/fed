@@ -16,7 +16,7 @@ import '/imports/ui/components/new-item/new-item.js';
 import '/imports/ui/components/item-admin/item-admin.js';
 
 // Methods
-import { autoinsertSubscriberOrder } from '/imports/api/orders/methods.js';
+import { autoinsertSubscriberOrder, populateOrderItems } from '/imports/api/orders/methods.js';
 
 // Template
 import './main-admin.html';
@@ -225,18 +225,26 @@ const checkUsers = (thisWeekStart) => {
     const ordersThisWeek = Orders.find({ user_id: userId, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
 
     // if no order, create a pending-sub order for them
-    if (ordersThisWeek.length < 1) {
-      Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
-        if (error) { return; }
 
+    Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
+      if (error) { return; }
+
+      if (ordersThisWeek.length < 1) {
         autoinsertSubscriberOrder.call({
           user_id: userId,
           menu_id: menu._id,
           week_of: thisWeekStart,
           items,
         });
+      }
+
+      populateOrderItems.call({
+        user_id: userId,
+        menu_id: menu._id,
+        week_of: thisWeekStart,
+        items,
       });
-    }
+    });
 
     // if more than one order this week, alert!
     if (ordersThisWeek.length > 1) {
@@ -250,14 +258,13 @@ const checkUsers = (thisWeekStart) => {
     subscribers.all += 1;
   });
 
-  const skippers =
-    thisWeeksOrders
-      .filter(({ status }) => status === 'skipped')
-      .map(({ recipient: { email } }) => email);
+  const skippers = thisWeeksOrders
+    .filter(({ status }) => status === 'skipped')
+    .map(({ recipient: { email } }) => email);
 
   console.log(skippers);
   console.log(subscribers);
-}
+};
 
 Template.Main_admin.events({
   'click #checkUsers'(event) {
@@ -269,7 +276,7 @@ Template.Main_admin.events({
     // if sub status is canceled, -> cancelSubscription FIX DELETE
     users.forEach((user) => {
       user.subscriptions
-        .filter((sub) => sub.status === 'canceled')
+        .filter(sub => sub.status === 'canceled')
         .forEach((sub) => {
           Meteor.call('cancelSubscription', user._id, sub._id, () => { });
         });
@@ -282,14 +289,16 @@ Template.Main_admin.events({
   'click #checkUsers2'(event) {
     event.preventDefault();
 
-    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(1, 'w').utc().toDate();
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(1, 'w').utc()
+      .toDate();
     checkUsers(thisWeekStart);
   },
 
   'click #checkUsers3'(event) {
     event.preventDefault();
 
-    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(2, 'w').utc().toDate();
+    const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(2, 'w').utc()
+      .toDate();
     checkUsers(thisWeekStart);
   },
 });

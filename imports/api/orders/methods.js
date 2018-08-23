@@ -137,6 +137,42 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
+export const populateOrderItems = new ValidatedMethod({
+  name: 'Orders.populateOrderItems',
+  validate: new SimpleSchema({
+    user_id: { type: String },
+    menu_id: { type: String, optional: true },
+    week_of: { type: Date },
+    items: { type: [Object], optional: true },
+    'items.$': { type: Object, blackbox: true, optional: true },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: { noRetry: true },
+  run({
+    user_id: userId, menu_id: menuId, week_of: weekOf, items,
+  }) {
+    const user = Meteor.users.findOne({ _id: userId });
+    const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
+
+    user.subscriptions
+      .forEach((sub) => {
+        console.log('sub = %j', sub);
+        const subscriptionItem = getSubscriptionItem(sub);
+
+        console.log('subscriptionItem = %j', subscriptionItem);
+        // Greg does this
+        // if there are no slots
+        // then  take pack and insert slots into collection
+        // else just use the slots
+        // take slots and return viable pack as items
+
+        // Tollevin do this
+        // take items and generating order items
+        // take order items and put items into order object (careful not to double add order items)
+        // subscriptionItem.items is not empty at end of function(careful not to double add subscriptionItem.items)
+      });
+  },
+});
+
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
@@ -147,42 +183,41 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     'items.$': { type: Object, blackbox: true, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: { noRetry: true },
-  run({ user_id: userId, menu_id: menuId, week_of: weekOf, items }) {
+  run({
+    user_id: userId, menu_id: menuId, week_of: weekOf, items,
+  }) {
     // Prep vars
     const user = Meteor.users.findOne({ _id: userId });
 
     // Set Subscription Discounts
     if (!(user.subscriptions && user.subscriptions.length > 0)) { return undefined; }
 
-    const getSubscriptionItem = (sub) => items.find(item => item._id === sub.item_id);
+    const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
     // create subtotalDollars
-    const subtotalDollars =
-      user.subscriptions
-        .map(getSubscriptionItem)
-        .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
+    const subtotalDollars = user.subscriptions
+      .map(getSubscriptionItem)
+      .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
 
     // for each subscription
-    const discount =
-      user.subscriptions
-        .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
-          const subscriptionItem = getSubscriptionItem(sub);
+    const discount = user.subscriptions
+      .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
+        const subscriptionItem = getSubscriptionItem(sub);
 
-          const subscriberDiscount = {
-            item_id: subscriptionItem._id,
-            percent_off: sub.percent_off,
-            value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
-          };
+        const subscriberDiscount = {
+          item_id: subscriptionItem._id,
+          percent_off: sub.percent_off,
+          value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
+        };
 
-          const percentOffValue =
-            (sub.percent_off / 100) * subscriptionItem.price_per_unit;
+        const percentOffValue = (sub.percent_off / 100) * subscriptionItem.price_per_unit;
 
-          // add discount object to order.discount
-          return {
-            subscriber_discounts: [...prevDiscounts, subscriberDiscount],
-            value: aggregateValue + percentOffValue
-          };
-        }, { subscriber_discounts: [], value: 0 });
+        // add discount object to order.discount
+        return {
+          subscriber_discounts: [...prevDiscounts, subscriberDiscount],
+          value: aggregateValue + percentOffValue,
+        };
+      }, { subscriber_discounts: [], value: 0 });
 
     // Create default recipient obj
     const recipient = {
@@ -213,7 +248,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
-    let subtotal = Math.round(subtotalDollars * 100) / 100;
+    const subtotal = Math.round(subtotalDollars * 100) / 100;
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 
@@ -766,6 +801,7 @@ const ORDERS_METHODS = _.pluck([
   processOrder,
   updateOrder,
   updatePendingSubOrder,
+  populateOrderItems,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,
