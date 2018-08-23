@@ -7,7 +7,7 @@ import { Orders } from '../orders.js';
 
 const MAX_ORDERS = 1000;
 
-Meteor.publish('some.orders', function(limit) {
+Meteor.publish('some.orders', function (limit) {
   new SimpleSchema({
     limit: { type: Number, optional: true },
   }).validate({ limit });

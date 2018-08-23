@@ -3,11 +3,8 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
-import { moment } from 'meteor/momentjs:moment';
 
-import { StaticSlots } from './staticSlots.js';
-import { Items } from '/imports/api/items/items.js';
-import { Orders } from '/imports/api/orders/orders.js';
+import { StaticSlots } from './static-slots.js';
 // import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
@@ -45,7 +42,6 @@ const SLOTS_METHODS = _.pluck([
 ], 'name');
 
 if (Meteor.isServer) {
-
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {

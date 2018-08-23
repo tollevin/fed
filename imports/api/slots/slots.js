@@ -52,7 +52,7 @@ Slots.schema = new SimpleSchema({
   },
   category: {
     type: String,
-    label: 'Category'
+    label: 'Category',
   },
   restrictions: {
     type: Array,
@@ -61,9 +61,9 @@ Slots.schema = new SimpleSchema({
   'restrictions.$': {
     type: String,
     label: 'Restricted Ingredient',
-    optional: true
+    optional: true,
   },
-  static: {
+  is_static: {
     type: Boolean,
     label: 'Static Item',
     defaultValue: false,
@@ -82,7 +82,7 @@ Slots.publicFields = {
   sub_id: 1,
   category: 1,
   restrictions: 1,
-  static: 1,
+  is_static: 1,
 };
 
 Slots.helpers({
