@@ -26,6 +26,7 @@ Slots.deny({
   remove() { return true; },
 });
 
+
 Slots.schema = new SimpleSchema({
   _id: {
     type: String,
@@ -48,11 +49,10 @@ Slots.schema = new SimpleSchema({
     type: String,
     label: 'Subscription ID',
     regEx: SimpleSchema.RegEx.Id,
-    optional: true,
   },
   category: {
     type: String,
-    label: 'Category',
+    label: 'Category'
   },
   restrictions: {
     type: Array,
@@ -61,9 +61,9 @@ Slots.schema = new SimpleSchema({
   'restrictions.$': {
     type: String,
     label: 'Restricted Ingredient',
-    optional: true,
+    optional: true
   },
-  is_static: {
+  static: {
     type: Boolean,
     label: 'Static Item',
     defaultValue: false,
@@ -82,7 +82,7 @@ Slots.publicFields = {
   sub_id: 1,
   category: 1,
   restrictions: 1,
-  is_static: 1,
+  static: 1,
 };
 
 Slots.helpers({

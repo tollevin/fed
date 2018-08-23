@@ -3,7 +3,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 class OrderItemsCollection extends Mongo.Collection {
   insert(orderItem, callback) {
-    const ourOrderItem = orderItem;
+    const ourOrderItem = orderitem;
     ourOrderItem.createdAt = ourOrderItem.createdAt || new Date();
     return super.insert(ourOrderItem, callback);
   }

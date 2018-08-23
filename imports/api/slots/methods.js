@@ -3,8 +3,11 @@ import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Slots } from './slots.js';
+import { Items } from '/imports/api/items/items.js';
+import { Orders } from '/imports/api/orders/orders.js';
 // import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
@@ -17,11 +20,11 @@ export const insertSlot = new ValidatedMethod({
   name: 'Slots.insert',
   validate: new SimpleSchema({
     user_id: { type: String },
-    sub_id: { type: String, optional: true },
+    sub_id: { type: String },
     category: { type: String },
     restrictions: { type: Array },
     'restrictions.$': { type: String, optional: true },
-    is_static: { type: Boolean, optional: true },
+    static: { type: Boolean, optional: true },
   }).validator({ clean: true, filter: false }),
   applyOptions: {
     noRetry: true,
@@ -31,7 +34,7 @@ export const insertSlot = new ValidatedMethod({
     sub_id: subId,
     category,
     restrictions,
-    is_static: isStatic,
+    static,
   }) {
     const slot = {
       created_at: new Date(),
@@ -39,10 +42,10 @@ export const insertSlot = new ValidatedMethod({
       sub_id: subId,
       category,
       restrictions,
-      is_static: isStatic || false,
+      static: static || false,
     };
 
-    return Slots.findOne({ _id: Slots.insert(slot) });
+    Slots.insert(slot);
   },
 });
 
@@ -52,6 +55,7 @@ const SLOTS_METHODS = _.pluck([
 ], 'name');
 
 if (Meteor.isServer) {
+
   // Only allow 5 orders operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {

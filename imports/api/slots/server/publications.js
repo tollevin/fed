@@ -1,11 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { moment } from 'meteor/momentjs:moment';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { Slots } from '../slots.js';
 
 const MAX_SLOTS = 300;
 
-Meteor.publish('all.slots', function (limit) {
+Meteor.publish('all.slots', function(limit) {
   new SimpleSchema({
     limit: { type: Number, optional: true },
   }).validate({ limit });
