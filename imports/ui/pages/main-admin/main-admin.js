@@ -226,17 +226,15 @@ const checkUsers = (thisWeekStart) => {
 
     // if no order, create a pending-sub order for them
     if (ordersThisWeek.length < 1) {
-      Meteor.call('getUserSubscriptionItems', userId, (error, response) => {
+      Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
         if (error) { return; }
 
-        const data = {
+        autoinsertSubscriberOrder.call({
           user_id: userId,
           menu_id: menu._id,
           week_of: thisWeekStart,
-          items: response,
-        };
-
-        autoinsertSubscriberOrder.call(data);
+          items,
+        });
       });
     }
 

@@ -137,49 +137,44 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     week_of: { type: Date },
     items: { type: [Object], optional: true },
     'items.$': { type: Object, blackbox: true, optional: true },
-    // subscriptions: { type: [ Object ], optional: true },
-    // 'subscriptions.$': { type: Object, blackbox: true, optional: true },
   }).validator({ clean: true, filter: false }),
-  applyOptions: {
-    noRetry: true,
-  },
-  run({
-    user_id: userId,
-    menu_id: menuId,
-    week_of: weekOf,
-    items,
-  }) {
+  applyOptions: { noRetry: true },
+  run({ user_id: userId, menu_id: menuId, week_of: weekOf, items }) {
     // Prep vars
-    let subtotal = 0;
-    const discount = {
-      subscriber_discounts: [],
-      value: 0,
-    };
     const user = Meteor.users.findOne({ _id: userId });
-    const subs = user.subscriptions;
 
     // Set Subscription Discounts
     if (!(user.subscriptions && user.subscriptions.length > 0)) { return undefined; }
+
+    const getSubscriptionItem = (sub) => items.find(item => item._id === sub.item_id);
+
+    // create subtotalDollars
+    const subtotalDollars =
+      user.subscriptions
+        .map(getSubscriptionItem)
+        .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
+
     // for each subscription
-    for (let i = subs.length - 1; i >= 0; i -= 1) {
-      const subItemId = subs[i].item_id;
+    const discount =
+      user.subscriptions
+        .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
+          const subscriptionItem = getSubscriptionItem(sub);
 
-      // find the subscription item in the items list
-      const subItem = items.find(item => item._id === subItemId);
+          const subscriberDiscount = {
+            item_id: subscriptionItem._id,
+            percent_off: sub.percent_off,
+            value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
+          };
 
-      // add price to subtotal
-      subtotal += subItem.price_per_unit;
+          const percentOffValue =
+            (sub.percent_off / 100) * subscriptionItem.price_per_unit;
 
-      const subscriberDiscount = {
-        item_id: subItemId,
-        percent_off: subs[i].percent_off,
-        value: subs[i].percent_off / 100 * subItem.price_per_unit,
-      };
-
-      // add discount object to order.discount
-      discount.subscriber_discounts.push(subscriberDiscount);
-      discount.value += (subs[i].percent_off / 100 * subItem.price_per_unit);
-    }
+          // add discount object to order.discount
+          return {
+            subscriber_discounts: [...prevDiscounts, subscriberDiscount],
+            value: aggregateValue + percentOffValue
+          };
+        }, { subscriber_discounts: [], value: 0 });
 
     // Create default recipient obj
     const recipient = {
@@ -210,7 +205,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
-    subtotal = Math.round(subtotal * 100) / 100;
+    let subtotal = Math.round(subtotalDollars * 100) / 100;
     const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
     let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
 
@@ -229,7 +224,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       week_of: weekOf,
       style: 'pack',
       items,
-      subscriptions: subs,
+      subscriptions: user.subscriptions,
       recipient,
       subtotal,
       discount,
