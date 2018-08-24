@@ -17,7 +17,7 @@ export const insertSlot = new ValidatedMethod({
   name: 'Slots.insert',
   validate: new SimpleSchema({
     user_id: { type: String },
-    sub_id: { type: String },
+    sub_id: { type: String, optional: true },
     category: { type: String },
     restrictions: { type: Array },
     'restrictions.$': { type: String, optional: true },
