@@ -64,6 +64,24 @@ export const getPack = (packItems, packType) => {
   return computedPackItems[packName][packNumber];
 };
 
+const flatten = (arr) => [].concat(...arr);
+
+const times = (numTimes, doSomething) =>
+  Array.from(Array(numTimes)).map(doSomething);
+
+export const generateSlots = ({ total: _, ...packSchemaWithoutTotal }, userId, userDietRestrictions) =>
+  flatten(
+    Object.entries(packSchemaWithoutTotal)
+      .map(([category, numberInCategory]) => (
+        times(numberInCategory, () => ({
+          user_id: userId,
+          sub_id: null,
+          category,
+          restrictions: userDietRestrictions,
+          is_static: false,
+        }))
+      )));
+
 export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) => {
   const {
     total: totalPlates,
@@ -113,3 +131,5 @@ export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) =
     complete: numDishes === totalPlates,
   };
 };
+
+

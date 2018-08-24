@@ -10,6 +10,8 @@ import { Slots } from '/imports/api/slots/slots.js';
 import { Menus } from '/imports/api/menus/menus.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
+import { generateSlots } from '/imports/ui/lib/pack_picker/pack_planner.js';
+
 import { insertSlot } from '/imports/api/slots/methods.js';
 
 import { Orders } from './orders.js';
@@ -140,18 +142,7 @@ const times = (numTimes, doSomething) =>
 
 const flatten = (arr) => [].concat(...arr);
 
-const generateSlots = ({ total: _, ...packSchemaWithoutTotal }, userId, userDietRestrictions) =>
-  flatten(
-    Object.entries(packSchemaWithoutTotal)
-      .map(([category, numberInCategory]) => (
-        times(numberInCategory, () => ({
-          user_id: userId,
-          sub_id: null,
-          category,
-          restrictions: userDietRestrictions,
-          is_static: false,
-        }))
-      )));
+
 
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
@@ -833,6 +824,8 @@ if (Meteor.isServer) {
     },
     populateOrderItems({ user_id: userId, menu_id: menuId, week_of: weekOf, items }) {
       const user = Meteor.users.findOne({ _id: userId });
+      const { restrictions: userDietRestrictions } = user;
+
       const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
       const menu = Menus.findOne({ _id: menuId });
@@ -841,18 +834,18 @@ if (Meteor.isServer) {
       user.subscriptions
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
+          const { sub_items: { schema: packSchema } } = subscriptionItem;
           // Greg does this
 
           // This assumes 1 subscription per User.  Will fix later
           let userSlots = Slots.find({ user_id: user._id }).fetch();
           if (!userSlots.length) {
             console.log("making slots")
-            const { restrictions: userDietRestrictions } = user;
-            const { sub_items: { schema: packSchema } } = subscriptionItem;
-            newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
-
+            const newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
             userSlots = newSlots.map((slot) => insertSlot.call(slot));
           }
+
+
 
           console.log("userSlots = %j", userSlots)
 

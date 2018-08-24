@@ -110,6 +110,7 @@ Template.Diet_settings.events({
     const foodTypeArray = dietNameToFoodTypeArray(dietName);
 
     // ////////// Experiment Pack Genration Code Start /////////////
+    // DEPRICATED !!!
     // const packType = {name: "paleo", number: 12};
     // const packItems = Items.find({category: "Pack"}).fetch();
     // const pack = getPack(packItems, packType);
@@ -146,7 +147,7 @@ Template.Diet_settings.events({
       .findAll('.checked')
       .map(restriction => restriction.id);
 
-    Meteor.call('updateUser', Meteor.userId(), formdata, () => {});
+    Meteor.call('updateUser', Meteor.userId(), formdata, () => { });
     sAlert.success('Settings saved!');
     Session.set(SETTING_SESSION, MAIN);
     Session.set('loading', false);
