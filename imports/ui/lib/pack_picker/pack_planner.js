@@ -83,10 +83,7 @@ export const generateSlots = ({ total: _, ...packSchemaWithoutTotal }, userId, u
       )));
 
 export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) => {
-  const {
-    total: totalPlates,
-    ...plateNumbers
-  } = pack;
+  const { total: totalPlates, ...plateNumbers } = pack;
 
   const rejectedFoods = lodash.difference(ALL_FOODS, restrictions);
 
