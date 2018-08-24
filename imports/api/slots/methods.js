@@ -42,7 +42,7 @@ export const insertSlot = new ValidatedMethod({
       is_static: isStatic || false,
     };
 
-    Slots.insert(slot);
+    return Slots.findOne({ _id: Slots.insert(slot) });
   },
 });
 

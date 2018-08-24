@@ -153,54 +153,6 @@ const generateSlots = ({ total: _, ...packSchemaWithoutTotal }, userId, userDiet
         }))
       )));
 
-export const populateOrderItems = new ValidatedMethod({
-  name: 'Orders.populateOrderItems',
-  validate: new SimpleSchema({
-    user_id: { type: String },
-    menu_id: { type: String, optional: true },
-    week_of: { type: Date },
-    items: { type: [Object], optional: true },
-    'items.$': { type: Object, blackbox: true, optional: true },
-  }).validator({ clean: true, filter: false }),
-  applyOptions: { noRetry: true },
-  run({
-    user_id: userId, menu_id: menuId, week_of: weekOf, items,
-  }) {
-    const user = Meteor.users.findOne({ _id: userId });
-    const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
-
-    const menu = Menus.findOne({ _id: menuId });
-    const menuItems = Items.find({ _id: { $in: menu.items } }).fetch();
-
-    user.subscriptions
-      .forEach((sub) => {
-        const subscriptionItem = getSubscriptionItem(sub);
-        // Greg does this
-
-        // This assumes 1 subscription per User.  Will fix later
-        const allSlots = Slots.find({}).fetch();
-        const queriedUserSlots = Slots.find({ user_id: user._id }).fetch();
-        if (!queriedUserSlots.length) {
-          const { restrictions: userDietRestrictions } = user;
-          const { sub_items: { schema: packSchema } } = subscriptionItem;
-          const newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
-
-          newSlots.map((slot) => insertSlot.call(slot));
-        }
-
-        // else just use the slots
-        const userSlots = queriedUserSlots;
-
-        // take slots and return viable pack as items
-
-        // Tollevin do this
-        // take items and generating order items
-        // take order items and put items into order object (careful not to double add order items)
-        // subscriptionItem.items is not empty at end of function(careful not to double add subscriptionItem.items)
-      });
-  },
-});
-
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
@@ -827,7 +779,6 @@ const ORDERS_METHODS = _.pluck([
   processOrder,
   updateOrder,
   updatePendingSubOrder,
-  populateOrderItems,
   // cancelOrder,
   // updateOrderItems,
   findUserFutureOrders,
@@ -882,8 +833,6 @@ if (Meteor.isServer) {
     },
     populateOrderItems({ user_id: userId, menu_id: menuId, week_of: weekOf, items }) {
       const user = Meteor.users.findOne({ _id: userId });
-      const { restrictions: userDietRestrictions } = user;
-
       const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
       const menu = Menus.findOne({ _id: menuId });
@@ -892,20 +841,20 @@ if (Meteor.isServer) {
       user.subscriptions
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
-          const { sub_items: { schema: packSchema } } = subscriptionItem;
           // Greg does this
 
           // This assumes 1 subscription per User.  Will fix later
           let userSlots = Slots.find({ user_id: user._id }).fetch();
           if (!userSlots.length) {
             console.log("making slots")
-            const newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
+            const { restrictions: userDietRestrictions } = user;
+            const { sub_items: { schema: packSchema } } = subscriptionItem;
+            newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
+
             userSlots = newSlots.map((slot) => insertSlot.call(slot));
           }
 
-          console.log("userSlots = %j", userSlots);
-
-
+          console.log("userSlots = %j", userSlots)
 
 
           // take slots and return viable pack as items

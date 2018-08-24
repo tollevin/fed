@@ -16,7 +16,7 @@ import '/imports/ui/components/new-item/new-item.js';
 import '/imports/ui/components/item-admin/item-admin.js';
 
 // Methods
-import { autoinsertSubscriberOrder, populateOrderItems } from '/imports/api/orders/methods.js';
+import { autoinsertSubscriberOrder } from '/imports/api/orders/methods.js';
 
 // Template
 import './main-admin.html';
@@ -28,7 +28,6 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
   this.subscribe('Menus.thisWeek', timestamp);
   this.subscribe('Menus.toCome');
   this.subscribe('subscriberData');
-  this.subscribe('all.slots');
 
   this.itemInfo = new ReactiveVar();
   this.showTallies = new ReactiveVar(false);
@@ -239,7 +238,7 @@ const checkUsers = (thisWeekStart) => {
         });
       }
 
-      populateOrderItems.call({
+      Meteor.call('populateOrderItems', {
         user_id: userId,
         menu_id: menu._id,
         week_of: thisWeekStart,
