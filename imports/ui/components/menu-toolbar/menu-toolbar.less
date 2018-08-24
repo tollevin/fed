@@ -1,71 +1,76 @@
 @import '{}/imports/ui/styles/utils.less';
 
 #menu-toolbar {
-	.position(absolute, 0, 0, auto, 0, auto, auto);
-	padding: 10px 2%;
-	display: flex;
+  .position(absolute, 0, 0, auto, 0, auto, auto);
+  padding: 10px 2%;
+  display: flex;
   justify-content: space-between;
   background-color: @fgray;
   z-index: 5;
-	transition: height 200ms ease-in;
-	overflow-x: hidden;
+  transition: height 200ms ease-in;
+  overflow-x: hidden;
+
+  margin-left: 205px;
+  @media screen and (max-width: 600px) {
+    margin-left: 0;
+  }
 
   div {
-  	display: flex;
-  	flex-direction: row;
-  	padding: 5px 10px;
-  	cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    padding: 5px 10px;
+    cursor: pointer;
 
-  	div {
-  		padding: 0;
-  	}
+    div {
+      padding: 0;
+    }
 
-  	p {
-  		color: @fgreene;
-  		margin: 0 10px;
-	    padding: 0 3px;
-	    font-size: 14px;
-	    height: 24px;
-	    text-transform: uppercase;
-	    letter-spacing: .1em;
-  	}
+    p {
+      color: @fgreene;
+      margin: 0 10px;
+      padding: 0 3px;
+      font-size: 14px;
+      height: 24px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
 
-  	.active-filters {
-  		p {
-  			margin: 0 10px 0 0;
-		    border: 1px solid transparent;
-		    border-radius: 5px;
-		    padding: 0px 4px;
-		    box-shadow: 2px 2px 2px #949494;
-		    background-color: #034b2c;
-		    color: #fff;
-		    font-weight: 400;
-		    letter-spacing: 0;
-		    line-height: 24px;
-  		}
-  	}
+    .active-filters {
+      p {
+        margin: 0 10px 0 0;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        padding: 0px 4px;
+        box-shadow: 2px 2px 2px #949494;
+        background-color: #034b2c;
+        color: #fff;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 24px;
+      }
+    }
   }
 
   i {
-  	color: #034b2c;
-  	font-weight: 500;
-  	margin: auto;
+    color: #034b2c;
+    font-weight: 500;
+    margin: auto;
   }
 
-	#Filter-menu-toggle {
-		.fa-filter {
-			@media screen and (min-width: 646px) {
-				display: none;
-			}
-		}
+  #Filter-menu-toggle {
+    .fa-filter {
+      @media screen and (min-width: 646px) {
+        display: none;
+      }
+    }
 
-		span {
-			.position(absolute, 30px, auto, auto, 26px);
-			font-size: 12px;
+    span {
+      .position(absolute, 30px, auto, auto, 26px);
+      font-size: 12px;
 
-			@media screen and (max-width: 645px) {
-				display: none;
-			}
-		}			
-	}
+      @media screen and (max-width: 645px) {
+        display: none;
+      }
+    }			
+  }
 }
