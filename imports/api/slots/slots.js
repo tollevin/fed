@@ -26,7 +26,6 @@ Slots.deny({
   remove() { return true; },
 });
 
-
 Slots.schema = new SimpleSchema({
   _id: {
     type: String,
@@ -49,6 +48,7 @@ Slots.schema = new SimpleSchema({
     type: String,
     label: 'Subscription ID',
     regEx: SimpleSchema.RegEx.Id,
+    optional: true,
   },
   category: {
     type: String,

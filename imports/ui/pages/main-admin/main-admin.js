@@ -28,6 +28,7 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
   this.subscribe('Menus.thisWeek', timestamp);
   this.subscribe('Menus.toCome');
   this.subscribe('subscriberData');
+  this.subscribe('all.slots');
 
   this.itemInfo = new ReactiveVar();
   this.showTallies = new ReactiveVar(false);
