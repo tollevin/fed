@@ -137,13 +137,6 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
-const times = (numTimes, doSomething) =>
-  Array.from(Array(numTimes)).map(doSomething);
-
-const flatten = (arr) => [].concat(...arr);
-
-
-
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
@@ -845,9 +838,9 @@ if (Meteor.isServer) {
             userSlots = newSlots.map((slot) => insertSlot.call(slot));
           }
 
+          console.log("userSlots = %j", userSlots);
 
 
-          console.log("userSlots = %j", userSlots)
 
 
           // take slots and return viable pack as items
