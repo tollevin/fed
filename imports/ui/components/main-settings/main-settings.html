@@ -1,19 +1,37 @@
 <template name="Main_settings">
   <div id="Main_settings">
-    <div class="user-orders">
-      <div class="next-order">
-        <h2>My Next Order</h2>
-        {{#with nextOrder}}
-          {{> Order_detail_panel}}
-        {{/with}}
-      </div>
-      <div class="future-orders">
-        <h2>Upcoming Orders</h2>
-        {{#each order in futureOrders}}
-          {{#with order}}
-            {{> Order_toggle}}
+    {{#if subscribed}}
+      <div class="user-orders">
+        <div class="next-order">
+          <h2>My Next Order</h2>
+          {{#with nextOrder}}
+            {{> Order_detail_panel}}
           {{/with}}
-        {{/each}}
+        </div>
+        <div class="future-orders">
+          <h2>Upcoming Orders</h2>
+          {{#each order in futureOrders}}
+            {{#with order}}
+              {{> Order_toggle}}
+            {{/with}}
+          {{/each}}
+        </div>
+      </div>
+    {{/if}}
+    <div class="settings">
+      <div class="button-holder">
+        <button id="payment-settings" class="acct-btn">Payment Settings</button>
+        {{#if subscribed}}
+          <button id="diet-settings" class="acct-btn">Diet Settings</button>
+          <button id="manage-subscriptions" class="acct-btn">Delivery Settings</button>
+        {{else}}
+          <button id="Sub" class="acct-btn">
+            <span>Subscribe Today</span>
+            <span>and get 5% off</span>
+            <span>all packs!</span>
+          </button>
+        {{/if}}
+        <button id="referral-settings" class="acct-btn">Refer a Friend</button>
       </div>
     </div>
     <div class="fed-cred">
@@ -29,22 +47,6 @@
       <div class="buttons-holder">
         <!-- <button class="invite">Invite Friends</button> -->
         <!-- <button class="promo">Use a Promo</button> -->
-      </div>
-    </div>
-    <div class="settings">
-      <div class="button-holder">
-        <button id="payment-settings" class="acct-btn">Payment Settings</button>
-        {{#if subscribed}}
-          <button id="diet-settings" class="acct-btn">Diet Settings</button>
-          <button id="manage-subscriptions" class="acct-btn">Delivery Settings</button>
-        {{else}}
-          <button id="Sub" class="acct-btn">
-            <span>Subscribe Today</span>
-            <span>and get 5% off</span>
-            <span>all packs!</span>
-          </button>
-        {{/if}}
-        <button id="referral-settings" class="acct-btn">Refer a Friend</button>
       </div>
     </div>
   </div>
