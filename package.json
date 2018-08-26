@@ -15,6 +15,7 @@
     "body-parser": "^1.18.3",
     "core-js": "^2.5.3",
     "isotope-layout": "^3.0.6",
+    "js-priority-queue": "^0.1.5",
     "meteor-node-stubs": "^0.2.3",
     "prerender-node": "^2.4.0",
     "slideout": "^1.0.1",
