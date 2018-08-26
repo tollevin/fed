@@ -52,7 +52,6 @@ export const insertOrder = new ValidatedMethod({
     changes,
   }) {
     // Prep vars
-    let subtotal = 0;
     const discount = {
       subscriber_discounts: [],
       value: 0,
@@ -60,33 +59,32 @@ export const insertOrder = new ValidatedMethod({
     const user = Meteor.users.findOne({ _id: userId });
 
     // Calc subtotal
-    for (let i = 0; i < items.length; i += 1) {
-      subtotal += items[i].price_per_unit;
-    }
+    const subtotal = items.reduce((agg, item) => agg + item.price_per_unit, 0);
 
     // Set Pending Subscription Discounts
     if (subscriptions && subscriptions.length > 0) {
       // for each subscription
-      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
-        const subItemId = subscriptions[i].item_id;
-        const subItemName = subscriptions[i].item_name;
+      subscriptions.forEach((subscription) => {
+        const subItemId = subscription.item_id;
+        const subItemName = subscription.item_name;
         const isPackSub = subItemName.split(' ')[1].split('-')[1] === 'Pack';
         let discountValue = 0;
         // find the subscription item in the items list
 
         if (isPackSub) {
-          for (let j = items.length - 1; j >= 0; j -= 1) {
-            if (items[j].category === 'Meal') {
-              discountValue += (subscriptions[i].percent_off / 100) * items[i].price_per_unit;
-            } else if (items[j].category === 'Pack') {
-              discountValue += (subscriptions[i].percent_off / 100) * items[i].price_per_unit;
-            }
-          }
+          discountValue =
+            items.reduce((aggDiscountVal, item) => {
+              let additional = 0;
+              if (item.category === 'Meal' || item.category === 'Pack') {
+                additional = (subscription.percent_off / 100) * item.price_per_unit;
+              }
+              return aggDiscountVal + additional;
+            }, 0);
         }
 
         const subscriberDiscount = {
           item_id: subItemId,
-          percent_off: subscriptions[i].percent_off,
+          percent_off: subscription.percent_off,
           value: discountValue,
         };
 
@@ -95,7 +93,7 @@ export const insertOrder = new ValidatedMethod({
         // add discount object to order.discount
         discount.subscriber_discounts.push(subscriberDiscount);
         discount.value += subscriberDiscount.value;
-      }
+      });
     }
 
     // Set totals
@@ -131,9 +129,7 @@ export const insertOrder = new ValidatedMethod({
     };
 
     const orderId = Orders.insert(newOrder);
-
-    const result = Orders.findOne({ _id: orderId });
-    return result;
+    return Orders.findOne({ _id: orderId });
   },
 });
 
@@ -843,6 +839,8 @@ if (Meteor.isServer) {
             console.log("item = %j", item);
             console.log("slot = %j", slot);
           });
+
+          // insertOrder.call(user._id, menuId, weekOf, style?, items, user.subscriptions, changes?)
 
           // take slots and return viable pack as items
 
