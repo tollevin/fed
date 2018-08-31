@@ -36,11 +36,12 @@ export const addTriggers = (FlowRouter) => {
     },
   };
 
-  triggers.each((value, key) => {
-    if (typeof value === 'function') {
-      triggers[key] = value.bind(triggers);
-    }
-  });
+  Object.keys(triggers)
+    .forEach((key) => {
+      if (typeof triggers[key] === 'function') {
+        triggers[key] = triggers[key].bind(triggers);
+      }
+    });
 
   FlowRouter.triggers.exit([triggers.saveScrollPosition]);
   FlowRouter.triggers.enter([triggers.jumpToPrevScrollPosition]);
