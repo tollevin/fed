@@ -274,7 +274,7 @@ Template.Subscribe.events({
         ga('send', 'event', 'UX', 'checkout');
 
         Session.set('stage', 1);
-        $('.content-scrollable').scrollTop(0, 2000);
+        $('#container').scrollTop(0, 0);
       }
     }
   },
@@ -376,6 +376,8 @@ Template.Subscribe.events({
       ga('send', 'event', 'UX', 'checkout');
 
       Session.set('stage', 2);
+      // console.log("scroll stage 2")
+      $('#container').scrollTop(0, 0);
 
       const filters = Session.get('filters');
       const { restrictions } = filters;

@@ -1,41 +1,48 @@
 import { $ } from 'meteor/jquery';
 
 export const addTriggers = (FlowRouter) => {
-  const previousPaths = [null, null];
+  const triggers = {
+    // we need to keep two paths and we are interested
+    // we need to check the first path to do our validations
+    _previousPaths: [null, null],
+    jumpToPrevScrollPosition({ path }) {
+      let scrollPos = 0;
+      const prevPathInfo = this._previousPaths[0];
+      if (prevPathInfo && prevPathInfo.path === path) {
+        scrollPos = prevPathInfo.scrollPosition;
+      }
 
-  const saveScrollPosition = ({ path }) => {
-    const pathInfo = {
-      path,
-      scrollPosition: $('body').scrollTop(),
-    };
+      if (scrollPos === 0) {
+        // scroll is right away since we don't need to wait for rendering
+        $('body').animate({ scrollTop: scrollPos }, 0);
+      } else {
+        // now we need to wait a bit for react/meteor does rendering
+        // We assume, there's subs-manager and we've previous page's data
+        // here 10 millis delay is an arbitrary value with some testing.
+        setTimeout(function () {
+          $('body').animate({ scrollTop: scrollPos }, 0);
+        }, 10);
+      }
+    },
+    saveScrollPosition({ path }) {
+      const pathInfo = {
+        path,
+        scrollPosition: $('body').scrollTop(),
+      };
 
-    // add a new path and remove the first path
-    // using as a queue
-    previousPaths.push(pathInfo);
-    previousPaths.shift();
+      // add a new path and remove a one from the top
+      this._previousPaths.push(pathInfo);
+      this._previousPaths.shift();
+    },
   };
 
-  const jumpToPrevScrollPosition = ({ path }) => {
-    let sPos = 0;
-    const prevPathInfo = previousPaths[0];
-    if (prevPathInfo && prevPathInfo.path === path) {
-      sPos = prevPathInfo.scrollPosition;
-    }
+  Object.keys(triggers)
+    .forEach((key) => {
+      if (typeof triggers[key] === 'function') {
+        triggers[key] = triggers[key].bind(triggers);
+      }
+    });
 
-    if (sPos === 0) {
-      // we can scroll right away since we don't need to wait for rendering
-      $('body').animate({ scrollTop: sPos }, 0);
-      return;
-    }
-
-    // Now we need to wait a bit for blaze/react does rendering.
-    // We assume, there's subs-manager and we've previous page's data.
-    // Here 10 millis deley is a arbitary value with some testing.
-    setTimeout(function () {
-      $('body').animate({ scrollTop: sPos }, 0);
-    }, 10);
-  };
-
-  FlowRouter.triggers.exit([saveScrollPosition]);
-  FlowRouter.triggers.enter([jumpToPrevScrollPosition]);
+  FlowRouter.triggers.exit([triggers.saveScrollPosition]);
+  FlowRouter.triggers.enter([triggers.jumpToPrevScrollPosition]);
 };
