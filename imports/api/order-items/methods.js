@@ -44,7 +44,8 @@ export const insertOrderItem = new ValidatedMethod({
       editor,
     };
 
-    OrderItems.insert(orderItem);
+    const orderItemId = OrderItems.insert(orderItem);
+    return OrderItems.findOne({ _id: orderItemId });
   },
 });
 
