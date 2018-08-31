@@ -65,63 +65,78 @@ export const getPack = (packItems, packType) => {
   return computedPackItems[packName][packNumber];
 };
 
-const flatten = (arr) => [].concat(...arr);
+const flatten = arr => [].concat(...arr);
 
-const times = (numTimes, doSomething) =>
-  Array.from(Array(numTimes)).map(doSomething);
+const times = (numTimes, doSomething) => Array.from(Array(numTimes)).map(doSomething);
 
-export const generateSlots = ({ total: _, ...packSchemaWithoutTotal }, userId, userDietRestrictions) =>
-  flatten(
-    Object.entries(packSchemaWithoutTotal)
-      .map(([category, numberInCategory]) => (
-        times(numberInCategory, () => ({
-          user_id: userId,
-          sub_id: null,
-          category,
-          restrictions: userDietRestrictions,
-          is_static: false,
-        }))
-      )));
+export const generateSlots = (
+  {
+    total: _,
+    ...packSchemaWithoutTotal
+  },
+  userId,
+  userDietRestrictions,
+) => flatten(
+  Object.entries(packSchemaWithoutTotal)
+    .map(([category, numberInCategory]) => (
+      times(numberInCategory, () => ({
+        user_id: userId,
+        sub_id: null,
+        category,
+        restrictions: userDietRestrictions,
+        is_static: false,
+      }))
+    )),
+);
+
+const rejectedDishes = ({ warnings }, restrictions) => !lodash.some(
+  restrictions,
+  food => warnings[RESTRICTION_TO_ITEM_RESTRICTION[food]],
+);
 
 const allowedDishes = (item, restrictions) => {
   const rejectedFoods = lodash.difference(ALL_FOODS, restrictions);
   return rejectedDishes(item, rejectedFoods);
 };
 
-const rejectedDishes = ({ warnings }, restrictions) =>
-  !lodash.some(restrictions, food => warnings[RESTRICTION_TO_ITEM_RESTRICTION[food]]);
+const groupBy = (array, groupFn) => array.reduce((memo, ele) => ({
+  ...memo,
+  [groupFn(ele)]: [...(memo[groupFn(ele)] || []), ele],
+}), {});
 
-const groupBy =
-  (array, groupFn) =>
-    array.reduce((memo, ele) => ({ ...memo, [groupFn(ele)]: [...(memo[groupFn(ele)] || []), ele] }), {});
-
-// There is a bug here because order matters... it should be a very rare case from the users perspective.
+// There is a bug here because order matters...
+// it should be a very rare case from the users perspective.
 const removeUsableItem = (itemCountPriorityQueue, slot) => {
-  let aggregatorItemCounts = []
+  let aggregatorItemCounts = [];
   let foundMatch = false;
   while (!foundMatch) {
-    const chosenItemCount = itemCountPriorityQueue.length ? itemCountPriorityQueue.dequeue() : null;
-    foundMatch = chosenItemCount === null ? true : rejectedDishes(chosenItemCount.item, slot.restrictions)
+    const chosenItemCount = itemCountPriorityQueue.length
+      ? itemCountPriorityQueue.dequeue()
+      : null;
+    foundMatch = chosenItemCount === null
+      ? true
+      : rejectedDishes(chosenItemCount.item, slot.restrictions);
     aggregatorItemCounts = [chosenItemCount, ...aggregatorItemCounts];
   }
 
   const [usableItemCount, ...remainderItemCounts] = aggregatorItemCounts;
 
-  remainderItemCounts.forEach((itemCount) => itemCountPriorityQueue.queue(itemCount));
+  remainderItemCounts.forEach(
+    itemCount => itemCountPriorityQueue.queue(itemCount),
+  );
   return usableItemCount;
-}
+};
 
 const getCategory = ({ category }) => category.toLowerCase();
 const getSubCategory = ({ subcategory }) => CATEGORY_TO_PLATE[subcategory.toLowerCase()];
 
 export const pickItemsInCategory = (slots, menuItems) => {
-  var compareNumbers = ({ count: countA }, { count: countB }) => countA - countB;
-  var itemCountPriorityQueue = new PriorityQueue({ comparator: compareNumbers });
+  const compareNumbers = ({ count: countA }, { count: countB }) => countA - countB;
+  const itemCountPriorityQueue = new PriorityQueue({ comparator: compareNumbers });
 
   menuItems.forEach((item) => { itemCountPriorityQueue.queue({ item, count: 0 }); });
 
   return slots.map((slot) => {
-
     const itemCount = removeUsableItem(itemCountPriorityQueue, slot);
     if (!itemCount) { return null; }
     const { item, count } = itemCount;
@@ -134,14 +149,16 @@ export const chooseItemsUsingSlots = (slots, menuItems) => {
   const menuItemsByCategory = groupBy(menuItems, getSubCategory);
 
   return flatten(Object.entries(groupBy(slots, getCategory))
-    .map(([category, categorySlots]) =>
-      pickItemsInCategory(categorySlots, menuItemsByCategory[category] || [])));
+    .map(([category, categorySlots]) => pickItemsInCategory(
+      categorySlots,
+      menuItemsByCategory[category] || [],
+    )));
 };
 
-export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) => {
+export const generateDefaultPack = (pack, restrictions, itemChoices) => {
   const { total: totalPlates, ...plateNumbers } = pack;
 
-  const allowedDishesVal = lodash.filter((item) => allowedDishes(item, restrictions));
+  const allowedDishesVal = lodash.filter(item => allowedDishes(item, restrictions));
 
   const categoryGroupedDishes = lodash.groupBy(
     allowedDishesVal,
@@ -180,5 +197,3 @@ export const generateDefaultPack = (pack, restrictions, itemChoices, allItems) =
     complete: numDishes === totalPlates,
   };
 };
-
-
