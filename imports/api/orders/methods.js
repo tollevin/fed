@@ -769,6 +769,12 @@ const ORDERS_METHODS = _.pluck([
   toggleSkip,
 ], 'name');
 
+
+const findOrderSubItems = (order) => {
+  const pack = order.items.find(item => item.unit === 'pack');
+  return pack.sub_items.items;
+};
+
 if (Meteor.isServer) {
   Meteor.methods({
     toggleDeliveryDay({ day }) {
@@ -830,9 +836,7 @@ if (Meteor.isServer) {
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
           const { sub_items: { schema: packSchema } } = subscriptionItem;
-          // Greg does this
 
-          // This assumes 1 subscription per User.  Will fix later
           let userSlots = Slots.find({ user_id: user._id }).fetch();
           if (!userSlots.length) {
             const newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
@@ -842,39 +846,50 @@ if (Meteor.isServer) {
 
 
           let order = Orders.findOne({
-            week_of: weekOf, user_id: userId, style: 'pack', status: { $ne: 'pending-sub' },
+            week_of: weekOf, user_id: userId, style: 'pack',
           });
 
           const itemSlots = order
             ? itemChoices.map(({ item }) => ({ item, slot: null }))
             : itemChoices;
 
-          const itemAddedToOrder = order
-            ? order.items
+          const itemAddedToOrder = order && findOrderSubItems(order).length
+            ? findOrderSubItems(order)
             : itemSlots.map(({ item }) => item);
 
           if (!order) {
-            const pendingSubOrder = Orders.findOne({
-              week_of: weekOf, user_id: userId, style: 'pack', status: 'pending-sub',
+            order = insertOrder.call({
+              user_id: user._id,
+              menu_id: menuId,
+              week_of: weekOf,
+              style: 'pack',
+              items: itemAddedToOrder,
+              subscriptions: user.subscriptions,
+              changes: {},
             });
-
-            order = pendingSubOrder
-              ? updateOrder.call({
-                ...order,
-                items: itemAddedToOrder,
-              })
-              : insertOrder.call({
-                user_id: user._id,
-                menu_id: menuId,
-                week_of: weekOf,
-                style: 'pack',
-                items: itemAddedToOrder,
-                subscriptions: user.subscriptions,
-                changes: {},
-              });
           }
 
-          const orderItemsExist = !!OrderItems.find({
+          const pendingSubOrder = Orders.findOne({
+            week_of: weekOf, user_id: userId, style: 'pack', status: 'pending-sub',
+          });
+
+          if (pendingSubOrder) {
+            const pack = pendingSubOrder.items.find(item => item.unit === 'pack');
+
+            const updatedPack = {
+              ...pack,
+              sub_items: {
+                ...pack.sub_items,
+                items: itemAddedToOrder,
+              },
+            };
+
+            const updatedOrder = { ...pendingSubOrder, items: [updatedPack] };
+
+            updateOrder.call(updatedOrder);
+          }
+
+          const orderItemsExist = OrderItems.find({
             week_of: weekOf,
             user_id: user._id,
             order_id: order._id,

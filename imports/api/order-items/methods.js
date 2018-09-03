@@ -20,7 +20,7 @@ export const insertOrderItem = new ValidatedMethod({
     slot_id: { type: String },
     item_id: { type: String },
     order_id: { type: String },
-    week_of: { type: String },
+    week_of: { type: Date },
     editor: { type: String },
   }).validator({ clean: true, filter: false }),
   applyOptions: {

@@ -229,13 +229,6 @@ const checkUsers = (thisWeekStart) => {
     Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
       if (error) { return; }
 
-      Meteor.call('populateOrderItems', {
-        user_id: userId,
-        menu_id: menu._id,
-        week_of: thisWeekStart,
-        items,
-      });
-
       if (ordersThisWeek.length < 1) {
         autoinsertSubscriberOrder.call({
           user_id: userId,
@@ -244,6 +237,13 @@ const checkUsers = (thisWeekStart) => {
           items,
         });
       }
+
+      Meteor.call('populateOrderItems', {
+        user_id: userId,
+        menu_id: menu._id,
+        week_of: thisWeekStart,
+        items,
+      });
     });
 
     // if more than one order this week, alert!
@@ -296,6 +296,8 @@ Template.Main_admin.events({
 
   'click #checkUsers3'(event) {
     event.preventDefault();
+
+    console.log('checkusers 3 clicked');
 
     const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').add(2, 'w').utc()
       .toDate();

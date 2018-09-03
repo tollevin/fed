@@ -41,7 +41,7 @@ OrderItems.schema = new SimpleSchema({
     label: 'Created at',
   },
   week_of: {
-    type: String,
+    type: Date,
     label: 'Week of (SUN)',
   },
   user_id: {
