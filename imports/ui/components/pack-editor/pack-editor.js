@@ -40,10 +40,11 @@ Template.Pack_Editor.onCreated(function packEditorOnCreated() {
     if (user) {
       const userDiet = user.diet;
       diet = userDiet;
-      const restrictionsArray = [];
-      for (let i = user.restrictions.length - 1; i >= 0; i -= 1) {
-        restrictionsArray.push(RESTRICTION_TO_ITEM_RESTRICTION[user.restrictions[i]]);
-      }
+
+      const restrictionsArray = user.restrictions.map(
+        userRestriction => userRestriction || RESTRICTION_TO_ITEM_RESTRICTION[userRestriction],
+      );
+      // above is a huge hack
 
       for (let i = restrictionsArray.length - 1; i >= 0; i -= 1) {
         restrictions[restrictionsArray[i]] = true;

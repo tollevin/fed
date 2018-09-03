@@ -16,9 +16,15 @@ Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
   Session.setDefault('state', 'thisWeeksOrders');
 
   this.autorun(() => {
-    if (Session.get('state') === 'thisWeek') {
-      const timestamp = moment().format();
-      this.subscribe('thisWeeks.orders', timestamp);
+    const timestamp = moment().format();
+    if (Session.get('state') === 'thisWeeksOrders') {
+      this.subscribe('allThisWeeks.orders', { timestamp });
+    } else if (Session.get('state') === 'ordersPending') {
+      this.subscribe('allThisWeeks.orders', { timestamp, filters: ['pending-sub'] });
+    } else if (Session.get('state') === 'ordersSkipped') {
+      this.subscribe('allThisWeeks.orders', { timestamp, filters: ['skipped'] });
+    } else if (Session.get('state') === 'allOrders') {
+      this.subscribe('some.orders');
     } else {
       this.subscribe('some.orders', 100);
     }

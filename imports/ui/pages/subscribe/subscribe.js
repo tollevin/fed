@@ -192,6 +192,7 @@ Template.Subscribe.events({
     const foodTypeArray = dietNameToFoodTypeArray(dietName);
 
     // ////////// Experiment Pack Genration Code Start /////////////
+    // DEPRICATED !!!
     // const packType = {name: "paleo", number: 12};
     // const packItems = Items.find({category: "Pack"}).fetch();
     // const pack = getPack(packItems, packType);

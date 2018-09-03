@@ -156,15 +156,7 @@ Meteor.methods({
     // check(userId, String);
     try {
       const user = Meteor.users.findOne({ _id: userId });
-      const { subscriptions } = user;
-      const items = [];
-
-      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
-        const subItem = Items.findOne({ _id: subscriptions[i].item_id });
-        items.push(subItem);
-      }
-
-      return items;
+      return user.subscriptions.map(sub => Items.findOne({ _id: sub.item_id }));
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }

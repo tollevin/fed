@@ -1,88 +1,86 @@
 <template name="Admin_layout">
   {{#HammerTouchArea gestureMap=templateGesturesAdmin}}
-    <div id="container" class="{{menuOpen}}">
-      {{#if isAdmin}}
-        <div id="admin-side-menu" class="{{adminMenuOpen}}">
-          <div id="admin-logo-holder">
-          </div>
-          <h2>{{currentPath}}</h2>
+  <div id="container" class="{{menuOpen}}">
+    {{#if isAdmin}}
+    <div id="admin-side-menu" class="{{adminMenuOpen}}">
+      <div id="admin-logo-holder">
+      </div>
+      <h2>{{currentPath}}</h2>
 
-          <nav>
-            <ul>
-              <li class="primary-tab">
-                <a id="Dashboard-tab" href="{{pathFor 'Main.admin'}}" class="{{currentAdminPage 'Main.admin'}}">Dashboard</a>
-              </li>
-              <li class="primary-tab">
-                <a id="Orders-tab" href="{{pathFor 'Orders.admin'}}" class="{{currentAdminPage 'Orders.admin'}}">Orders</a>
-              </li>
-              {{#if currentAdminPage 'Orders.admin'}}
-                <ul>
-                  <li class="secondary-tab">
-                    <a id="ThisWeeksOrders-tab" class="{{currentAdminPage 'Orders.admin'}}">This Week's Orders</a>
-                  </li>
-                  <li class="secondary-tab">
-                    <a id="AllOrders-tab" class="{{currentAdminPage 'AllOrders.admin'}}">All Orders</a>
-                  </li>
-                  <li class="secondary-tab">
-                    <a href="">Create New Order</a>
-                  </li>
-                </ul>
-              {{/if}}
-              <li class="primary-tab">
-                <a id="customers-tab" href="{{pathFor 'Customers.admin'}}" class="{{currentAdminPage 'Customers.admin'}}">Customers</a>
-              </li>
-              <li class="primary-tab">
-                <a id="subscribers-tab" href="{{pathFor 'Subscribers.admin'}}" class="{{currentAdminPage 'Subscribers.admin'}}">Subscribers</a>
-              </li>
-              {{#if currentAdminPage 'Subscribers.admin'}}
-                <ul>
-                  <li class="secondary-tab">
-                    <a id="Active-Subs" class="{{currentAdminPage 'Subscribers.admin'}}">Active</a>
-                  </li>
-                  <li class="secondary-tab">
-                    <a id="Canceled-Subs" class="{{currentAdminPage 'Past_Subscribers.admin'}}">Canceled</a>
-                  </li>
-                </ul>
-              {{/if}}
-              <li class="primary-tab">
-                <a id="Menu-tab" href="{{pathFor 'Menu.admin'}}" class="{{currentAdminPage 'Menu.admin'}}">Menu</a>
-              </li>
-              <li class="primary-tab">
-                <a id="Promos-tab" href="{{pathFor 'Promos.admin'}}" class="{{currentAdminPage 'Promos.admin'}}">Promos</a>
-              </li>
-              <li class="primary-tab">
-                <a id="Specs-tab" href="{{pathFor 'Wiki.Index'}}" class="{{currentAdminPage 'Wiki.Index'}}">Spec</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        {{#unless connected}}
-          <div class="notifications">
-            <div class="notification">
-              <span class="icon-sync"></span>
-              <div class="meta">
-                <div class="title-notification">Trying to connect</div>
-                <div class="description">There seems to be a connection issue</div>
-              </div>
-            </div>
-          </div>
-        {{/unless}}
-
-        <div class="content-overlay"></div>
-
-        <div id="admin-content-container" class="{{adminMenuOpen}}">
-          {{#momentum plugin="fade"}}
-            {{#if Template.subscriptionsReady}}
-              {{> Template.dynamic template=main}}
-            {{else}}
-              {{> App_loading}}
-            {{/if}}
-          {{/momentum}}
-        </div>
-      {{else}}
-        <p>Page Not Found</p>
-      {{/if}}
+      <nav>
+        <ul>
+          <li class="primary-tab">
+            <a id="Dashboard-tab" href="{{pathFor 'Main.admin'}}" class="{{currentAdminPage 'Main.admin'}}">Dashboard</a>
+          </li>
+          <li class="primary-tab">
+            <a id="Orders-tab" href="{{pathFor 'Orders.admin'}}" class="{{currentAdminPage 'Orders.admin'}}">Orders</a>
+          </li>
+          {{#if currentAdminPage 'Orders.admin'}}
+          <ul>
+            <li class="secondary-tab">
+              <a id="ThisWeeksOrders-tab" class="{{currentAdminPage 'Orders.admin'}}">This Week's Orders</a>
+            </li>
+            <li class="secondary-tab">
+              <a id="Pending-tab" class="{{currentAdminPage 'Pending.admin'}}">This Week's Pending</a>
+            </li>
+            <li class="secondary-tab">
+              <a id="Skipped-tab" class="{{currentAdminPage 'Skipped.admin'}}">This Week's Skipped</a>
+            </li>
+            <li class="secondary-tab">
+              <a id="AllOrders-tab" class="{{currentAdminPage 'AllOrders.admin'}}">All Orders</a>
+            </li>
+          </ul>
+          {{/if}}
+          <li class="primary-tab">
+            <a id="customers-tab" href="{{pathFor 'Customers.admin'}}" class="{{currentAdminPage 'Customers.admin'}}">Customers</a>
+          </li>
+          <li class="primary-tab">
+            <a id="subscribers-tab" href="{{pathFor 'Subscribers.admin'}}" class="{{currentAdminPage 'Subscribers.admin'}}">Subscribers</a>
+          </li>
+          {{#if currentAdminPage 'Subscribers.admin'}}
+          <ul>
+            <li class="secondary-tab">
+              <a id="Active-Subs" class="{{currentAdminPage 'Subscribers.admin'}}">Active</a>
+            </li>
+            <li class="secondary-tab">
+              <a id="Canceled-Subs" class="{{currentAdminPage 'Past_Subscribers.admin'}}">Canceled</a>
+            </li>
+          </ul>
+          {{/if}}
+          <li class="primary-tab">
+            <a id="Menu-tab" href="{{pathFor 'Menu.admin'}}" class="{{currentAdminPage 'Menu.admin'}}">Menu</a>
+          </li>
+          <li class="primary-tab">
+            <a id="Promos-tab" href="{{pathFor 'Promos.admin'}}" class="{{currentAdminPage 'Promos.admin'}}">Promos</a>
+          </li>
+          <li class="primary-tab">
+            <a id="Specs-tab" href="{{pathFor 'Wiki.Index'}}" class="{{currentAdminPage 'Wiki.Index'}}">Spec</a>
+          </li>
+        </ul>
+      </nav>
     </div>
+
+    {{#unless connected}}
+    <div class="notifications">
+      <div class="notification">
+        <span class="icon-sync"></span>
+        <div class="meta">
+          <div class="title-notification">Trying to connect</div>
+          <div class="description">There seems to be a connection issue</div>
+        </div>
+      </div>
+    </div>
+    {{/unless}}
+
+    <div class="content-overlay"></div>
+
+    <div id="admin-content-container" class="{{adminMenuOpen}}">
+      {{#momentum plugin="fade"}} {{#if Template.subscriptionsReady}} {{> Template.dynamic template=main}} {{else}} {{> App_loading}}
+      {{/if}} {{/momentum}}
+    </div>
+    {{else}}
+    <p>Page Not Found</p>
+    {{/if}}
+  </div>
   {{/HammerTouchArea}}
 </template>
