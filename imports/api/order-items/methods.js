@@ -17,7 +17,7 @@ export const insertOrderItem = new ValidatedMethod({
   name: 'OrderItems.insert',
   validate: new SimpleSchema({
     user_id: { type: String },
-    slot_id: { type: String },
+    slot_id: { type: String, optional: true },
     item_id: { type: String },
     order_id: { type: String },
     week_of: { type: Date },

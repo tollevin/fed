@@ -53,6 +53,7 @@ OrderItems.schema = new SimpleSchema({
     type: String,
     label: 'Slot ID',
     regEx: SimpleSchema.RegEx.Id,
+    optional: true,
   },
   item_id: {
     type: String,
