@@ -1,85 +1,85 @@
 <template name="Pack_Editor">
 	<div id="Pack-Editor" class="pack-editor">
 		{{#if Template.subscriptionsReady}}
-			<div class="editor-head">
-				<h2>Choose your meals</h2>
-				<div class="pack-info">
-					<div class="pack-selects">
-						<div class="selects-wrapper">
-							<select class="diet" autofocus="autofocus" name="diet">
-								<option value="Omnivore" selected="{{selectedDiet 'Omnivore'}}">Omnivore</option>
-								<option value="Paleo" selected="{{selectedDiet 'Paleo'}}">Paleo</option>
-								<option value="Pescetarian" selected="{{selectedDiet 'Pescetarian'}}">Pescetarian</option>
-								<option value="Vegetarian" selected="{{selectedDiet 'Vegetarian'}}">Vegetarian</option>
-								<option value="Vegan" selected="{{selectedDiet 'Vegan'}}">Vegan</option>
-							</select>
-							<select class="packSize" name="packSize">
-								<option value="4" selected="{{selectedNumber 4}}">4 - Pack</option>
-								<option value="6" selected="{{selectedNumber 6}}">6 - Pack</option>
-								<option value="8" selected="{{selectedNumber 8}}">8 - Pack</option>
-								<option value="10" selected="{{selectedNumber 10}}">10 - Pack</option>
-								<option value="12" selected="{{selectedNumber 12}}">12 - Pack</option>
-							</select>
-						</div>
-						<span>Click to edit</span>
+		<div class="editor-head">
+			<h2>Choose your meals</h2>
+			<div class="pack-info">
+				<div class="pack-selects">
+					<div class="selects-wrapper">
+						<select class="diet" autofocus="autofocus" name="diet">
+							<option value="Omnivore" selected="{{selectedDiet 'Omnivore'}}">Omnivore</option>
+							<option value="Paleo" selected="{{selectedDiet 'Paleo'}}">Paleo</option>
+							<option value="Pescetarian" selected="{{selectedDiet 'Pescetarian'}}">Pescetarian</option>
+							<option value="Vegetarian" selected="{{selectedDiet 'Vegetarian'}}">Vegetarian</option>
+							<option value="Vegan" selected="{{selectedDiet 'Vegan'}}">Vegan</option>
+						</select>
+						<select class="packSize" name="packSize">
+							<option value="4" selected="{{selectedNumber 4}}">4 - Pack</option>
+							<option value="6" selected="{{selectedNumber 6}}">6 - Pack</option>
+							<option value="8" selected="{{selectedNumber 8}}">8 - Pack</option>
+							<option value="10" selected="{{selectedNumber 10}}">10 - Pack</option>
+							<option value="12" selected="{{selectedNumber 12}}">12 - Pack</option>
+						</select>
 					</div>
-					<div class="pack-price">
-						<p class="price">${{packPrice}}</p>
-						{{#if changePrice}}
-							<p class="change {{changePrice}}">${{priceChange}}</p>
-						{{/if}}
-					</div>
+					<span>Click to edit</span>
+				</div>
+				<div class="pack-price">
+					<p class="price">${{packPrice}}</p>
+					{{#if changePrice}}
+					<p class="change {{changePrice}}">${{priceChange}}</p>
+					{{/if}}
 				</div>
 			</div>
-			<div class="meal-categories">
-				<h3 class="meal-category">Proteins<!--  <span>{{schema 'Protein'}}  {{price proteins}}</span> --></h3>
-				<div class="meals-panel">
-				  {{#each proteins}}
-				  	{{> Pack_Editor_Item}}
-				  {{/each}}
-				</div>
-
-				<h3 class="meal-category">Vegetables<!--  <span>{{schema 'Vegetable'}}  {{price vegetables}}</span> --></h3>
-				<div class="meals-panel">
-				  {{#each vegetables}}
-				  	{{> Pack_Editor_Item}}
-				  {{/each}}
-				</div>
-
-				<h3 class="meal-category">Grains<!--  <span>{{schema 'Grain'}}  {{price grains}}</span> --></h3>
-				<div class="meals-panel">
-				  {{#each grains}}
-				  	{{> Pack_Editor_Item}}
-				  {{/each}}
-				</div>
-
-				<h3 class="meal-category">Soups<!--  <span>{{schema 'Soup'}}  {{price soups}}</span> --></h3>
-				<div class="meals-panel">
-				  {{#each soups}}
-				  	{{> Pack_Editor_Item}}
-				  {{/each}}
-				</div>
-
-				<h3 class="meal-category">Salads<!--  <span>{{schema 'Salad'}}  {{price salads}}</span> --></h3>
-				<div class="meals-panel">
-				  {{#each salads}}
-				  	{{> Pack_Editor_Item}}
-				  {{/each}}
-				</div>
+		</div>
+		<div class="meal-categories">
+			<h3 class="meal-category">Proteins
+				<!--  <span>{{schema 'Protein'}}  {{price proteins}}</span> -->
+			</h3>
+			<div class="meals-panel">
+				{{#each proteins}} {{> Pack_Editor_Item}} {{/each}}
 			</div>
-			<div class="editor-foot">
-				{{#if ready}}
-					<div class="buttons-holder">
-						<button class="toMarket">Shop Products</button>
-						<button class="toCheckout">Checkout</button>
-					</div>
-				{{else}}
-					<div class="buttons-holder">
-						{{#if notSubscribe}}<button class="cancel">Cancel</button>{{/if}}
-						<p>{{packSpace}}</p>
-					</div>
-				{{/if}}
+
+			<h3 class="meal-category">Vegetables
+				<!--  <span>{{schema 'Vegetable'}}  {{price vegetables}}</span> -->
+			</h3>
+			<div class="meals-panel">
+				{{#each vegetables}} {{> Pack_Editor_Item}} {{/each}}
 			</div>
+
+			<h3 class="meal-category">Grains
+				<!--  <span>{{schema 'Grain'}}  {{price grains}}</span> -->
+			</h3>
+			<div class="meals-panel">
+				{{#each grains}} {{> Pack_Editor_Item}} {{/each}}
+			</div>
+
+			<h3 class="meal-category">Soups
+				<!--  <span>{{schema 'Soup'}}  {{price soups}}</span> -->
+			</h3>
+			<div class="meals-panel">
+				{{#each soups}} {{> Pack_Editor_Item}} {{/each}}
+			</div>
+
+			<h3 class="meal-category">Salads
+				<!--  <span>{{schema 'Salad'}}  {{price salads}}</span> -->
+			</h3>
+			<div class="meals-panel">
+				{{#each salads}} {{> Pack_Editor_Item}} {{/each}}
+			</div>
+		</div>
+		<div class="editor-foot">
+			{{#if ready}}
+			<div class="buttons-holder">
+				<button class="toMarket">Shop Products</button>
+				<button class="toCheckout">Checkout</button>
+			</div>
+			{{else}}
+			<div class="buttons-holder">
+				{{#if notSubscribe}}<button class="cancel">Cancel</button>{{/if}}
+				<p>{{packSpace}}</p>
+			</div>
+			{{/if}}
+		</div>
 		{{/if}}
 	</div>
 </template>
