@@ -24,11 +24,10 @@ Meteor.publish('single.order', function singleOrder(id) {
   return Orders.find({ _id: id });
 });
 
-Meteor.publish('allThisWeeks.orders', function thisWeeksOrders(timestamp) {
+Meteor.publish('allThisWeeks.orders', function thisWeeksOrders({ timestamp, filters }) {
   const nowInNY = toNewYorkTimezone(moment(timestamp));
   const nyWeekStart = nowInNY.startOf('week').toDate();
-
-  return Orders.find({ status: { $in: ['created', 'custom-sub', 'skipped', 'pending-sub'] }, week_of: nyWeekStart });
+  return Orders.find({ status: { $in: filters || ['created', 'custom-sub', 'skipped', 'pending-sub'] }, week_of: nyWeekStart });
 });
 
 Meteor.publish('thisUsersFuture.orders', function thisUsersOrders(timestamp) {

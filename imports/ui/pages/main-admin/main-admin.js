@@ -23,7 +23,7 @@ import './main-admin.html';
 
 Template.Main_admin.onCreated(function mainAdminOnCreated() {
   const timestamp = moment().toDate();
-  this.subscribe('allThisWeeks.orders', timestamp);
+  this.subscribe('allThisWeeks.orders', { timestamp });
   this.subscribe('Future.orders', timestamp);
   this.subscribe('Menus.thisWeek', timestamp);
   this.subscribe('Menus.toCome');

@@ -23,7 +23,7 @@ Template.Admin_layout.onRendered(function adminLayoutOnRendered() {
 });
 
 Template.Admin_layout.helpers({
-  isAdmin () {
+  isAdmin() {
     return Meteor.user() && Meteor.user().emails[0].address.slice(-14) === '@getfednyc.com' && Meteor.user().emails[0].verified;
   },
 
@@ -69,6 +69,14 @@ Template.Admin_layout.helpers({
 Template.Admin_layout.events({
   'click #AllOrders-tab'() {
     Session.set('state', 'allOrders');
+  },
+
+  'click #Pending-tab'() {
+    Session.set('state', 'ordersPending');
+  },
+
+  'click #Skipped-tab'() {
+    Session.set('state', 'ordersSkipped');
   },
 
   'click #ThisWeeksOrders-tab'() {
