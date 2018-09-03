@@ -14,21 +14,9 @@ import './orders-admin.html';
 Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
   // Set reactive variables for template
   Session.setDefault('state', 'thisWeeksOrders');
-
   this.autorun(() => {
     const timestamp = moment().format();
-    if (Session.get('state') === 'thisWeeksOrders') {
-      this.subscribe('allThisWeeks.orders', { timestamp });
-    } else if (Session.get('state') === 'ordersPending') {
-      this.subscribe('allThisWeeks.orders', { timestamp, filters: ['pending-sub'] });
-    } else if (Session.get('state') === 'ordersSkipped') {
-      this.subscribe('allThisWeeks.orders', { timestamp, filters: ['skipped'] });
-    } else if (Session.get('state') === 'allOrders') {
-      this.subscribe('some.orders');
-    } else {
-      this.subscribe('some.orders', 100);
-    }
-
+    this.subscribe('allThisWeeks.orders', { timestamp });
     this.subscribe('userData');
   });
 });
@@ -43,7 +31,21 @@ Template.Orders_admin.helpers({
   },
 
   orders() {
-    return Orders.find({}, { sort: { status: 1, id_number: -1 } });
+    return Orders
+      .find({}, { sort: { status: 1, id_number: -1 } })
+      .fetch()
+      .filter((order) => {
+        if (Session.get('state') === 'thisWeeksOrders') {
+          return true;
+        }
+        if (Session.get('state') === 'ordersPending') {
+          return order.status === 'pending-sub';
+        }
+        if (Session.get('state') === 'ordersSkipped') {
+          return order.status === 'skipped';
+        }
+        return true;
+      });
   },
 
   currentOrders() {
