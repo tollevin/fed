@@ -896,6 +896,7 @@ if (Meteor.isServer) {
           }).fetch().length;
 
           if (!orderItemsExist) {
+            // TODO later move this code inside update and insert order
             const orderItems = itemSlots.map(({ slot, item }) => ({
               week_of: weekOf,
               user_id: user._id,
