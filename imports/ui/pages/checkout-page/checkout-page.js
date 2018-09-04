@@ -651,11 +651,10 @@ Template.Checkout_page.events({
             ga('send', 'event', 'UX', 'purchase');
 
             Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => { });
+            Session.set('loading', false);
+            FlowRouter.go('Confirmation');
           }
         });
-
-        Session.set('loading', false);
-        FlowRouter.go('Confirmation');
       } catch (error) {
         Session.set('loading', false);
         throw new Meteor.Error(401, error);

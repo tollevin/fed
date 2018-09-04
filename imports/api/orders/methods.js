@@ -210,11 +210,13 @@ export const updateOrder = new ValidatedMethod({
   }) {
     Orders.find({ status: { $ne: 'pending' } }).count();
 
-    const order = Orders.findOne({ _id });
+    const prevOrder = Orders.findOne({ _id });
 
-    Orders.update(_id, {
-      $set: {
-        ...order,
+    const mergeObject = (prevObj, newObj) => Object.entries(newObj)
+      .reduce((memo, [newKey, newVal]) => ({ ...memo, [newKey]: newVal || memo[newKey] }), prevObj);
+
+    const mergedOrder = mergeObject(
+      prevOrder, {
         _id,
         created_at: createdAt,
         id_number: idNumber,
@@ -243,29 +245,35 @@ export const updateOrder = new ValidatedMethod({
         changes,
         auto_correct: autoCorrect,
       },
-    });
+    );
 
-    const prevStatus = order.status;
+    Orders.update(_id, { $set: mergedOrder });
+    const updatedOrder = Orders.findOne({ _id });
 
-    if ((prevStatus !== 'created' && status === 'pending-sub') || status === 'created') {
+    const prevStatus = prevOrder.status;
+
+    const creating = status === 'created';
+    const downgradingFromCreatedToSubbed = (prevStatus === 'created' && status === 'pending-sub');
+    const skipped = status === 'skipped';
+
+    if ((!downgradingFromCreatedToSubbed) || creating || skipped) {
       // replaces order items
       OrderItems.remove({
-        user_id: userId,
-        week_of: weekOf,
-        order_id: _id,
-      });
-
-      insertOrderItems.call({
-        user_id: userId,
-        order,
-        itemSlots,
-        week_of: weekOf,
-        editor: itemSlots ? 'AUTO_GENERATED' : 'USER',
+        user_id: updatedOrder.user_id,
+        week_of: updatedOrder.week_of,
+        order_id: updatedOrder._id,
       });
     }
 
-    const result = Orders.findOne({ _id });
-    return result;
+    if ((!downgradingFromCreatedToSubbed) || creating) {
+      insertOrderItems.call({
+        user_id: updatedOrder.user_id,
+        order: updatedOrder,
+        itemSlots,
+        week_of: updatedOrder.week_of,
+        editor: itemSlots ? 'AUTO_GENERATED' : 'USER',
+      });
+    }
   },
 });
 
