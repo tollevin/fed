@@ -252,11 +252,12 @@ export const updateOrder = new ValidatedMethod({
 
     const prevStatus = prevOrder.status;
 
-    const creating = status === 'created';
-    const downgradingFromCreatedToSubbed = (prevStatus === 'created' && status === 'pending-sub');
+    const created = status === 'created';
+    const createdCustom = status === 'custom-sub';
+    const pendingNotDowngrade = status === 'pending-sub' && (prevStatus !== 'created' || prevStatus !== 'custom-sub');
     const skipped = status === 'skipped';
 
-    if ((!downgradingFromCreatedToSubbed) || creating || skipped) {
+    if (created || createdCustom || pendingNotDowngrade || skipped) {
       // replaces order items
       OrderItems.remove({
         user_id: updatedOrder.user_id,
@@ -265,7 +266,7 @@ export const updateOrder = new ValidatedMethod({
       });
     }
 
-    if ((!downgradingFromCreatedToSubbed) || creating) {
+    if (created || createdCustom || pendingNotDowngrade) {
       insertOrderItems.call({
         user_id: updatedOrder.user_id,
         order: updatedOrder,
