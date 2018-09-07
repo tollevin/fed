@@ -134,6 +134,8 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
+const notUnpaid = (subscription) => subscription.status !== "unpaid";
+
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
@@ -151,7 +153,8 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     const user = Meteor.users.findOne({ _id: userId });
 
     // Set Subscription Discounts
-    if (!(user.subscriptions && user.subscriptions.length > 0)) { return undefined; }
+    // do we need notUnpaid?
+    if (!(user.subscriptions && user.subscriptions.filter(notUnpaid).length > 0)) { return undefined; }
 
     const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
@@ -424,6 +427,7 @@ export const processSubscriberOrder = new ValidatedMethod({
     changes,
     auto_correct: autoCorrect,
   }) {
+    // this should be randomized
     const idNumber = Orders.find({ status: { $ne: 'pending' } }).count();
 
     Orders.update(_id, {
@@ -833,6 +837,7 @@ if (Meteor.isServer) {
       const menuItems = Items.find({ _id: { $in: menu.items } }).fetch();
 
       user.subscriptions
+        .filter(notUnpaid) // do we need this?
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
           const { sub_items: { schema: packSchema } } = subscriptionItem;
