@@ -134,7 +134,7 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
-const notUnpaid = (subscription) => subscription.status !== "unpaid";
+const notUnpaid = subscription => subscription.status !== 'unpaid';
 
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
@@ -152,19 +152,21 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     // Prep vars
     const user = Meteor.users.findOne({ _id: userId });
 
+    const notUnpaidSubscriptions = user.subscriptions ? user.subscriptions.filter(notUnpaid) : [];
+
     // Set Subscription Discounts
     // do we need notUnpaid?
-    if (!(user.subscriptions && user.subscriptions.filter(notUnpaid).length > 0)) { return undefined; }
+    if (!(notUnpaidSubscriptions.length > 0)) { return undefined; }
 
     const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
     // create subtotalDollars
-    const subtotalDollars = user.subscriptions
+    const subtotalDollars = notUnpaidSubscriptions
       .map(getSubscriptionItem)
       .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
 
     // for each subscription
-    const discount = user.subscriptions
+    const discount = notUnpaidSubscriptions
       .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
         const subscriptionItem = getSubscriptionItem(sub);
 
@@ -231,7 +233,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       week_of: weekOf,
       style: 'pack',
       items,
-      subscriptions: user.subscriptions,
+      subscriptions: notUnpaidSubscriptions,
       recipient,
       subtotal,
       discount,
