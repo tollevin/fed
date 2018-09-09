@@ -134,6 +134,8 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
+const notUnpaid = subscription => subscription.status !== 'unpaid';
+
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
   validate: new SimpleSchema({
@@ -150,18 +152,21 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     // Prep vars
     const user = Meteor.users.findOne({ _id: userId });
 
+    const notUnpaidSubscriptions = user.subscriptions ? user.subscriptions.filter(notUnpaid) : [];
+
     // Set Subscription Discounts
-    if (!(user.subscriptions && user.subscriptions.length > 0)) { return undefined; }
+    // do we need notUnpaid?
+    if (!(notUnpaidSubscriptions.length > 0)) { return undefined; }
 
     const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
     // create subtotalDollars
-    const subtotalDollars = user.subscriptions
+    const subtotalDollars = notUnpaidSubscriptions
       .map(getSubscriptionItem)
       .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
 
     // for each subscription
-    const discount = user.subscriptions
+    const discount = notUnpaidSubscriptions
       .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
         const subscriptionItem = getSubscriptionItem(sub);
 
@@ -228,7 +233,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       week_of: weekOf,
       style: 'pack',
       items,
-      subscriptions: user.subscriptions,
+      subscriptions: notUnpaidSubscriptions,
       recipient,
       subtotal,
       discount,
@@ -424,6 +429,7 @@ export const processSubscriberOrder = new ValidatedMethod({
     changes,
     auto_correct: autoCorrect,
   }) {
+    // this should be randomized
     const idNumber = Orders.find({ status: { $ne: 'pending' } }).count();
 
     Orders.update(_id, {
@@ -833,6 +839,7 @@ if (Meteor.isServer) {
       const menuItems = Items.find({ _id: { $in: menu.items } }).fetch();
 
       user.subscriptions
+        .filter(notUnpaid) // do we need this?
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
           const { sub_items: { schema: packSchema } } = subscriptionItem;
