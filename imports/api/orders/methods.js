@@ -254,11 +254,10 @@ export const updateOrder = new ValidatedMethod({
 
     const created = status === 'created';
     const createdCustom = status === 'custom-sub';
-    const pendingNotDowngrade = status === 'pending-sub' && (prevStatus !== 'created' || prevStatus !== 'custom-sub');
+    const pendingNotDowngrade = (status === 'pending-sub') && (prevStatus !== 'created' || prevStatus !== 'custom-sub');
     const skipped = status === 'skipped';
 
     if (created || createdCustom || pendingNotDowngrade || skipped) {
-      // replaces order items
       OrderItems.remove({
         user_id: updatedOrder.user_id,
         week_of: updatedOrder.week_of,
@@ -292,18 +291,25 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     user_id: userId, menu_id: menuId, week_of: weekOf, items,
   }) {
     // Prep vars
+    let order = Orders.findOne({
+      user_id: userId,
+      week_of: weekOf,
+      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] },
+    });
 
     const user = Meteor.users.findOne({ _id: userId });
 
-    const order = insertOrder.call({
-      user_id: userId,
-      menu_id: menuId,
-      week_of: weekOf,
-      style: 'pack',
-      items,
-      subscriptions: user.subscriptions,
-      changes: {},
-    });
+    if (!order) {
+      order = insertOrder.call({
+        user_id: userId,
+        menu_id: menuId,
+        week_of: weekOf,
+        style: 'pack',
+        items,
+        subscriptions: user.subscriptions,
+        changes: {},
+      });
+    }
 
     // Create default recipient obj
     const recipient = {
@@ -347,7 +353,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       subscriptions: user.subscriptions,
       recipient,
       changes: {},
-      status: 'pending-sub',
+      status: order.status === 'skipped' ? 'skipped' : 'pending-sub',
       ready_by: readyBy,
       delivery_window_id: deliveryWindowId,
     };
