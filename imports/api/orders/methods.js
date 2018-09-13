@@ -788,6 +788,13 @@ if (Meteor.isServer) {
         .filter(notUnpaid) // do we need this?
         .forEach((sub) => {
           const subscriptionItem = getSubscriptionItem(sub);
+
+          if (!subscriptionItem) {
+            // eslint-disable-next-line no-console
+            console.log('non subscription item user = %j', user);
+            return;
+          }
+
           const { sub_items: { schema: packSchema } } = subscriptionItem;
 
           let userSlots = Slots.find({ user_id: user._id }).fetch();
