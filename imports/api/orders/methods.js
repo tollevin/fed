@@ -295,6 +295,15 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
     });
 
+    const compactedItems = items.filter(item => item);
+
+    if (compactedItems.legnth !== items.length) {
+      // eslint-disable-next-line no-console
+      console.log('user with null items userId = %j', userId);
+      // eslint-disable-next-line no-console
+      console.log('items = %j', items);
+    }
+
     const user = Meteor.users.findOne({ _id: userId });
 
     if (!order) {
@@ -303,7 +312,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         menu_id: menuId,
         week_of: weekOf,
         style: 'pack',
-        items,
+        items: compactedItems,
         subscriptions: user.subscriptions,
         changes: {},
       });
@@ -347,7 +356,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       created_at: new Date(),
       week_of: weekOf,
       style: 'pack',
-      items,
+      items: compactedItems,
       subscriptions: user.subscriptions,
       recipient,
       changes: {},
@@ -791,7 +800,13 @@ if (Meteor.isServer) {
 
           if (!subscriptionItem) {
             // eslint-disable-next-line no-console
-            console.log('non subscription item user = %j', user);
+            console.log('no subscription item user = %j', user);
+            return;
+          }
+
+          if (!userDietRestrictions) {
+            // eslint-disable-next-line no-console
+            console.log('no restriction list user = %j', user);
             return;
           }
 
