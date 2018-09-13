@@ -585,7 +585,7 @@ Template.Pack_Editor.events({
     const menu = Session.get('menu');
 
     // if order._id, update instead of insert
-    if (order._id && order.status === ('pending-sub' || 'skipped')) {
+    if (order._id && order.status === ('pending-sub' || 'skipped' || 'canceled')) {
       // replace pack
       order.items.push(pack);
       // update order

@@ -208,8 +208,6 @@ export const updateOrder = new ValidatedMethod({
     auto_correct: autoCorrect,
     itemSlots,
   }) {
-    Orders.find({ status: { $ne: 'pending' } }).count();
-
     const prevOrder = Orders.findOne({ _id });
 
     const mergeObject = (prevObj, newObj) => Object.entries(newObj)
@@ -255,9 +253,9 @@ export const updateOrder = new ValidatedMethod({
     const created = status === 'created';
     const createdCustom = status === 'custom-sub';
     const pendingNotDowngrade = (status === 'pending-sub') && (prevStatus !== 'created' || prevStatus !== 'custom-sub');
-    const skipped = status === 'skipped';
+    const badStatus = (status === 'skipped' || status === 'canceled');
 
-    if (created || createdCustom || pendingNotDowngrade || skipped) {
+    if (created || createdCustom || pendingNotDowngrade || badStatus) {
       OrderItems.remove({
         user_id: updatedOrder.user_id,
         week_of: updatedOrder.week_of,
@@ -294,7 +292,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     let order = Orders.findOne({
       user_id: userId,
       week_of: weekOf,
-      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] },
+      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
     });
 
     const user = Meteor.users.findOne({ _id: userId });
@@ -342,7 +340,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
 
     const readyBy = moment(weekOf).add(1, 'week').add(16, 'hours').toDate();
 
-    const upadteOrderObj = {
+    const updateOrderObj = {
       _id: order._id,
       user_id: userId,
       menu_id: menuId,
@@ -353,12 +351,12 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       subscriptions: user.subscriptions,
       recipient,
       changes: {},
-      status: order.status === 'skipped' ? 'skipped' : 'pending-sub',
+      status: order.status === 'pending' ? 'pending-sub' : order.status,
       ready_by: readyBy,
       delivery_window_id: deliveryWindowId,
     };
 
-    updateOrder.call(upadteOrderObj);
+    updateOrder.call(updateOrderObj);
     return Orders.findOne({ _id: order._id });
   },
 });

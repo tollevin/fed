@@ -224,6 +224,12 @@ const checkUsers = (thisWeekStart) => {
     // find user's orders
     // if no order, create a pending-sub order for them
 
+    const order = Orders.findOne({
+      user_id: userId,
+      week_of: thisWeekStart,
+      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
+    });
+
     Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
       if (error) { return; }
 
@@ -231,14 +237,14 @@ const checkUsers = (thisWeekStart) => {
         user_id: userId,
         menu_id: menu._id,
         week_of: thisWeekStart,
-        items,
+        items: order ? order.items : items,
       });
 
       Meteor.call('populateOrderItems', {
         user_id: userId,
         menu_id: menu._id,
         week_of: thisWeekStart,
-        items,
+        items: order ? order.items : items,
       });
     });
 
