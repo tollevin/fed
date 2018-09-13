@@ -16,7 +16,11 @@ Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
   Session.setDefault('state', 'thisWeeksOrders');
   this.autorun(() => {
     const timestamp = moment().format();
-    this.subscribe('allThisWeeks.orders', { timestamp });
+    if (Session.equals('state', 'allOrders')) {
+      this.subscribe('some.orders', 100);
+    } else {
+      this.subscribe('allThisWeeks.orders', { timestamp });
+    };
     this.subscribe('userData');
   });
 });

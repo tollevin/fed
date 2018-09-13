@@ -48,6 +48,27 @@ Template.Order_preview.helpers({
     return Object.entries(dishTally).map(([name, value]) => ({ name, value }));
   },
 
+  plateList() {
+    const plateList = [];
+    const plateTally = {};
+
+    const itemList = Template.currentData().items;
+    for (let i = itemList.length - 1; i >= 0; i -= 1) {
+      if (itemList[i].category === 'Plate') {
+        plateList.push(itemList[i].name);
+      }
+    }
+
+    for (let i = plateList.length - 1; i >= 0; i -= 1) {
+      if (plateList[i] !== '' && !plateTally[plateList[i]]) {
+        plateTally[plateList[i]] = 1;
+      } else if (plateList[i] !== '') {
+        plateTally[plateList[i]] += 1;
+      }
+    }
+    return Object.entries(plateTally).map(([name, value]) => ({ name, value }));
+  },
+
   snackList() {
     const snackList = [];
     const snackTally = {};

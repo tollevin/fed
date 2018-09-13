@@ -71,6 +71,11 @@
 					{{dish.value}} {{dish.name}}<br>
 				{{/each}}
 			</td>
+			<td class="order-plates">
+				{{#each plate in plateList}}
+					{{plate.value}} {{plate.name}}<br>
+				{{/each}}
+			</td>
 			<td class="order-snacks">
 				{{#each snack in snackList}}
 					{{snack.value}} {{snack.name}}<br>
