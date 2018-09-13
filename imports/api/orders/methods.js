@@ -627,19 +627,16 @@ export const toggleSkip = new ValidatedMethod({
   },
 });
 
-
-// Get list of all method names on orders
-const ORDERS_METHODS = _.pluck([
+const MAIN_METHODS = _.pluck([
   insertOrder,
   autoinsertSubscriberOrder,
-  // processOrder,
   updateOrder,
   updatePendingSubOrder,
-  // cancelOrder,
-  // updateOrderItems,
   findUserFutureOrders,
-  toggleSkip,
 ], 'name');
+
+// Get list of all method names on orders
+const ORDERS_METHODS = _.pluck([toggleSkip], 'name');
 
 if (Meteor.isServer) {
   Meteor.methods({
@@ -865,4 +862,13 @@ if (Meteor.isServer) {
     // Rate limit per connection ID
     connectionId() { return true; },
   }, 5, 1000);
+
+  DDPRateLimiter.addRule({
+    name(name) {
+      return _.contains(MAIN_METHODS, name);
+    },
+
+    // Rate limit per connection ID
+    connectionId() { return true; },
+  }, 1000, 1000);
 }
