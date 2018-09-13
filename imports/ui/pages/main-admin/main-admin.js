@@ -222,34 +222,36 @@ const checkUsers = (thisWeekStart) => {
     const userId = updatedSubUser._id;
 
     // find user's orders
-    const ordersThisWeek = Orders.find({ user_id: userId, week_of: thisWeekStart, status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped'] } }).fetch();
-
     // if no order, create a pending-sub order for them
+
+    const order = Orders.findOne({
+      user_id: userId,
+      week_of: thisWeekStart,
+      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
+    });
 
     Meteor.call('getUserSubscriptionItems', userId, (error, items) => {
       if (error) { return; }
 
-      if (ordersThisWeek.length < 1) {
-        autoinsertSubscriberOrder.call({
-          user_id: userId,
-          menu_id: menu._id,
-          week_of: thisWeekStart,
-          items,
-        });
-      }
+      autoinsertSubscriberOrder.call({
+        user_id: userId,
+        menu_id: menu._id,
+        week_of: thisWeekStart,
+        items: order ? order.items : items,
+      });
 
       Meteor.call('populateOrderItems', {
         user_id: userId,
         menu_id: menu._id,
         week_of: thisWeekStart,
-        items,
+        items: order ? order.items : items,
       });
     });
 
     // if more than one order this week, alert!
-    if (ordersThisWeek.length > 1) {
-      console.log(`Alert! ${userId} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
-    }
+    // if (ordersThisWeek.length > 1) {
+    // console.log(`Alert! ${userId} has ${ordersThisWeek.length} orders for ${thisWeekStart}`);
+    // }
   });
 
   // for each order
