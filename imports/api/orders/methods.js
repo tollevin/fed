@@ -13,9 +13,9 @@ import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { generateSlots, chooseItemsUsingSlots } from '/imports/ui/lib/pack_picker/pack_planner.js';
 
 import { insertSlot } from '/imports/api/slots/methods.js';
-import { insertOrderItem } from '/imports/api/order-items/methods.js';
+import { insertOrderItems } from '/imports/api/order-items/methods.js';
 
-import { Orders } from './orders.js';
+import { Orders, findOrderSubItems } from './orders.js';
 import { OrderItems } from '/imports/api/order-items/order-items.js';
 
 // Methods
@@ -27,6 +27,7 @@ import { zipZones } from '../delivery/zipcodes.js';
 // Call from server only
 
 // Call from client
+const notUnpaid = subscription => subscription.status !== 'unpaid';
 
 export const insertOrder = new ValidatedMethod({
   name: 'Orders.insert',
@@ -35,6 +36,7 @@ export const insertOrder = new ValidatedMethod({
     menu_id: { type: String },
     week_of: { type: Date },
     style: { type: String },
+    itemSlots: { type: [Object], optional: true, blackbox: true },
     items: { type: [Object], optional: true },
     'items.$': { type: Object, blackbox: true, optional: true },
     subscriptions: { type: [Object], optional: true },
@@ -63,10 +65,14 @@ export const insertOrder = new ValidatedMethod({
     // Calc subtotal
     const subtotal = items.reduce((agg, item) => agg + item.price_per_unit, 0);
 
+    const notUnpaidSubscriptions = subscriptions ? subscriptions.filter(notUnpaid) : [];
+    // Set Subscription Discounts
+    // do we need notUnpaid?
+
     // Set Pending Subscription Discounts
-    if (subscriptions && subscriptions.length > 0) {
+    if (notUnpaidSubscriptions && notUnpaidSubscriptions.length > 0) {
       // for each subscription
-      subscriptions.forEach((subscription) => {
+      notUnpaidSubscriptions.forEach((subscription) => {
         const subItemId = subscription.item_id;
         const subItemName = subscription.item_name;
         const isPackSub = subItemName.split(' ')[1].split('-')[1] === 'Pack';
@@ -119,7 +125,7 @@ export const insertOrder = new ValidatedMethod({
       week_of: weekOf,
       style,
       items,
-      subscriptions,
+      subscriptions: notUnpaidSubscriptions,
       subtotal,
       discount,
       sales_tax: salesTax,
@@ -134,7 +140,140 @@ export const insertOrder = new ValidatedMethod({
   },
 });
 
-const notUnpaid = subscription => subscription.status !== 'unpaid';
+export const updateOrder = new ValidatedMethod({
+  name: 'updateOrder',
+  validate: new SimpleSchema({
+    _id: { type: String },
+    created_at: { type: Date, optional: true },
+    id_number: { type: Number, optional: true },
+    status: { type: String, optional: true },
+    style: { type: String, optional: true },
+    user_id: { type: String, optional: true },
+    menu_id: { type: String, optional: true },
+    week_of: { type: Date, optional: true },
+    recipient: { type: Object, blackbox: true, optional: true },
+    gift: { type: Boolean, optional: true },
+    items: { type: [Object], optional: true },
+    'items.$': { type: Object, blackbox: true, optional: true },
+    subscriptions: { type: [Object], optional: true },
+    'subscriptions.$': { type: Object, blackbox: true, optional: true },
+    subtotal: { type: Number, decimal: true, optional: true },
+    discount: { type: Object, blackbox: true, optional: true },
+    delivery_fee: { type: Number, optional: true },
+    sales_tax: { type: Number, decimal: true, optional: true },
+    total: { type: Number, decimal: true, optional: true },
+    payment_id: { type: String, optional: true },
+    paid_at: { type: Date, optional: true },
+    ready_by: { type: Date, optional: true },
+    delivery_window_id: { type: String, optional: true },
+    delivery_comments: { type: String, optional: true },
+    tracking_code: { type: String, optional: true },
+    courier: { type: String, optional: true },
+    delivered_at: { type: Date, optional: true },
+    notes: { type: String, optional: true },
+    changes: { type: Object, blackbox: true, optional: true },
+    auto_correct: { type: Number, optional: true },
+    itemSlots: { type: [Object], optional: true, blackbox: true },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({
+    _id,
+    created_at: createdAt,
+    id_number: idNumber,
+    status,
+    user_id: userId,
+    menu_id: menuId,
+    week_of: weekOf,
+    recipient,
+    gift,
+    items,
+    subscriptions,
+    subtotal,
+    discount,
+    delivery_fee: deliveryFee,
+    sales_tax: salesTax,
+    total,
+    payment_id: paymentId,
+    paid_at: paidAt,
+    ready_by: readyBy,
+    delivery_window_id: deliveryWindowId,
+    delivery_comments: deliveryComments,
+    tracking_code: trackingCode,
+    courier,
+    delivered_at: deliveredAt,
+    notes,
+    changes,
+    auto_correct: autoCorrect,
+    itemSlots,
+  }) {
+    const prevOrder = Orders.findOne({ _id });
+
+    const mergeObject = (prevObj, newObj) => Object.entries(newObj)
+      .reduce((memo, [newKey, newVal]) => ({ ...memo, [newKey]: newVal || memo[newKey] }), prevObj);
+
+    const mergedOrder = mergeObject(
+      prevOrder, {
+        _id,
+        created_at: createdAt,
+        id_number: idNumber,
+        status,
+        user_id: userId,
+        menu_id: menuId,
+        week_of: weekOf,
+        recipient,
+        gift,
+        items,
+        subscriptions,
+        subtotal,
+        discount,
+        delivery_fee: deliveryFee,
+        sales_tax: salesTax,
+        total,
+        payment_id: paymentId,
+        paid_at: paidAt,
+        ready_by: readyBy,
+        delivery_window_id: deliveryWindowId,
+        delivery_comments: deliveryComments,
+        tracking_code: trackingCode,
+        courier,
+        delivered_at: deliveredAt,
+        notes,
+        changes,
+        auto_correct: autoCorrect,
+      },
+    );
+
+    Orders.update(_id, { $set: mergedOrder });
+    const updatedOrder = Orders.findOne({ _id });
+
+    const prevStatus = prevOrder.status;
+
+    const created = status === 'created';
+    const createdCustom = status === 'custom-sub';
+    const pendingNotDowngrade = (status === 'pending-sub') && (prevStatus !== 'created' || prevStatus !== 'custom-sub');
+    const badStatus = (status === 'skipped' || status === 'canceled');
+
+    if (created || createdCustom || pendingNotDowngrade || badStatus) {
+      OrderItems.remove({
+        user_id: updatedOrder.user_id,
+        week_of: updatedOrder.week_of,
+        order_id: updatedOrder._id,
+      });
+    }
+
+    if (created || createdCustom || pendingNotDowngrade) {
+      insertOrderItems.call({
+        user_id: updatedOrder.user_id,
+        order: updatedOrder,
+        itemSlots,
+        week_of: updatedOrder.week_of,
+        editor: itemSlots ? 'AUTO_GENERATED' : 'USER',
+      });
+    }
+  },
+});
 
 export const autoinsertSubscriberOrder = new ValidatedMethod({
   name: 'Orders.autoinsertSubOrder',
@@ -150,40 +289,25 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
     user_id: userId, menu_id: menuId, week_of: weekOf, items,
   }) {
     // Prep vars
+    let order = Orders.findOne({
+      user_id: userId,
+      week_of: weekOf,
+      status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
+    });
+
     const user = Meteor.users.findOne({ _id: userId });
 
-    const notUnpaidSubscriptions = user.subscriptions ? user.subscriptions.filter(notUnpaid) : [];
-
-    // Set Subscription Discounts
-    // do we need notUnpaid?
-    if (!(notUnpaidSubscriptions.length > 0)) { return undefined; }
-
-    const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
-
-    // create subtotalDollars
-    const subtotalDollars = notUnpaidSubscriptions
-      .map(getSubscriptionItem)
-      .reduce((memo, { price_per_unit: pricePerUnit }) => memo + pricePerUnit, 0);
-
-    // for each subscription
-    const discount = notUnpaidSubscriptions
-      .reduce(({ subscriber_discounts: prevDiscounts, value: aggregateValue }, sub) => {
-        const subscriptionItem = getSubscriptionItem(sub);
-
-        const subscriberDiscount = {
-          item_id: subscriptionItem._id,
-          percent_off: sub.percent_off,
-          value: sub.percent_off / 100 * subscriptionItem.price_per_unit,
-        };
-
-        const percentOffValue = (sub.percent_off / 100) * subscriptionItem.price_per_unit;
-
-        // add discount object to order.discount
-        return {
-          subscriber_discounts: [...prevDiscounts, subscriberDiscount],
-          value: aggregateValue + percentOffValue,
-        };
-      }, { subscriber_discounts: [], value: 0 });
+    if (!order) {
+      order = insertOrder.call({
+        user_id: userId,
+        menu_id: menuId,
+        week_of: weekOf,
+        style: 'pack',
+        items,
+        subscriptions: user.subscriptions,
+        changes: {},
+      });
+    }
 
     // Create default recipient obj
     const recipient = {
@@ -214,163 +338,26 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
         break;
     }
 
-    const subtotal = Math.round(subtotalDollars * 100) / 100;
-    const salesTax = Math.round(subtotal * 0.08875 * 100) / 100;
-    let total = Math.round((subtotal + salesTax - discount.value) * 100) / 100;
-
-    const zip = user.address_zipcode;
-    const deliveryFees = zipZones[zip].delivery_fees;
-
-    const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
-
-    total += deliveryFee;
     const readyBy = moment(weekOf).add(1, 'week').add(16, 'hours').toDate();
 
-    const newOrder = {
+    const updateOrderObj = {
+      _id: order._id,
       user_id: userId,
       menu_id: menuId,
       created_at: new Date(),
       week_of: weekOf,
       style: 'pack',
       items,
-      subscriptions: notUnpaidSubscriptions,
+      subscriptions: user.subscriptions,
       recipient,
-      subtotal,
-      discount,
-      sales_tax: salesTax,
-      delivery_fee: deliveryFee,
-      total,
       changes: {},
-      status: 'pending-sub',
+      status: order.status === 'pending' ? 'pending-sub' : order.status,
       ready_by: readyBy,
       delivery_window_id: deliveryWindowId,
     };
 
-    const orderId = Orders.insert(newOrder);
-    return Orders.findOne({ _id: orderId });
-  },
-});
-
-
-export const processOrder = new ValidatedMethod({
-  name: 'processOrder',
-  validate: new SimpleSchema({
-    _id: { type: String },
-    created_at: { type: Date },
-    week_of: { type: Date, optional: true },
-    status: { type: String },
-    user_id: { type: String },
-    menu_id: { type: String, optional: true },
-    style: { type: String },
-    recipient: { type: Object, blackbox: true },
-    gift: { type: Boolean, optional: true },
-    items: { type: [Object] },
-    'items.$': { type: Object, blackbox: true },
-    subscriptions: { type: [Object], optional: true },
-    'subscriptions.$': { type: Object, blackbox: true, optional: true },
-    subtotal: { type: Number, decimal: true },
-    discount: { type: Object, blackbox: true, optional: true },
-    delivery_fee: { type: Number, decimal: true, optional: true },
-    sales_tax: { type: Number, decimal: true, optional: true },
-    total: { type: Number, decimal: true, optional: true },
-    payment_id: { type: String, optional: true },
-    paid_at: { type: Date, optional: true },
-    ready_by: { type: Date, optional: true },
-    delivery_window_id: { type: String, optional: true },
-    delivery_comments: { type: String, optional: true },
-    tracking_code: { type: String, optional: true },
-    // courier: { type: String, optional: true },
-    // delivered_at: { type: Date, optional: true },
-    notes: { type: String, optional: true },
-    changes: { type: Object, blackbox: true, optional: true },
-    auto_correct: { type: Number, optional: true },
-  }).validator({ clean: true, filter: false }),
-  applyOptions: {
-    noRetry: true,
-  },
-  run({
-    _id,
-    status,
-    user_id: userId,
-    recipient,
-    gift,
-    items,
-    subscriptions,
-    subtotal,
-    discount,
-    delivery_fee: deliveryFee,
-    sales_tax: salesTax,
-    total,
-    payment_id: paymentId,
-    paid_at: paidAt,
-    ready_by: readyBy,
-    delivery_window_id: deliveryWindowId,
-    delivery_comments: deliveryComments,
-    tracking_code: trackingCode,
-    notes,
-    changes,
-    auto_correct: autoCorrect,
-  }) {
-    const idNumber = Orders.find({ status: { $ne: 'pending' } }).count();
-    const user = Meteor.users.findOne({ _id: userId });
-
-    // if pending subscriptions, attach to customer.subscriptions
-    let updatedSubscriptions;
-    if (subscriptions) {
-      const currentSubscriptions = user.subscriptions || [];
-
-      updatedSubscriptions = subscriptions.map((subscription) => {
-        if (subscription.status !== 'pending') { return subscription; }
-
-        const updatedSubscription = ({ ...subscription, status: 'active', subscribed_at: new Date() });
-
-        currentSubscriptions.push(updatedSubscription);
-
-        Meteor.users.update({ _id: userId }, { $set: { subscriptions: currentSubscriptions } });
-
-        return updatedSubscription;
-      });
-    }
-
-    let newStatus;
-
-    switch (status) {
-      case 'pending':
-        newStatus = 'created';
-        break;
-      case 'pending-sub':
-        newStatus = 'custom-sub';
-        break;
-      default:
-        newStatus = status;
-    }
-
-    Orders.update(_id, {
-      $set: {
-        id_number: idNumber,
-        status: newStatus,
-        recipient,
-        gift,
-        items,
-        subscriptions: updatedSubscriptions,
-        subtotal,
-        discount,
-        delivery_fee: deliveryFee,
-        sales_tax: salesTax,
-        total,
-        payment_id: paymentId,
-        paid_at: paidAt,
-        ready_by: readyBy,
-        delivery_window_id: deliveryWindowId,
-        delivery_comments: deliveryComments,
-        tracking_code: trackingCode,
-        notes,
-        changes,
-        auto_correct: autoCorrect,
-      },
-    });
-
-    return Orders.findOne({ _id });
+    updateOrder.call(updateOrderObj);
+    return Orders.findOne({ _id: order._id });
   },
 });
 
@@ -432,150 +419,31 @@ export const processSubscriberOrder = new ValidatedMethod({
     // this should be randomized
     const idNumber = Orders.find({ status: { $ne: 'pending' } }).count();
 
-    Orders.update(_id, {
-      $set: {
-        id_number: idNumber,
-        status: 'created',
-        recipient,
-        gift,
-        items,
-        subscriptions,
-        subtotal,
-        discount,
-        delivery_fee: deliveryFee,
-        sales_tax: salesTax,
-        total,
-        payment_id: paymentId,
-        paid_at: paidAt,
-        ready_by: readyBy,
-        delivery_window_id: deliveryWindowId,
-        delivery_comments: deliveryComments,
-        tracking_code: trackingCode,
-        notes,
-        changes,
-        auto_correct: autoCorrect,
-      },
+    updateOrder.call({
+      _id,
+      id_number: idNumber,
+      status: 'created',
+      recipient,
+      gift,
+      items,
+      subscriptions,
+      subtotal,
+      discount,
+      delivery_fee: deliveryFee,
+      sales_tax: salesTax,
+      total,
+      payment_id: paymentId,
+      paid_at: paidAt,
+      ready_by: readyBy,
+      delivery_window_id: deliveryWindowId,
+      delivery_comments: deliveryComments,
+      tracking_code: trackingCode,
+      notes,
+      changes,
+      auto_correct: autoCorrect,
     });
 
     return Orders.findOne({ _id });
-  },
-});
-
-export const updateOrderItems = new ValidatedMethod({
-  name: 'updateOrderItems',
-  validate: new SimpleSchema({
-    _id: { type: String },
-    items: { type: [Object] },
-    'items.$': { type: Object, blackbox: true },
-  }).validator({ clean: true, filter: false }),
-  applyOptions: {
-    noRetry: true,
-  },
-  run() { },
-});
-
-export const updateOrder = new ValidatedMethod({
-  name: 'updateOrder',
-  validate: new SimpleSchema({
-    _id: { type: String },
-    created_at: { type: Date, optional: true },
-    id_number: { type: Number, optional: true },
-    status: { type: String },
-    style: { type: String, optional: true },
-    user_id: { type: String, optional: true },
-    menu_id: { type: String, optional: true },
-    week_of: { type: Date, optional: true },
-    recipient: { type: Object, blackbox: true, optional: true },
-    gift: { type: Boolean, optional: true },
-    items: { type: [Object], optional: true },
-    'items.$': { type: Object, blackbox: true, optional: true },
-    subscriptions: { type: [Object], optional: true },
-    'subscriptions.$': { type: Object, blackbox: true, optional: true },
-    subtotal: { type: Number, decimal: true, optional: true },
-    discount: { type: Object, blackbox: true, optional: true },
-    delivery_fee: { type: Number, optional: true },
-    sales_tax: { type: Number, decimal: true, optional: true },
-    total: { type: Number, decimal: true, optional: true },
-    payment_id: { type: String, optional: true },
-    paid_at: { type: Date, optional: true },
-    ready_by: { type: Date, optional: true },
-    delivery_window_id: { type: String, optional: true },
-    delivery_comments: { type: String, optional: true },
-    tracking_code: { type: String, optional: true },
-    courier: { type: String, optional: true },
-    delivered_at: { type: Date, optional: true },
-    notes: { type: String, optional: true },
-    changes: { type: Object, blackbox: true, optional: true },
-    auto_correct: { type: Number, optional: true },
-  }).validator({ clean: true, filter: false }),
-  applyOptions: {
-    noRetry: true,
-  },
-  run({
-    _id,
-    created_at: createdAt,
-    id_number: idNumber,
-    status,
-    user_id: userId,
-    menu_id: menuId,
-    week_of: weekOf,
-    recipient,
-    gift,
-    items,
-    subscriptions,
-    subtotal,
-    discount,
-    delivery_fee: deliveryFee,
-    sales_tax: salesTax,
-    total,
-    payment_id: paymentId,
-    paid_at: paidAt,
-    ready_by: readyBy,
-    delivery_window_id: deliveryWindowId,
-    delivery_comments: deliveryComments,
-    tracking_code: trackingCode,
-    courier,
-    delivered_at: deliveredAt,
-    notes,
-    changes,
-    auto_correct: autoCorrect,
-  }) {
-    Orders.find({ status: { $ne: 'pending' } }).count();
-
-    Orders.update(_id, {
-      $set: {
-        _id,
-        created_at: createdAt,
-        id_number: idNumber,
-        status,
-        user_id: userId,
-        menu_id: menuId,
-        week_of: weekOf,
-        recipient,
-        gift,
-        items,
-        subscriptions,
-        subtotal,
-        discount,
-        delivery_fee: deliveryFee,
-        sales_tax: salesTax,
-        total,
-        payment_id: paymentId,
-        paid_at: paidAt,
-        ready_by: readyBy,
-        delivery_window_id: deliveryWindowId,
-        delivery_comments: deliveryComments,
-        tracking_code: trackingCode,
-        courier,
-        delivered_at: deliveredAt,
-        notes,
-        changes,
-        auto_correct: autoCorrect,
-      },
-    });
-
-    const result = Orders.findOne({ _id });
-    return result;
   },
 });
 
@@ -655,31 +523,29 @@ export const updatePendingSubOrder = new ValidatedMethod({
 
     newTotal += newDeliveryFee;
 
-    Orders.update(_id, {
-      $set: {
-        _id,
-        created_at: createdAt,
-        id_number: idNumber,
-        status,
-        user_id: userId,
-        menu_id: menuId,
-        week_of: weekOf,
-        recipient,
-        gift,
-        items,
-        subscriptions,
-        subtotal: newSubtotal,
-        discount,
-        delivery_fee: newDeliveryFee,
-        sales_tax: newSalesTax,
-        total: newTotal,
-        ready_by: readyBy,
-        delivery_window_id: deliverWindowId,
-        delivery_comments: deliveryComments,
-        notes,
-        changes,
-        auto_correct: autoCorrect,
-      },
+    updateOrder.call({
+      _id,
+      created_at: createdAt,
+      id_number: idNumber,
+      status,
+      user_id: userId,
+      menu_id: menuId,
+      week_of: weekOf,
+      recipient,
+      gift,
+      items,
+      subscriptions,
+      subtotal: newSubtotal,
+      discount,
+      delivery_fee: newDeliveryFee,
+      sales_tax: newSalesTax,
+      total: newTotal,
+      ready_by: readyBy,
+      delivery_window_id: deliverWindowId,
+      delivery_comments: deliveryComments,
+      notes,
+      changes,
+      auto_correct: autoCorrect,
     });
 
     const result = Orders.findOne({ _id });
@@ -746,16 +612,16 @@ export const toggleSkip = new ValidatedMethod({
     if (order.status === 'skipped') {
       let newStatus = 'pending';
       if (sub) newStatus += '-sub';
-      Orders.update(order._id, {
-        $set: {
-          status: newStatus,
-        },
+      // DON'T DO THIS ANY MORE
+      updateOrder.call({
+        _id: order._id,
+        status: newStatus,
       });
     } else {
-      Orders.update(order._id, {
-        $set: {
-          status: 'skipped',
-        },
+      // DON'T DO THIS ANY MORE
+      updateOrder.call({
+        _id: order._id,
+        status: 'skipped',
       });
     }
   },
@@ -766,7 +632,7 @@ export const toggleSkip = new ValidatedMethod({
 const ORDERS_METHODS = _.pluck([
   insertOrder,
   autoinsertSubscriberOrder,
-  processOrder,
+  // processOrder,
   updateOrder,
   updatePendingSubOrder,
   // cancelOrder,
@@ -775,14 +641,94 @@ const ORDERS_METHODS = _.pluck([
   toggleSkip,
 ], 'name');
 
-
-const findOrderSubItems = (order) => {
-  const pack = order.items.find(item => item.category === 'Pack');
-  return pack.sub_items.items;
-};
-
 if (Meteor.isServer) {
   Meteor.methods({
+    processOrder({
+      _id,
+      status,
+      user_id: userId,
+      recipient,
+      gift,
+      items,
+      subscriptions,
+      subtotal,
+      discount,
+      delivery_fee: deliveryFee,
+      sales_tax: salesTax,
+      total,
+      payment_id: paymentId,
+      paid_at: paidAt,
+      ready_by: readyBy,
+      delivery_window_id: deliveryWindowId,
+      delivery_comments: deliveryComments,
+      tracking_code: trackingCode,
+      notes,
+      changes,
+      auto_correct: autoCorrect,
+    }) {
+      const idNumber = Orders.find({ status: { $ne: 'pending' } }).count();
+      const user = Meteor.users.findOne({ _id: userId });
+
+      // if pending subscriptions, attach to customer.subscriptions
+      let updatedSubscriptions;
+      if (subscriptions) {
+        const currentSubscriptions = user.subscriptions || [];
+
+        updatedSubscriptions = subscriptions.map((subscription) => {
+          if (subscription.status !== 'pending') { return subscription; }
+
+          const updatedSubscription = ({ ...subscription, status: 'active', subscribed_at: new Date() });
+
+          currentSubscriptions.push(updatedSubscription);
+
+          Meteor.users.update({ _id: userId }, { $set: { subscriptions: currentSubscriptions } });
+
+          return updatedSubscription;
+        });
+      }
+
+      let newStatus;
+
+      switch (status) {
+        case 'pending':
+          newStatus = 'created';
+          break;
+        case 'pending-sub':
+          newStatus = 'custom-sub';
+          break;
+        default:
+          newStatus = status;
+      }
+
+      const order = Orders.findOne({ _id });
+
+      updateOrder.call({
+        ...order,
+        _id,
+        id_number: idNumber,
+        status: newStatus,
+        recipient,
+        gift,
+        items,
+        subscriptions: updatedSubscriptions,
+        subtotal,
+        discount,
+        delivery_fee: deliveryFee,
+        sales_tax: salesTax,
+        total,
+        payment_id: paymentId,
+        paid_at: paidAt,
+        ready_by: readyBy,
+        delivery_window_id: deliveryWindowId,
+        delivery_comments: deliveryComments,
+        tracking_code: trackingCode,
+        notes,
+        changes,
+        auto_correct: autoCorrect,
+      });
+
+      return Orders.findOne({ _id });
+    },
     toggleDeliveryDay({ day }) {
       const user = Meteor.user();
 
@@ -815,13 +761,13 @@ if (Meteor.isServer) {
 
         const newDeliveryWindow = dws.filter(dw => dw.delivery_day === day)[0];
 
-        Orders.update(order._id, {
-          $set: {
-            delivery_window_id:
-              newDeliveryWindow
-                ? newDeliveryWindow._id
-                : order.delivery_window_id,
-          },
+        // DON'T DO THIS ANY MORE
+        updateOrder.call({
+          _id: order._id,
+          delivery_window_id:
+            newDeliveryWindow
+              ? newDeliveryWindow._id
+              : order.delivery_window_id,
         });
 
         return order;
@@ -851,18 +797,20 @@ if (Meteor.isServer) {
           }
           const itemChoices = chooseItemsUsingSlots(userSlots, menuItems);
 
-
           let order = Orders.findOne({
             week_of: weekOf, user_id: userId, style: 'pack',
           });
 
           const itemSlots = order && findOrderSubItems(order).length
-            ? itemChoices.map(({ item }) => ({ item, slot: null }))
+            ? itemChoices.map(({ item }) => ({ item, slot: undefined }))
             : itemChoices;
 
           const itemAddedToOrder = order && findOrderSubItems(order).length
             ? findOrderSubItems(order)
             : itemSlots.map(({ item }) => item);
+
+          const itemToSlot = itemSlots
+            .reduce((memo, { slot, item }) => ({ ...memo, [item._id]: slot && slot._id }), {});
 
           if (!order) {
             order = insertOrder.call({
@@ -873,6 +821,7 @@ if (Meteor.isServer) {
               items: itemAddedToOrder,
               subscriptions: user.subscriptions,
               changes: {},
+              itemToSlot,
             });
           }
 
@@ -881,7 +830,7 @@ if (Meteor.isServer) {
           });
 
           if (pendingSubOrder) {
-            const pack = pendingSubOrder.items.find(item => item.unit === 'pack');
+            const pack = pendingSubOrder.items.find(item => item.category === 'Pack');
 
             const updatedPack = {
               ...pack,
@@ -891,29 +840,9 @@ if (Meteor.isServer) {
               },
             };
 
-            const updatedOrder = { ...pendingSubOrder, items: [updatedPack] };
+            const updatedOrder = { ...pendingSubOrder, items: [updatedPack], itemSlots };
 
             updateOrder.call(updatedOrder);
-          }
-
-          const orderItemsExist = OrderItems.find({
-            week_of: weekOf,
-            user_id: user._id,
-            order_id: order._id,
-          }).fetch().length;
-
-          if (!orderItemsExist) {
-            // TODO later move this code inside update and insert order
-            const orderItems = itemSlots.map(({ slot, item }) => ({
-              week_of: weekOf,
-              user_id: user._id,
-              item_id: item._id,
-              slot_id: slot && slot._id,
-              order_id: order._id,
-              editor: slot ? 'AUTO_GENERATED' : 'USER',
-            }));
-
-            orderItems.map(slot => insertOrderItem.call(slot));
           }
         });
     },

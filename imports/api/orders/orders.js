@@ -61,6 +61,11 @@ const Recipient = new SimpleSchema({
   },
 });
 
+export const findOrderSubItems = (order) => {
+  const pack = order.items.find(item => item.category === 'Pack');
+  return pack.sub_items.items;
+};
+
 Orders.schema = new SimpleSchema({
   _id: {
     type: String,
@@ -127,7 +132,7 @@ Orders.schema = new SimpleSchema({
   },
   'items.$': {
     type: Object,
-    label: 'Order Item',
+    label: 'Item',
     blackbox: true,
     optional: true,
   },

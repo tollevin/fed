@@ -18,7 +18,7 @@ import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
 // Methods
-import { processOrder } from '/imports/api/orders/methods.js';
+// import { processOrder } from '/imports/api/orders/methods.js';
 
 // Components
 import '/imports/ui/components/loader/loader.js';
@@ -597,8 +597,7 @@ Template.Checkout_page.events({
         order.ready_by = Session.get('menu').ready_by;
         order.delivery_window_id = delDay;
         order.delivery_comments = orderToProcess.delivery_comments;
-
-        processOrder.call(order, (error, response) => {
+        Meteor.call('processOrder', order, (error, response) => {
           if (error) {
             sAlert.error(error);
             Session.set('loading', false);
@@ -652,11 +651,10 @@ Template.Checkout_page.events({
             ga('send', 'event', 'UX', 'purchase');
 
             Meteor.call('sendOrderConfirmationEmail', Meteor.userId(), order, () => { });
+            Session.set('loading', false);
+            FlowRouter.go('Confirmation');
           }
         });
-
-        Session.set('loading', false);
-        FlowRouter.go('Confirmation');
       } catch (error) {
         Session.set('loading', false);
         throw new Meteor.Error(401, error);

@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
 import { OrderItems } from './order-items.js';
+import { findOrderSubItems } from '/imports/api/orders/orders.js';
 // import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Methods
@@ -46,6 +47,40 @@ export const insertOrderItem = new ValidatedMethod({
 
     const orderItemId = OrderItems.insert(orderItem);
     return OrderItems.findOne({ _id: orderItemId });
+  },
+});
+
+export const insertOrderItems = new ValidatedMethod({
+  name: 'OrderItems.insertMultiple',
+  validate: new SimpleSchema({
+    user_id: { type: String },
+    itemSlots: { type: [Object], optional: true, blackbox: true },
+    order: { type: Object, blackbox: true },
+    week_of: { type: Date },
+    editor: { type: String },
+  }).validator({ clean: true, filter: false }),
+  applyOptions: {
+    noRetry: true,
+  },
+  run({
+    user_id: userId,
+    itemSlots,
+    order,
+    week_of: weekOf,
+    editor,
+  }) {
+    const items = findOrderSubItems(order);
+
+    const orderItems = items.map(item => ({
+      week_of: weekOf,
+      user_id: userId,
+      item_id: item._id,
+      slot_id: itemSlots && itemSlots[item._id],
+      order_id: order._id,
+      editor,
+    }));
+
+    orderItems.map(slot => insertOrderItem.call(slot));
   },
 });
 
