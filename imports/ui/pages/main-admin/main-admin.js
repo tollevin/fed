@@ -29,46 +29,79 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
   this.subscribe('Menus.toCome');
   this.subscribe('subscriberData');
 
-  this.itemInfo = new ReactiveVar();
+  this.customItemInfo = new ReactiveVar();
+  this.autoItemInfo = new ReactiveVar();
   this.showTallies = new ReactiveVar(false);
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
+      // Build item list
       const menuThisWeek = Items.find({}, { fields: { name: 1, category: 1 } }).fetch();
 
       const thisWeekStart = toNewYorkTimezone(moment()).startOf('week').utc()
         .toDate();
-      const ordersThisWeek = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }, { fields: { items: 1 } });
 
-      const orderedItems = [];
+      // Create item tallies for custom orders, set to this.customItemInfo
+      const customOrdersThisWeek = Orders.find({ week_of: thisWeekStart, status: { $nin: ['skipped', 'pending-sub'] } }, { fields: { items: 1 } });
 
-      ordersThisWeek.forEach((order) => {
+      const customOrderedItems = [];
+
+      customOrdersThisWeek.forEach((order) => {
         order.items.forEach((item) => {
           if (item.category === 'Pack') {
             item.sub_items.items.forEach((subItem) => {
-              orderedItems.push(subItem);
+              customOrderedItems.push(subItem);
             });
           } else {
-            orderedItems.push(item);
+            customOrderedItems.push(item);
           }
         });
       });
-      const itemTallies = menuThisWeek.map((item) => {
+      const customItemTallies = menuThisWeek.map((item) => {
         let count = 0;
-        for (let i = orderedItems.length - 1; i >= 0; i -= 1) {
-          if (item._id === orderedItems[i]._id) {
+        for (let i = customOrderedItems.length - 1; i >= 0; i -= 1) {
+          if (item._id === customOrderedItems[i]._id) {
             count += 1;
           }
         }
         return { ...item, count };
       });
-      this.itemInfo.set(itemTallies);
+      this.customItemInfo.set(customItemTallies);
+
+      // Create item tallies for auto orders, set to this.autoItemInfo
+      const autoOrdersThisWeek = Orders.find({ week_of: thisWeekStart, status: 'pending-sub' }, { fields: { items: 1 } });
+
+      const autoOrderedItems = [];
+
+      autoOrdersThisWeek.forEach((order) => {
+        order.items.forEach((item) => {
+          if (item.category === 'Pack') {
+            item.sub_items.items.forEach((subItem) => {
+              autoOrderedItems.push(subItem);
+            });
+          } else {
+            autoOrderedItems.push(item);
+          }
+        });
+      });
+      const autoItemTallies = menuThisWeek.map((item) => {
+        let count = 0;
+        for (let i = autoOrderedItems.length - 1; i >= 0; i -= 1) {
+          if (item._id === autoOrderedItems[i]._id) {
+            count += 1;
+          }
+        }
+        return { ...item, count };
+      });
+      this.autoItemInfo.set(autoItemTallies);
     }
   });
 });
 
 Template.Main_admin.helpers({
-  itemsThisWeek: () => Template.instance().itemInfo.get(),
+  customItemsThisWeek: () => Template.instance().custmomItemInfo.get(),
+
+  autoItemsThisWeek: () => Template.instance().autoItemInfo.get(),
 
   beforeThurs: () => {
     const now = new moment();
