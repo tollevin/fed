@@ -189,7 +189,7 @@ Template.Main_admin.helpers({
   },
 
   customPlates: () => {
-    const items = Template.instance().itemInfo.get();
+    const items = Template.instance().customItemInfo.get();
     let customDishCount = 0;
     for (let i = items.length - 1; i >= 0; i -= 1) {
       if (items[i].category === 'Meal') {
@@ -218,7 +218,7 @@ Template.Main_admin.helpers({
       });
     });
 
-    const items = Template.instance().itemInfo.get();
+    const items = Template.instance().customItemInfo.get();
     let customDishCount = 0;
     for (let i = items.length - 1; i >= 0; i -= 1) {
       if (items[i].category === 'Meal') {

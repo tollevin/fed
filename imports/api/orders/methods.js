@@ -783,7 +783,9 @@ if (Meteor.isServer) {
       user_id: userId, menu_id: menuId, week_of: weekOf, items,
     }) {
       const user = Meteor.users.findOne({ _id: userId });
-      const { restrictions: userDietRestrictions } = user;
+      const { restrictions } = user;
+
+      const userDietRestrictions = restrictions || [];
 
       const getSubscriptionItem = sub => items.find(item => item._id === sub.item_id);
 
@@ -798,12 +800,6 @@ if (Meteor.isServer) {
           if (!subscriptionItem) {
             // eslint-disable-next-line no-console
             console.log('no subscription item user = %j', user);
-            return;
-          }
-
-          if (!userDietRestrictions) {
-            // eslint-disable-next-line no-console
-            console.log('no restriction list user = %j', user);
             return;
           }
 
@@ -827,6 +823,7 @@ if (Meteor.isServer) {
           const itemAddedToOrder = order && findOrderSubItems(order).length
             ? findOrderSubItems(order)
             : itemSlots.map(({ item }) => item);
+
 
           const itemToSlot = itemSlots
             .reduce((memo, { slot, item }) => ({ ...memo, [item._id]: slot && slot._id }), {});
