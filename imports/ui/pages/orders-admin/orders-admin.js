@@ -20,7 +20,7 @@ Template.Orders_admin.onCreated(function ordersAdminOnCreated() {
       this.subscribe('some.orders', 100);
     } else {
       this.subscribe('allThisWeeks.orders', { timestamp });
-    };
+    }
     this.subscribe('userData');
   });
 });

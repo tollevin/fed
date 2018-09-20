@@ -62,7 +62,6 @@ const Recipient = new SimpleSchema({
 });
 
 export const findOrderSubItems = (order) => {
-
   const pack = order.items.find(item => item.category === 'Pack') || { sub_items: { items: [] } };
   const otherItems = order.items.filter(item => item.category !== 'Pack') || [];
 
