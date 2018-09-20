@@ -99,7 +99,7 @@ Template.Main_admin.onCreated(function mainAdminOnCreated() {
 });
 
 Template.Main_admin.helpers({
-  customItemsThisWeek: () => Template.instance().custmomItemInfo.get(),
+  customItemsThisWeek: () => Template.instance().customItemInfo.get(),
 
   autoItemsThisWeek: () => Template.instance().autoItemInfo.get(),
 

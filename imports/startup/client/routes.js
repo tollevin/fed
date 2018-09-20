@@ -117,6 +117,12 @@ FlowRouter.route('/equinox', {
   action: () => BlazeLayout.render('App_body', { main: 'Equinox_join' }),
 });
 
+FlowRouter.route('/wework', {
+  name: 'WeWork.join',
+  waitOn: () => import('/imports/ui/pages/wework-join/wework-join.js'),
+  action: () => BlazeLayout.render('App_body', { main: 'WeWork_join' }),
+});
+
 FlowRouter.route('/deanstreet', {
   name: 'DeanStreet',
   waitOn: () => import('/imports/ui/pages/dean-street/dean-street.js'),

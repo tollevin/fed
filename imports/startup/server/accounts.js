@@ -323,6 +323,10 @@ Meteor.methods({
           emailData.subject = 'Your Get Fed Promotion From Equinox!';
           emailData.file = 'equinox20.html';
           break;
+        case 'WeWork':
+          emailData.subject = 'Your Get Fed Promotion From WeWork!';
+          emailData.file = 'wework.html';
+          break;
         case 'DeanStreet':
           emailData.subject = 'Your Get Fed Promotion From Dean Street Block Party!';
           emailData.file = 'deanstreet.html';
