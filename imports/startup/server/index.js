@@ -28,4 +28,3 @@ import './google-maps.js';
 import './accounts.js';
 
 import './settings.js';
-import './kandira.js';

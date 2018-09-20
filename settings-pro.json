@@ -1,7 +1,16 @@
 {
   "public": {
     "analyticsSettings": {
-      "Google Analytics" : {"trackingId": "UA-87043528-1"},
+      "Google Analytics": {
+        "trackingId": "UA-87043528-1"
+      },
+    }
+  },
+  "kadira": {
+    "appId": "TNLA3dkk8oN7uMRPB",
+    "appSecret": "654c5edb-7000-4d4e-a7cd-cd0bc1ec2595",
+    "options": {
+      "endpoint": "https://meteor-apm-engine.nodechef.com"
     }
   }
 }
