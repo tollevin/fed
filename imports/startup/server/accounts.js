@@ -157,7 +157,7 @@ Meteor.methods({
     try {
       const user = Meteor.users.findOne({ _id: userId });
       return user.subscriptions
-        .filter((sub) => sub.status == "active")
+        .filter(sub => sub.status === 'active')
         .map(sub => Items.findOne({ _id: sub.item_id }));
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
@@ -455,44 +455,44 @@ Meteor.publish('limitedUserData', function () {
   return Meteor.users.find({
     _id: this.userId,
   }, {
-      fields: {
-        _id: 1,
-        first_name: 1,
-        last_name: 1,
-        emails: 1,
-        address_zipcode: 1,
-        diet: 1,
-        restrictions: 1,
-        subscriptions: 1,
-        last_purchase: 1,
-      },
-    });
+    fields: {
+      _id: 1,
+      first_name: 1,
+      last_name: 1,
+      emails: 1,
+      address_zipcode: 1,
+      diet: 1,
+      restrictions: 1,
+      subscriptions: 1,
+      last_purchase: 1,
+    },
+  });
 });
 
 Meteor.publish('someUserData', function () {
   return Meteor.users.find({
     _id: this.userId,
   }, {
-      fields: {
-        _id: 1,
-        first_name: 1,
-        last_name: 1,
-        emails: 1,
-        email: 1,
-        address_zipcode: 1,
-        deliv_comments: 1,
-        amount_spent: 1,
-        credit: 1,
-        last_purchase: 1,
-        diet: 1,
-        plan: 1,
-        stripe_id: 1,
-        preferredDelivDay: 1,
-        subscriptions: 1,
-        skipping: 1,
-        profile: 1,
-      },
-    });
+    fields: {
+      _id: 1,
+      first_name: 1,
+      last_name: 1,
+      emails: 1,
+      email: 1,
+      address_zipcode: 1,
+      deliv_comments: 1,
+      amount_spent: 1,
+      credit: 1,
+      last_purchase: 1,
+      diet: 1,
+      plan: 1,
+      stripe_id: 1,
+      preferredDelivDay: 1,
+      subscriptions: 1,
+      skipping: 1,
+      profile: 1,
+    },
+  });
 });
 
 Meteor.publish('thisUserData', function (id) {
@@ -502,40 +502,6 @@ Meteor.publish('thisUserData', function (id) {
     return Meteor.users.find({
       _id: id,
     }, {
-        fields: {
-          _id: 1,
-          first_name: 1,
-          last_name: 1,
-          phone: 1,
-          emails: 1,
-          email: 1,
-          address_line_1: 1,
-          address_line_2: 1,
-          address_city: 1,
-          address_state: 1,
-          address_zipcode: 1,
-          deliv_window: 1,
-          deliv_comments: 1,
-          amount_spent: 1,
-          credit: 1,
-          last_purchase: 1,
-          diet: 1,
-          plan: 1,
-          coupon: 1,
-          restrictions: 1,
-          stripe_id: 1,
-          preferredDelivDay: 1,
-          subscriptions: 1,
-          skipping: 1,
-          referrer: 1,
-          profile: 1,
-          customized: 1,
-        },
-      });
-  }
-  return Meteor.users.find({
-    _id: this.userId,
-  }, {
       fields: {
         _id: 1,
         first_name: 1,
@@ -566,6 +532,40 @@ Meteor.publish('thisUserData', function (id) {
         customized: 1,
       },
     });
+  }
+  return Meteor.users.find({
+    _id: this.userId,
+  }, {
+    fields: {
+      _id: 1,
+      first_name: 1,
+      last_name: 1,
+      phone: 1,
+      emails: 1,
+      email: 1,
+      address_line_1: 1,
+      address_line_2: 1,
+      address_city: 1,
+      address_state: 1,
+      address_zipcode: 1,
+      deliv_window: 1,
+      deliv_comments: 1,
+      amount_spent: 1,
+      credit: 1,
+      last_purchase: 1,
+      diet: 1,
+      plan: 1,
+      coupon: 1,
+      restrictions: 1,
+      stripe_id: 1,
+      preferredDelivDay: 1,
+      subscriptions: 1,
+      skipping: 1,
+      referrer: 1,
+      profile: 1,
+      customized: 1,
+    },
+  });
 });
 
 Meteor.publish('userData', function (limit) {

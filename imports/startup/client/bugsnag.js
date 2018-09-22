@@ -45,4 +45,3 @@ import bugsnag from 'bugsnag-js';
   };
   /* eslint-enable */
 })();
-
