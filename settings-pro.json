@@ -7,10 +7,7 @@
     }
   },
   "kadira": {
-    "appId": "TNLA3dkk8oN7uMRPB",
-    "appSecret": "654c5edb-7000-4d4e-a7cd-cd0bc1ec2595",
-    "options": {
-      "endpoint": "https://meteor-apm-engine.nodechef.com"
-    }
+    "appId": "xc5myAnQ8HNhtqGxu",
+    "appSecret": "ad8012d1-e6b8-45e0-83e3-a83200fd2b9d"
   }
 }
