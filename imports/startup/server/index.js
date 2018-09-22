@@ -25,6 +25,9 @@ import './stripe-dev.js';
 import './optimap.js';
 import './google-maps.js';
 
+import './monti.js';
+
+
 import './accounts.js';
 
 import './settings.js';

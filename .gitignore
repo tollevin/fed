@@ -2,3 +2,4 @@ node_modules/
 .meteor/local
 yarn.lock
 .DS_Store
+.meteor/.DS_Store
