@@ -113,12 +113,12 @@ const removeUsableItem = (itemCountPriorityQueue, slot) => {
     const chosenItemCount = itemCountPriorityQueue.length
       ? itemCountPriorityQueue.dequeue()
       : null;
-    foundMatch = chosenItemCount === null
+
+    foundMatch = (chosenItemCount === null)
       ? true
       : rejectedDishes(chosenItemCount.item, slot.restrictions);
     aggregatorItemCounts = [chosenItemCount, ...aggregatorItemCounts];
   }
-
   const [usableItemCount, ...remainderItemCounts] = aggregatorItemCounts;
 
   remainderItemCounts.forEach(
@@ -130,11 +130,18 @@ const removeUsableItem = (itemCountPriorityQueue, slot) => {
 const getCategory = ({ category }) => category.toLowerCase();
 const getSubCategory = ({ subcategory }) => CATEGORY_TO_PLATE[subcategory.toLowerCase()];
 
-export const pickItemsInCategory = (slots, menuItems) => {
+export const pickItemsInCategory = (slots, menuItems, previousItems) => {
   const compareNumbers = ({ count: countA }, { count: countB }) => countA - countB;
   const itemCountPriorityQueue = new PriorityQueue({ comparator: compareNumbers });
 
-  menuItems.forEach((item) => { itemCountPriorityQueue.queue({ item, count: 0 }); });
+  const previousItemsById = groupBy(previousItems, (item) => item._id);
+  const delta = .001; // this is to not favor items chosen last week
+
+  menuItems.forEach((item) => {
+    itemCountPriorityQueue.queue({
+      item, count: previousItemsById[item._id] ? delta : 0
+    });
+  });
 
   return slots.map((slot) => {
     const itemCount = removeUsableItem(itemCountPriorityQueue, slot);
@@ -145,13 +152,15 @@ export const pickItemsInCategory = (slots, menuItems) => {
   }).filter(a => a);
 };
 
-export const chooseItemsUsingSlots = (slots, menuItems) => {
+export const chooseItemsUsingSlots = (slots, menuItems, previousPackOrder) => {
   const menuItemsByCategory = groupBy(menuItems, getSubCategory);
+  const previousItemBySubCategory = groupBy(previousPackOrder, getSubCategory);
 
   return flatten(Object.entries(groupBy(slots, getCategory))
     .map(([category, categorySlots]) => pickItemsInCategory(
       categorySlots,
       menuItemsByCategory[category] || [],
+      previousItemBySubCategory[category] || [],
     )));
 };
 

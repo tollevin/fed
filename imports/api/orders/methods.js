@@ -4,6 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { moment } from 'meteor/momentjs:moment';
+import { toNewYorkTimezone } from '/imports/ui/lib/time';
 
 import { Items } from '/imports/api/items/items.js';
 import { Slots } from '/imports/api/slots/slots.js';
@@ -295,7 +296,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
     });
 
-    const compactedItems = items.filter(item => item);
+    const compactedItems = items.filter((item) => item);
 
     if (compactedItems.legnth !== items.length) {
       // eslint-disable-next-line no-console
@@ -810,7 +811,17 @@ if (Meteor.isServer) {
             const newSlots = generateSlots(packSchema, user._id, userDietRestrictions);
             userSlots = newSlots.map(slot => insertSlot.call(slot));
           }
-          const itemChoices = chooseItemsUsingSlots(userSlots, menuItems);
+          const previousWeek = toNewYorkTimezone(weekOf).startOf('week').subtract(1, 'w').utc().toDate();
+
+          const previousPackOrder =
+            Orders.findOne({
+              week_of: previousWeek,
+              user_id: userId,
+              style: 'pack',
+            });
+
+          const previousWeekItems = previousPackOrder ? findOrderSubItems(previousPackOrder) : [];
+          const itemChoices = chooseItemsUsingSlots(userSlots, menuItems, previousWeekItems);
 
           let order = Orders.findOne({
             week_of: weekOf, user_id: userId, style: 'pack',
