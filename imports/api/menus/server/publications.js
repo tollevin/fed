@@ -6,7 +6,7 @@ import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { Menus } from '../menus.js';
 import { Items } from '../../items/items.js';
 
-Meteor.publishComposite('Menus.thisWeek', function(timestamp) {
+Meteor.publishComposite('Menus.thisWeek', function (timestamp) {
   new SimpleSchema({
     timestamp: { type: Date },
   }).validate({ timestamp });
@@ -39,7 +39,7 @@ Meteor.publishComposite('Menus.thisWeek', function(timestamp) {
   };
 });
 
-Meteor.publishComposite('Menus.byWeek', function(timestamp) {
+Meteor.publishComposite('Menus.byWeek', function (timestamp) {
   new SimpleSchema({
     timestamp: { type: Date },
   }).validate({ timestamp });
@@ -65,7 +65,7 @@ Meteor.publishComposite('Menus.byWeek', function(timestamp) {
   };
 });
 
-Meteor.publishComposite('Menus.active', function() {
+Meteor.publishComposite('Menus.active', function () {
   return {
     find() {
       return Menus.find({ active: true });

@@ -87,9 +87,11 @@ mdg:validation-error@0.5.1
 mealsunite:flow-routing-extra@2.0.2
 meteor@1.9.0
 meteor-base@1.4.0
+meteorhacks:inject-initial@1.0.4
 meteorhacks:meteorx@1.4.1
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
+meteorhacks:zones@1.6.0
 meteortoys:allthings@3.0.0
 meteortoys:authenticate@3.0.0
 meteortoys:autopub@3.0.0
