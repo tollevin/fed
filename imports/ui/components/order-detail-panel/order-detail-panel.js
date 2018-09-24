@@ -16,7 +16,7 @@ import './order-detail-panel.html';
 
 Template.Order_detail_panel.onCreated(function orderDetailPanelOnCreated() {
   this.subscribe('DeliveryWindows.forMenu', this.data.menu_id);
-  this.subscribe('single.Order', this.data._id);
+  this.subscribe('single.order', this.data._id);
 
   this.delivery_window = new ReactiveVar();
   this.status = new ReactiveVar();
