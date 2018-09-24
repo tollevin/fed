@@ -111,6 +111,7 @@ Items.schema = new SimpleSchema({
         class: 'text-input',
       },
     },
+    optional: true,
   },
   ingredients: {
     type: [String],
