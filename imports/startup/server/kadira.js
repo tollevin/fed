@@ -3,6 +3,6 @@
   const env = process.env.ROOT_URL;
   const devUrl = "http://localhost";
   if (env && env.indexOf(devUrl) !== -1) { return; }
-  Kadira.connect('xc5myAnQ8HNhtqGxu', 'ad8012d1-e6b8-45e0-83e3-a83200fd2b9d');
+  Kadira.connect('qMrXQEqLCBtEKiBcN', 'szksHEs3mzdButGn8', { endpoint: 'http://apm-engine.fed.dubcell.com:11011' });
 })();
 /* eslint-enable */
