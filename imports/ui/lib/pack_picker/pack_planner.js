@@ -9,6 +9,7 @@ export const RESTRICTION_TO_ITEM_RESTRICTION = {
   fish: 'fish',
   shellfish: 'shellfish',
   dairy: 'milk',
+  milk: 'milk',
   eggs: 'eggs',
   gluten: 'wheat',
   nuts: 'treenuts',
