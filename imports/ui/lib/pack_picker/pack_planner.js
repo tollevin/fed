@@ -9,7 +9,7 @@ export const RESTRICTION_TO_ITEM_RESTRICTION = {
   fish: 'fish',
   shellfish: 'shellfish',
   dairy: 'milk',
-  milk: 'milk',
+  milk: 'milk', // TODO: This is bad... this is a symptom of a data problem
   eggs: 'eggs',
   gluten: 'wheat',
   nuts: 'treenuts',
@@ -135,12 +135,12 @@ export const pickItemsInCategory = (slots, menuItems, previousItems) => {
   const compareNumbers = ({ count: countA }, { count: countB }) => countA - countB;
   const itemCountPriorityQueue = new PriorityQueue({ comparator: compareNumbers });
 
-  const previousItemsById = groupBy(previousItems, (item) => item._id);
-  const delta = .001; // this is to not favor items chosen last week
+  const previousItemsById = groupBy(previousItems, item => item._id);
+  const delta = 0.001; // this is to not favor items chosen last week
 
   menuItems.forEach((item) => {
     itemCountPriorityQueue.queue({
-      item, count: previousItemsById[item._id] ? delta : 0
+      item, count: previousItemsById[item._id] ? delta : 0,
     });
   });
 
