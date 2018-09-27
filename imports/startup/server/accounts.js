@@ -323,7 +323,7 @@ Meteor.methods({
       switch (referrer) {
         case 'Equinox':
           emailData.subject = 'Your Get Fed Promotion From Equinox!';
-          emailData.file = 'equinox20.html';
+          emailData.file = 'equinox.html';
           break;
         case 'WeWork':
           emailData.subject = 'Your Get Fed Promotion From WeWork!';
