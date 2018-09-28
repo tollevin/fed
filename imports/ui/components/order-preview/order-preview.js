@@ -114,6 +114,7 @@ Template.Order_preview.helpers({
   deliv_day() {
     const dwId = Template.currentData().delivery_window_id;
     const dw = DeliveryWindows.findOne({ _id: dwId });
+    if (!dw) { return 'no delivery window specified'; }
     const dday = moment(dw.delivery_start_time).format('ddd M/D/YY');
     return dday;
   },
