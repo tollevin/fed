@@ -22,7 +22,10 @@ Template.Subscriber_preview.helpers({
     const zip = Template.currentData().address_zipcode;
     const { subtotal } = Template.currentData();
 
-    const deliveryFees = zipZones[zip].delivery_fees;
+    const foundZip = zipZones[zip];
+
+    if (foundZip) { return 10; } // if zip is not found delivery fee is 10
+    const deliveryFees = foundZip.delivery_fees;
 
     if (subtotal > 150) { return deliveryFees.tier3; }
     return deliveryFees.tier1;
@@ -68,8 +71,8 @@ Template.Subscriber_preview.helpers({
     for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
       subtotal
         += (subscriptions[i].price
-        * subscriptions[i].quantity
-        * ((100 - subscriptions[i].percent_off) / 100));
+          * subscriptions[i].quantity
+          * ((100 - subscriptions[i].percent_off) / 100));
     }
 
     let total = subtotal * 1.08875;
