@@ -24,7 +24,7 @@ Template.Subscriber_preview.helpers({
 
     const foundZip = zipZones[zip];
 
-    if (!foundZip) { return 10; } // if zip is not found delivery fee is 10
+    if (!foundZip) { return 'Fee unknown (delivery zipcode not found)'; }
     const deliveryFees = foundZip.delivery_fees;
 
     if (subtotal > 150) { return deliveryFees.tier3; }
@@ -79,12 +79,16 @@ Template.Subscriber_preview.helpers({
 
     const zip = Template.currentData().address_zipcode;
 
-    const deliveryFees = zipZones[zip].delivery_fees;
+    const foundZip = zipZones[zip];
+
+    const deliveryFees = foundZip ? foundZip.delivery_fees : { tier1: 0, tier3: 0 };
     const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
 
     total += deliveryFee;
 
-    return total.toFixed(2);
+    return foundZip
+      ? total.toFixed(2)
+      : `${total.toFixed(2)} delivery fee not applied (zipcode not found)`;
   },
 
   hasCredit: () => {
