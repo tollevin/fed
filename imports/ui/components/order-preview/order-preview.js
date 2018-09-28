@@ -140,7 +140,7 @@ Template.Order_preview.helpers({
   completeAfter() {
     const dwId = Template.currentData().delivery_window_id;
     const dw = DeliveryWindows.findOne({ _id: dwId });
-    if (!dw) { return "no delivery window specified"; }
+    if (!dw) { return 'no delivery window specified'; }
     const cA = moment(dw.delivery_start_time).format('M/D/YYYY h:mm a');
     return cA;
   },
@@ -148,7 +148,7 @@ Template.Order_preview.helpers({
   completeBefore() {
     const dwId = Template.currentData().delivery_window_id;
     const dw = DeliveryWindows.findOne({ _id: dwId });
-    if (!dw) { return "no delivery window specified"; }
+    if (!dw) { return 'no delivery window specified'; }
     const cB = moment(dw.delivery_end_time).format('M/D/YYYY h:mm a');
     return cB;
   },
