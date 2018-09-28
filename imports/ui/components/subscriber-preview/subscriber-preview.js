@@ -24,7 +24,7 @@ Template.Subscriber_preview.helpers({
 
     const foundZip = zipZones[zip];
 
-    if (foundZip) { return 10; } // if zip is not found delivery fee is 10
+    if (!foundZip) { return 10; } // if zip is not found delivery fee is 10
     const deliveryFees = foundZip.delivery_fees;
 
     if (subtotal > 150) { return deliveryFees.tier3; }
