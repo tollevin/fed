@@ -9,9 +9,10 @@ import bugsnag from 'bugsnag-js';
     const errorFull = `
     url: ${url}
     message: ${message}
-    lineNumber ${lineNumber}
-    columnNumber ${columnNumber}
-    error ${error}
+    lineNumber: ${lineNumber}
+    columnNumber: ${columnNumber}
+    errorMessage: ${error.message}
+    errorStack: ${error.stack}
     `;
     bugsnagClient.notify(new Error(errorFull));
   };
