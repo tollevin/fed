@@ -2,8 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import stripePackage from 'stripe';
 import { check, Match } from 'meteor/check';
 import { Accounts } from 'meteor/accounts-base';
+import { isDevMode } from './helpers';
 
-const Stripe = stripePackage('sk_live_KmzNeLrpctp1iT9Eo8n6qWoO');
+const stripeString = isDevMode()
+  ? 'sk_test_w4ls8BFupkyDG8WQ4F5fB7VZ'
+  : 'sk_live_KmzNeLrpctp1iT9Eo8n6qWoO';
+
+const Stripe = stripePackage(stripeString);
 
 Meteor.methods({
   // Charges
