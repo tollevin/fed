@@ -155,7 +155,11 @@ export const pickItemsInCategory = (slots, menuItems, previousItems) => {
 
 export const chooseItemsUsingSlots = (slots, menuItems, previousPackOrder) => {
   const menuItemsByCategory = groupBy(menuItems, getSubCategory);
-  const previousItemBySubCategory = groupBy(previousPackOrder.filter((item) => item.subcategory), getSubCategory);
+  const previousItemBySubCategory = groupBy(
+    previousPackOrder.filter(
+      item => item.subcategory,
+    ), getSubCategory,
+  );
 
   return flatten(Object.entries(groupBy(slots, getCategory))
     .map(([category, categorySlots]) => pickItemsInCategory(
