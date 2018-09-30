@@ -4,10 +4,9 @@ import { remove } from '/imports/api/items/methods.js';
 
 import './item-admin.html';
 
-const trueValues = (obj) =>
-  Object.entries(obj)
-    .filter(([_, hasVal]) => hasVal)
-    .map(([keyName, _]) => keyName);
+const trueValues = obj => Object.entries(obj)
+  .filter(([, hasVal]) => hasVal)
+  .map(([keyName]) => keyName);
 
 Template.Item_admin.helpers({
   trueWarnings: () => {
