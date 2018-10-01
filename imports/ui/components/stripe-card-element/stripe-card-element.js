@@ -4,8 +4,13 @@ import './stripe-card-element.html';
 
 Template.Card_element.onRendered(function cardElementOnRendered() {
   // Set Stripe Public Key
-  this.stripe = Stripe('pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd');
-  // this.stripe = Stripe('pk_test_ZWJ6mVy3TVMayrfp42HnHOMN');
+  // TODO Dangerous!!!
+
+  const stripeString = window.location.hostname === 'localhost'
+    ? 'pk_test_ZWJ6mVy3TVMayrfp42HnHOMN'
+    : 'pk_live_lL3dXkDsp3JgWtQ8RGlDxNrd';
+
+  this.stripe = Stripe(stripeString);
 
   // Set Stripe Elements to element var
   const elements = this.stripe.elements();
