@@ -1,9 +1,9 @@
 import bugsnag from 'bugsnag-js';
 
 (() => {
-  const bugsnagClient = bugsnag('ed63bdfaf7876bf7db58e9076bafb27b');
-
   if (window.location.hostname === 'localhost') { return; }
+
+  const bugsnagClient = bugsnag('ed63bdfaf7876bf7db58e9076bafb27b');
   /* eslint-disable */
   window.onerror = (message, url, lineNumber, columnNumber, error) => {
     const errorFull = `
