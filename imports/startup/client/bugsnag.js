@@ -8,6 +8,7 @@ import bugsnag from 'bugsnag-js';
   window.onerror = (message, url, lineNumber, columnNumber, error) => {
     const errorFull = `
     url: ${url}
+    user: ${Meteor.userId()}
     message: ${message}
     lineNumber: ${lineNumber}
     columnNumber: ${columnNumber}
@@ -23,6 +24,7 @@ import bugsnag from 'bugsnag-js';
     const errorFull = `
     Meteor Error: 
     reason: ${reason}
+    user: ${Meteor.userId()}
     details: ${details}
     error: ${error}
     `;
@@ -37,6 +39,7 @@ import bugsnag from 'bugsnag-js';
     const errorFull = `
     Blaze Error: 
     where: ${where}
+    user: ${Meteor.userId()}
     message: ${error.message}
     stack: ${error.stack}
     `;
