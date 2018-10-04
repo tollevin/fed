@@ -66,14 +66,11 @@ Meteor.methods({
     // check(data, { credit: Number });
     try {
       const user = Meteor.users.findOne({ _id: userId });
-
       const cleanCredit = { ...data, credit: data.credit || 0 };
 
       Meteor.users.update({ _id: user._id }, { $set: cleanCredit });
 
-      const creditUpdated = (user.credit !== cleanCredit.credit) && (`Updating stripe credit for ${userId}: ${user.first_name} ${user.last_name}: $${user.credit} to $${cleanCredit.credit}`);
-
-      if (creditUpdated) {
+      if (user.stripe_id) {
         const args = {
           id: user.stripe_id,
           account_balance: cleanCredit.credit,
@@ -369,50 +366,58 @@ Meteor.methods({
 
   async createAmbassador(user) {
     const {
+      first_name,
+      last_name,
+      phone,
       email,
       password,
       referrer,
       zipCode,
       ambassador,
+      comments,
     } = user;
 
     try {
-      const customer = {
-        email,
-        password,
-      };
+      const emailData = { first_name, email };
 
-      const _id = Accounts.createUser(customer);
+      if (!Meteor.user()) {
+        const customer = {
+          email,
+          password,
+        };
 
-      Accounts.sendVerificationEmail(_id, email, (error) => {
-        if (error) { return (error); }
-        return undefined;
-      });
+        const _id = Accounts.createUser(customer);
 
-      const emailData = { email, code: makeAmbassadorPromo() };
+        Accounts.sendVerificationEmail(_id, email, (error) => {
+          if (error) { return (error); }
+          return undefined;
+        });
 
-      Meteor.users.update({ _id }, {
-        $set: {
-          address_zipcode: zipCode, referrer, ambassador, ambassador_code: emailData.code,
-        },
-      });
+        Meteor.users.update({ _id }, {
+          $set: {
+            address_zipcode: zipCode, referrer, ambassador,
+          },
+        });
+      }
+      
 
-      const promo = {
-        codes: [emailData.code],
-        desc: `Fed Ambassador Code for ${email}`,
-        credit: 20,
-        useLimitPerCustomer: 1,
-        useLimitTotal: 0,
-        timesUsed: 0,
-        active: true,
-        type: 'ambassador',
-        ambassador: _id,
-      };
+      // const promo = {
+      //   codes: [emailData.code],
+      //   desc: `Fed Ambassador Code for ${email}`,
+      //   credit: 20,
+      //   useLimitPerCustomer: 1,
+      //   useLimitTotal: 0,
+      //   timesUsed: 0,
+      //   active: true,
+      //   type: 'ambassador',
+      //   ambassador: _id,
+      // };
 
-      insertPromo.call(promo);
+      // insertPromo.call(promo);
 
-      emailData.subject = 'Welcome to our Ambassador program!';
-      emailData.file = 'new-ambassador-email.html';
+      // send ambassador-applied email to user
+      emailData.subject = 'Thanks for applying to the Fed Ambassador program!';
+      emailData.file = 'ambassador-applied.html';
 
       SSR.compileTemplate('htmlEmail', Assets.getText(emailData.file));
 
@@ -430,7 +435,16 @@ Meteor.methods({
         html: SSR.render('htmlEmail', emailData),
       });
 
-      return _id;
+      // send ambassador-request email to Fed
+
+      Email.send({
+        to: 'info@getfednyc.com',
+        from: 'no-reply@getfednyc.com',
+        subject: 'New Ambassador Request',
+        text: first_name + ' ' + last_name + ' at ' + email + ' / ' + phone  + ' from ' + referrer + ' would like to join our ambassador program.    ' + comments,
+      });
+
+      return Meteor.userId();
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }

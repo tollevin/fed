@@ -1,0 +1,69 @@
+<template name="Ambassadors">
+	<div id="ambassador-signup" class="page auth">
+		<div class="content-scrollable">
+			<div class="header">
+				<img class="header-img" src="/images/lemon_&_herb_quinoa.jpg">
+				<h1>Apply to<br>become a<br>Fed Ambassador</h1>
+			</div>
+			<div class="form-holder">
+				<div class="form-text">
+					<h2>Share the health.</h2>
+					<p>Give your followers $20 off their first purchase with your unique promo code,<br>get 5% cashback or 10% credit each month!</p>
+				</div>
+		    <form id="ambassador-apply">
+		    	<div class="form-block">
+			    	<div class="form-group firstName" data-required="true">
+	            <label for="7TGxZsAyFk9zWn6rj" class="control-label">First Name</label>
+              <input type="text" name="customer.firstName" id="7TGxZsAyFk9zWn6rj" required data-schema-key="customer.firstName" class="form-control"
+              value="{{first_name}}">
+			        <span class="help-block"></span>
+            </div>
+            <div class="form-group lastName" data-required="true">
+	            <label for="ca98db98q6waftcg" class="control-label">Last Name</label>
+              <input type="text" name="customer.lastName" id="ca98db98q6waftcg" required data-schema-key="customer.lastName" class="form-control"
+              value="{{last_name}}">
+			        <span class="help-block"></span>
+            </div>
+            <div class="form-group" data-required="true">
+			        <label for="6LfWZHkHMJZSyacdr" class="control-label">Phone</label>
+			        <input type="tel" name="customer.phone" id="6LfWZHkHMJZSyacdr" required data-schema-key="customer.phone" class="form-control"
+			          value="{{phone}}">
+			        <span class="help-block"></span>
+			      </div>
+			      <div class="form-group" data-required="true">
+			        <label for="EsBbF9Ads8fEFFAut" class="control-label">Email address</label>
+			        <input type="email" name="customer.email" id="EsBbF9Ads8fEFFAut" required data-schema-key="customer.email" class="form-control"
+			          value="{{email}}">
+			        <span class="help-block"></span>
+			      </div>
+			    </div>
+			    <div class="form-block">
+			      {{#if noUser}}
+			      	<div class="form-group pword" data-required="true">
+				        <label for="uigfycOUI674sjkvw3" class="control-label">Create a password</label>
+				        <input type="password" name="customer.pword" id="uigfycOUI674sjkvw3" required data-schema-key="customer.pword"
+				          value="" class="form-control pword">
+				        <span class="help-block"></span>
+				      </div>
+			      	<div class="form-group zip" data-required="true">
+				        <label for="r6HB6YfaegNsAKBTS" class="control-label">Zip code</label>
+				        <input type="number" name="customer.address.zipCode" id="r6HB6YfaegNsAKBTS" required data-schema-key="customer.address.zipCode" class="form-control number">
+				        <span class="help-block"></span>
+				      </div>
+			      {{/if}}
+			      <div class="form-group">
+			        <label for="8i8scBUVYi8sfiw" class="control-label">Comments</label>
+			        <input type="text" name="customer.comments" id="8i8scBUVYi8sfiw" data-schema-key="comments" class="form-control comments">
+			        <span class="help-block"></span>
+			      </div>
+			    </div>
+			    <div class="form-block center">
+			      <div id="Errors"></div>
+			      <input class="submit" type="submit" name="submit-form" value="Submit">
+			      <p class="note">Our Ambassadors will receive their rewards<br>on the last Tuesday of each month.</p>
+			    </div>
+		    </form>
+		  </div>
+		</div>
+	</div>
+</template>
