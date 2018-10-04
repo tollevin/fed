@@ -66,14 +66,11 @@ Meteor.methods({
     // check(data, { credit: Number });
     try {
       const user = Meteor.users.findOne({ _id: userId });
-
       const cleanCredit = { ...data, credit: data.credit || 0 };
 
       Meteor.users.update({ _id: user._id }, { $set: cleanCredit });
 
-      const creditUpdated = (user.credit !== cleanCredit.credit) && (`Updating stripe credit for ${userId}: ${user.first_name} ${user.last_name}: $${user.credit} to $${cleanCredit.credit}`);
-
-      if (creditUpdated) {
+      if (user.stripe_id) {
         const args = {
           id: user.stripe_id,
           account_balance: cleanCredit.credit,

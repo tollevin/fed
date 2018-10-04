@@ -80,9 +80,9 @@ Meteor.methods({
     // check(id, String);
 
     try {
-      let customerData = await Stripe.customers.retrieve(id);
+      const customerData = await Stripe.customers.retrieve(id);
       customerData.sources.data = customerData.sources.data.filter(({ brand }) => brand);
-      return customerData
+      return customerData;
     } catch (err) {
       throw new Meteor.Error(err.statusCode, err.message);
     }
