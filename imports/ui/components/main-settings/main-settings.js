@@ -10,7 +10,7 @@ import './main-settings.html';
 // Collections
 import { Orders } from '/imports/api/orders/orders.js';
 
-Template.Main_settings.onCreated(function() {
+Template.Main_settings.onCreated(function () {
   if (!Meteor.userId()) { FlowRouter.go('signin'); }
 
   this.nextOrder = new ReactiveVar();
@@ -29,7 +29,9 @@ Template.Main_settings.onCreated(function() {
 Template.Main_settings.helpers({
   subscribed: () => {
     const user = Meteor.user();
-    return user && user.subscriptions && (user.subscriptions.status !== 'canceled'); // FIX!!!!
+    return user
+      && user.subscriptions
+      && user.subscriptions.filter(({ status }) => status !== 'canceled').length;
   },
   nextOrder() {
     return Template.instance().nextOrder.get();
@@ -56,5 +58,17 @@ Template.Main_settings.helpers({
 
   rate() {
     return false;
+  },
+});
+
+Template.Main_settings.events({
+  'click #cancel-subscription'() {
+    // eslint-disable-next-line no-alert
+    if (window.confirm('Are you sure?')) {
+      Meteor.user().subscriptions
+        .forEach((sub) => {
+          Meteor.call('cancelSubscription', null, sub._id, () => { });
+        });
+    }
   },
 });
