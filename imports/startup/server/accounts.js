@@ -17,6 +17,8 @@ import { makeAmbassadorPromo } from '/imports/utils/make_promo.js';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
+import { Orders } from '/imports/api/orders/orders.js';
+import { updateOrder } from '/imports/api/orders/methods.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { insertPromo } from '/imports/api/promos/methods.js';
 
@@ -161,7 +163,9 @@ Meteor.methods({
     }
   },
 
-  async cancelSubscription(userId, subId) {
+  async cancelSubscription(argUserId, subId) {
+    const currentUserId = Meteor.userId();
+    const userId = argUserId || currentUserId;
     // check(userId, String);
     // check(subId, String);
 
@@ -170,22 +174,45 @@ Meteor.methods({
       const { subscriptions } = user;
       let pastSubs = user.past_subscriptions;
       if (!pastSubs) pastSubs = [];
-      let sub;
 
-      for (let i = subscriptions.length - 1; i >= 0; i -= 1) {
-        if (subscriptions[i]._id === subId) {
-          sub = subscriptions[i];
-          sub.status = 'canceled';
-          sub.canceled_at = moment.utc().toDate();
-          subscriptions.splice(i, 1);
-          pastSubs.push(sub);
-        }
-      }
+      const newSubscriptionList = subscriptions.filter(sub => sub._id !== subId);
+      const removedSubscriptions = subscriptions
+        .filter(sub => sub._id === subId)
+        .map(
+          sub => ({
+            ...sub,
+            status: 'canceled',
+            canceled_at: moment.utc().toDate(),
+          }),
+        );
 
-      if (sub) {
+      pastSubs = [...pastSubs, ...removedSubscriptions];
+
+      if (removedSubscriptions.length) {
+        const userOrders = Orders.find({ user_id: userId }).fetch();
+
+        // TODO I HATE THIS
+        userOrders.forEach((order) => {
+          const updatedOrderSubs = order.subscriptions.map((orderSub) => {
+            const [aRemovedSub] = (
+              removedSubscriptions.filter(rSub => rSub._id === orderSub._id)
+            );
+
+            return aRemovedSub || orderSub;
+          });
+          const hasNotCanceledSub = !!(updatedOrderSubs.filter(sub => sub.status !== 'canceled').length);
+          const updatedOrder = {
+            ...order,
+            subscriptions: updatedOrderSubs,
+            status: hasNotCanceledSub ? updatedOrderSubs.status : 'canceled',
+          };
+
+          updateOrder.call(updatedOrder);
+        });
+
         Meteor.users.update({ _id: user._id }, {
           $set: {
-            subscriptions,
+            subscriptions: newSubscriptionList,
             past_subscriptions: pastSubs,
           },
         });

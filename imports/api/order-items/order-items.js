@@ -12,8 +12,8 @@ class OrderItemsCollection extends Mongo.Collection {
     return super.update(selector, modifier);
   }
 
-  remove(orderItem, callback) {
-    return super.remove(orderItem, callback);
+  remove(selector) {
+    return super.remove(selector);
   }
 }
 
