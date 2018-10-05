@@ -567,6 +567,7 @@ Meteor.publish('thisUserData', function (id) {
         stripe_id: 1,
         preferredDelivDay: 1,
         subscriptions: 1,
+        past_subscriptions: 1,
         skipping: 1,
         referrer: 1,
         profile: 1,

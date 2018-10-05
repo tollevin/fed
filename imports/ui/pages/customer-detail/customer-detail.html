@@ -37,10 +37,28 @@
 					</form>
 					<div class="customer-subscriptions">
 						<div class="current-subscriptions">
-							
+							{{#if hasSubs}}
+							<table>
+								<tr>
+									<h3>Current Subscriptions</h3>
+								</tr>
+								{{#each subscriptions}}
+								{{> sub_detail}}
+								{{/each}}
+							</table>
+							{{/if}}
 						</div>
 						<div class="past-subscriptions">
-							
+							{{#if hasPastSubs}}
+							<table>
+								<tr>
+									<h3>Past Subscriptions</h3>
+								</tr>
+								{{#each past_subscriptions}}
+								{{> sub_detail}}
+								{{/each}}
+							</table>
+							{{/if}}
 						</div>
 					</div>
 					<div class="customer-orders">
@@ -56,4 +74,16 @@
 			{{/with}}
 		</div>
 	{{/momentum}}
+</template>
+
+<template name='sub_detail'>
+	<tr>
+		<td>{{_id}}</td>
+		<td>{{status}}</td>
+		<td>{{item_name}}</td>
+		<td>{{subscribed_at}}</td>
+		{{#if canceled}}<td>{{canceled_at}}</td>{{/if}}
+		<td>{{price}}</td>
+		{{#if active}}<td><button id="cancelSub">Cancel</button></td>{{/if}}
+	</tr>
 </template>
