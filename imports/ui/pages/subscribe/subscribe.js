@@ -264,6 +264,7 @@ Template.Subscribe.events({
 
       Session.set('loading', false);
       if (!Meteor.userId()) {
+        $('#container').scrollTop(0, 0);
         Session.set('signIn', true);
       } else {
         // GA
