@@ -189,8 +189,8 @@ Meteor.methods({
       pastSubs = [...pastSubs, ...removedSubscriptions];
 
       if (removedSubscriptions.length) {
-        const userOrders = Orders.find({ user_id: userId }).fetch();
-
+        const userOrders = Orders.find({ user_id: userId, ready_by: { $gte: new Date() } }).fetch();
+        
         // TODO I HATE THIS
         userOrders.forEach((order) => {
           const updatedOrderSubs = order.subscriptions.map((orderSub) => {
