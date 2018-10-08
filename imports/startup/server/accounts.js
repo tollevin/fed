@@ -422,7 +422,13 @@ Meteor.methods({
 
         Meteor.users.update({ _id }, {
           $set: {
-            address_zipcode: zipCode, referrer, ambassador,
+            first_name,
+            last_name,
+            phone,
+            email,
+            address_zipcode: zipCode,
+            referrer,
+            ambassador,
           },
         });
       }
