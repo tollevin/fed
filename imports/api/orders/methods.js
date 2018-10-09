@@ -296,6 +296,8 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       status: { $in: ['pending-sub', 'custom-sub', 'created', 'skipped', 'canceled'] },
     });
 
+    const foundOrder = !!order;
+
     const compactedItems = items.filter(item => item);
 
     if (compactedItems.legnth !== items.length) {
@@ -363,7 +365,7 @@ export const autoinsertSubscriberOrder = new ValidatedMethod({
       changes: {},
       status: order.status === 'pending' ? 'pending-sub' : order.status,
       ready_by: readyBy,
-      delivery_window_id: deliveryWindowId,
+      delivery_window_id: foundOrder ? order.delivery_window_id : deliveryWindowId,
     };
 
     updateOrder.call(updateOrderObj);

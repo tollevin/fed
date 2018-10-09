@@ -190,7 +190,7 @@ Meteor.methods({
 
       if (removedSubscriptions.length) {
         const userOrders = Orders.find({ user_id: userId, ready_by: { $gte: new Date() } }).fetch();
-        
+
         // TODO I HATE THIS
         userOrders.forEach((order) => {
           const updatedOrderSubs = order.subscriptions.map((orderSub) => {
@@ -426,7 +426,7 @@ Meteor.methods({
           },
         });
       }
-      
+
 
       // const promo = {
       //   codes: [emailData.code],
@@ -468,7 +468,7 @@ Meteor.methods({
         to: 'info@getfednyc.com',
         from: 'no-reply@getfednyc.com',
         subject: 'New Ambassador Request',
-        text: first_name + ' ' + last_name + ' at ' + email + ' / ' + phone  + ' from ' + referrer + ' would like to join our ambassador program.    ' + comments,
+        text: `${first_name} ${last_name} at ${email} / ${phone} from ${referrer} would like to join our ambassador program.    ${comments}`,
       });
 
       return Meteor.userId();
