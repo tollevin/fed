@@ -147,8 +147,7 @@ Template.Gift_Cards.events({
         return token;
       } catch (error) {
         // Inform the customer that there was an error
-        const errorElement = document.getElementById('payment-errors');
-        errorElement.textContent = error.message;
+        return $('#card-errors').text(error.reason);
         Session.set('loading', false);
       }
       return undefined;
@@ -169,7 +168,7 @@ Template.Gift_Cards.events({
         return newCharge;
       } catch (error) {
         sAlert.error(error.reason);
-        throw new Meteor.Error(401, 'Something went wrong with Stripe. Please try again');
+        return $('#card-errors').text(error.reason);
       }
     }
 
@@ -230,9 +229,8 @@ Template.Gift_Cards.events({
         Session.set('loading', false);
         FlowRouter.go('/success');
       } catch (error) {
-        sAlert.error(error.reason);
         Session.set('loading', false);
-        throw new Meteor.Error(401, 'Something went wrong. Please try again');
+        return $('#card-errors').text(error.reason);
       }
     }
 
