@@ -21,7 +21,7 @@ Template.Ambassadors.helpers({
   last_name: () => Meteor.user() && Meteor.user().last_name,
   phone: () => Meteor.user() && Meteor.user().phone,
   email: () => Meteor.user() && Meteor.user().emails[0].address,
-  noUser:()=> !Meteor.user(),
+  noUser: () => !Meteor.user(),
 });
 
 Template.Ambassadors.events({
@@ -42,7 +42,7 @@ Template.Ambassadors.events({
     };
 
     Meteor.call('createAmbassador', user, (error) => {
-      if (error) { 
+      if (error) {
         Session.set('loading', false);
         return $('#Errors').text(error.reason);
       }
@@ -51,7 +51,7 @@ Template.Ambassadors.events({
       sAlert.success("Thanks for signing up! Please check your email for details, and we'll get back to you soon.", { timeout: 3000, onClose() { FlowRouter.go('/'); } });
       // return signin(user, (signinError) => {
       //   if (signinError) { return $('#Errors').text(signinError); }
-      //   
+      //
       // });
     });
   },
