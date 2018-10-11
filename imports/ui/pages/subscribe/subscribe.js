@@ -351,8 +351,7 @@ Template.Subscribe.events({
         if (!order.items) { order.items = []; }
         order.items.push(pack);
 
-        if (!order.subscriptions) { order.subscriptions = []; }
-        order.subscriptions.push(planExists);
+        order.subscriptions = [planExists];
       } else {
         order = {
           user_id: Meteor.userId(),
