@@ -110,7 +110,7 @@ export const insertOrder = new ValidatedMethod({
 
     let zip = user.address_zipcode;
     if (!zip) zip = user.profile.zipCode; // FIX! double check for users without address_zipcode
-    const deliveryFees = zipZones[zip].delivery_fees;
+    const deliveryFees = zipZones[zip].delivery_fees; // ZIPFAIL
 
     const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
 

@@ -96,7 +96,7 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
       // Reactive vars to be autorun
       if (!this.zipField.get()) this.zipField.set(Meteor.user().profile.zipCode);
       const zip = this.zipField.get();
-      const deliveryFees = zipZones[zip].delivery_fees; // FIX BIX
+      const deliveryFees = zipZones[zip].delivery_fees; // FIX BIX ZIPFAIL
 
       if (deliveryFees) {
         if (this.order.subtotal.get() > 150) {

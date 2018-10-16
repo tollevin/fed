@@ -123,7 +123,7 @@ Template.Subscriber_preview.helpers({
 
   deliveryZone() {
     const args = { zip_code: Template.currentData().address_zipcode };
-    return getZipZone.call(args);
+    return getZipZone.call(args); // ZIPFAIL This can be undefined
   },
 
   subscription: () => Template.currentData().subscriptions
