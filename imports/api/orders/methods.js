@@ -23,7 +23,7 @@ import { OrderItems } from '/imports/api/order-items/order-items.js';
 import { getMenuDWs } from '/imports/api/menus/methods.js';
 
 // Zip Codes
-import { zipZones } from '../delivery/zipcodes.js';
+import { getZipZones } from '../delivery/zipcodes.js';
 
 // Call from server only
 
@@ -110,7 +110,7 @@ export const insertOrder = new ValidatedMethod({
 
     let zip = user.address_zipcode;
     if (!zip) zip = user.profile.zipCode; // FIX! double check for users without address_zipcode
-    const deliveryFees = zipZones[zip].delivery_fees; // ZIPFAIL
+    const deliveryFees = getZipZones(zip).delivery_fees; // ZIPFAIL
 
     const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
 
@@ -529,7 +529,7 @@ export const updatePendingSubOrder = new ValidatedMethod({
     const newSalesTax = Math.round(newSubtotal * 0.08875 * 100) / 100;
     let newTotal = Math.round((newSubtotal + salesTax - discount.value) * 100) / 100;
     const zip = recipient.address_zipcode;
-    const deliveryFees = zipZones[zip].delivery_fees;
+    const deliveryFees = getZipZones(zip).delivery_fees;
 
     const newDeliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;
 

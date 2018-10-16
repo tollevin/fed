@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
+import { getZipZones } from '/imports/api/delivery/zipcodes.js';
 import { getZipZone } from '/imports/api/delivery/methods.js';
 
 import './subscriber-preview.html';
@@ -22,7 +22,7 @@ Template.Subscriber_preview.helpers({
     const zip = Template.currentData().address_zipcode;
     const { subtotal } = Template.currentData();
 
-    const foundZip = zipZones[zip];
+    const foundZip = getZipZones(zip);
 
     if (!foundZip) { return 'Fee unknown (delivery zipcode not found)'; }
     const deliveryFees = foundZip.delivery_fees;
@@ -79,7 +79,7 @@ Template.Subscriber_preview.helpers({
 
     const zip = Template.currentData().address_zipcode;
 
-    const foundZip = zipZones[zip];
+    const foundZip = getZipZones(zip);
 
     const deliveryFees = foundZip ? foundZip.delivery_fees : { tier1: 0, tier3: 0 };
     const deliveryFee = (subtotal > 150) ? deliveryFees.tier3 : deliveryFees.tier1;

@@ -6,7 +6,7 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
 // Zip Codes
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
+import { getZipZones } from '/imports/api/delivery/zipcodes.js';
 
 import './wework-join.html';
 
@@ -15,11 +15,11 @@ Template.WeWork_join.onCreated(function weworkJoinOnCreated() {
 });
 
 Template.WeWork_join.events({
-  'submit form' (event, templateInstance) {
+  'submit form'(event, templateInstance) {
     event.preventDefault();
 
     const zip = templateInstance.find('[name="zipCode"]').value.toString();
-    const zipInRange = zipZones[zip];
+    const zipInRange = getZipZones(zip);
 
     if (zipInRange) {
       const user = {

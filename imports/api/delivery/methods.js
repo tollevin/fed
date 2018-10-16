@@ -6,7 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { toNewYorkTimezone } from '/imports/ui/lib/time';
 import { moment } from 'meteor/momentjs:moment';
 
-import { zipZones } from './zipcodes.js';
+import { getZipZones } from './zipcodes.js';
 
 import DeliveryWindows from './delivery-windows.js';
 
@@ -16,7 +16,7 @@ export const getZipZone = new ValidatedMethod({
     zip_code: { type: String },
   }).validator({ clean: true, filter: false }),
   run({ zip_code: zipCode }) {
-    return zipZones[zipCode];
+    return getZipZones(zipCode);
   },
 });
 
