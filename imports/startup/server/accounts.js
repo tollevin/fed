@@ -13,7 +13,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { moment } from 'meteor/momentjs:moment';
 import makeGiftCardCode from '/imports/utils/make_gift_card_code.js';
-import { makeAmbassadorPromo } from '/imports/utils/make_promo.js';
 
 // Collections
 import { Items } from '/imports/api/items/items.js';
@@ -393,8 +392,8 @@ Meteor.methods({
 
   async createAmbassador(user) {
     const {
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       phone,
       email,
       password,
@@ -405,7 +404,7 @@ Meteor.methods({
     } = user;
 
     try {
-      const emailData = { first_name, email };
+      const emailData = { first_name: firstName, email };
 
       if (!Meteor.user()) {
         const customer = {
@@ -422,8 +421,8 @@ Meteor.methods({
 
         Meteor.users.update({ _id }, {
           $set: {
-            first_name,
-            last_name,
+            first_name: firstName,
+            last_name: lastName,
             phone,
             email,
             address_zipcode: zipCode,
@@ -474,7 +473,7 @@ Meteor.methods({
         to: 'info@getfednyc.com',
         from: 'no-reply@getfednyc.com',
         subject: 'New Ambassador Request',
-        text: `${first_name} ${last_name} at ${email} / ${phone} from ${referrer} would like to join our ambassador program.    ${comments}`,
+        text: `${firstName} ${lastName} at ${email} / ${phone} from ${referrer} would like to join our ambassador program.    ${comments}`,
       });
 
       return Meteor.userId();
