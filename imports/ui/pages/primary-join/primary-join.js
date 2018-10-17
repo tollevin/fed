@@ -6,7 +6,7 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
 // Zip Codes
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
+import { getZipZones } from '/imports/api/delivery/zipcodes.js';
 
 import './primary-join.html';
 import './primary-join.less';
@@ -20,7 +20,7 @@ Template.Primary_join.events({
     event.preventDefault();
 
     const zip = templateInstance.find('[name="zipCode"]').value.toString();
-    const zipInRange = zipZones[zip];
+    const zipInRange = getZipZones(zip);
     const dls = $('.delivery-location:checkbox:checked');
     let dl = '';
 

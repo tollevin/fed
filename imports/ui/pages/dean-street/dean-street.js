@@ -6,7 +6,7 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
 // Zip Codes
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
+import { getZipZones } from '/imports/api/delivery/zipcodes.js';
 
 import './dean-street.less';
 import './dean-street.html';
@@ -16,11 +16,11 @@ Template.DeanStreet.onCreated(function deanStreetOnCreated() {
 });
 
 Template.DeanStreet.events({
-  'submit form' (event, templateInstance) {
+  'submit form'(event, templateInstance) {
     event.preventDefault();
 
     const zip = templateInstance.find('[name="zipCode"]').value.toString();
-    const zipInRange = zipZones[zip];
+    const zipInRange = getZipZones(zip);
 
     if (zipInRange) {
       const user = {

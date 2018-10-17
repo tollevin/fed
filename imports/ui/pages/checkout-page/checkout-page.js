@@ -15,7 +15,7 @@ import { hasMadePurchase } from '/imports/api/orders/orders.js';
 import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 
 // Zip Codes
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
+import { getZipZones } from '/imports/api/delivery/zipcodes.js';
 
 // Methods
 // import { processOrder } from '/imports/api/orders/methods.js';
@@ -96,7 +96,7 @@ Template.Checkout_page.onCreated(function checkoutPageOnCreated() {
       // Reactive vars to be autorun
       if (!this.zipField.get()) this.zipField.set(Meteor.user().profile.zipCode);
       const zip = this.zipField.get();
-      const deliveryFees = zipZones[zip].delivery_fees; // FIX BIX ZIPFAIL
+      const deliveryFees = getZipZones(zip).delivery_fees; // FIX BIX ZIPFAIL
 
       if (deliveryFees) {
         if (this.order.subtotal.get() > 150) {
@@ -415,7 +415,7 @@ Template.Checkout_page.events({
 
   'blur #address-zip'(event) {
     const { value } = event.currentTarget;
-    if (!zipZones[value]) {
+    if (!getZipZones(value)) {
       const errorElement = document.getElementById('zip-errors');
       errorElement.textContent = 'Sorry, but we only deliver to Brooklyn, Queens, and Manhattan at this time.';
     }
