@@ -1,13 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-import { signin } from '/imports/ui/lib/auth.js';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { sAlert } from 'meteor/juliancwirko:s-alert';
-
-// Zip Codes
-import { zipZones } from '/imports/api/delivery/zipcodes.js';
 
 import './ambassadors.less';
 import './ambassadors2.html';
@@ -25,7 +21,7 @@ Template.Ambassadors.helpers({
 });
 
 Template.Ambassadors.events({
-  'submit form' (event, templateInstance) {
+  'submit form'(event, templateInstance) {
     event.preventDefault();
     Session.set('loading', true);
 
@@ -53,6 +49,7 @@ Template.Ambassadors.events({
       //   if (signinError) { return $('#Errors').text(signinError); }
       //
       // });
+      return undefined;
     });
   },
 });

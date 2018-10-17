@@ -129,7 +129,7 @@ Template.Order_preview.helpers({
       zip_code: customer.address_zipcode,
     };
 
-    const zipZone = getZipZone.call(args);
+    const zipZone = getZipZone.call(args); // This can be undefined ZIPFAIL
     return zipZone;
   },
 

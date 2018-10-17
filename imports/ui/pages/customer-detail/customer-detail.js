@@ -40,22 +40,23 @@ Template.Customer_detail.helpers({
 
 Template.sub_detail.helpers({
   active: () => {
-    const status = Template.currentData().status;
+    const { status } = Template.currentData();
     return status !== 'canceled';
   },
 
   canceled: () => {
-    const status = Template.currentData().status;
+    const { status } = Template.currentData();
     return status === 'canceled';
   },
 });
 
 Template.sub_detail.events({
-  'click #cancelSub' (event, templateInstance) {
+  'click #cancelSub'(event) {
     event.preventDefault();
 
     const sub = Template.currentData();
     const userId = FlowRouter.getParam('_id');
+    // eslint-disable-next-line no-alert
     if (window.confirm('Are you sure?')) {
       Meteor.call('cancelSubscription', userId, sub._id, () => { });
     }
@@ -63,13 +64,13 @@ Template.sub_detail.events({
 });
 
 Template.Customer_detail.events({
-  'click #Back' (event) {
+  'click #Back'(event) {
     event.preventDefault();
 
     FlowRouter.go('Customers.admin');
   },
 
-  'click #CrEdit' (event, templateInstance) {
+  'click #CrEdit'(event, templateInstance) {
     event.preventDefault();
     const newCredit = templateInstance.find('[name="currentCredit"]').value;
     if (newCredit) {
@@ -79,7 +80,7 @@ Template.Customer_detail.events({
         credit: newCreditToFloat,
       };
 
-      Meteor.call('updateUser', user, data, () => {});
+      Meteor.call('updateUser', user, data, () => { });
     } else {
       const errorElement = templateInstance.find('[name="currentCredit"]');
       errorElement.classList.add('StripeElement--invalid');

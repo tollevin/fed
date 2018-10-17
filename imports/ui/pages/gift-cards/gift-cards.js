@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { $ } from 'meteor/jquery';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
@@ -148,9 +149,9 @@ Template.Gift_Cards.events({
       } catch (error) {
         // Inform the customer that there was an error
         return $('#card-errors').text(error.reason);
-        Session.set('loading', false);
+        // Session.set('loading', false);
       }
-      return undefined;
+      // return undefined;
     }
 
     async function createStripeCustomer(cust) {
@@ -230,7 +231,7 @@ Template.Gift_Cards.events({
         FlowRouter.go('/success');
       } catch (error) {
         Session.set('loading', false);
-        return $('#card-errors').text(error.reason);
+        $('#card-errors').text(error.reason);
       }
     }
 
