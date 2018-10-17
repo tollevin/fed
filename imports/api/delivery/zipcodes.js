@@ -290,6 +290,15 @@ export const zipZones = {
       tier3: 0,
     },
   },
+  10069: {
+    code: 'M-UW',
+    neighborhood: 'Upper West Side',
+    delivery_fees: {
+      tier1: 16,
+      tier2: 16,
+      tier3: 0,
+    },
+  },
   10021: {
     code: 'M-UE',
     neighborhood: 'Upper East Side',
