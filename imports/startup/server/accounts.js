@@ -364,6 +364,10 @@ Meteor.methods({
           emailData.subject = 'Your Get Fed Promotion From Primary!';
           emailData.file = 'primary.html';
           break;
+        case 'Cerberus':
+          emailData.subject = 'Your Get Fed Promotion From Cerberus!';
+          emailData.file = 'cerberus.html';
+          break;
         default:
           break;
       }

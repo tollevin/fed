@@ -135,6 +135,12 @@ FlowRouter.route('/primary', {
   action: () => BlazeLayout.render('App_body', { main: 'Primary_join' }),
 });
 
+FlowRouter.route('/cerberus', {
+  name: 'Cerberus.join',
+  waitOn: () => import('/imports/ui/pages/cerberus-join/cerberus-join.js'),
+  action: () => BlazeLayout.render('App_body', { main: 'Cerberus_join' }),
+});
+
 FlowRouter.route('/orangetheory', {
   name: 'OT.join',
   waitOn: () => import('/imports/ui/pages/ot-join/ot-join.js'),

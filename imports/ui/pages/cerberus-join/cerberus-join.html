@@ -1,0 +1,41 @@
+<template name="Cerberus_join">
+	<div id="Cerberus-join" class="page auth">
+		<div class="content-scrollable">
+			<div class="wrapper-auth">
+				<div class="at-form">
+					<h1>eating well,<br>made easy</h1>
+
+				  <p class="subtitle-auth">Sustainable, chef-made meals,<br>designed with your wellbeing in mind.</p>
+				  <div class="at-pwd-form">
+				    <form id="signup">
+				      <div id="Errors"></div>
+				      <div class="input">
+				        <input type="email" name="emailAddress" class="form-control" placeholder="Email Address" required>
+				      </div>
+				      <div class="input">
+				        <input type="password" name="password" class="form-control" placeholder="Password" required>
+				      </div>
+				      <div class="input">
+				        <input type="tel" name="zipCode" class="form-control" placeholder="Zip Code" required>
+				      </div>
+				      <div class="input">
+				      	<p>Where would you like<br>to get Fed delivered?</p>
+				      	<label class="container">
+								  <input class="delivery-location" type="checkbox" name="use" value="Office">
+								  <span class="checkmark"></span>
+								  Cerberus
+								</label>
+								<label class="container">
+								  <input class="delivery-location" type="checkbox" name="use" value="Home">
+								  <span class="checkmark"></span>
+								  Home
+								</label>
+				      </div>
+				      <button form="signup" type="submit" value="submit" class="btn-cerberus">Join</button>
+				    </form>
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
