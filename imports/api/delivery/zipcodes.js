@@ -97,6 +97,7 @@ export const getZipZones = (zipcode) => {
     };
   }
 
+  // TODO Maybe leave a comment here or log
   return {
     delivery_fees: {
       tier1: 16,
