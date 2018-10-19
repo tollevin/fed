@@ -61,6 +61,18 @@ Template.PaymentSettings.helpers({
   },
 });
 
+async function retrieveStripeCustomer() {
+  try {
+    // Const the Session var of a user's Stripe user info
+    const stripeId = Session.get('stripe_customer').id;
+    //
+    const updatedCustomer = await callWithPromise('retrieveCustomer', stripeId);
+    return updatedCustomer;
+  } catch (error) {
+    throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.message}: ${error.stack}`);
+  }
+}
+
 Template.PaymentSettings.events({
   'click #addCard'(event, templateInstance) {
     templateInstance.showCardElement.set(true);
@@ -116,18 +128,6 @@ Template.PaymentSettings.events({
         return newSource;
       } catch (error) {
         throw new Meteor.Error(error.reason);
-      }
-    }
-
-    async function retrieveStripeCustomer() {
-      try {
-        // Const the Session var of a user's Stripe user info
-        const stripeId = Session.get('stripe_customer').id;
-        //
-        const updatedCustomer = await callWithPromise('retrieveCustomer', stripeId);
-        return updatedCustomer;
-      } catch (error) {
-        throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
       }
     }
 
@@ -194,18 +194,6 @@ Template.PaymentSettings.events({
   'click .save-edit-default'(event, templateInstance) {
     event.preventDefault();
 
-    async function retrieveStripeCustomer() {
-      try {
-        // Const the Session var of a user's Stripe user info
-        const stripeId = Session.get('stripe_customer').id;
-        //
-        const updatedCustomer = await callWithPromise('retrieveCustomer', stripeId);
-        return updatedCustomer;
-      } catch (error) {
-        throw new Meteor.Error(`retrieveStripeCustomer ${Meteor.userId()} ${error.reason}`);
-      }
-    }
-
     async function updateDefaultSource() {
       try {
         // Const the Session var of a user's Stripe user info
@@ -220,7 +208,7 @@ Template.PaymentSettings.events({
         sAlert.success('Settings saved');
         templateInstance.editDefaultSource.set(false);
       } catch (error) {
-        throw new Meteor.Error(`updateDefaultSource ${Meteor.userId()} ${error}`);
+        throw new Meteor.Error(`updateDefaultSource ${Meteor.userId()} ${error.stack}`);
       }
     }
 
