@@ -159,7 +159,7 @@ Template.Gift_Cards.events({
         const newStripeCustomer = await callWithPromise('createCustomer', cust);
         return newStripeCustomer;
       } catch (error) {
-        throw new Meteor.Error(411, 'Something went wrong with Stripe. Please try again');
+        throw new Meteor.Error(411, `Something went wrong with Stripe. Please try again ${error.stack}`);
       }
     }
 
