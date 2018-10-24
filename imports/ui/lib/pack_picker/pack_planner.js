@@ -136,7 +136,10 @@ const EPSILON = 0.001;
 const isChickenItem = ({ warnings }) => !!warnings.chicken;
 
 const initialCountPrioirty = (previousItemsById, item) => {
+  // this is to not favor items chosen last week
   const offsetPreviousItem = previousItemsById[item._id] ? EPSILON : 0;
+
+  // favor chicken dishes
   const offsetChicken = isChickenItem(item) ? -EPSILON : 0;
 
   return offsetPreviousItem + offsetChicken;
@@ -151,7 +154,6 @@ export const pickItemsInCategory = (slots, menuItems, previousItems) => {
   menuItems.forEach((item) => {
     itemCountPriorityQueue.queue({
       item, count: initialCountPrioirty(previousItemsById, item),
-      // this is to not favor items chosen last week
     });
   });
 
