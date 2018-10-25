@@ -7,6 +7,7 @@ import DeliveryWindows from '/imports/api/delivery/delivery-windows.js';
 import { getZipZone } from '/imports/api/delivery/methods.js';
 
 import './order-preview.html';
+import './order-preview.less';
 
 Template.Order_preview.onCreated(function orderPreviewOnCreated() {
   this.subscribe('DeliveryWindows.single', this.data.delivery_window_id);
@@ -22,28 +23,43 @@ Template.Order_preview.helpers({
     return Meteor.users.findOne({ _id: this.user_id });
   },
 
+  fufilledItemClass() {
+    const hasUnfufilledClass = !!Template.currentData().items.map((item) => {
+      if (item.category === 'Pack' && item.sub_items.items.length !== item.sub_items.schema.total) {
+        return true;
+      }
+      return false;
+    })
+      .filter(a => a)
+      .length;
+
+    return hasUnfufilledClass ? 'failed' : '';
+  },
+
   dishList() {
     const dishList = [];
     const dishTally = {};
 
     const itemList = Template.currentData().items;
-    for (let i = itemList.length - 1; i >= 0; i -= 1) {
-      if (itemList[i].category === 'Pack') {
-        for (let j = itemList[i].sub_items.items.length - 1; j >= 0; j -= 1) {
-          dishList.push(itemList[i].sub_items.items[j].name);
-        }
-      } else if (itemList[i].category === 'Meal') {
-        dishList.push(itemList[i].name);
-      }
-    }
 
-    for (let i = dishList.length - 1; i >= 0; i -= 1) {
-      if (dishList[i] !== '' && !dishTally[dishList[i]]) {
-        dishTally[dishList[i]] = 1;
-      } else if (dishList[i] !== '') {
-        dishTally[dishList[i]] += 1;
+
+    itemList.forEach((item) => {
+      if (item.category === 'Pack') {
+        item.sub_items.items.forEach((subItem) => {
+          dishList.push(subItem.name);
+        });
+      } else if (item.category === 'Meal') {
+        dishList.push(item.name);
       }
-    }
+    });
+
+    dishList.forEach((dish) => {
+      if (dish !== '' && !dishTally[dish]) {
+        dishTally[dish] = 1;
+      } else if (dish !== '') {
+        dishTally[dish] += 1;
+      }
+    });
 
     return Object.entries(dishTally).map(([name, value]) => ({ name, value }));
   },
