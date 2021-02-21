@@ -131,16 +131,29 @@ const removeUsableItem = (itemCountPriorityQueue, slot) => {
 const getCategory = ({ category }) => category.toLowerCase();
 const getSubCategory = ({ subcategory }) => CATEGORY_TO_PLATE[subcategory.toLowerCase()];
 
+const EPSILON = 0.001;
+
+const isChickenItem = ({ warnings }) => !!warnings.chicken;
+
+const initialCountPrioirty = (previousItemsById, item) => {
+  // this is to not favor items chosen last week
+  const offsetPreviousItem = previousItemsById[item._id] ? EPSILON : 0;
+
+  // favor chicken dishes
+  const offsetChicken = isChickenItem(item) ? -EPSILON : 0;
+
+  return offsetPreviousItem + offsetChicken;
+};
+
 export const pickItemsInCategory = (slots, menuItems, previousItems) => {
   const compareNumbers = ({ count: countA }, { count: countB }) => countA - countB;
   const itemCountPriorityQueue = new PriorityQueue({ comparator: compareNumbers });
 
   const previousItemsById = groupBy(previousItems, item => item._id);
-  const delta = 0.001; // this is to not favor items chosen last week
 
   menuItems.forEach((item) => {
     itemCountPriorityQueue.queue({
-      item, count: previousItemsById[item._id] ? delta : 0,
+      item, count: initialCountPrioirty(previousItemsById, item),
     });
   });
 
